@@ -512,7 +512,7 @@ class Widget: public WidgetTreeNode
 
     private:
         std::function<void(Widget *)> m_afterResizeHandler;
-        std::function<bool(Widget *, const SDL_Event &, bool)> m_processEventHandler;
+        std::function<bool(Widget *, const SDL_Event &, bool, int, int)> m_processEventHandler;
 
     public:
         Widget(
@@ -555,14 +555,6 @@ class Widget: public WidgetTreeNode
         }
 
     public:
-        void draw() const
-        {
-            if(show()){
-                drawEx(x(), y(), 0, 0, w(), h());
-            }
-        }
-
-    public:
         virtual void drawChildEx(const Widget *child, int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const final
         {
             fflassert(child);
@@ -595,40 +587,46 @@ class Widget: public WidgetTreeNode
             }
         }
 
-    public:
-        virtual void drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+        virtual void drawAt(
+                dir8_t dstDir,
+                int    dstX,
+                int    dstY,
+
+                int dstRgnX = 0,
+                int dstRgnY = 0,
+
+                int dstRgnW = -1,
+                int dstRgnH = -1) const final
         {
-            if(!show()){
-                return;
+            int srcXCrop = 0;
+            int srcYCrop = 0;
+            int dstXCrop = dstX - xSizeOff(dstDir, w());
+            int dstYCrop = dstY - ySizeOff(dstDir, h());
+            int srcWCrop = w();
+            int srcHCrop = h();
+
+            if(mathf::cropROI(
+                        &srcXCrop, &srcYCrop,
+                        &srcWCrop, &srcHCrop,
+                        &dstXCrop, &dstYCrop,
+
+                        w(),
+                        h(),
+
+                        0, 0, -1, -1,
+                        dstRgnX, dstRgnY, dstRgnW, dstRgnH)){
+                drawEx(dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
             }
-
-            foreachChild([srcX, srcY, dstX, dstY, srcW, srcH, this](const Widget *widget, bool)
-            {
-                if(widget->show()){
-                    int srcXCrop = srcX;
-                    int srcYCrop = srcY;
-                    int dstXCrop = dstX;
-                    int dstYCrop = dstY;
-                    int srcWCrop = srcW;
-                    int srcHCrop = srcH;
-
-                    if(mathf::cropChildROI(
-                                &srcXCrop, &srcYCrop,
-                                &srcWCrop, &srcHCrop,
-                                &dstXCrop, &dstYCrop,
-
-                                w(),
-                                h(),
-
-                                widget->dx(),
-                                widget->dy(),
-                                widget-> w(),
-                                widget-> h())){
-                        widget->drawEx(dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
-                    }
-                }
-            });
         }
+
+        virtual void drawRoot() const final
+        {
+            fflassert(!parent());
+            drawEx(dx(), dy(), 0, 0, w(), h());
+        }
+
+    public:
+        virtual void drawEx(int, int, int, int, int, int) const;
 
     private:
         static int sizeOff(int size, int index)
@@ -669,39 +667,6 @@ class Widget: public WidgetTreeNode
         }
 
     public:
-        void drawAt(
-                dir8_t dstDir,
-                int    dstX,
-                int    dstY,
-
-                int dstRgnX = 0,
-                int dstRgnY = 0,
-
-                int dstRgnW = -1,
-                int dstRgnH = -1) const
-        {
-            int srcXCrop = 0;
-            int srcYCrop = 0;
-            int dstXCrop = dstX - xSizeOff(dstDir, w());
-            int dstYCrop = dstY - ySizeOff(dstDir, h());
-            int srcWCrop = w();
-            int srcHCrop = h();
-
-            if(mathf::cropROI(
-                        &srcXCrop, &srcYCrop,
-                        &srcWCrop, &srcHCrop,
-                        &dstXCrop, &dstYCrop,
-
-                        w(),
-                        h(),
-
-                        0, 0, -1, -1,
-                        dstRgnX, dstRgnY, dstRgnW, dstRgnH)){
-                drawEx(dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
-            }
-        }
-
-    public:
         virtual void update(double fUpdateTime)
         {
             foreachChild(false, [fUpdateTime, this](Widget *widget, bool)
@@ -711,20 +676,27 @@ class Widget: public WidgetTreeNode
         }
 
     public:
-        Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool)> argHandler)
+        Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, int, int)> argHandler)
         {
             m_processEventHandler = std::move(argHandler);
             return this;
         }
 
-        virtual bool processEvent(const SDL_Event &event, bool valid) final
+        virtual bool processEvent(const SDL_Event &event, bool valid, int dstX, int dstY) final
         {
-            if(m_processEventHandler){
-                return m_processEventHandler(this, event, valid);
-            }
-            else{
-                return processEventDefault(event, valid);
-            }
+            if(m_processEventHandler){ return m_processEventHandler(this, event, valid, dstX, dstY); }
+            else                     { return   processEventDefault(      event, valid, dstX, dstY); }
+        }
+
+        virtual bool processParentEvent(const SDL_Event &event, bool valid, int dstX, int dstY) final
+        {
+            return processEvent(event, valid, dstX + dx(), dstY + dy());
+        }
+
+        virtual bool applyRootEvent(const SDL_Event &event) final
+        {
+            fflassert(!parent());
+            return processEvent(event, true, dx(), dy());
         }
 
     protected:

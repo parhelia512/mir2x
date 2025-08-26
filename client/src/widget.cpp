@@ -258,6 +258,40 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid)
     return took;
 }
 
+void Widget::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+{
+    if(!show()){
+        return;
+    }
+
+    foreachChild([srcX, srcY, dstX, dstY, srcW, srcH, this](const Widget *widget, bool)
+    {
+        if(widget->show()){
+            int srcXCrop = srcX;
+            int srcYCrop = srcY;
+            int dstXCrop = dstX;
+            int dstYCrop = dstY;
+            int srcWCrop = srcW;
+            int srcHCrop = srcH;
+
+            if(mathf::cropChildROI(
+                        &srcXCrop, &srcYCrop,
+                        &srcWCrop, &srcHCrop,
+                        &dstXCrop, &dstYCrop,
+
+                        w(),
+                        h(),
+
+                        widget->dx(),
+                        widget->dy(),
+                        widget-> w(),
+                        widget-> h())){
+                widget->drawEx(dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
+            }
+        }
+    });
+}
+
 void Widget::afterResizeDefault()
 {
     foreachChild([](Widget *child, bool){ child->afterResize(); });
