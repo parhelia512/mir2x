@@ -429,9 +429,9 @@ void SkillBoard::drawEx(int dstX, int dstY, int, int, int, int) const
     pagePtr->drawEx(dstX + r[0], dstY + r[1], r[0] - pagePtr->dx(), r[1] - pagePtr->dy(), r[2], r[3]);
 }
 
-bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bool valid)
+bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
-    const auto result = m_icon.processEvent(event, valid);
+    const auto result = m_icon.processParentEvent(event, valid, startDstX, startDstY);
     if(event.type == SDL_KEYDOWN && cursorOn()){
         if(const auto key = SDLDeviceHelper::getKeyChar(event, false); (key >= '0' && key <= '9') || (key >= 'a' && key <= 'z')){
             if(m_config->hasMagicID(magicID())){
@@ -449,7 +449,7 @@ bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bo
     return result;
 }
 
-bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -459,20 +459,20 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid)
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processEvent(event, valid)){
+    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY)){
         return consumeFocus(show());
     }
 
     bool tabConsumed = false;
     for(auto buttonPtr: m_tabButtonList){
-        tabConsumed |= buttonPtr->processEvent(event, valid && !tabConsumed);
+        tabConsumed |= buttonPtr->processParentEvent(event, valid && !tabConsumed, startDstX, startDstY);
     }
 
     if(tabConsumed){
         return consumeFocus(true);
     }
 
-    if(m_slider.processEvent(event, valid)){
+    if(m_slider.processParentEvent(event, valid, startDstX, startDstY)){
         return consumeFocus(true);
     }
 
@@ -480,14 +480,14 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid)
     const auto loc = SDLDeviceHelper::getMousePLoc();
     const bool captureEvent = (loc.x >= 0 && loc.y >= 0) && mathf::pointInRectangle(loc.x, loc.y, x() + r[0], y() + r[1], r[2], r[3]);
 
-    if(m_skillPageList.at(m_selectedTabIndex)->processEvent(event, captureEvent && valid)){
+    if(m_skillPageList.at(m_selectedTabIndex)->processParentEvent(event, captureEvent && valid, startDstX, startDstY)){
         return consumeFocus(true);
     }
 
     switch(event.type){
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
@@ -495,7 +495,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid)
                     const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
                     const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
 
-                    moveBy(newX - x(), newY - y());
+                    moveBy(newX - startDstX, newY - startDstY);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);
@@ -505,7 +505,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid)
                 switch(event.button.button){
                     case SDL_BUTTON_LEFT:
                         {
-                            return consumeFocus(in(event.button.x, event.button.y));
+                            return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY));
                         }
                     default:
                         {

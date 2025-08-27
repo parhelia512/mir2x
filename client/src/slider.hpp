@@ -33,22 +33,23 @@ class Slider: public Widget
         const std::function<void(float)> m_onChanged;
 
     public:
-        Slider(Widget::VarDir argDir,
+        Slider(
+                Widget::VarDir argDir,
                 Widget::VarOff argX,
                 Widget::VarOff argY,
 
                 Widget::VarSize argW,
                 Widget::VarSize argH,
 
-                bool hslider,
+                bool argHSlider,
 
-                int sliderW,
-                int sliderH,
+                int argSliderW,
+                int argSliderH,
 
-                std::function<void(float)> onChanged,
+                std::function<void(float)> argOnChanged,
 
-                Widget *parent     = nullptr,
-                bool    autoDelete = false)
+                Widget *argParent     = nullptr,
+                bool    argAutoDelete = false)
 
             : Widget
               {
@@ -60,18 +61,24 @@ class Slider: public Widget
 
                   {},
 
-                  parent,
-                  autoDelete,
+                  argParent,
+                  argAutoDelete,
               }
 
-            , m_hslider(hslider)
-            , m_sliderW(sliderW)
-            , m_sliderH(sliderH)
-            , m_onChanged(std::move(onChanged))
+            , m_hslider(argHSlider)
+            , m_sliderW(argSliderW)
+            , m_sliderH(argSliderH)
+            , m_onChanged(std::move(argOnChanged))
         {}
 
     public:
-        bool processEventDefault(const SDL_Event &, bool) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+
+    public:
+        float getValue() const
+        {
+            return m_value;
+        }
 
     public:
         virtual void setValue(float value, bool triggerCallback)
@@ -82,11 +89,6 @@ class Slider: public Widget
                     m_onChanged(getValue());
                 }
             }
-        }
-
-        float getValue() const
-        {
-            return m_value;
         }
 
     public:
@@ -102,27 +104,10 @@ class Slider: public Widget
         }
 
     public:
-        std::tuple<int, int> getValueCenter() const
-        {
-            return
-            {
-                x() + std::lround(( m_hslider ? getValue() : 0.5f) * w()),
-                y() + std::lround((!m_hslider ? getValue() : 0.5f) * h()),
-            };
-        }
+        std::tuple<int, int> getValueCenter(int, int) const;
+        std::tuple<int, int, int, int> getSliderRectangle(int, int) const;
 
-        std::tuple<int, int, int, int> getSliderRectangle() const
-        {
-            const auto [centerX, centerY] = getValueCenter();
-            return
-            {
-                centerX - m_sliderW / 2,
-                centerY - m_sliderH / 2,
-                m_sliderW,
-                m_sliderH,
-            };
-        }
-
+    public:
         bool hslider() const
         {
             return m_hslider;

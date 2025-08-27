@@ -112,7 +112,7 @@ class SkillBoard: public Widget
                 void drawEx(int, int, int, int, int, int) const override;
 
             public:
-                bool processEventDefault(const SDL_Event &, bool) override;
+                bool processEventDefault(const SDL_Event &, bool, int, int) override;
 
             public:
                 bool cursorOn() const
@@ -203,7 +203,7 @@ class SkillBoard: public Widget
         void drawEx(int, int, int, int, int, int) const override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int) override;
 
     private:
         static std::array<int, 4> getPageRectange()

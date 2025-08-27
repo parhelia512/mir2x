@@ -171,7 +171,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
         {},
         {},
         {
-            {new ShapeClipBoard
+            {new ShapeCropBoard
             {
                 DIR_UPLEFT,
                 0,
@@ -230,12 +230,12 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
         }
 
         Widget *menuWidget = nullptr;
-        ShapeClipBoard *background = nullptr;
+        ShapeCropBoard *background = nullptr;
 
         self->foreachChild([&menuWidget, &background](Widget *child, bool)
         {
 
-            if(auto p = dynamic_cast<ShapeClipBoard *>(child)){
+            if(auto p = dynamic_cast<ShapeCropBoard *>(child)){
                 background = p;
             }
             else{

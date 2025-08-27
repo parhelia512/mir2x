@@ -5,21 +5,75 @@
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-HorseBoard::HorseBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
+HorseBoard::HorseBoard(
+        dir8_t argDir,
+
+        int argX,
+        int argY,
+
+        ProcessRun *argProc,
+
+        Widget *argParent,
+        bool    argAutoDelete)
+
     : Widget
       {
-          DIR_UPLEFT,
+          argDir,
           argX,
           argY,
+
           257,
           322,
+
           {},
 
-          widgetPtr,
-          autoDelete,
+          argParent,
+          argAutoDelete,
       }
 
-    , m_processRun(runPtr)
+    , m_processRun(argProc)
+    , m_greyBg
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          [this](const Widget *){ return w(); },
+          [this](const Widget *){ return h(); },
+
+          [](const Widget *self, int drawDstX, int drawDstY)
+          {
+              g_sdlDevice->fillRectangle(colorf::GREY + colorf::A_SHF(255), drawDstX, drawDstY, self->w(), self->h());
+          },
+
+          this,
+          false,
+      }
+
+    , m_imageBg
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          {},
+          {},
+
+          [](const Widget *)
+          {
+              return g_progUseDB->retrieve(0X00000700);
+          },
+
+          false,
+          false,
+          0,
+
+          colorf::WHITE + colorf::A_SHF(255),
+
+          this,
+          false,
+      }
+
     , m_close
       {
           DIR_UPLEFT,
@@ -179,22 +233,7 @@ HorseBoard::HorseBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
     setShow(false);
 }
 
-
-void HorseBoard::drawEx(int dstX, int dstY, int, int, int, int) const
-{
-    g_sdlDevice->fillRectangle(colorf::GREY + colorf::A_SHF(255), dstX, dstY, 257, 322);
-    if(auto texPtr = g_progUseDB->retrieve(0X00000700)){
-        g_sdlDevice->drawTexture(texPtr, dstX, dstY);
-    }
-
-    m_close.draw();
-    m_up   .draw();
-    m_down .draw();
-    m_hide .draw();
-    m_show .draw();
-}
-
-bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -204,11 +243,11 @@ bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid)
         return consumeFocus(false);
     }
 
-    if(m_close.processEvent(event, valid)){ return true; }
-    if(m_up   .processEvent(event, valid)){ return true; }
-    if(m_down .processEvent(event, valid)){ return true; }
-    if(m_hide .processEvent(event, valid)){ return true; }
-    if(m_show .processEvent(event, valid)){ return true; }
+    if(m_close.processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_up   .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_down .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_hide .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_show .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:
@@ -228,14 +267,15 @@ bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
-                    moveBy(newX - x(), newY - y());
+                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+
+                    moveBy(newX - startDstX, newY - startDstY);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);

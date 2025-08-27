@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include "widget.hpp"
 #include "xmltypeset.hpp"
-#include "shapeclipboard.hpp"
+#include "shapecropboard.hpp"
 
 class LayoutBoard: public Widget
 {
@@ -65,7 +65,7 @@ class LayoutBoard: public Widget
         } m_cursorLoc;
 
         int m_cursorBlink = 0;
-        ShapeClipBoard m_cursorClip;
+        ShapeCropBoard m_cursorClip;
 
     private:
         bool m_canSelect;

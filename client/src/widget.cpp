@@ -709,6 +709,12 @@ int Widget::h() const
     return height;
 }
 
+Widget *Widget::setData(std::any argData)
+{
+    m_data = std::move(argData);
+    return this;
+}
+
 bool Widget::in(int pixelX, int pixelY, int startDstX, int startDstY) const
 {
     return mathf::pointInRectangle<int>(pixelX, pixelY, startDstX, startDstY, w(), h());
@@ -794,9 +800,136 @@ bool Widget::consumeFocus(bool argFocus, Widget *child)
     return argFocus;
 }
 
+bool Widget::show() const
+{
+    // unlike active(), don't check if parent shows
+    // i.e. in a item list page, we usually setup the page as auto-scaling mode to automatically updates its width/height
+    //
+    //  +-------------------+ <---- page
+    //  | +---------------+ |
+    //  | |       0       | | <---- item0
+    //  | +---------------+ |
+    //  | |       1       | | <---- item1
+    //  | +---------------+ |
+    //  |        ...        |
+    //
+    // when appending a new item, say item2, auto-scaling mode check current page height and append the new item at proper start:
+    //
+    //     page->addChild(item2, DIR_UPLEFT, 0, page->h(), true);
+    //
+    // if implementation of show() checks if parent shows or not
+    // and if page is not shown, page->h() always return 0, even there is item0 and item1 inside
+    //
+    // this is possible
+    // we may hide a widget before it's ready
+    //
+    // because item0->show() always return false, so does item1->show()
+    // this makes auto-scaling fail
+    //
+    // we still setup m_show for each child widget
+    // but when drawing, widget skips itself and all its child widgets if this->show() returns false
+
+    if(m_parent && !m_parent->show()){
+        return false;
+    }
+    return localShow();
+}
+
+bool Widget::localShow() const
+{
+    return Widget::evalFlag(m_show.first, this) != m_show.second;
+}
+
+void Widget::flipShow()
+{
+    m_show.second = !m_show.second;
+}
+
+Widget *Widget::setShow(Widget::VarFlag argShow)
+{
+    m_show = std::make_pair(std::move(argShow), false);
+    return this;
+}
+
+bool Widget::active() const
+{
+    if(m_parent && !m_parent->active()){
+        return false;
+    }
+    return localActive();
+}
+
+bool Widget::localActive() const
+{
+    return Widget::evalFlag(m_active.first, this) != m_active.second;
+}
+
+void Widget::flipActive()
+{
+    m_active.second = !m_active.second;
+}
+
+Widget *Widget::setActive(Widget::VarFlag argActive)
+{
+    m_active = std::make_pair(std::move(argActive), false);
+    return this;
+}
+
+void Widget::moveXTo(Widget::VarOff arg)
+{
+    m_x = std::make_pair(std::move(arg), 0);
+}
+
+void Widget::moveYTo(Widget::VarOff arg)
+{
+    m_y = std::make_pair(std::move(arg), 0);
+}
+
+void Widget::moveTo(Widget::VarOff argX, Widget::VarOff argY)
+{
+    moveXTo(std::move(argX));
+    moveYTo(std::move(argY));
+}
+
+void Widget::moveBy(Widget::VarOff dx, Widget::VarOff dy)
+{
+    const auto fnOp = [](std::pair<Widget::VarOff, int> &offset, Widget::VarOff update)
+    {
+        if(Widget::hasIntOff(update)){
+            offset.second += Widget::asIntOff(update);
+        }
+        else if(Widget::hasIntOff(offset.first)){
+            offset.second += Widget::asIntOff(offset.first);
+            offset.first   = std::move(update);
+        }
+        else{
+            offset.first = [u = std::move(offset.first), v = std::move(update)](const Widget *widgetPtr)
+            {
+                return Widget::asFuncOff(u)(widgetPtr) + Widget::asFuncOff(v)(widgetPtr);
+            };
+        }
+    };
+
+    fnOp(m_x, std::move(dx));
+    fnOp(m_y, std::move(dy));
+}
+
+void Widget::moveAt(Widget::VarDir argDir, Widget::VarOff argX, Widget::VarOff argY)
+{
+    m_dir = std::move(argDir);
+    m_x   = std::make_pair(std::move(argX), 0);
+    m_y   = std::make_pair(std::move(argY), 0);
+}
+
+Widget *Widget::disableSetSize()
+{
+    m_canSetSize = true; // can not flip back
+    return this;
+}
+
 Widget *Widget::setW(Widget::VarSize argSize)
 {
-    if(m_disableSetSize){
+    if(m_canSetSize){
         throw fflerror("can not resize %s", name());
     }
 
@@ -804,9 +937,9 @@ Widget *Widget::setW(Widget::VarSize argSize)
     return this;
 }
 
-virtual Widget *setH(Widget::VarSize argSize) final
+Widget *Widget::setH(Widget::VarSize argSize)
 {
-    if(m_disableSetSize){
+    if(m_canSetSize){
         throw fflerror("can not resize %s", name());
     }
 
@@ -814,8 +947,7 @@ virtual Widget *setH(Widget::VarSize argSize) final
     return this;
 }
 
-public:
-virtual Widget *setSize(Widget::VarSize argW, Widget::VarSize argH) final
+Widget *Widget::setSize(Widget::VarSize argW, Widget::VarSize argH)
 {
     return setW(std::move(argW))->setH(std::move(argH));
 }

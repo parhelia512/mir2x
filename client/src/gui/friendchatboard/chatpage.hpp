@@ -7,7 +7,7 @@
 #include "widget.hpp"
 #include "menuboard.hpp"
 #include "chatitemref.hpp"
-#include "shapeclipboard.hpp"
+#include "shapecropboard.hpp"
 #include "chatinputcontainer.hpp"
 #include "chatitemcontainer.hpp"
 
@@ -63,7 +63,7 @@ struct ChatPage: public Widget
     constexpr static int CHATREF_GAP = 5;
 
     SDChatPeer peer;
-    ShapeClipBoard background;
+    ShapeCropBoard background;
 
     ChatItemRef *chatref = nullptr;
 

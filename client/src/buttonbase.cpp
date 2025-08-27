@@ -71,7 +71,7 @@ ButtonBase::ButtonBase(
     , m_onTrigger(std::move(fnOnTrigger))
 {}
 
-bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid)
+bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         if(m_radioMode){
@@ -106,7 +106,7 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid)
     switch(event.type){
         case SDL_MOUSEBUTTONUP:
             {
-                if(in(event.button.x, event.button.y)){
+                if(in(event.button.x, event.button.y, startDstX, startDstY)){
                     switch(getState()){
                         case BEVENT_OFF:
                             {
@@ -148,7 +148,7 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y)){
+                if(in(event.button.x, event.button.y, startDstX, startDstY)){
                     switch(getState()){
                         case BEVENT_OFF:
                             {
@@ -185,7 +185,7 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEMOTION:
             {
-                if(in(event.motion.x, event.motion.y)){
+                if(in(event.motion.x, event.motion.y, startDstX, startDstY)){
                     switch(getState()){
                         case BEVENT_OFF:
                             {

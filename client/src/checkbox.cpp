@@ -130,7 +130,7 @@ void CheckBox::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH
     fnCropDrawLine(shadowColor,       0, h() - 2, w() - 2, h() - 2); // 6
 }
 
-bool CheckBox::processEventDefault(const SDL_Event &event, bool valid)
+bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -143,11 +143,11 @@ bool CheckBox::processEventDefault(const SDL_Event &event, bool valid)
     switch(event.type){
         case SDL_MOUSEBUTTONUP:
             {
-                return consumeFocus(in(event.button.x, event.button.y));
+                return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY));
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y)){
+                if(in(event.button.x, event.button.y, startDstX, startDstY)){
                     toggle();
                     return consumeFocus(true);
                 }
@@ -157,7 +157,7 @@ bool CheckBox::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEMOTION:
             {
-                return consumeFocus(in(event.motion.x, event.motion.y));
+                return consumeFocus(in(event.motion.x, event.motion.y, startDstX, startDstY));
             }
         case SDL_KEYUP:
             {

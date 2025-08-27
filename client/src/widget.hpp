@@ -26,8 +26,8 @@ class Widget;        // size concept
 class WidgetTreeNode // tree concept, used by class Widget only
 {
     private:
-        template<typename IN, typename OUT>
-            using conditional_add_const_out_ptr_t = std::conditional_t<std::is_const_v<std::remove_reference_t<IN>>, const OUT *, OUT *>;
+        template<typename IN, typename OUT_1, typename OUT_2> using check_const_cond_t         = std::conditional_t<std::is_const_v<std::remove_reference_t<IN>>, OUT_1, OUT_2>;
+        template<typename IN, typename OUT                  > using check_const_cond_out_ptr_t = check_const_cond_t<IN, const OUT *, OUT *>;
 
     protected:
         using VarDir   = std::variant<             dir8_t, std::function<  dir8_t(const Widget *)>>;
@@ -68,7 +68,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         virtual ~WidgetTreeNode();
 
     public:
-        virtual auto parent(this auto && self, unsigned = 1) final -> conditional_add_const_out_ptr_t<decltype(self), Widget>;
+        auto parent(this auto && self, unsigned = 1) -> check_const_cond_out_ptr_t<decltype(self), Widget>;
 
     public:
         uint64_t id() const
@@ -88,8 +88,8 @@ class WidgetTreeNode // tree concept, used by class Widget only
         // complicated function signature, means
         // auto foreachChild(bool, std::invocable<      Widget *, bool> auto f)       -> std::result_type_t<decltype(f),       Widget *, bool>
         // auto foreachChild(bool, std::invocable<const Widget *, bool> auto f) const -> std::result_type_t<decltype(f), const Widget *, bool>
-        template<typename SELF> auto foreachChild(this SELF &&, bool, std::invocable<conditional_add_const_out_ptr_t<SELF, Widget>, bool> auto f) -> std::conditional_t<std::is_same_v<std::invoke_result_t<decltype(f), Widget *, bool>, bool>, bool, void>;
-        template<typename SELF> auto foreachChild(this SELF &&,       std::invocable<conditional_add_const_out_ptr_t<SELF, Widget>, bool> auto f) -> std::conditional_t<std::is_same_v<std::invoke_result_t<decltype(f), Widget *, bool>, bool>, bool, void>;
+        template<typename SELF> auto foreachChild(this SELF &&, bool, std::invocable<check_const_cond_out_ptr_t<SELF, Widget>, bool> auto f) -> std::conditional_t<std::is_same_v<std::invoke_result_t<decltype(f), Widget *, bool>, bool>, bool, void>;
+        template<typename SELF> auto foreachChild(this SELF &&,       std::invocable<check_const_cond_out_ptr_t<SELF, Widget>, bool> auto f) -> std::conditional_t<std::is_same_v<std::invoke_result_t<decltype(f), Widget *, bool>, bool>, bool, void>;
 
     private:
         void execDeath() noexcept;
@@ -102,8 +102,8 @@ class WidgetTreeNode // tree concept, used by class Widget only
         virtual void onDeath() noexcept {}
 
     public:
-        auto firstChild(this auto && self) -> conditional_add_const_out_ptr_t<decltype(self), Widget>;
-        auto  lastChild(this auto && self) -> conditional_add_const_out_ptr_t<decltype(self), Widget>;
+        auto firstChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>;
+        auto  lastChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>;
 
     public:
         void clearChild(std::invocable<const Widget *, bool> auto);
@@ -133,19 +133,19 @@ class WidgetTreeNode // tree concept, used by class Widget only
         }
 
     public:
-        auto hasChild     (this auto && self, uint64_t                                 ) -> conditional_add_const_out_ptr_t<decltype(self), Widget>;
-        auto hasChild     (this auto && self, std::invocable<const Widget *, bool> auto) -> conditional_add_const_out_ptr_t<decltype(self), Widget>;
-        auto hasDescendant(this auto && self, uint64_t                                 ) -> conditional_add_const_out_ptr_t<decltype(self), Widget>;
-        auto hasDescendant(this auto && self, std::invocable<const Widget *, bool> auto) -> conditional_add_const_out_ptr_t<decltype(self), Widget>;
+        auto hasChild     (this auto && self, uint64_t                                 ) -> check_const_cond_out_ptr_t<decltype(self), Widget>;
+        auto hasChild     (this auto && self, std::invocable<const Widget *, bool> auto) -> check_const_cond_out_ptr_t<decltype(self), Widget>;
+        auto hasDescendant(this auto && self, uint64_t                                 ) -> check_const_cond_out_ptr_t<decltype(self), Widget>;
+        auto hasDescendant(this auto && self, std::invocable<const Widget *, bool> auto) -> check_const_cond_out_ptr_t<decltype(self), Widget>;
 
     public:
-        template<std::derived_from<Widget> T> auto hasParent(this auto && self) -> conditional_add_const_out_ptr_t<decltype(self), T>;
+        template<std::derived_from<Widget> T> auto hasParent(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), T>;
 };
 
 class Widget: public WidgetTreeNode
 {
     private:
-        using WidgetTreeNode::conditional_add_const_out_ptr_t;
+        using WidgetTreeNode::check_const_cond_out_ptr_t;
 
     public:
         using WidgetTreeNode::VarDir;
@@ -356,16 +356,13 @@ class Widget: public WidgetTreeNode
         virtual int dy() const { return Widget::evalOff(m_y.first, this) + m_y.second - ySizeOff(dir(), h()); }
 
     public:
-        auto &data(this auto && self)
+        auto & data(this auto && self)
         {
-            return m_data;
+            return self.m_data;
         }
 
-        Widget *setData(std::any argData)
-        {
-            m_data = std::move(argData);
-            return this;
-        }
+    public:
+        Widget *setData(std::any);
 
     public:
         virtual bool       in(int, int, int, int) const;
@@ -377,160 +374,35 @@ class Widget: public WidgetTreeNode
         virtual bool consumeFocus(bool, Widget * = nullptr) final;
 
     public:
-        auto focusedChild(this auto && self) -> conditional_add_const_out_ptr_t<decltype(self), Widget>;
+        auto focusedChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>;
 
     public:
-        Widget *setShow(Widget::VarFlag argShow)
-        {
-            m_show = std::make_pair(std::move(argShow), false);
-            return this;
-        }
-
-        bool localShow() const
-        {
-            return Widget::evalFlag(m_show.first, this) != m_show.second;
-        }
-
-        bool show() const
-        {
-            // unlike active(), don't check if parent shows
-            // i.e. in a item list page, we usually setup the page as auto-scaling mode to automatically updates its width/height
-            //
-            //  +-------------------+ <---- page
-            //  | +---------------+ |
-            //  | |       0       | | <---- item0
-            //  | +---------------+ |
-            //  | |       1       | | <---- item1
-            //  | +---------------+ |
-            //  |        ...        |
-            //
-            // when appending a new item, say item2, auto-scaling mode check current page height and append the new item at proper start:
-            //
-            //     page->addChild(item2, DIR_UPLEFT, 0, page->h(), true);
-            //
-            // if implementation of show() checks if parent shows or not
-            // and if page is not shown, page->h() always return 0, even there is item0 and item1 inside
-            //
-            // this is possible
-            // we may hide a widget before it's ready
-            //
-            // because item0->show() always return false, so does item1->show()
-            // this makes auto-scaling fail
-            //
-            // we still setup m_show for each child widget
-            // but when drawing, widget skips itself and all its child widgets if this->show() returns false
-
-            if(m_parent && !m_parent->show()){
-                return false;
-            }
-            return localShow();
-        }
-
-        void flipShow()
-        {
-            m_show.second = !m_show.second;
-        }
+        bool       show() const;
+        bool  localShow() const;
+        void   flipShow();
+        Widget *setShow(Widget::VarFlag);
 
     public:
-        Widget *setActive(Widget::VarFlag argActive)
-        {
-            m_active = std::make_pair(std::move(argActive), false);
-            return this;
-        }
-
-        bool localActive() const
-        {
-            return Widget::evalFlag(m_active.first, this) != m_active.second;
-        }
-
-        bool active() const
-        {
-            if(m_parent && !m_parent->active()){
-                return false;
-            }
-            return localActive();
-        }
-
-        void flipActive()
-        {
-            m_active.second = !m_active.second;
-        }
+        bool      active() const;
+        bool localActive() const;
+        void  flipActive();
+        Widget *setActive(Widget::VarFlag);
 
     public:
-        void moveBy(Widget::VarOff dx, Widget::VarOff dy)
-        {
-            const auto fnOp = [](std::pair<Widget::VarOff, int> &offset, Widget::VarOff update)
-            {
-                if(Widget::hasIntOff(update)){
-                    offset.second += Widget::asIntOff(update);
-                }
-                else if(Widget::hasIntOff(offset.first)){
-                    offset.second += Widget::asIntOff(offset.first);
-                    offset.first   = std::move(update);
-                }
-                else{
-                    offset.first = [u = std::move(offset.first), v = std::move(update)](const Widget *widgetPtr)
-                    {
-                        return Widget::asFuncOff(u)(widgetPtr) + Widget::asFuncOff(v)(widgetPtr);
-                    };
-                }
-            };
+        void moveXTo(Widget::VarOff);
+        void moveYTo(Widget::VarOff);
 
-            fnOp(m_x, std::move(dx));
-            fnOp(m_y, std::move(dy));
-        }
-
-        void moveAt(Widget::VarDir argDir, Widget::VarOff argX, Widget::VarOff argY)
-        {
-            m_dir = std::move(argDir);
-            m_x   = std::make_pair(std::move(argX), 0);
-            m_y   = std::make_pair(std::move(argY), 0);
-        }
+        void moveTo(                Widget::VarOff, Widget::VarOff);
+        void moveBy(                Widget::VarOff, Widget::VarOff);
+        void moveAt(Widget::VarDir, Widget::VarOff, Widget::VarOff);
 
     public:
-        void moveXTo(Widget::VarOff arg) { m_x   = std::make_pair(std::move(arg), 0); }
-        void moveYTo(Widget::VarOff arg) { m_y   = std::make_pair(std::move(arg), 0); }
+        Widget *disableSetSize();
 
     public:
-        void moveTo(Widget::VarOff argX, Widget::VarOff argY)
-        {
-            moveXTo(std::move(argX));
-            moveYTo(std::move(argY));
-        }
-
-    public:
-        Widget *disableSetSize()
-        {
-            m_canSetSize = true; // can not flip back
-            return this;
-        }
-
-    public:
-        virtual Widget *setW(Widget::VarSize argSize) final
-        {
-            if(m_canSetSize){
-                throw fflerror("can not resize %s", name());
-            }
-
-            m_w = std::move(argSize);
-            return this;
-        }
-
-        virtual Widget *setH(Widget::VarSize argSize) final
-        {
-            if(m_canSetSize){
-                throw fflerror("can not resize %s", name());
-            }
-
-            m_h = std::move(argSize);
-            return this;
-        }
-
-    public:
-        virtual Widget *setSize(Widget::VarSize argW, Widget::VarSize argH) final
-        {
-            return setW(std::move(argW))->setH(std::move(argH));
-        }
+        virtual Widget *setW(Widget::VarSize) final;
+        virtual Widget *setH(Widget::VarSize) final;
+        virtual Widget *setSize(Widget::VarSize, Widget::VarSize) final;
 };
 
 #include "widget.impl.hpp"

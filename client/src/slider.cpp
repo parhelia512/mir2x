@@ -1,7 +1,28 @@
 #include <SDL2/SDL.h>
 #include "slider.hpp"
 
-bool Slider::processEventDefault(const SDL_Event &e, bool valid)
+std::tuple<int, int> Slider::getValueCenter(int startDstX, int startDstY) const
+{
+    return
+    {
+        startDstX + std::lround(( m_hslider ? getValue() : 0.5f) * w()),
+        startDstY + std::lround((!m_hslider ? getValue() : 0.5f) * h()),
+    };
+}
+
+std::tuple<int, int, int, int> getSliderRectangle(int startDstX, int startDstY) const
+{
+    const auto [centerX, centerY] = getValueCenter();
+    return
+    {
+        centerX - m_sliderW / 2,
+        centerY - m_sliderH / 2,
+        m_sliderW,
+        m_sliderH,
+    };
+}
+
+bool Slider::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -17,22 +38,22 @@ bool Slider::processEventDefault(const SDL_Event &e, bool valid)
         return mathf::pointInRectangle<int>(eventX, eventY, sliderX, sliderY, sliderW, sliderH);
     };
 
-    switch(e.type){
+    switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(fnInSlider(e.button.x, e.button.y)){
+                if(fnInSlider(event.button.x, event.button.y)){
                     m_sliderState = BEVENT_DOWN;
                     return consumeFocus(true);
                 }
-                else if(in(e.button.x, e.button.y)){
+                else if(in(event.button.x, event.button.y)){
                     m_sliderState = BEVENT_ON;
-                    setValue([&e, this]() -> float
+                    setValue([&event, this]() -> float
                     {
                         if(m_hslider){
-                            return ((e.button.x - x()) * 1.0f) / std::max<int>(1, w());
+                            return ((event.button.x - x()) * 1.0f) / std::max<int>(1, w());
                         }
                         else{
-                            return ((e.button.y - y()) * 1.0f) / std::max<int>(1, h());
+                            return ((event.button.y - y()) * 1.0f) / std::max<int>(1, h());
                         }
                     }(), true);
                     return consumeFocus(true);
@@ -44,7 +65,7 @@ bool Slider::processEventDefault(const SDL_Event &e, bool valid)
             }
         case SDL_MOUSEBUTTONUP:
             {
-                if(fnInSlider(e.button.x, e.button.y)){
+                if(fnInSlider(event.button.x, event.button.y)){
                     m_sliderState = BEVENT_ON;
                     return consumeFocus(true);
                 }
@@ -55,14 +76,14 @@ bool Slider::processEventDefault(const SDL_Event &e, bool valid)
             }
         case SDL_MOUSEMOTION:
             {
-                if(e.motion.state & SDL_BUTTON_LMASK){
-                    if(fnInSlider(e.motion.x, e.motion.y) || focus()){
+                if(event.motion.state & SDL_BUTTON_LMASK){
+                    if(fnInSlider(event.motion.x, event.motion.y) || focus()){
                         m_sliderState = BEVENT_DOWN;
                         if(m_hslider){
-                            addValue(pixel2Value(e.motion.xrel), true);
+                            addValue(pixel2Value(event.motion.xrel), true);
                         }
                         else{
-                            addValue(pixel2Value(e.motion.yrel), true);
+                            addValue(pixel2Value(event.motion.yrel), true);
                         }
                         return consumeFocus(true);
                     }
@@ -72,7 +93,7 @@ bool Slider::processEventDefault(const SDL_Event &e, bool valid)
                     }
                 }
                 else{
-                    if(fnInSlider(e.motion.x, e.motion.y)){
+                    if(fnInSlider(event.motion.x, event.motion.y)){
                         m_sliderState = BEVENT_ON;
                         return consumeFocus(true);
                     }

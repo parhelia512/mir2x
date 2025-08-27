@@ -5,7 +5,7 @@
 #include "labelboard.hpp"
 #include "layoutboard.hpp"
 #include "imageboard.hpp"
-#include "shapeclipboard.hpp"
+#include "shapecropboard.hpp"
 
 struct FriendItem: public Widget
 {
@@ -34,7 +34,7 @@ struct FriendItem: public Widget
     uint64_t funcWidgetID;
     std::function<void(FriendItem *)> onClick;
 
-    ShapeClipBoard hovered;
+    ShapeCropBoard hovered;
 
     ImageBoard avatar;
     LabelBoard name;

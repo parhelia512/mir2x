@@ -1,11 +1,10 @@
-auto WidgetTreeNode::parent(this auto && self, unsigned level) -> conditional_add_const_out_ptr_t<decltype(self), Widget>
+auto WidgetTreeNode::parent(this auto && self, unsigned level) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
-    auto widptr = this;
-    while(widptr && (level > 0)){
-        widptr = widptr->m_parent;
-        level--;
+    auto p = std::addressof(self);
+    for(; p && (level > 0); level--){
+        p = p->m_parent;
     }
-    return static_cast<conditional_add_const_out_ptr_t<decltype(self), Widget>>(widptr);
+    return static_cast<check_const_cond_out_ptr_t<decltype(self), Widget>>(p);
 }
 
 template<std::invocable<const Widget *, bool, const Widget *, bool> F> void WidgetTreeNode::sort(F f)
@@ -24,9 +23,9 @@ template<std::invocable<const Widget *, bool, const Widget *, bool> F> void Widg
     });
 }
 
-template<typename SELF> auto WidgetTreeNode::foreachChild(this SELF && self, bool forward, std::invocable<conditional_add_const_out_ptr_t<SELF, Widget>, bool> auto f) -> std::conditional_t<std::is_same_v<std::invoke_result_t<decltype(f), Widget *, bool>, bool>, bool, void>
+template<typename SELF> auto WidgetTreeNode::foreachChild(this SELF && self, bool forward, std::invocable<check_const_cond_out_ptr_t<SELF, Widget>, bool> auto f) -> std::conditional_t<std::is_same_v<std::invoke_result_t<decltype(f), Widget *, bool>, bool>, bool, void>
 {
-    const ValueKeeper keepValue(m_inLoop, true);
+    const ValueKeeper keepValue(self.m_inLoop, true);
     constexpr bool hasBoolResult = std::is_same_v<std::invoke_result_t<decltype(f), Widget *, bool>, bool>;
 
     if(forward){
@@ -67,9 +66,9 @@ template<typename SELF> auto WidgetTreeNode::foreachChild(this SELF && self, boo
     }
 }
 
-template<typename SELF> auto WidgetTreeNode::foreachChild(this SELF && self, std::invocable<conditional_add_const_out_ptr_t<SELF, Widget>, bool> auto f) -> std::conditional_t<std::is_same_v<std::invoke_result_t<decltype(f), Widget *, bool>, bool>, bool, void>
+template<typename SELF> auto WidgetTreeNode::foreachChild(this SELF && self, std::invocable<check_const_cond_out_ptr_t<SELF, Widget>, bool> auto f) -> std::conditional_t<std::is_same_v<std::invoke_result_t<decltype(f), Widget *, bool>, bool>, bool, void>
 {
-    if constexpr (std::is_same_v<std::invoke_result_t<decltype(f), conditional_add_const_out_ptr_t<SELF, Widget>, bool>, bool>){
+    if constexpr (std::is_same_v<std::invoke_result_t<decltype(f), check_const_cond_out_ptr_t<SELF, Widget>, bool>, bool>){
         return foreachChild(true, f);
     }
     else{
@@ -77,7 +76,7 @@ template<typename SELF> auto WidgetTreeNode::foreachChild(this SELF && self, std
     }
 }
 
-auto WidgetTreeNode::firstChild(this auto && self) -> conditional_add_const_out_ptr_t<decltype(self), Widget>
+auto WidgetTreeNode::firstChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
     for(auto &child: self.m_childList){
         if(child.widget){
@@ -87,7 +86,7 @@ auto WidgetTreeNode::firstChild(this auto && self) -> conditional_add_const_out_
     return nullptr;
 }
 
-auto WidgetTreeNode::lastChild(this auto && self) -> conditional_add_const_out_ptr_t<decltype(self), Widget>
+auto WidgetTreeNode::lastChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
     for(auto p = self.m_childList.rbegin(); p != self.m_childList.rend(); ++p){
         if(p->widget){
@@ -108,7 +107,7 @@ void WidgetTreeNode::clearChild(std::invocable<const Widget *, bool> auto f)
     }
 }
 
-auto WidgetTreeNode::hasChild(this auto && self, uint64_t argID) -> conditional_add_const_out_ptr_t<decltype(*this), Widget>
+auto WidgetTreeNode::hasChild(this auto && self, uint64_t argID) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
     for(auto p = self.m_childList.begin(); p != self.m_childList.end(); ++p){
         if(p->widget && p->widget->id() == argID){
@@ -118,7 +117,7 @@ auto WidgetTreeNode::hasChild(this auto && self, uint64_t argID) -> conditional_
     return nullptr;
 }
 
-auto WidgetTreeNode::hasChild(this auto && self, std::invocable<const Widget *, bool> auto f) -> conditional_add_const_out_ptr_t<decltype(self), Widget>
+auto WidgetTreeNode::hasChild(this auto && self, std::invocable<const Widget *, bool> auto f) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
     for(auto &child: self.m_childList){
         if(child.widget && f(child.widget, child.autoDelete)){
@@ -128,9 +127,9 @@ auto WidgetTreeNode::hasChild(this auto && self, std::invocable<const Widget *, 
     return nullptr;
 }
 
-auto WidgetTreeNode::hasDescendant(this auto && self, uint64_t argID) -> conditional_add_const_out_ptr_t<decltype(self), Widget>
+auto WidgetTreeNode::hasDescendant(this auto && self, uint64_t argID) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
-    for(auto p = self.m_childList.begin(); p != m_childList.end(); ++p){
+    for(auto p = self.m_childList.begin(); p != self.m_childList.end(); ++p){
         if(p->widget){
             if(p->widget->id() == argID){
                 return p->widget;
@@ -143,7 +142,7 @@ auto WidgetTreeNode::hasDescendant(this auto && self, uint64_t argID) -> conditi
     return nullptr;
 }
 
-auto WidgetTreeNode::hasDescendant(this auto && self, std::invocable<const Widget *, bool> auto f) -> conditional_add_const_out_ptr_t<decltype(self), Widget>
+auto WidgetTreeNode::hasDescendant(this auto && self, std::invocable<const Widget *, bool> auto f) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
     for(auto &child: self.m_childList){
         if(child.widget){
@@ -158,7 +157,7 @@ auto WidgetTreeNode::hasDescendant(this auto && self, std::invocable<const Widge
     return nullptr;
 }
 
-template<std::derived_from<Widget> T> auto WidgetTreeNode::hasParent(this auto && self) -> conditional_add_const_out_ptr_t<decltype(self), T>
+template<std::derived_from<Widget> T> auto WidgetTreeNode::hasParent(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), T>
 {
     for(auto p = self.parent(); p; p = p->parent()){
         if constexpr (std::is_const_v<std::remove_reference_t<decltype(self)>>){
@@ -175,7 +174,7 @@ template<std::derived_from<Widget> T> auto WidgetTreeNode::hasParent(this auto &
     return nullptr;
 }
 
-auto Widget::focusedChild(this auto && self) -> conditional_add_const_out_ptr_t<decltype(self), Widget>
+auto Widget::focusedChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
     if(self.firstChild() && self.firstChild()->focus()){
         return self.firstChild();

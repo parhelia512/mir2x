@@ -3,13 +3,13 @@
 #include <functional>
 #include "widget.hpp"
 
-class ShapeClipBoard: public Widget
+class ShapeCropBoard: public Widget
 {
     private:
         std::function<void(const Widget *, int, int)> m_drawFunc;
 
     public:
-        ShapeClipBoard(
+        ShapeCropBoard(
                 Widget::VarDir,
                 Widget::VarOff,
                 Widget::VarOff,

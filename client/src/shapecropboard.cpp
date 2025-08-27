@@ -1,7 +1,7 @@
 #include "sdldevice.hpp"
-#include "shapeclipboard.hpp"
+#include "shapecropboard.hpp"
 
-ShapeClipBoard::ShapeClipBoard(Widget::VarDir argDir,
+ShapeCropBoard::ShapeCropBoard(Widget::VarDir argDir,
         Widget::VarOff argX,
         Widget::VarOff argY,
 
@@ -30,7 +30,7 @@ ShapeClipBoard::ShapeClipBoard(Widget::VarDir argDir,
     , m_drawFunc(std::move(argDrawFunc))
 {}
 
-void ShapeClipBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void ShapeCropBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
 {
     if(!show()){
         return;

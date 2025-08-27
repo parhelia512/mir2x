@@ -5,7 +5,7 @@
 #include "widget.hpp"
 #include "itemflex.hpp"
 #include "marginwrapper.hpp"
-#include "shapeclipboard.hpp"
+#include "shapecropboard.hpp"
 
 class MenuBoard: public Widget
 {
@@ -24,7 +24,7 @@ class MenuBoard: public Widget
         MarginWrapper m_wrapper;
 
     private:
-        ShapeClipBoard m_background;
+        ShapeCropBoard m_background;
 
     public:
         MenuBoard(

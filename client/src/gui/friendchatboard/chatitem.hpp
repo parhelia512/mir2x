@@ -6,7 +6,7 @@
 #include "imageboard.hpp"
 #include "labelboard.hpp"
 #include "chatitemref.hpp"
-#include "shapeclipboard.hpp"
+#include "shapecropboard.hpp"
 #include "friendchatboardconst.hpp"
 
 //            WIDTH
@@ -82,7 +82,7 @@ struct ChatItem: public Widget
     LabelBoard name;
 
     LayoutBoard message;
-    ShapeClipBoard background;
+    ShapeCropBoard background;
 
     ChatItemRef * const msgref = nullptr;
 

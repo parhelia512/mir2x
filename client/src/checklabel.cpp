@@ -124,7 +124,7 @@ CheckLabel::CheckLabel(
     }
 }
 
-bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid)
+bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     const auto fnOnColor = [this](bool on)
     {
@@ -153,7 +153,7 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid)
         case SDL_MOUSEBUTTONDOWN:
             {
                 const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                fnOnColor(in(eventX, eventY));
+                fnOnColor(in(eventX, eventY, startDstX, startDstY));
                 break;
             }
         default:
@@ -162,14 +162,14 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid)
             }
     }
 
-    if(m_checkBox.processEvent(event, valid)){
+    if(m_checkBox.processParentEvent(event, valid, startDstX, startDstY)){
         return true;
     }
 
     switch(event.type){
         case SDL_MOUSEBUTTONUP:
             {
-                if(in(event.button.x, event.button.y)){
+                if(in(event.button.x, event.button.y, startDstX, startDstY)){
                     return consumeFocus(true, &m_checkBox);
                 }
                 else{
@@ -178,7 +178,7 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y)){
+                if(in(event.button.x, event.button.y, startDstX, startDstY)){
                     m_checkBox.toggle();
                     return consumeFocus(true, &m_checkBox);
                 }
@@ -188,7 +188,7 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEMOTION:
             {
-                if(in(event.motion.x, event.motion.y)){
+                if(in(event.motion.x, event.motion.y, startDstX, startDstY)){
                     return consumeFocus(true, &m_checkBox);
                 }
                 else{

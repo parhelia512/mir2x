@@ -1,6 +1,6 @@
 #pragma once
 #include "widget.hpp"
-#include "shapeclipboard.hpp"
+#include "shapecropboard.hpp"
 
 class MarginWrapper: public Widget
 {
@@ -34,7 +34,7 @@ class MarginWrapper: public Widget
                   argAutoDelete,
               }
         {
-            Widget::addChild(new ShapeClipBoard
+            Widget::addChild(new ShapeCropBoard
             {
                 DIR_UPLEFT,
                 0,
