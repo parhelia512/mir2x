@@ -338,7 +338,7 @@ void GuildBoard::drawEx(int dstX, int dstY, int, int, int, int) const
     m_slider            .draw();
 }
 
-bool GuildBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool GuildBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -348,16 +348,16 @@ bool GuildBoard::processEventDefault(const SDL_Event &event, bool valid)
         return consumeFocus(false);
     }
 
-    if(m_closeButton       .processEvent(event, valid)){ return true; }
-    if(m_announcement      .processEvent(event, valid)){ return true; }
-    if(m_members           .processEvent(event, valid)){ return true; }
-    if(m_chat              .processEvent(event, valid)){ return true; }
-    if(m_editAnnouncement  .processEvent(event, valid)){ return true; }
-    if(m_removeMember      .processEvent(event, valid)){ return true; }
-    if(m_disbandGuild      .processEvent(event, valid)){ return true; }
-    if(m_editMemberPosition.processEvent(event, valid)){ return true; }
-    if(m_dissolveCovenant  .processEvent(event, valid)){ return true; }
-    if(m_slider            .processEvent(event, valid)){ return true; }
+    if(m_closeButton       .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_announcement      .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_members           .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_chat              .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_editAnnouncement  .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_removeMember      .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_disbandGuild      .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_editMemberPosition.processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_dissolveCovenant  .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_slider            .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:
@@ -377,14 +377,15 @@ bool GuildBoard::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
-                    moveBy(newX - x(), newY - y());
+                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+
+                    moveBy(newX - startDstX, newY - startDstY);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);
