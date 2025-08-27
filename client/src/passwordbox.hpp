@@ -60,9 +60,9 @@ class PasswordBox: public InputLine
         {}
 
     public:
-        bool processEventDefault(const SDL_Event &event, bool valid) override
+        bool processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY) override
         {
-            const auto result = InputLine::processEventDefault(event, valid);
+            const auto result = InputLine::processEventDefault(event, valid, startDstX, startDstY);
             if(m_security){
                 const auto inputString = getRawString();
                 if(inputString.size() + 1 == m_passwordString.size()){

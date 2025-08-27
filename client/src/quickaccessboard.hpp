@@ -3,35 +3,63 @@
 #include <cstdint>
 #include "widget.hpp"
 #include "tritexbutton.hpp"
+#include "shapecropboard.hpp"
 
 class ProcessRun;
 class QuickAccessBoard: public Widget
 {
     private:
-        ProcessRun *m_processRun;
+        struct Grid: public Widget
+        {
+            int         slot;
+            ProcessRun *proc;
 
-    private:
-        TritexButton m_buttonClose;
+            ShapeCropBoard bg;
+            ImageBoard     item;
+            TextBoard      count;
+
+            Grid(   Widget::VarDir,
+                    Widget::VarOff,
+                    Widget::VarOff,
+
+                    Widget::VarSize,
+                    Widget::VarSize,
+
+                    ProcessRun *,
+                    Widget *,
+                    bool);
+        };
 
     private:
         constexpr static uint32_t m_texID = 0X00000060;
 
-    public:
-        QuickAccessBoard(int, int, ProcessRun *, Widget *pwidget = nullptr, bool autoDelete = false);
+    private:
+        ProcessRun *m_processRun;
+
+    private:
+        ImageBoard m_bg;
+        TritexButton m_buttonClose;
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        QuickAccessBoard(dir8_t,
+                int,
+                int,
+
+                ProcessRun *,
+
+                Widget * = nullptr,
+                bool     = false);
 
     public:
-        bool processEventDefault(const SDL_Event &, bool) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int) override;
 
     public:
-        static std::tuple<int, int, int, int> getGridLoc(int i)
+        static std::tuple<int, int, int, int> getGridLoc(int slot)
         {
-            if(i >= 0 && i < 6){
-                return {17 + 42 * i, 6, 36, 36};
-            }
-            throw fflerror("invalid quick access grid index: %d", i);
+            fflassert(slot >= 0, slot);
+            fflassert(slot <  5, slot);
+
+            return {17 + 42 * slot, 6, 36, 36};
         }
 
     public:

@@ -132,12 +132,12 @@ void PlayerStateBoard::update(double)
 void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X06000000)){
-        g_sdlDevice->drawTexture(texPtr, x(), y());
+        g_sdlDevice->drawTexture(texPtr, startDstX, startDstY);
     }
 
     const auto fnDrawLabel = [this](int labelX, int labelY, const std::u8string &s, uint32_t color = colorf::WHITE)
     {
-        LabelBoard(DIR_UPLEFT, 0, 0, s.c_str(), 1, 12, 0, colorf::maskRGB(color) + colorf::A_SHF(255)).drawAt(DIR_NONE, x() + labelX, y() + labelY);
+        LabelBoard(DIR_UPLEFT, 0, 0, s.c_str(), 1, 12, 0, colorf::maskRGB(color) + colorf::A_SHF(255)).drawAt(DIR_NONE, startDstX + labelX, startDstY + labelY);
     };
 
     const auto myHeroPtr = m_processRun->getMyHero();
@@ -193,15 +193,15 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
     fnDrawLabel(279, 97 + 24 * 7, str_printf(u8"%d", combatNode.dcHit));
     fnDrawLabel(279, 97 + 24 * 8, str_printf(u8"%d", combatNode.dcDodge));
 
-    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"攻击 %d - %d", combatNode. dc[0], combatNode. dc[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, x() +  21, y() + 317);
-    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"防御 %d - %d", combatNode. ac[0], combatNode. ac[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, x() + 130, y() + 317);
-    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"魔法 %d - %d", combatNode. mc[0], combatNode. mc[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, x() +  21, y() + 345);
-    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"魔防 %d - %d", combatNode.mac[0], combatNode.mac[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, x() + 130, y() + 345);
-    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"道术 %d - %d", combatNode. sc[0], combatNode. sc[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, x() + 233, y() + 345);
+    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"攻击 %d - %d", combatNode. dc[0], combatNode. dc[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX +  21, startDstY + 317);
+    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"防御 %d - %d", combatNode. ac[0], combatNode. ac[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 130, startDstY + 317);
+    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"魔法 %d - %d", combatNode. mc[0], combatNode. mc[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX +  21, startDstY + 345);
+    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"魔防 %d - %d", combatNode.mac[0], combatNode.mac[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 130, startDstY + 345);
+    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"道术 %d - %d", combatNode. sc[0], combatNode. sc[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 233, startDstY + 345);
 
-    LabelBoard(DIR_UPLEFT, 0, 0, u8"攻击元素", 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, x() + 10, y() + 376);
-    LabelBoard(DIR_UPLEFT, 0, 0, u8"防御元素", 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, x() + 10, y() + 406);
-    LabelBoard(DIR_UPLEFT, 0, 0, u8"弱点元素", 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, x() + 10, y() + 436);
+    LabelBoard(DIR_UPLEFT, 0, 0, u8"攻击元素", 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 10, startDstY + 376);
+    LabelBoard(DIR_UPLEFT, 0, 0, u8"防御元素", 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 10, startDstY + 406);
+    LabelBoard(DIR_UPLEFT, 0, 0, u8"弱点元素", 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 10, startDstY + 436);
 
     for(int i = MET_BEGIN; i < MET_END; ++i){
         const auto [dcElem, acElem] = [i, &combatNode]() -> std::array<int, 2>
@@ -219,12 +219,12 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
         }();
 
         fflassert(dcElem >= 0);
-        const int elemGridX = x() + 62 + (i - MET_BEGIN) * 37;
+        const int elemGridX = startDstX + 62 + (i - MET_BEGIN) * 37;
         const int elemGridY[]
         {
-            y() + 374 + 0 * 30,
-            y() + 374 + 1 * 30,
-            y() + 374 + 2 * 30,
+            startDstY + 374 + 0 * 30,
+            startDstY + 374 + 1 * 30,
+            startDstY + 374 + 2 * 30,
         };
 
         if(dcElem > 0){
@@ -243,14 +243,14 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
     }
 
     if(auto [texPtr, dx, dy] = g_equipDB->retrieve(myHeroPtr->gender() ? 0X00000000 : 0X00000001); texPtr){
-        g_sdlDevice->drawTexture(texPtr, x() + m_equipCharX + dx, y() + m_equipCharY + dy);
+        g_sdlDevice->drawTexture(texPtr, startDstX + m_equipCharX + dx, startDstY + m_equipCharY + dy);
     }
 
-    LabelBoard(DIR_UPLEFT, 0, 0, to_u8cstr(myHeroPtr->getName()), 1, 12, 0, myHeroPtr->getNameColor() | 0XFF).drawAt(DIR_NONE, x() + 164, y() + 38);
+    LabelBoard(DIR_UPLEFT, 0, 0, to_u8cstr(myHeroPtr->getName()), 1, 12, 0, myHeroPtr->getNameColor() | 0XFF).drawAt(DIR_NONE, startDstX + 164, startDstY + 38);
     if(const auto dressItemID = myHeroPtr->getWLItem(WLG_DRESS).itemID){
         if(const auto dressGfxID = DBCOM_ITEMRECORD(dressItemID).pkgGfxID; dressGfxID >= 0){
             if(auto [texPtr, dx, dy] = g_equipDB->retrieve(to_u32(dressGfxID) | 0X01000000); texPtr){
-                g_sdlDevice->drawTexture(texPtr, x() + m_equipCharX + dx, y() + m_equipCharY + dy);
+                g_sdlDevice->drawTexture(texPtr, startDstX + m_equipCharX + dx, startDstY + m_equipCharY + dy);
             }
         }
     }
@@ -258,7 +258,7 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
     if(const auto weaponItemID = myHeroPtr->getWLItem(WLG_WEAPON).itemID){
         if(const auto useGfxIndex = DBCOM_ITEMRECORD(weaponItemID).shape; useGfxIndex > 0){
             if(auto [texPtr, dx, dy] = g_equipDB->retrieve(0X01000000 + DBCOM_ITEMRECORD(weaponItemID).pkgGfxID); texPtr){
-                g_sdlDevice->drawTexture(texPtr, x() + m_equipCharX + dx, y() + m_equipCharY + dy);
+                g_sdlDevice->drawTexture(texPtr, startDstX + m_equipCharX + dx, startDstY + m_equipCharY + dy);
             }
         }
     }
@@ -266,7 +266,7 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
     if(const auto helmetItemID = myHeroPtr->getWLItem(WLG_HELMET).itemID){
         if(const auto useGfxIndex = DBCOM_ITEMRECORD(helmetItemID).shape; useGfxIndex > 0){
             if(auto [texPtr, dx, dy] = g_equipDB->retrieve(0X01000000 + DBCOM_ITEMRECORD(helmetItemID).pkgGfxID); texPtr){
-                g_sdlDevice->drawTexture(texPtr, x() + m_equipCharX + dx, y() + m_equipCharY + dy);
+                g_sdlDevice->drawTexture(texPtr, startDstX + m_equipCharX + dx, startDstY + m_equipCharY + dy);
             }
         }
     }
@@ -274,7 +274,7 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
         if(myHeroPtr->getWLDesp().hair >= HAIR_BEGIN){
             if(auto [texPtr, dx, dy] = g_equipDB->retrieve((myHeroPtr->gender() ? 0X0000003C : 0X00000046) + myHeroPtr->getWLDesp().hair - HAIR_BEGIN); texPtr){
                 SDLDeviceHelper::EnableTextureModColor enableColor(texPtr, myHeroPtr->getWLDesp().hairColor);
-                g_sdlDevice->drawTexture(texPtr, x() + m_equipCharX + dx, y() + m_equipCharY + dy);
+                g_sdlDevice->drawTexture(texPtr, startDstX + m_equipCharX + dx, startDstY + m_equipCharY + dy);
             }
         }
     }
@@ -283,8 +283,8 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
         if(const auto &item = m_processRun->getMyHero()->getWLItem(i)){
             if(auto texPtr = g_itemDB->retrieve(DBCOM_ITEMRECORD(item.itemID).pkgGfxID | 0X01000000)){
                 const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
-                const int dstX = x() + m_gridList[i].x + (m_gridList[i].w - texW) / 2;
-                const int dstY = y() + m_gridList[i].y + (m_gridList[i].h - texH) / (i == WLG_SHOES ? 1 : 2);
+                const int dstX = startDstX + m_gridList[i].x + (m_gridList[i].w - texW) / 2;
+                const int dstY = startDstY + m_gridList[i].y + (m_gridList[i].h - texH) / (i == WLG_SHOES ? 1 : 2);
                 g_sdlDevice->drawTexture(texPtr, dstX, dstY);
             }
         }
@@ -292,7 +292,7 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
 
     const auto [mouseX, mouseY] = SDLDeviceHelper::getMousePLoc();
     for(size_t i = WLG_BEGIN; i < WLG_END; ++i){
-        if(mathf::pointInRectangle(mouseX, mouseY, x() + m_gridList[i].x, y() + m_gridList[i].y, m_gridList[i].w, m_gridList[i].h)){
+        if(mathf::pointInRectangle(mouseX, mouseY, startDstX + m_gridList[i].x, startDstY + m_gridList[i].y, m_gridList[i].w, m_gridList[i].h)){
             if(i >= WLG_W_BEGIN && i < WLG_W_END){
                 const auto [texID, dx, dy] = [i]() -> std::tuple<uint32_t, int, int>
                 {
@@ -306,7 +306,7 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
 
                 if(auto texPtr = g_progUseDB->retrieve(texID)){
                     SDLDeviceHelper::EnableTextureModColor enableColor(texPtr, colorf::WHITE + colorf::A_SHF(128));
-                    g_sdlDevice->drawTexture(texPtr, x() + m_gridList[i].x + dx, y() + m_gridList[i].y + dy);
+                    g_sdlDevice->drawTexture(texPtr, startDstX + m_gridList[i].x + dx, startDstY + m_gridList[i].y + dy);
                 }
             }
             drawItemHoverText(i);
@@ -333,8 +333,8 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
     };
 
     for(int i = 0; i < 9; ++i){
-        if(mathf::pointInRectangle(mouseX, mouseY, x() + labelGridX, y() + labelGridY + labelGridD * i, labelGridW, labelGridH)){
-            g_sdlDevice->fillRectangle(colorf::RGBA(0, 100, 0, 100), x() + labelGridX, y() + labelGridY + labelGridD * i, labelGridW, labelGridH);
+        if(mathf::pointInRectangle(mouseX, mouseY, startDstX + labelGridX, startDstY + labelGridY + labelGridD * i, labelGridW, labelGridH)){
+            g_sdlDevice->fillRectangle(colorf::RGBA(0, 100, 0, 100), startDstX + labelGridX, startDstY + labelGridY + labelGridD * i, labelGridW, labelGridH);
             const LabelBoard labelNameBoard(DIR_UPLEFT, 0, 0, labelName[i], 1, 12, 0, colorf::WHITE + colorf::A_SHF(255));
             g_sdlDevice->fillRectangle(colorf::RGBA(0, 100, 0, 200), mouseX - labelNameBoard.w(), mouseY - labelNameBoard.h(), labelNameBoard.w(), labelNameBoard.h());
             labelNameBoard.drawAt(DIR_DOWNRIGHT, mouseX, mouseY);
@@ -343,13 +343,13 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
 
     if(g_clientArgParser->debugPlayerStateBoard){
         for(size_t i = WLG_BEGIN; i < WLG_END; ++i){
-            g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), x() + m_gridList[i].x, y() + m_gridList[i].y, m_gridList[i].w, m_gridList[i].h);
+            g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), startDstX + m_gridList[i].x, startDstY + m_gridList[i].y, m_gridList[i].w, m_gridList[i].h);
         }
     }
     m_closeButton.draw();
 }
 
-bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -359,7 +359,7 @@ bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid)
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processEvent(event, valid)){
+    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY)){
         return true;
     }
 
@@ -371,9 +371,10 @@ bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid)
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
-                    moveBy(newX - x(), newY - y());
+                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+
+                    moveBy(newX - startDstX, newY - startDstY);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);
@@ -386,7 +387,7 @@ bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid)
                             auto myHeroPtr = m_processRun->getMyHero();
                             auto &invPackRef = myHeroPtr->getInvPack();
                             for(size_t i = WLG_BEGIN; i < WLG_END; ++i){
-                                if(mathf::pointInRectangle(event.button.x, event.button.y, x() + m_gridList[i].x, y() + m_gridList[i].y, m_gridList[i].w, m_gridList[i].h)){
+                                if(mathf::pointInRectangle(event.button.x, event.button.y, startDstX + m_gridList[i].x, startDstY + m_gridList[i].y, m_gridList[i].w, m_gridList[i].h)){
                                     if(const auto grabbedItem = invPackRef.getGrabbedItem()){
                                         if(myHeroPtr->canWear(grabbedItem.itemID, i)){
                                             m_processRun->requestEquipWear(grabbedItem.itemID, grabbedItem.seqID, i);

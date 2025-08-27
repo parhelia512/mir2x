@@ -918,7 +918,7 @@ void FriendChatBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, i
     }
 }
 
-bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         m_dragIndex.reset();
@@ -930,10 +930,10 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid)
         return consumeFocus(false);
     }
 
-    if(m_close                        .processEvent(event, valid)){ return true; }
-    if(m_uiPageList[m_uiPage].slider ->processEvent(event, valid)){ return true; }
-    if(m_uiPageList[m_uiPage].page   ->processEvent(event, valid)){ return true; }
-    if(m_uiPageList[m_uiPage].control->processEvent(event, valid)){ return true; }
+    if(m_close                        .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_uiPageList[m_uiPage].slider ->processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_uiPageList[m_uiPage].page   ->processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_uiPageList[m_uiPage].control->processParentEvent(event, valid, startDstX, startDstY)){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:
@@ -956,8 +956,8 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(m_uiPageList[m_uiPage].page->in(event.button.x, event.button.y)){
-                    if(m_uiPageList[m_uiPage].page->processEvent(event, true)){
+                if(m_uiPageList[m_uiPage].page->parentIn(event.button.x, event.button.y, startDstX, startDstY)){
+                    if(m_uiPageList[m_uiPage].page->processParentEvent(event, true, startDstX, startDstY)){
                         return consumeFocus(true, m_uiPageList[m_uiPage].page);
                     }
                 }
@@ -1022,9 +1022,10 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid)
                         const int maxX = rendererW - w();
                         const int maxY = rendererH - h();
 
-                        const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                        const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
-                        moveBy(newX - x(), newY - y());
+                        const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
+                        const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+
+                        moveBy(newX - startDstX, newY - startDstY);
                     }
                     return consumeFocus(true);
                 }
@@ -1553,11 +1554,11 @@ std::optional<int> FriendChatBoard::getEdgeDragIndex(int eventX, int eventY) con
     //                               ^
     //                               |
 
-    const int x0 = x();
+    const int x0 = startDstX;
     const int x1 = x0       + UIPage_DRAGBORDER[2];
     const int x2 = x0 + w() - UIPage_DRAGBORDER[3];
 
-    const int y0 = y();
+    const int y0 = startDstY;
     const int y1 = y0       + UIPage_DRAGBORDER[0];
     const int y2 = y0 + h() - UIPage_DRAGBORDER[1];
 

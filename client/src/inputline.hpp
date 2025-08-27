@@ -27,67 +27,33 @@ class InputLine: public Widget
         std::function<void(std::string)> m_onChange;
 
     public:
-
         InputLine(
-                Widget::VarDir argDir,
+                Widget::VarDir,
+                Widget::VarOff,
+                Widget::VarOff,
 
-                Widget::VarOff argX,
-                Widget::VarOff argY,
+                Widget::VarSize,
+                Widget::VarSize,
 
-                Widget::VarSize argW,
-                Widget::VarSize argH,
+                bool,
 
-                bool argIMEEnabled,
+                uint8_t  = 0,
+                uint8_t  = 10,
+                uint8_t  = 0,
+                uint32_t = colorf::WHITE + colorf::A_SHF(255),
 
-                uint8_t  argFont      =  0,
-                uint8_t  argFontSize  = 10,
-                uint8_t  argFontStyle =  0,
-                uint32_t argFontColor =  colorf::WHITE + colorf::A_SHF(255),
+                int      = 2,
+                uint32_t = colorf::WHITE + colorf::A_SHF(255),
 
-                int      argCursorWidth = 2,
-                uint32_t argCursorColor = colorf::WHITE + colorf::A_SHF(255),
+                std::function<void()>            = nullptr,
+                std::function<void()>            = nullptr,
+                std::function<void(std::string)> = nullptr,
 
-                std::function<void()>            argOnTab    = nullptr,
-                std::function<void()>            argOnCR     = nullptr,
-                std::function<void(std::string)> argOnChange = nullptr,
-
-                Widget *widgetPtr  = nullptr,
-                bool    autoDelete = false)
-
-            : Widget
-              {
-                  std::move(argDir),
-                  std::move(argX),
-                  std::move(argY),
-                  std::move(argW),
-                  std::move(argH),
-
-                  {},
-
-                  widgetPtr,
-                  autoDelete,
-              }
-
-            , m_imeEnabled(argIMEEnabled)
-            , m_tpset
-              {
-                  0,
-                  LALIGN_LEFT,
-                  false,
-                  argFont,
-                  argFontSize,
-                  argFontStyle,
-                  argFontColor,
-              }
-            , m_cursorWidth(argCursorWidth)
-            , m_cursorColor(argCursorColor)
-            , m_onTab(std::move(argOnTab))
-            , m_onCR(std::move(argOnCR))
-            , m_onChange(std::move(argOnChange))
-        {}
+                Widget * = nullptr,
+                bool     = false);
 
     public:
-        bool processEventDefault(const SDL_Event &, bool) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int) override;
 
     public:
         void drawEx(int, int, int, int, int, int) const override;

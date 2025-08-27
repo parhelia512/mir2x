@@ -6,23 +6,90 @@
 
 extern SDLDevice *g_sdlDevice;
 LevelBox::LevelBox(
-        dir8_t dir,
-        int x,
-        int y,
+        Widget::VarDir argDir,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
 
-        ProcessRun *proc,
-        const std::function<void(int)> &onDrag,
-        const std::function<void(   )> &onDoubleClick,
+        ProcessRun *argProc,
 
-        Widget *parent,
-        bool    autoDelete)
-    : Widget(dir, x, y, 16, 16, {}, parent, autoDelete)
-    , m_processRun(proc)
-    , m_onDrag(onDrag)
-    , m_onDoubleClick(onDoubleClick)
+        const std::function<void(int)> &argOnDrag,
+        const std::function<void(   )> &argOnDoubleClick,
+
+        Widget *argParent,
+        bool    argAutoDelete)
+
+    : Widget
+      {
+          std::move(argDir),
+          std::move(argX),
+          std::move(argY),
+
+          16,
+          16,
+
+          {},
+
+          argParent,
+          argAutoDelete,
+      }
+
+    , m_processRun(argProc)
+    , m_image
+      {
+          DIR_NONE,
+          w() / 2,
+          h() / 2,
+
+          {},
+          {},
+
+          [](const Widget *)
+          {
+              return g_sdlDevice->getCover(8, 360);
+          },
+
+          false,
+          false,
+          0,
+
+          [this](const Widget *) -> uint32_t
+          {
+              switch(m_state){
+                  case BEVENT_ON  : return colorf::BLUE + colorf::A_SHF(0XFF);
+                  case BEVENT_DOWN: return colorf::RED  + colorf::A_SHF(0XFF);
+                  default         : return 0;
+              }
+          },
+
+          this,
+          false,
+      }
+
+    , m_level
+      {
+          DIR_NONE,
+          w() / 2,
+          h() / 2,
+
+          [this](const Widget *) -> std::string
+          {
+              return std::to_string(m_processRun->getMyHero()->getLevel());
+          },
+
+          0,
+          12,
+          0,
+          colorf::YELLOW + colorf::A_SHF(255),
+
+          this,
+          false,
+      }
+
+    , m_onDrag(argOnDrag)
+    , m_onDoubleClick(argOnDoubleClick)
 {}
 
-bool LevelBox::processEventDefault(const SDL_Event &event, bool valid)
+bool LevelBox::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return false;
@@ -31,7 +98,7 @@ bool LevelBox::processEventDefault(const SDL_Event &event, bool valid)
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(!in(event.button.x, event.button.y)){
+                if(!in(event.button.x, event.button.y, startDstX, startDstY)){
                     m_state = BEVENT_OFF;
                     return false;
                 }
@@ -44,7 +111,7 @@ bool LevelBox::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEBUTTONUP:
             {
-                if(!in(event.button.x, event.button.y)){
+                if(!in(event.button.x, event.button.y, startDstX, startDstY)){
                     m_state = BEVENT_OFF;
                     return false;
                 }
@@ -63,7 +130,7 @@ bool LevelBox::processEventDefault(const SDL_Event &event, bool valid)
                         return true;
                     }
                     else{
-                        if(in(event.motion.x, event.motion.y)){
+                        if(in(event.motion.x, event.motion.y, startDstX, startDstY)){
                             m_state = BEVENT_ON;
                             return true;
                         }
@@ -74,7 +141,7 @@ bool LevelBox::processEventDefault(const SDL_Event &event, bool valid)
                     }
                 }
 
-                if(in(event.motion.x, event.motion.y)){
+                if(in(event.motion.x, event.motion.y, startDstX, startDstY)){
                     m_state = BEVENT_ON;
                     return true;
                 }
@@ -88,84 +155,4 @@ bool LevelBox::processEventDefault(const SDL_Event &event, bool valid)
                 return false;
             }
     }
-}
-
-void LevelBox::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
-{
-    class DrawHelper: public Widget
-    {
-        private:
-            LabelBoard m_label;
-            ImageBoard m_image;
-
-        public:
-            DrawHelper(int argX, int argY, int argW, int argH, uint32_t color, uint32_t level)
-                : Widget
-                  {
-                      DIR_UPLEFT,
-                      argX,
-                      argY,
-                      argW,
-                      argH,
-                  }
-
-                , m_label
-                  {
-                      DIR_NONE,
-                      w() / 2,
-                      h() / 2,
-
-                      to_u8cstr(str_printf(u8"%d", to_d(level))),
-
-                      0,
-                      12,
-                      0,
-                      colorf::YELLOW + colorf::A_SHF(255),
-
-                      this,
-                      false,
-                  }
-
-                , m_image
-                  {
-                      DIR_NONE,
-                      w() / 2,
-                      h() / 2,
-
-                      {},
-                      {},
-
-                      [](const Widget *)
-                      {
-                          return g_sdlDevice->getCover(8, 360);
-                      },
-
-                      false,
-                      false,
-                      0,
-
-                      color,
-                      this,
-                      false,
-                  }
-            {}
-    };
-
-    DrawHelper
-    {
-        x(),
-        y(),
-        w(),
-        h(),
-
-        [this]() -> uint32_t
-        {
-            switch(m_state){
-                case BEVENT_ON  : return colorf::BLUE + colorf::A_SHF(0XFF);
-                case BEVENT_DOWN: return colorf::RED  + colorf::A_SHF(0XFF);
-                default         : return 0;
-            }
-        }(),
-        m_processRun->getMyHero()->getLevel(),
-    }.drawEx(dstX, dstY, srcX, srcY, srcW, srcH);
 }

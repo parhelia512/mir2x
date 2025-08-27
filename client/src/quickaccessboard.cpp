@@ -11,20 +11,158 @@ extern PNGTexDB *g_itemDB;
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-QuickAccessBoard::QuickAccessBoard(int x, int y, ProcessRun *proc, Widget *pwidget, bool autoDelete)
+QuickAccessBoard::Grid::Grid(
+        Widget::VarDir argDir,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
+
+        Widget::VarSize argW,
+        Widget::VarSize argH,
+
+        int argSlot,
+        ProcessRun *argProc,
+
+        Widget *argParent,
+        bool    argAutoDelete)
+
     : Widget
       {
-          DIR_UPLEFT,
-          x,
-          y,
-          0,
-          0,
-          {},
-          pwidget,
-          autoDelete,
+          std::move(argDir),
+          std::move(argX),
+          std::move(argY),
+
+          std::move(argW),
+          std::move(argH),
+
+          argParent,
+          argAutoDelete,
       }
 
-    , m_processRun(proc)
+    , slot(argSlot)
+    , proc(argProc)
+
+    , bg
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          [this](const Widget *){ return w(); },
+          [this](const Widget *){ return h(); },
+
+          [](const Widget *self, int drawDstX, int drawDstY)
+          {
+               if(const auto [mouseX, mouseY] = SDLDeviceHelper::getMousePLoc(); self->in(mouseX, mouseY, drawDstX, drawDstY)){
+                   g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(64), drawDstX, drawDstY, self->w(), self->h());
+               }
+          },
+
+          this,
+          false,
+      }
+
+    , item
+      {
+          DIR_NONE,
+
+          [this](const Widget *){ return w() / 2; },
+          [this](const Widget *){ return h() / 2; },
+
+          {},
+          {},
+
+          [this](const Widget *) -> SDL_Texture *
+          {
+              if(const auto &item = proc->getMyHero()->getBelt(slot)){
+                  return g_itemDB->retrieve(DBCOM_ITEMRECORD(item.itemID).pkgGfxID | 0X01000000);
+              }
+              return nullptr;
+          },
+
+          false,
+          false,
+          0,
+
+          colorf::WHITE + colorf::A_SHF(255),
+
+          this,
+          false,
+      }
+
+    , count
+      {
+          DIR_UPRIGHT,
+          [this](const Widget *){ return w() - 1; },
+          0,
+
+          [](const Widget *) -> std::string
+          {
+              if(const auto &item = proc->getMyHero()->getBelt(slot); item && (item.count > 1)){
+                  return std::to_string(item.count);
+              }
+              return {};
+          },
+
+          1,
+          10,
+          0,
+
+          colorf::WHITE + colorf::A_SHF(255),
+
+          this,
+          false,
+      }
+{}
+
+QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
+
+        int argX,
+        int argY,
+
+        ProcessRun *argProc,
+
+        Widget *argParent,
+        bool    argAutoDelete)
+
+    : Widget
+      {
+          argDir,
+          argX,
+          argY,
+
+          {},
+          {},
+          {},
+
+          argParent,
+          argAutoDelete,
+      }
+
+    , m_processRun(argProc)
+    , m_bg
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          {},
+          {},
+
+          [this](const Widget *)
+          {
+              return g_progUseDB->retrieve(m_texID);
+          },
+
+          false,
+          false,
+          0,
+
+          colorf::WHITE + colorf::A_SHF(255),
+
+          this,
+          false,
+      }
+
     , m_buttonClose
       {
           DIR_UPLEFT,
@@ -57,65 +195,24 @@ QuickAccessBoard::QuickAccessBoard(int x, int y, ProcessRun *proc, Widget *pwidg
           this,
       }
 {
-    auto texPtr = g_progUseDB->retrieve(m_texID);
-    if(!texPtr){
-        throw fflerror("no valid quick access board texture: texID = %llu", to_llu(m_texID));
-    }
-
-    setShow(false);
-    setSize(SDLDeviceHelper::getTextureWidth(texPtr), SDLDeviceHelper::getTextureHeight(texPtr));
-}
-
-void QuickAccessBoard::drawEx(int dstX, int dstY, int, int, int, int) const
-{
-    if(auto texPtr = g_progUseDB->retrieve(m_texID)){
-        g_sdlDevice->drawTexture(texPtr, dstX, dstY);
-    }
-
-    m_buttonClose.drawEx(dstX + m_buttonClose.dx(), dstY + m_buttonClose.dy(), 0, 0, m_buttonClose.w(), m_buttonClose.h());
     for(int slot = 0; slot < 6; ++slot){
-        const auto &item = m_processRun->getMyHero()->getBelt(slot);
-        if(!item){
-            continue;
-        }
+        addChild(new Grid
+        {
+            DIR_UPLEFT,
+            std::get<0>(getGridLoc(slot)),
+            std::get<1>(getGridLoc(slot)),
+            std::get<2>(getGridLoc(slot)),
+            std::get<3>(getGridLoc(slot)),
 
-        const auto [gridX, gridY, gridW, gridH] = getGridLoc(slot);
-        if(auto texPtr = g_itemDB->retrieve(DBCOM_ITEMRECORD(item.itemID).pkgGfxID | 0X01000000)){
-            const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
-            const auto drawDstX = x() + gridX + (gridW - texW) / 2;
-            const auto drawDstY = y() + gridY + (gridH - texH) / 2;
-            g_sdlDevice->drawTexture(texPtr, drawDstX, drawDstY);
-            if(item.count > 1){
-                LabelBoard
-                {
-                    DIR_UPRIGHT,
-                    x() + gridX + gridW,
-                    y() + gridY,
-                    to_u8cstr(std::to_string(item.count)),
+            slot,
+            m_processRun,
+        },
 
-                    1,
-                    10,
-                    0,
-
-                    colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-                }.draw();
-            }
-        }
-    }
-
-    const auto [mouseX, mouseY] = SDLDeviceHelper::getMousePLoc();
-    for(int slot = 0; slot < 6; ++slot){
-        const auto [gridX, gridY, gridW, gridH] = getGridLoc(slot);
-        const auto gridStartX = x() + gridX;
-        const auto gridStartY = y() + gridY;
-        if(mathf::pointInRectangle(mouseX, mouseY, gridStartX, gridStartY, gridW, gridH)){
-            g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(64), gridStartX, gridStartY, gridW, gridH);
-            break;
-        }
+        true);
     }
 }
 
-bool QuickAccessBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool QuickAccessBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -125,21 +222,22 @@ bool QuickAccessBoard::processEventDefault(const SDL_Event &event, bool valid)
         return false;
     }
 
-    if(m_buttonClose.processEvent(event, valid)){
+    if(m_buttonClose.processParentEvent(event, valid, startDstX, startDstY)){
         return true;
     }
 
     switch(event.type){
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
-                    moveBy(newX - x(), newY - y());
+                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+
+                    moveBy(newX - startDstX, newY - startDstY);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);
@@ -149,29 +247,27 @@ bool QuickAccessBoard::processEventDefault(const SDL_Event &event, bool valid)
                 switch(event.button.button){
                     case SDL_BUTTON_LEFT:
                         {
-                            auto &beltRef = m_processRun->getMyHero()->getBelt();
-                            auto &invPackRef = m_processRun->getMyHero()->getInvPack();
-                            for(int i = 0; i < 6; ++i){
-                                const auto [gridX, gridY, gridW, gridH] = getGridLoc(i);
-                                if(mathf::pointInRectangle(event.button.x, event.button.y, x() + gridX, y() + gridY, gridW, gridH)){
-                                    if(const auto grabbedItem = invPackRef.getGrabbedItem()){
+                            for(int slot = 0; slot < 6; ++slot){
+                                const auto [gridX, gridY, gridW, gridH] = getGridLoc(slot);
+                                if(mathf::pointInRectangle(event.button.x, event.button.y, startDstX + gridX, startDstY + gridY, gridW, gridH)){
+                                    if(const auto grabbedItem = m_processRun->getMyHero()->getInvPack().getGrabbedItem()){
                                         const auto &ir = DBCOM_ITEMRECORD(grabbedItem.itemID);
                                         if(ir.beltable()){
-                                            m_processRun->requestEquipBelt(grabbedItem.itemID, grabbedItem.seqID, i);
+                                            m_processRun->requestEquipBelt(grabbedItem.itemID, grabbedItem.seqID, slot);
                                         }
                                         else{
-                                            invPackRef.add(grabbedItem);
-                                            invPackRef.setGrabbedItem({});
+                                            m_processRun->getMyHero()->getInvPack().add(grabbedItem);
+                                            m_processRun->getMyHero()->getInvPack().setGrabbedItem({});
                                         }
                                     }
-                                    else if(beltRef.list.at(i)){
-                                        m_processRun->requestGrabBelt(i);
+                                    else if(m_processRun->getMyHero()->getBelt(slot)){
+                                        m_processRun->requestGrabBelt(slot);
                                     }
                                     break;
                                 }
                             }
 
-                            if(in(event.button.x, event.button.y)){
+                            if(in(event.button.x, event.button.y, startDstX, startDstY)){
                                 return consumeFocus(true);
                             }
                             else{
@@ -180,15 +276,15 @@ bool QuickAccessBoard::processEventDefault(const SDL_Event &event, bool valid)
                         }
                     case SDL_BUTTON_RIGHT:
                         {
-                            for(int i = 0; i < 6; ++i){
-                                const auto [gridX, gridY, gridW, gridH] = getGridLoc(i);
-                                if(mathf::pointInRectangle(event.button.x, event.button.y, x() + gridX, y() + gridY, gridW, gridH)){
-                                    gridConsume(i);
+                            for(int slot = 0; slot < 6; ++slot){
+                                const auto [gridX, gridY, gridW, gridH] = getGridLoc(slot);
+                                if(mathf::pointInRectangle(event.button.x, event.button.y, startDstX + gridX, startDstY + gridY, gridW, gridH)){
+                                    gridConsume(slot);
                                     break;
                                 }
                             }
 
-                            if(in(event.button.x, event.button.y)){
+                            if(in(event.button.x, event.button.y, startDstX, startDstY)){
                                 return consumeFocus(true);
                             }
                             else{
@@ -218,13 +314,13 @@ bool QuickAccessBoard::processEventDefault(const SDL_Event &event, bool valid)
     }
 }
 
-void QuickAccessBoard::gridConsume(int i)
+void QuickAccessBoard::gridConsume(int slot)
 {
-    fflassert(i >= 0, i);
-    fflassert(i <  6, i);
+    fflassert(slot >= 0, slot);
+    fflassert(slot <  6, slot);
 
-    if(const auto &beltCRef = m_processRun->getMyHero()->getBelt(); beltCRef.list.at(i)){
-        InvPack::playItemSoundEffect(beltCRef.list.at(i).itemID, true);
-        m_processRun->requestConsumeItem(beltCRef.list.at(i).itemID, beltCRef.list.at(i).seqID, 1);
+    if(const auto &item = m_processRun->getMyHero()->getBelt(slot)){
+        InvPack::playItemSoundEffect(item.itemID, true);
+        m_processRun->requestConsumeItem(item.itemID, item.seqID, 1);
     }
 }

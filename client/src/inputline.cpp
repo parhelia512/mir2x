@@ -12,7 +12,66 @@ extern IMEBoard *g_imeBoard;
 extern SDLDevice *g_sdlDevice;
 extern ClientArgParser *g_clientArgParser;
 
-bool InputLine::processEventDefault(const SDL_Event &event, bool valid)
+InputLine::InputLine(
+        Widget::VarDir argDir,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
+
+        Widget::VarSize argW,
+        Widget::VarSize argH,
+
+        bool argIMEEnabled,
+
+        uint8_t  argFont,
+        uint8_t  argFontSize,
+        uint8_t  argFontStyle,
+        uint32_t argFontColor,
+
+        int      argCursorWidth,
+        uint32_t argCursorColor,
+
+        std::function<void()>            argOnTab,
+        std::function<void()>            argOnCR,
+        std::function<void(std::string)> argOnChange,
+
+        Widget *argParent,
+        bool    argAutoDelete)
+
+    : Widget
+      {
+          std::move(argDir),
+          std::move(argX),
+          std::move(argY),
+
+          std::move(argW),
+          std::move(argH),
+
+          {},
+
+          argParent,
+          argAutoDelete,
+      }
+
+    , m_imeEnabled(argIMEEnabled)
+    , m_tpset
+      {
+          0,
+          LALIGN_LEFT,
+          false,
+          argFont,
+          argFontSize,
+          argFontStyle,
+          argFontColor,
+      }
+    , m_cursorWidth(argCursorWidth)
+    , m_cursorColor(argCursorColor)
+
+    , m_onTab   (std::move(argOnTab))
+    , m_onCR    (std::move(argOnCR))
+    , m_onChange(std::move(argOnChange))
+{}
+
+bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return false;
@@ -103,13 +162,13 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid)
         case SDL_MOUSEBUTTONUP:
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(!in(event.button.x, event.button.y)){
+                if(!in(event.button.x, event.button.y, startDstX, startDstY)){
                     return consumeFocus(false);
                 }
 
                 if(event.type == SDL_MOUSEBUTTONDOWN){
-                    const int eventX = event.button.x - x();
-                    const int eventY = event.button.y - y();
+                    const int eventX = event.button.x - startDstX;
+                    const int eventY = event.button.y - startDstY;
 
                     const auto [cursorX, cursorY] = m_tpset.locCursor(eventX, eventY);
                     if(cursorY != 0){
@@ -163,8 +222,8 @@ void InputLine::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int src
         return;
     }
 
-    int cursorY = y() + tpsetY;
-    int cursorX = x() + tpsetX + [this]()
+    int cursorY = startDstY + tpsetY;
+    int cursorX = startDstX + tpsetX + [this]()
     {
         if(m_tpset.empty() || m_cursor == 0){
             return 0;
@@ -186,7 +245,7 @@ void InputLine::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int src
     }
 
     if(g_clientArgParser->debugDrawInputLine){
-        g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), x(), y(), w(), h());
+        g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), startDstX, startDstY, w(), h());
     }
 }
 

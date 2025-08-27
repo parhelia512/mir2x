@@ -89,7 +89,7 @@ class FriendChatBoard: public Widget
         void drawEx(int, int, int, int, int, int) const override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int) override;
 
     public:
         const SDChatPeer *findChatPeer      (const SDChatPeerID &) const;

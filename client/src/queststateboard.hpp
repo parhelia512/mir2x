@@ -25,6 +25,12 @@ class QuestStateBoard: public Widget
         const int m_despH = 300;
 
     private:
+        ProcessRun *m_processRun;
+
+    private:
+        ImageBoard m_bg;
+
+    private:
         LayoutBoard m_despBoard;
 
     private:
@@ -35,26 +41,28 @@ class QuestStateBoard: public Widget
         TritexButton m_closeButton;
 
     private:
-        ProcessRun *m_processRun;
-
-    private:
         std::map<std::string, QuestDespState> m_questDesp;
 
     public:
-        QuestStateBoard(int, int, ProcessRun *, Widget * = nullptr, bool = false);
+        QuestStateBoard(
+                dir8_t,
+                int,
+                int,
+
+                ProcessRun *,
+
+                Widget * = nullptr,
+                bool     = false);
 
     public:
         void update(double) override;
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        bool processEventDefault(const SDL_Event &, bool, int, int) override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool) override;
-
-    public:
+        void    setQuestDesp(SDQuestDespList  );
         void updateQuestDesp(SDQuestDespUpdate);
-        void setQuestDesp(SDQuestDespList);
 
     private:
         void loadQuestDesp();

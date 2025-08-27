@@ -9,18 +9,54 @@
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-QuestStateBoard::QuestStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
+QuestStateBoard::QuestStateBoard(
+        dir8_t argDir,
+
+        int argX,
+        int argY,
+
+        ProcessRun *argProc,
+
+        Widget *argParent,
+        bool    argAutoDelete)
+
     : Widget
       {
-          DIR_UPLEFT,
+          argDir,
           argX,
           argY,
-          0,
-          0,
+
+          {},
+          {},
           {},
 
-          widgetPtr,
-          autoDelete
+          argParent,
+          argAutoDelete
+      }
+
+    , m_processRun(argProc)
+    , m_bg
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          {},
+          {},
+
+          [](const Widget *)
+          {
+              return g_progUseDB->retrieve(0X00000350);
+          },
+
+          false,
+          false,
+          0,
+
+          colorf::WHITE + colorf::A_SHF(155),
+
+          this,
+          false,
       }
 
     , m_despBoard
@@ -146,15 +182,8 @@ QuestStateBoard::QuestStateBoard(int argX, int argY, ProcessRun *runPtr, Widget 
           this,
           false,
       }
-    , m_processRun(runPtr)
 {
     setShow(false);
-    if(auto texPtr = g_progUseDB->retrieve(0X00000350)){
-        setSize(SDLDeviceHelper::getTextureWidth(texPtr), SDLDeviceHelper::getTextureHeight(texPtr));
-    }
-    else{
-        throw fflerror("no valid quest status board frame texture");
-    }
 }
 
 void QuestStateBoard::update(double fUpdateTime)
@@ -167,20 +196,7 @@ void QuestStateBoard::update(double fUpdateTime)
     m_despBoard.update(fUpdateTime);
 }
 
-void QuestStateBoard::drawEx(int dstX, int dstY, int, int, int, int) const
-{
-    if(auto texPtr = g_progUseDB->retrieve(0X00000350)){
-        g_sdlDevice->drawTexture(texPtr, dstX, dstY);
-    }
-
-    m_despBoard.draw();
-
-    m_slider.draw();
-    m_lrButton.draw();
-    m_closeButton.draw();
-}
-
-bool QuestStateBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool QuestStateBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -190,21 +206,10 @@ bool QuestStateBoard::processEventDefault(const SDL_Event &event, bool valid)
         return consumeFocus(false);
     }
 
-    if(m_despBoard.processEvent(event, valid)){
-        return true;
-    }
-
-    if(m_slider.processEvent(event, valid)){
-        return true;
-    }
-
-    if(m_lrButton.processEvent(event, valid)){
-        return true;
-    }
-
-    if(m_closeButton.processEvent(event, valid)){
-        return true;
-    }
+    if(m_despBoard  .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_slider     .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_lrButton   .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY)){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:
@@ -224,14 +229,15 @@ bool QuestStateBoard::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
-                    moveBy(newX - x(), newY - y());
+                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+
+                    moveBy(newX - startDstX, newY - startDstY);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);

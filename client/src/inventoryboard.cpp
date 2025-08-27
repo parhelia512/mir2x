@@ -275,7 +275,7 @@ void InventoryBoard::drawEx(int dstX, int dstY, int, int, int, int) const
     }
 }
 
-bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -285,21 +285,21 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid)
         return false;
     }
 
-    if(m_closeButton.processEvent(event, valid)){
+    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY)){
         return true;
     }
 
-    if(m_slider.processEvent(event, valid)){
+    if(m_slider.processParentEvent(event, valid, startDstX, startDstY)){
         return true;
     }
 
     if(m_sdInvOp.invOp == INVOP_NONE){
-        if(m_sortButton.processEvent(event, valid)){
+        if(m_sortButton.processParentEvent(event, valid, startDstX, startDstY)){
             return true;
         }
     }
     else{
-        if(m_selectedIndex >= 0 && m_invOpButton.processEvent(event, valid)){
+        if(m_selectedIndex >= 0 && m_invOpButton.processParentEvent(event, valid, startDstX, startDstY)){
             return true;
         }
     }
@@ -322,14 +322,15 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
-                    moveBy(newX - x(), newY - y());
+                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+
+                    moveBy(newX - startDstX, newY - startDstY);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);
@@ -407,7 +408,7 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid)
         case SDL_MOUSEWHEEL:
             {
                 const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-                if(mathf::pointInRectangle<int>(mousePX, mousePY, x() + m_invGridX0, y() + m_invGridY0, SYS_INVGRIDGW * SYS_INVGRIDPW, SYS_INVGRIDGH * SYS_INVGRIDPH)){
+                if(mathf::pointInRectangle<int>(mousePX, mousePY, startDstX + m_invGridX0, startDstY + m_invGridY0, SYS_INVGRIDGW * SYS_INVGRIDPW, SYS_INVGRIDGH * SYS_INVGRIDPH)){
                     const auto rowCount = getRowCount();
                     if(rowCount > SYS_INVGRIDGH){
                         m_slider.addValue((event.wheel.y > 0 ? -1.0 : 1.0) / (rowCount - SYS_INVGRIDGH), false);
@@ -472,7 +473,7 @@ void InventoryBoard::drawGold() const
 
         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
     };
-    goldBoard.drawAt(DIR_NONE, x() + 132, y() + 486);
+    goldBoard.drawAt(DIR_NONE, startDstX + 132, startDstY + 486);
 }
 
 void InventoryBoard::drawInvOpTitle() const
@@ -499,7 +500,7 @@ void InventoryBoard::drawInvOpTitle() const
 
         colorf::WHITE + colorf::A_SHF(255),
     };
-    title.drawAt(DIR_NONE, x() + 238, y() + 25);
+    title.drawAt(DIR_NONE, startDstX + 238, startDstY + 25);
 }
 
 void InventoryBoard::drawInvOpCost() const
@@ -521,7 +522,7 @@ void InventoryBoard::drawInvOpCost() const
 
         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
     };
-    queryResultBoard.drawAt(DIR_NONE, x() + 132, y() + 503);
+    queryResultBoard.drawAt(DIR_NONE, startDstX + 132, startDstY + 503);
 }
 
 int InventoryBoard::getPackBinIndex(int locPX, int locPY) const
@@ -545,8 +546,8 @@ int InventoryBoard::getPackBinIndex(int locPX, int locPY) const
 
 std::tuple<int, int> InventoryBoard::getInvGrid(int locPX, int locPY) const
 {
-    const int gridPX0 = m_invGridX0 + x();
-    const int gridPY0 = m_invGridY0 + y();
+    const int gridPX0 = m_invGridX0 + startDstX;
+    const int gridPY0 = m_invGridY0 + startDstY;
 
     if(!mathf::pointInRectangle<int>(locPX, locPY, gridPX0, gridPY0, SYS_INVGRIDGW * SYS_INVGRIDPW, SYS_INVGRIDGH * SYS_INVGRIDPH)){
         return {-1, -1};

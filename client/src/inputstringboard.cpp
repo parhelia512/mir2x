@@ -184,7 +184,7 @@ void InputStringBoard::drawEx(int dstX, int dstY, int, int, int, int) const
     }
 }
 
-bool InputStringBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool InputStringBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -194,17 +194,10 @@ bool InputStringBoard::processEventDefault(const SDL_Event &event, bool valid)
         return consumeFocus(false);
     }
 
-    if(m_input.processEvent(event, valid)){
-        return true;
-    }
+    if(m_input    .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_yesButton.processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_nopButton.processParentEvent(event, valid, startDstX, startDstY)){ return true; }
 
-    if(m_yesButton.processEvent(event, valid)){
-        return true;
-    }
-
-    if(m_nopButton.processEvent(event, valid)){
-        return true;
-    }
     return true;
 }
 

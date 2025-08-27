@@ -496,7 +496,7 @@ void LayoutBoard::setLineWidth(int argLineWidth)
     }
 }
 
-bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(m_parNodeList.empty()){
         return false;
@@ -648,15 +648,15 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid)
                 }();
 
                 const auto [eventPX, eventPY] = SDLDeviceHelper::getEventPLoc(event).value();
-                const auto fnHandleEvent = [&event, newEvent, eventPX, eventPY, this](ParNode *node, bool currValid) -> bool
+                const auto fnHandleEvent = [&event, newEvent, eventPX, eventPY, startDstX, startDstY, this](ParNode *node, bool currValid) -> bool
                 {
                     if(!currValid){
                         node->tpset->clearEvent(-1);
                         return false;
                     }
 
-                    const int xOff = eventPX - (x() + node->margin[2]);
-                    const int yOff = eventPY - (y() + node->startY);
+                    const int xOff = eventPX - (startDstX + node->margin[2]);
+                    const int yOff = eventPY - (startDstY + node->startY);
 
                     const auto [tokenX, tokenY] = node->tpset->locToken(xOff, yOff, true);
 
@@ -699,7 +699,7 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid)
                 }
 
                 if(!takeEvent && event.type != SDL_MOUSEMOTION){
-                    takeEvent = in(eventPX, eventPY);
+                    takeEvent = in(eventPX, eventPY, startDstX, startDstY);
                 }
 
                 if(takeEvent){
