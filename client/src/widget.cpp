@@ -7,7 +7,7 @@ WidgetTreeNode::WidgetTreeNode(Widget *argParent, bool argAutoDelete)
           static std::atomic<uint64_t> s_widgetSeqID = 1;
           return s_widgetSeqID.fetch_add(1);
       }())
-    , m_parent(argParent)
+    , m_parent(std::move(argParent))
 {
     if(m_parent){
         m_parent->addChild(static_cast<Widget *>(this), argAutoDelete);
@@ -707,6 +707,61 @@ int Widget::h() const
 
     fflassert(height >= 0, m_h);
     return height;
+}
+
+int Widget::dx() const
+{
+    return Widget::evalOff(m_x.first, this) + m_x.second - xSizeOff(dir(), w());
+}
+
+int Widget::dy() const
+{
+    return Widget::evalOff(m_y.first, this) + m_y.second - ySizeOff(dir(), h());
+}
+
+int Widget::rdx(const Widget *widget) const
+{
+    if(widget){
+        if(const auto parptr = parent()){
+            if(widget == parptr){
+                return dx();
+            }
+            else{
+                return dx() + parptr->rdx(widget);
+            }
+        }
+        else{
+            throw fflerror("invalid parent");
+        }
+    }
+    else{
+        return dx();
+    }
+}
+
+int Widget::rdy(const Widget *widget) const
+{
+    if(widget){
+        if(const auto par = parent()){
+            if(widget == par){
+                return dy();
+            }
+            else{
+                return dy() + par->rdy(widget);
+            }
+        }
+        else{
+            throw fflerror("invalid parent");
+        }
+    }
+    else{
+        return dy();
+    }
+}
+
+int Widget::dy() const
+{
+    return Widget::evalOff(m_y.first, this) + m_y.second - ySizeOff(dir(), h());
 }
 
 Widget *Widget::setData(std::any argData)

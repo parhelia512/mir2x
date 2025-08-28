@@ -5,7 +5,7 @@
 #include "imageboard.hpp"
 
 extern SDLDevice *g_sdlDevice;
-LevelBox::LevelBox(
+CBLevel::CBLevel(
         Widget::VarDir argDir,
         Widget::VarOff argX,
         Widget::VarOff argY,
@@ -89,7 +89,7 @@ LevelBox::LevelBox(
     , m_onDoubleClick(argOnDoubleClick)
 {}
 
-bool LevelBox::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool CBLevel::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return false;

@@ -15,8 +15,7 @@
 #include "wmdaniboard.hpp"
 #include "tritexbutton.hpp"
 #include "alphaonbutton.hpp"
-#include "cbleft.hpp"
-#include "cbright.hpp"
+#include "cbface.hpp"
 
 class ProcessRun;
 class ControlBoard;
@@ -32,8 +31,12 @@ class CBMiddle: public Widget
         ShapeCropBoard m_bg;
 
     private:
+        FocusedFace m_face;
+
+    private:
         ImageBoard   m_bgImgFull;
         GfxCropBoard m_bgImg;
+
 
     private:
         TritexButton m_switchMode;

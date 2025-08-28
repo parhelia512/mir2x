@@ -4,7 +4,7 @@
 #include "shapecropboard.hpp"
 
 class ProcessRun;
-class FocusedFace: public Widget
+class CBFace: public Widget
 {
     private:
         ProcessRun *m_processRun;
@@ -14,5 +14,5 @@ class FocusedFace: public Widget
         ImageBoard m_hpBar;
 
     private:
-        ShapeCropBoard m_drawBufIDList;
+        ShapeCropBoard m_drawBuffIDList;
 };

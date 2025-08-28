@@ -9,7 +9,7 @@ extern IMEBoard *g_imeBoard;
 extern SDLDevice *g_sdlDevice;
 extern ClientArgParser *g_clientArgParser;
 
-GUIManager::GUIManager(ProcessRun *proc)
+GUIManager::GUIManager(ProcessRun *argProc)
     : Widget
       {
           DIR_UPLEFT,
@@ -19,24 +19,22 @@ GUIManager::GUIManager(ProcessRun *proc)
           [](const Widget *){ return g_sdlDevice->getRendererHeight(); },
       }
 
-    , m_processRun(proc)
+    , m_processRun(argProc)
     , m_NPCChatBoard
       {
-          proc,
+          argProc,
       }
 
     , m_controlBoard
       {
-          g_sdlDevice->getRendererWidth(),
-          g_sdlDevice->getRendererHeight() - 133,
-          proc,
+          argProc,
       }
 
     , m_friendChatBoard
       {
           g_sdlDevice->getRendererWidth()  / 2 - 250,
           g_sdlDevice->getRendererHeight() / 2 - 250,
-          proc,
+          argProc,
           this,
       }
 
@@ -44,7 +42,7 @@ GUIManager::GUIManager(ProcessRun *proc)
       {
           g_sdlDevice->getRendererWidth()  / 2 - 128,
           g_sdlDevice->getRendererHeight() / 2 - 161,
-          proc,
+          argProc,
           this,
       }
 
@@ -52,7 +50,7 @@ GUIManager::GUIManager(ProcessRun *proc)
       {
           g_sdlDevice->getRendererWidth()  / 2 - 180,
           g_sdlDevice->getRendererHeight() / 2 - 224,
-          proc,
+          argProc,
           this,
       }
 
@@ -60,24 +58,24 @@ GUIManager::GUIManager(ProcessRun *proc)
       {
           g_sdlDevice->getRendererWidth()  / 2 - 297,
           g_sdlDevice->getRendererHeight() / 2 - 222,
-          proc,
+          argProc,
           this,
       }
 
     , m_miniMapBoard
       {
-          proc,
+          argProc,
       }
 
     , m_acutionBoard
       {
-          proc,
+          argProc,
           this,
       }
 
     , m_purchaseBoard
       {
-          proc,
+          argProc,
           this,
       }
 
@@ -85,7 +83,7 @@ GUIManager::GUIManager(ProcessRun *proc)
       {
           g_sdlDevice->getRendererWidth()  / 2 - 129,
           g_sdlDevice->getRendererHeight() / 2 - 122,
-          proc,
+          argProc,
           this,
       }
 
@@ -93,7 +91,7 @@ GUIManager::GUIManager(ProcessRun *proc)
       {
           g_sdlDevice->getRendererWidth()  / 2 - 141,
           g_sdlDevice->getRendererHeight() / 2 - 233,
-          proc,
+          argProc,
           this,
       }
 
@@ -101,7 +99,7 @@ GUIManager::GUIManager(ProcessRun *proc)
       {
           g_sdlDevice->getRendererWidth()  / 2 - 145,
           g_sdlDevice->getRendererHeight() / 2 - 223,
-          proc,
+          argProc,
           this,
       }
 
@@ -109,7 +107,7 @@ GUIManager::GUIManager(ProcessRun *proc)
       {
           0,
           g_sdlDevice->getRendererHeight() - m_controlBoard.h() - 48,
-          proc,
+          argProc,
           this,
       }
 
@@ -117,7 +115,7 @@ GUIManager::GUIManager(ProcessRun *proc)
       {
           g_sdlDevice->getRendererWidth()  / 2 - 164,
           g_sdlDevice->getRendererHeight() / 2 - 233,
-          proc,
+          argProc,
           this,
       }
 
@@ -138,7 +136,7 @@ GUIManager::GUIManager(ProcessRun *proc)
           600,
           480,
 
-          proc,
+          argProc,
           this,
       }
 

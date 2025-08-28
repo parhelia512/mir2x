@@ -1,6 +1,6 @@
 #include "focusedface.hpp"
 
-FocusedFace::FocusedFace(
+CBFace::CBFace(
         Widget::VarDir argDir,
         Widget::VarOff argX,
         Widget::VarOff argY,
@@ -65,7 +65,7 @@ FocusedFace::FocusedFace(
           false,
       }
 
-    , m_drawBufIDList
+    , m_drawBuffIDList
       {
           DIR_UPLEFT,
           0,
@@ -76,19 +76,19 @@ FocusedFace::FocusedFace(
 
           [this](const Widget *self, int drawDstX, int drawDstY)
           {
-              drawBufIDList(drawDstX, drawDstY, self->w(), self->h());
+              drawBuffIDList(drawDstX, drawDstY, self->w(), self->h());
           }
       }
 {}
 
-void FocusedFace::drawBufIDList(int drawDstX, int drawDstY, int drawDstW, int drawDstH)
+void CBFace::drawBuffIDList(int drawDstX, int drawDstY, int drawDstW, int drawDstH)
 {
-    const auto sdBufIDListOpt = getBufIDListOpt();
-    if(!sdBufIDListOpt.has_value()){
+    const auto sdBuffIDListOpt = getBuffIDListOpt();
+    if(!sdBuffIDListOpt.has_value()){
         return;
     }
 
-    const auto &sdBufIDList = sdBufIDListOpt.value();
+    const auto &sdBuffIDList = sdBuffIDListOpt.value();
 
     constexpr int buffIconDrawW = 16;
     constexpr int buffIconDrawH = 16;
@@ -102,10 +102,10 @@ void FocusedFace::drawBufIDList(int drawDstX, int drawDstY, int drawDstW, int dr
     // |
     // +--- (buffIconOffStartX, buffIconOffStartY)
 
-    const int buffIconOffStartX = nW0 - 266;
-    const int buffIconOffStartY = nY0 +  99;
+    const int buffIconOffStartX = drawDstX + 20;
+    const int buffIconOffStartY = drawDstY + 79;
 
-    for(int drawIconCount = 0; const auto id: buffIDList.value().idList){
+    for(int drawIconCount = 0; const auto id: sdBuffIDList.idList){
         const auto &br = DBCOM_BUFFRECORD(id);
         fflassert(br);
 

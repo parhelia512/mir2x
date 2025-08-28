@@ -53,7 +53,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         mutable bool m_inLoop = false;
 
     private:
-        Widget * m_parent;
+        Widget *m_parent;
 
     private:
         std::list<WidgetTreeNode::ChildElement> m_childList; // widget shall NOT access this list directly
@@ -352,8 +352,12 @@ class Widget: public WidgetTreeNode
         const auto &varh() const { return m_h; }
 
     public:
-        virtual int dx() const { return Widget::evalOff(m_x.first, this) + m_x.second - xSizeOff(dir(), w()); }
-        virtual int dy() const { return Widget::evalOff(m_y.first, this) + m_y.second - ySizeOff(dir(), h()); }
+        int dx() const;
+        int dy() const;
+
+    public:
+        virtual int rdx(const Widget * = nullptr) const final;
+        virtual int rdy(const Widget * = nullptr) const final;
 
     public:
         auto & data(this auto && self)

@@ -1,28 +1,46 @@
 #pragma once
 #include <vector>
 #include "widget.hpp"
+#include "shapecropboard.hpp"
 
 class TexAniBoard: public Widget
 {
     private:
-        size_t m_fps;
-        double m_accuTime;
+        uint32_t m_startTexID;
+        size_t   m_frameCount;
+        size_t   m_fps;
 
     private:
-        bool m_loop;
         bool m_fadeInout;
+        bool m_loop;
 
     private:
-        std::vector<uint32_t> m_texSeq;
+        double m_accuTime = 0;
+
+    private:
+        ShapeCropBoard m_cropArea;
 
     public:
-        TexAniBoard(Widget::VarDir, Widget::VarOff, Widget::VarOff, uint32_t, size_t, size_t, bool, bool loop = true, Widget * pwidget = nullptr, bool autoDelete = false);
+        TexAniBoard(
+                Widget::VarDir,
+                Widget::VarOff,
+                Widget::VarOff,
+
+                uint32_t,
+                size_t,
+                size_t,
+
+                bool,
+                bool = true,
+
+                Widget * = nullptr,
+                bool     = false);
 
     public:
-        void update(double) override;
-
-    public:
-        void drawEx(int, int, int, int, int, int) const override;
+        void update(double fUpdateTime) override
+        {
+            m_accuTime += fUpdateTime;
+        }
 
     private:
         std::tuple<int, uint8_t> getDrawFrame() const;

@@ -8,81 +8,123 @@
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-TexAniBoard::TexAniBoard(Widget::VarDir dir, Widget::VarOff x, Widget::VarOff y, uint32_t texID, size_t frameCount, size_t fps, bool fadeInout, bool loop, Widget *pwidget, bool autoDelete)
-    : Widget(std::move(dir), std::move(x),std::move(y), 0, 0, {}, pwidget, autoDelete)
-    , m_fps(fps)
-    , m_accuTime(0.0)
-    , m_loop(loop)
-    , m_fadeInout(fadeInout)
-{
-    m_texSeq.reserve(frameCount);
+TexAniBoard::TexAniBoard(
+        Widget::VarDir argDir,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
 
-    int maxW = -1;
-    int maxH = -1;
+        uint32_t argStartTexID,
+        size_t   argFrameCount,
 
-    for(uint32_t id = texID; id < texID + frameCount; ++id){
-        if(auto texPtr = g_progUseDB->retrieve(id)){
-            const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
-            maxW = std::max<int>(maxW, texW);
-            maxH = std::max<int>(maxH, texH);
-            m_texSeq.push_back(id);
-        }
-    }
+        size_t argFps,
 
-    if(m_texSeq.empty()){
-        throw fflerror("empty animation");
-    }
+        bool argFadeInout,
+        bool argLoop,
 
-    setSize(maxW, maxH);
-}
+        Widget *argParent,
+        bool    argAutoDelete)
 
-void TexAniBoard::update(double fUpdateTime)
-{
-    m_accuTime += fUpdateTime;
-}
+    : Widget
+      {
+          std::move(argDir),
+          std::move(argX),
+          std::move(argY),
 
-void TexAniBoard::drawEx(int dstX, int dstY, int, int, int, int) const
-{
-    const auto [frame, alpha] = getDrawFrame();
-    const uint32_t currTexId = m_texSeq[(frame + 0) % m_texSeq.size()];
-    const uint32_t nextTexId = m_texSeq[(frame + 1) % m_texSeq.size()];
+          [this](const Widget *)
+          {
+              if(const auto [frame, _] = getDrawFrame(); frame >= 0){
+                  if(auto texPtr = g_progUseDB->retrieve(m_startTexID + frame)){
+                      return SDLDeviceHelper::getTextureWidth(texPtr);
+                  }
+              }
+              return 0;
+          },
 
-    auto currTexPtr = g_progUseDB->retrieve(currTexId);
-    auto nextTexPtr = g_progUseDB->retrieve(nextTexId);
+          [this](const Widget *)
+          {
+              if(const auto [frame, _] = getDrawFrame(); frame >= 0){
+                  if(auto texPtr = g_progUseDB->retrieve(m_startTexID + frame)){
+                      return SDLDeviceHelper::getTextureHeight(texPtr);
+                  }
+              }
+              return 0;
+          },
 
-    SDL_SetTextureAlphaMod(currTexPtr, 255 - alpha);
-    SDL_SetTextureAlphaMod(nextTexPtr,       alpha);
+          {},
 
-    g_sdlDevice->drawTexture(currTexPtr, dstX, dstY);
-    g_sdlDevice->drawTexture(nextTexPtr, dstX, dstY);
-}
+          argParent,
+          argAutoDelete,
+      }
+
+    , m_startTexID(argStartTexID)
+    , m_frameCount(argFrameCount)
+    , m_fps(argFps)
+
+    , m_fadeInout(argFadeInout)
+    , m_loop(argLoop)
+
+    , m_cropArea
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          [this](const Widget *){ return w(); },
+          [this](const Widget *){ return h(); },
+
+          [this](const Widget *, int drawDstX, int drawDstY)
+          {
+              const auto [frame, alpha] = getDrawFrame();
+              if(frame < 0){
+                  return;
+              }
+
+              const uint32_t currTexId = m_startTexID + ((frame + 0) % m_farmeCount);
+              const uint32_t nextTexId = m_startTexID + ((frame + 1) % m_farmeCount);
+
+              if(auto currTexPtr = g_progUseDB->retrieve(currTexId)){
+                  const SDLDeviceHelper::EnableTextureModColor enableModColor(currTexPtr, colorf::WHITE + colorf::A_SHF(255 - alpha));
+                  g_sdlDevice->drawTexture(currTexPtr, dstX, dstY);
+              }
+
+              if(auto nextTexPtr = g_progUseDB->retrieve(nextTexId)){
+                  const SDLDeviceHelper::EnableTextureModColor enableModColor(nextTexPtr, colorf::WHITE + colorf::A_SHF(alpha));
+                  g_sdlDevice->drawTexture(nextTexPtr, dstX, dstY);
+              }
+          },
+
+          this,
+          false,
+      }
+{}
 
 std::tuple<int, uint8_t> TexAniBoard::getDrawFrame() const
 {
-    if(!m_fps){
-        return {0, 0};
-    }
+    if(m_frameCount == 0){ return {-1, 0}; }
+    if(m_fps        == 0){ return { 0, 0}; }
 
-    const double frameTime = 1000.0 / m_fps;
-    const auto frame = [frameTime, this]() -> int
-    {
-        const auto logicFrame = std::lround(std::floor(m_accuTime / frameTime));
-        if(m_loop){
-            return logicFrame;
-        }
-        return std::min<int>(logicFrame, m_texSeq.size() - 1);
-    }();
+    const double decimalFrame = m_accuTime * m_fps / 1000.0;
+    const int    integerFrame = to_dround(std::floor(decimalFrame));
 
-    const auto alpha = [frameTime, frame, this]() -> uint8_t
+    return
     {
-        if(!m_fadeInout){
+        [integerFrame, this]() -> int // current frame
+        {
+            if(m_loop){
+                return integerFrame % m_frameCount;
+            }
+            else{
+                return std::min<int>(integerFrame, m_frameCount - 1);
+            }
+        }(),
+
+
+        [integerFrame, decimalFrame, this]() -> uint8_t // current alpha
+        {
+            if(m_fadeInout){
+                return to_dround(255 * mathf::bound<double>(decimalFrame - integerFrame, 0.0, 1.0));
+            }
             return 0;
-        }
-
-        const double fDiff = m_accuTime / frameTime - frame;
-        const double fRatio = std::min<double>(1.0, std::max<double>(0.0, fDiff));
-        return std::lround(255 * fRatio);
-    }();
-
-    return {frame, alpha};
+        }(),
+    };
 }

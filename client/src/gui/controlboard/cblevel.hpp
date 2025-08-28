@@ -7,7 +7,7 @@
 #include "imageboard.hpp"
 
 class ProcessRun;
-class LevelBox: public Widget
+class CBLevel: public Widget
 {
     private:
         ProcessRun *m_processRun;
@@ -24,7 +24,7 @@ class LevelBox: public Widget
         std::function<void(   )> m_onDoubleClick;
 
     public:
-        LevelBox(
+        CBLevel(
                 Widget::VarDir,
                 Widget::VarOff,
                 Widget::VarOff,
