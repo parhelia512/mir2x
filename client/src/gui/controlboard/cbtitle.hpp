@@ -1,9 +1,20 @@
 #include "widget.hpp"
 #include "levelbox.hpp"
 
+//                     |
+//                     v
+//       +-----+      ---
+//      /       \      19
+//  +--/  TITLE  \--+ ---
+//  | /           \ |  ^
+//  +---------------+  |
+
 class ProcessRun;
 class CBTitle: public Widget
 {
+    public:
+        constexpr static int UP_HEIGHT = 19;
+
     private:
         ProcessRun *m_processRun;
 

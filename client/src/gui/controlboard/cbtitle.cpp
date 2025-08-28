@@ -1,3 +1,4 @@
+#include "widget.hpp"
 #include "cbtitle.hpp"
 
 CBTitle::CBTitle(

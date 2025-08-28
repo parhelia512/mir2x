@@ -7,7 +7,7 @@ WidgetTreeNode::WidgetTreeNode(Widget *argParent, bool argAutoDelete)
           static std::atomic<uint64_t> s_widgetSeqID = 1;
           return s_widgetSeqID.fetch_add(1);
       }())
-    , m_parent(std::move(argParent))
+    , m_parent(argParent)
 {
     if(m_parent){
         m_parent->addChild(static_cast<Widget *>(this), argAutoDelete);

@@ -1,4 +1,10 @@
+#pragma once
 #include "widget.hpp"
+#include "cbleft.hpp"
+#include "cbright.hpp"
+#include "cbmiddle.hpp"
+#include "cbmiddleexpand.hpp"
+#include "cbtitle.hpp"
 
 class ProcessRun;
 class ControlBoard: public Widget
