@@ -1,10 +1,10 @@
 auto WidgetTreeNode::parent(this auto && self, unsigned level) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
-    auto p = std::addressof(self);
+    check_const_cond_out_ptr_t<decltype(self), Widget> p = std::addressof(self);
     for(; p && (level > 0); level--){
         p = p->m_parent;
     }
-    return static_cast<check_const_cond_out_ptr_t<decltype(self), Widget>>(p);
+    return p;
 }
 
 template<std::invocable<const Widget *, bool, const Widget *, bool> F> void WidgetTreeNode::sort(F f)

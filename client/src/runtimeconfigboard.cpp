@@ -502,7 +502,7 @@ void RuntimeConfigBoard::PullMenu::drawEx(int dstX, int dstY, int srcX, int srcY
     }
 }
 
-bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, bool valid)
+bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -512,7 +512,7 @@ bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, b
         return consumeFocus(false);
     }
 
-    if(Widget::processEventDefault(event, valid)){
+    if(Widget::processEventDefault(event, valid, startDstX, startDstY)){
         if(!focus()){
             if(!m_menuList.show()){
                 consumeFocus(true, &m_button);
@@ -529,7 +529,7 @@ bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, b
             {
                 if(m_menuList.show()){
                     const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                    if(!m_menuList.in(eventX, eventY)){
+                    if(!m_menuList.parentIn(eventX, eventY, startDstX, startDstY)){
                         m_menuList.setShow(false);
                     }
                 }
@@ -1259,7 +1259,7 @@ void RuntimeConfigBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW
     }
 }
 
-bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -1277,7 +1277,7 @@ bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid)
         static_cast<Widget *>(&m_pageSocial),
         static_cast<Widget *>(&m_pageGameConfig),
     }){
-        if(widgetPtr->processEvent(event, valid)){
+        if(widgetPtr->processParentEvent(event, valid, startDstX, startDstY)){
             return true;
         }
     }
@@ -1293,14 +1293,15 @@ bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid)
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
-                    moveBy(newX - x(), newY - y());
+                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+
+                    moveBy(newX - startDstX, newY - startDstY);
                     return consumeFocus(true);
                 }
 		return false;

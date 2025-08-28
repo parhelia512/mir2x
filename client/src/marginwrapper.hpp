@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 #include "widget.hpp"
 #include "shapecropboard.hpp"
 
@@ -58,16 +59,18 @@ class MarginWrapper: public Widget
         }
 
     public:
-        bool processEventDefault(const SDL_Event &event, bool valid) override
+        bool processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY) override
         {
-            return wrapped()->processEvent(event, valid);
+            return wrapped()->processEvent(event, valid, startDstX, startDstY);
+        }
+
+    public:
+        auto wrapped(this auto && self) -> std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, const Widget *, Widget *>
+        {
+            return self.lastChild();
         }
 
     public:
         void addChild  (Widget *,                                                 bool) override { throw fflreach(); }
         void addChildAt(Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool) override { throw fflreach(); }
-
-    public:
-        const Widget *wrapped() const { return lastChild(); }
-        /* */ Widget *wrapped()       { return lastChild(); }
 };

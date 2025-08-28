@@ -18,44 +18,25 @@
 #include "cbleft.hpp"
 #include "cbright.hpp"
 
-enum
-{
-    CBLOG_DEF = 0,
-    CBLOG_SYS,
-    CBLOG_DBG,
-    CBLOG_ERR,
-};
-
 class ProcessRun;
-class ControlBoard: public Widget
+class ControlBoard;
+class CBMiddle: public Widget
 {
+    private:
+        friend class ControlBoard;
+
     private:
         ProcessRun *m_processRun;
 
     private:
-        bool m_expand = false;
+        ShapeCropBoard m_bg;
 
     private:
-        int m_stretchH = 196;
-        const int m_stretchHMin = 196; // only can get bigger than original frame
+        ImageBoard   m_bgImgFull;
+        GfxCropBoard m_bgImg;
 
     private:
-        CBLeft  m_left;
-        CBRight m_right;
-
-    private:
-        Widget m_middle;
-
-    private:
-        TritexButton m_buttonSwitchMode;
-
-    private:
-        TritexButton m_buttonEmoji;
-        TritexButton m_buttonMute;
-
-    private:
-        LevelBox m_levelBox;
-        TexAniBoard m_arcAniBoard;
+        TritexButton m_switchMode;
 
     private:
         TexSlider m_slider;
@@ -64,31 +45,24 @@ class ControlBoard: public Widget
         InputLine m_cmdLine;
 
     private:
-        LayoutBoard m_logBoard;
-
-    private:
-        double m_accuTime = 0.0;
+        CropViewBoard m_logView;
 
     public:
-        ControlBoard(
-                int,    // boardW
-                int,    // startY
+        CBMiddle(
+                Widget::VarDir,
+                Widget::VarOff,
+                Widget::VarOff,
+
+                Widget::VarSize,
+                Widget::VarSize,
+
                 ProcessRun *,
-                Widget *pwidget = nullptr,
-                bool autoDelete = false);
+
+                Widget * = nullptr,
+                bool     = false);
 
     public:
-        ~ControlBoard() = default;
-
-    public:
-        void drawEx(int, int, int, int, int, int) const override;
-
-    private:
-        static std::tuple<int, int> scheduleStretch(int, int);
-
-    private:
-        void drawHeroLoc() const;
-        void drawRatioBar(int, int, double) const;
+        ~CBMiddle() = default;
 
     private:
         void drawFocusFace() const;
@@ -125,7 +99,4 @@ class ControlBoard: public Widget
 
     private:
         int logBoardStartY() const;
-
-    public:
-        TritexButton *getButton(const std::string_view &);
 };

@@ -112,5 +112,5 @@ struct ChatItem: public Widget
 
     void setMaxWidth(int);
     void update(double) override;
-    bool processEventDefault(const SDL_Event &, bool) override;
+    bool processEventDefault(const SDL_Event &, bool, int, int) override;
 };

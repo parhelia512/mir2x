@@ -159,7 +159,7 @@ size_t IMEBoard::totalLabelWidth() const
     return totalWidth;
 }
 
-bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         if(focus()){
@@ -249,7 +249,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid)
                 if(event.button.button == SDL_BUTTON_LEFT){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
                         m_labelBoardList[i]->setFontColor(m_fontColor);
-                        if(m_labelBoardList[i]->in(event.button.x, event.button.y)){
+                        if(m_labelBoardList[i]->parentIn(event.button.x, event.button.y, startDstX, startDstY)){
                             m_ime.select(i);
                         }
                     }
@@ -264,7 +264,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid)
                 }
 
                 for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                    if(m_labelBoardList.at(i)->in(event.button.x, event.button.y)){
+                    if(m_labelBoardList.at(i)->parentIn(event.button.x, event.button.y, startDstX, startDstY)){
                         m_labelBoardList.at(i)->setFontColor(m_fontColorPressed);
                     }
                     else{
@@ -280,13 +280,14 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid)
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
-                    moveBy(newX - x(), newY - y());
+                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+
+                    moveBy(newX - startDstX, newY - startDstY);
                 }
                 else if(in(event.motion.x, event.motion.y)){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                        if(m_labelBoardList.at(i)->in(event.motion.x, event.motion.y)){
+                        if(m_labelBoardList.at(i)->parentIn(event.motion.x, event.motion.y, startDstX, startDstY)){
                             m_labelBoardList.at(i)->setFontColor(m_fontColorHover);
                         }
                         else{

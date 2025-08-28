@@ -300,7 +300,7 @@ class Widget: public WidgetTreeNode
         virtual bool processEvent      (const SDL_Event &, bool, int, int) final;
         virtual bool processParentEvent(const SDL_Event &, bool, int, int) final;
 
-        bool applyRootEvent(const SDL_Event &);
+        bool applyRootEvent(const SDL_Event &, bool);
 
     protected:
         // @param

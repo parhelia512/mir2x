@@ -539,10 +539,10 @@ bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDst
     return processEvent(event, valid, startDstX + dx(), startDstY + dy());
 }
 
-bool Widget::applyRootEvent(const SDL_Event &event)
+bool Widget::applyRootEvent(const SDL_Event &event, bool valid)
 {
     fflassert(!parent());
-    return processEvent(event, true, dx(), dy());
+    return processEvent(event, valid, dx(), dy());
 }
 
 bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)

@@ -127,7 +127,7 @@ void MenuButton::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int sr
     }
 }
 
-bool MenuButton::processEventDefault(const SDL_Event &event, bool valid)
+bool MenuButton::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -137,14 +137,14 @@ bool MenuButton::processEventDefault(const SDL_Event &event, bool valid)
         return consumeFocus(false);
     }
 
-    if(Widget::processEventDefault(event, valid)){
+    if(Widget::processEventDefault(event, valid, startDstX, startDstY)){
         return true;
     }
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(m_menuBoard->in(event.button.x, event.button.y)){
+                if(m_menuBoard->in(event.button.x, event.button.y, startDstX, startDstY)){
                     m_menuBoard->setShow(false);
                 }
                 return consumeFocus(false);

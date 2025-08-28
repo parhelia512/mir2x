@@ -58,7 +58,7 @@ FriendItem::FriendItem(
 
           [this](const Widget *, int drawDstX, int drawDstY)
           {
-              if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); in(mousePX, mousePY)){
+              if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); in(mousePX, mousePY, drawDstX, drawDstY)){
                   g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
                   g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
               }
@@ -120,7 +120,7 @@ void FriendItem::setFuncWidget(Widget *argFuncWidget, bool argAutoDelete)
     addChild(argFuncWidget, argAutoDelete);
 }
 
-bool FriendItem::processEventDefault(const SDL_Event &event, bool valid)
+bool FriendItem::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
     if(!valid){
         return consumeFocus(false);
@@ -133,10 +133,10 @@ bool FriendItem::processEventDefault(const SDL_Event &event, bool valid)
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(Widget::processEventDefault(event, valid)){
+                if(Widget::processEventDefault(event, valid, startDstX, startDstY)){
                     return consumeFocus(true);
                 }
-                else if(in(event.button.x, event.button.y)){
+                else if(in(event.button.x, event.button.y, startDstX, startDstY)){
                     if(onClick){
                         onClick(this);
                     }
@@ -148,7 +148,7 @@ bool FriendItem::processEventDefault(const SDL_Event &event, bool valid)
             }
         default:
             {
-                return Widget::processEventDefault(event, valid);
+                return Widget::processEventDefault(event, valid, startDstX, startDstY);
             }
     }
 }

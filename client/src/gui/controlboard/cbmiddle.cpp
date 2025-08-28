@@ -59,27 +59,151 @@ extern Log *g_log;
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-ControlBoard::ControlBoard(int boardW, int startY, ProcessRun *proc, Widget *pwidget, bool autoDelete)
-    : Widget(DIR_UPLEFT, 0, startY, boardW, 133, {}, pwidget, autoDelete)
-    , m_processRun(proc)
-    , m_left
+CBMiddle::CBMiddle(
+        Widget::VarDir argDir,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
+
+        Widget::VarSize argW,
+        Widget::VarSize argH,
+
+        ProcessRun *argProc,
+
+        Widget *argParent,
+        bool    argAutoDelete)
+
+    : Widget
+      {
+          std::move(argDir),
+          std::move(argX),
+          std::move(argY),
+
+          std::move(argW),
+          std::move(argH),
+
+          {},
+
+          argParent,
+          argAutoDelete,
+      }
+
+    , m_processRun(argProc)
+
+    , m_bgImgFull
       {
           DIR_UPLEFT,
           0,
           0,
 
-          proc,
+          {},
+          {},
+
+          [](const Widget *)
+          {
+              return g_progUseDB->retrieve(0X00000013);
+          },
+      }
+
+    , m_bg
+      {
+          DIR_UPLEFT,
+          2,
+          14,
+
+          [this](const Widget *){ return w() - 4; },
+          [this](const Widget *){ return m_bgImgFull.h(); },
+
+          [this](const Widget *self, int drawDstX, int drawDstY)
+          {
+              g_sdlDevice->fillRectangle(colorf::A_SHF(0XFF), drawDstX, drawDstY, self->w(), self->h());
+          },
+
           this,
           false,
       }
 
-    , m_right
+    , m_cmdLine
       {
-          DIR_UPRIGHT,
-          [](const Widget *){ return g_sdlDevice->getRendererWidth() - 1; },
+          DIR_UPLEFT,
+          7,
+          105,
+
+          [this](const Widget *){ return w() - 6; },
+          17,
+
+          true,
+
+          1,
+          12,
+          0,
+          colorf::WHITE + colorf::A_SHF(255),
+
+          2,
+          colorf::WHITE + colorf::A_SHF(255),
+
+          nullptr,
+          [this](){ inputLineDone(); },
+          nullptr,
+
+          this,
+          false,
+      }
+
+    , m_logView
+      {
+          DIR_UPLEFT,
+          9,
+          11,
+
+          std::addressof(m_logBoard),
+
+          0,
+          [this](const Widget *) { return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
+          [this](const Widget *) { return m_logBoard.w(); },
+          83,
+
+          {},
+
+          this,
+          false,
+      }
+
+    , m_inputBg
+      {
+          DIR_UPLEFT,
+          7,
+          104,
+
+          [this](const Widget *){ return w() - 110; },
+          17,
+
+          [this](const Widget *self, int drawDstX, int drawDstY)
+          {
+              if(m_cmdLine.focus()){
+                  SDLDeviceHelper::EnableRenderBlendMode enableRenderBlendMode(SDL_BLENDMODE_BLEND);
+                  g_sdlDevice->fillRectangle(colorf::GREY + colorf::A_SHF(48), drawDstX, drawDstY, self->w(), self->h());
+              }
+          },
+
+          this,
+          false,
+      }
+
+    , m_bgImg
+      {
+          DIR_UPLEFT,
+          0,
           0,
 
-          proc,
+          &m_bgImgFull,
+
+          0,
+          0,
+          [this](const Widget *){ return w(); },
+          [this](const Widget *){ return h(); },
+
+          {},
+
           this,
           false,
       }
@@ -251,34 +375,6 @@ ControlBoard::ControlBoard(int boardW, int startY, ProcessRun *proc, Widget *pwi
           &m_middle,
       }
 
-    , m_cmdLine
-      {
-          DIR_UPLEFT,
-          7,
-          105,
-          343 + (boardW - 800),
-          17,
-
-          true,
-
-          1,
-          12,
-
-          0,
-          colorf::WHITE + colorf::A_SHF(255),
-
-          2,
-          colorf::WHITE + colorf::A_SHF(255),
-
-          nullptr,
-          [this]()
-          {
-              inputLineDone();
-          },
-          nullptr,
-
-          &m_middle,
-      }
 
     , m_logBoard
       {
@@ -319,7 +415,7 @@ ControlBoard::ControlBoard(int boardW, int startY, ProcessRun *proc, Widget *pwi
       }
 {
     if(!proc){
-        throw fflerror("invalid ProcessRun provided to ControlBoard()");
+        throw fflerror("invalid ProcessRun provided to CBMiddle()");
     }
 
     auto fnAssertImage = [](uint32_t img, int w, int h)
@@ -344,7 +440,7 @@ ControlBoard::ControlBoard(int boardW, int startY, ProcessRun *proc, Widget *pwi
     fflassert(w() == g_sdlDevice->getRendererWidth());
 }
 
-void ControlBoard::update(double fUpdateTime)
+void CBMiddle::update(double fUpdateTime)
 {
     m_accuTime += fUpdateTime;
     m_cmdLine.update(fUpdateTime);
@@ -355,7 +451,7 @@ void ControlBoard::update(double fUpdateTime)
     m_right.update(fUpdateTime);
 }
 
-std::tuple<int, int> ControlBoard::scheduleStretch(int dstSize, int srcSize)
+std::tuple<int, int> CBMiddle::scheduleStretch(int dstSize, int srcSize)
 {
     // use same way for default or expand mode
     // this requires texture 0X00000013 and 0X00000027 are of width 456
@@ -375,7 +471,7 @@ std::tuple<int, int> ControlBoard::scheduleStretch(int dstSize, int srcSize)
     return {dstSize / srcSize, dstSize % srcSize};
 }
 
-void ControlBoard::drawMiddleDefault() const
+void CBMiddle::drawMiddleDefault() const
 {
     const int nY0 = dy();
     const int nW0 = w();
@@ -425,7 +521,7 @@ void ControlBoard::drawMiddleDefault() const
     m_slider.draw();
 }
 
-void ControlBoard::drawLogBoardDefault() const
+void CBMiddle::drawLogBoardDefault() const
 {
     const int dstX = 187;
     const int dstY = logBoardStartY();
@@ -438,7 +534,7 @@ void ControlBoard::drawLogBoardDefault() const
     m_logBoard.drawEx(dstX, dstY, srcX, srcY, srcW, srcH);
 }
 
-void ControlBoard::drawLogBoardExpand() const
+void CBMiddle::drawLogBoardExpand() const
 {
     const int dstX = 187;
     const int dstY = logBoardStartY();
@@ -452,7 +548,7 @@ void ControlBoard::drawLogBoardExpand() const
     m_logBoard.drawEx(dstX, dstY, srcX, srcY, srcW, srcH);
 }
 
-void ControlBoard::drawMiddleExpand() const
+void CBMiddle::drawMiddleExpand() const
 {
     const int nY0 = dy();
     const int nW0 = w();
@@ -522,7 +618,7 @@ void ControlBoard::drawMiddleExpand() const
     m_slider.draw();
 }
 
-void ControlBoard::drawEx(int, int, int, int, int, int) const
+void CBMiddle::drawEx(int, int, int, int, int, int) const
 {
     m_left.draw();
     m_right.draw();
@@ -535,7 +631,7 @@ void ControlBoard::drawEx(int, int, int, int, int, int) const
     }
 }
 
-bool ControlBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid)
 {
     bool takeEvent = false;
 
@@ -579,7 +675,7 @@ bool ControlBoard::processEventDefault(const SDL_Event &event, bool valid)
     }
 }
 
-void ControlBoard::inputLineDone()
+void CBMiddle::inputLineDone()
 {
     const std::string fullInput = m_cmdLine.getRawString();
     const auto inputPos = fullInput.find_first_not_of(" \n\r\t");
@@ -619,14 +715,14 @@ void ControlBoard::inputLineDone()
     }
 }
 
-void ControlBoard::addParLog(const char *log)
+void CBMiddle::addParLog(const char *log)
 {
     fflassert(str_haschar(log));
     m_logBoard.addParXML(m_logBoard.parCount(), {0, 0, 0, 0}, log);
     m_slider.setValue(1.0f, false);
 }
 
-void ControlBoard::addLog(int logType, const char *log)
+void CBMiddle::addLog(int logType, const char *log)
 {
     if(!log){
         throw fflerror("null log string");
@@ -674,12 +770,12 @@ void ControlBoard::addLog(int logType, const char *log)
     m_slider.setValue(1.0f, false);
 }
 
-bool ControlBoard::CheckMyHeroMoved()
+bool CBMiddle::CheckMyHeroMoved()
 {
     return true;
 }
 
-void ControlBoard::switchExpandMode()
+void CBMiddle::switchExpandMode()
 {
     if(m_expand){
         m_expand = false;
@@ -693,7 +789,7 @@ void ControlBoard::switchExpandMode()
     setButtonLoc();
 }
 
-void ControlBoard::setButtonLoc()
+void CBMiddle::setButtonLoc()
 {
     // diff of height of texture 0X00000013 and 0X00000027
     // when you draw something on default log board at (X, Y), (0, 0) is left-top
@@ -723,7 +819,7 @@ void ControlBoard::setButtonLoc()
     }
 }
 
-int ControlBoard::logBoardStartY() const
+int CBMiddle::logBoardStartY() const
 {
     if(!m_expand){
         return g_sdlDevice->getRendererHeight() - 120;
@@ -731,7 +827,7 @@ int ControlBoard::logBoardStartY() const
     return g_sdlDevice->getRendererHeight() - 55 - m_stretchH - 47 + 12; // 12 is texture top-left to log line distane
 }
 
-void ControlBoard::onWindowResize(int winW, int winH)
+void CBMiddle::onWindowResize(int winW, int winH)
 {
     const auto prevWidth = w();
     setW(winW);
@@ -747,7 +843,7 @@ void ControlBoard::onWindowResize(int winW, int winH)
     setButtonLoc();
 }
 
-void ControlBoard::drawInputGreyBackground() const
+void CBMiddle::drawInputGreyBackground() const
 {
     if(!m_cmdLine.focus()){
         return;
@@ -764,7 +860,7 @@ void ControlBoard::drawInputGreyBackground() const
     }
 }
 
-void ControlBoard::drawRatioBar(int x, int y, double r) const
+void CBMiddle::drawRatioBar(int x, int y, double r) const
 {
     ImageBoard barImage
     {
@@ -790,7 +886,7 @@ void ControlBoard::drawRatioBar(int x, int y, double r) const
     barImage.drawEx(x, y - std::lround(barImage.h() * r), 0, 0, barImage.w(), std::lround(barImage.h() * r));
 }
 
-void ControlBoard::drawFocusFace() const
+void CBMiddle::drawFocusFace() const
 {
     // draw current creature face
     // draw '?' when the face texture is not available
@@ -842,7 +938,7 @@ void ControlBoard::drawFocusFace() const
         };
     }();
 
-    const int nY0 = dy();
+    const int nY0 = y();
     const int nW0 = w();
 
     if(auto faceTexPtr = g_progUseDB->retrieve(faceTexID)){
@@ -914,7 +1010,7 @@ void ControlBoard::drawFocusFace() const
     }
 }
 
-TritexButton *ControlBoard::getButton(const std::string_view &buttonName)
+TritexButton *CBMiddle::getButton(const std::string_view &buttonName)
 {
     if     (buttonName == "Inventory"    ){ return &m_right.m_buttonInventory    ; }
     else if(buttonName == "HeroState"    ){ return &m_right.m_buttonHeroState    ; }

@@ -180,9 +180,8 @@ void GUIManager::update(double fUpdateTime)
     }
 }
 
-bool GUIManager::processEventDefault(const SDL_Event &event, bool valid)
+bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
-    fflassert(valid);
     switch(event.type){
         case SDL_WINDOWEVENT:
             {
@@ -207,13 +206,13 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid)
 
     bool tookEvent = false;
     if(!g_clientArgParser->disableIME){
-        tookEvent |= g_imeBoard->processEvent(event, valid && !tookEvent);
+        tookEvent |= g_imeBoard->applyRootEvent(event, valid && !tookEvent);
     }
 
-    tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent);
-    tookEvent |= m_controlBoard.processEvent       (event, valid && !tookEvent);
-    tookEvent |= m_NPCChatBoard.processEvent       (event, valid && !tookEvent);
-    tookEvent |= m_miniMapBoard.processEvent       (event, valid && !tookEvent);
+    tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent, startDstX, startDstY);
+    tookEvent |= m_controlBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY);
+    tookEvent |= m_NPCChatBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY);
+    tookEvent |= m_miniMapBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY);
 
     return tookEvent;
 }
