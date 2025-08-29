@@ -1,4 +1,11 @@
-#include "focusedface.hpp"
+#include <cinttypes>
+#include "pngtexdb.hpp"
+#include "sdldevice.hpp"
+#include "cbface.hpp"
+#include "processrun.hpp"
+
+PNGTexDB *g_progUseDB;
+SDLDevice *g_sdlDevice;
 
 CBFace::CBFace(
         Widget::VarDir argDir,
@@ -15,21 +22,34 @@ CBFace::CBFace(
 
     : Widget
       {
+          std::move(argDir),
+          std::move(argX),
+          std::move(argY),
+
+          std::move(argW),
+          std::move(argH),
+
+          {},
+
+          this,
+          false,
       }
 
     , m_face
       {
           DIR_UPLEFT,
-          2,
-          3,
+          0,
+          0,
 
-          {},
-          {},
-
-          [](const Widget *)
+          [this](const Widget *){ return w(); },
+          [this](const Widget *){ return h(); },
+          [this](const Widget *)
           {
-
-          }
+              if(auto texPtr = g_progUseDB->retrieve(getFaceTexID())){
+                  return texPtr;
+              }
+              return g_progUseDB->retrieve(0X010007CF);
+          },
 
           false,
           false,
@@ -47,8 +67,12 @@ CBFace::CBFace(
           0,
           0,
 
-          [this](const Widget *) { return to_dround(getHPRatio() * 87); },
-          {},
+          [this](const Widget *)
+          {
+              return to_dround(getHPRatio() * w());
+          },
+
+          CBFace::BAR_HEIGHT,
 
           [](const Widget *)
           {
@@ -81,9 +105,69 @@ CBFace::CBFace(
       }
 {}
 
-void CBFace::drawBuffIDList(int drawDstX, int drawDstY, int drawDstW, int drawDstH)
+double CBFace::getHPRatio() const
 {
-    const auto sdBuffIDListOpt = getBuffIDListOpt();
+    if(const auto coPtr = m_processRun->findUID(m_processRun->getFocusUID(FOCUS_MOUSE))){
+        switch(coPtr->type()){
+            case UID_PLY:
+            case UID_MON:
+                {
+                    return coPtr->getHealthRatio().at(0);
+                }
+            default:
+                {
+                    break;
+                }
+        }
+    }
+    return m_processRun->getMyHero()->getHealthRatio().at(0);
+}
+
+uint32_t CBFace::getFaceTexID() const
+{
+    if(const auto coPtr = m_processRun->findUID(m_processRun->getFocusUID(FOCUS_MOUSE))){
+        switch(coPtr->type()){
+            case UID_PLY:
+                {
+                    return dynamic_cast<Hero *>(coPtr)->faceGfxID();
+                }
+            case UID_MON:
+                {
+                    if(const auto lookID = dynamic_cast<ClientMonster*>(coPtr)->lookID(); lookID >= 0){
+                        return UINT32_C(0X01000000) + (lookID - LID_BEGIN);
+                    }
+                    return SYS_U32NIL;
+                }
+            default:
+                {
+                    break;
+                }
+        }
+    }
+    return m_processRun->getMyHero()->faceGfxID();
+}
+
+const std::optional<SDBuffIDList> &CBFace::getSDBuffIDListOpt() const
+{
+    if(const auto coPtr = m_processRun->findUID(m_processRun->getFocusUID(FOCUS_MOUSE))){
+        switch(coPtr->type()){
+            case UID_PLY:
+            case UID_MON:
+                {
+                    return coPtr->getSDBuffIDListOpt();
+                }
+            default:
+                {
+                    break;
+                }
+        }
+    }
+    return m_processRun->getMyHero()->getSDBuffIDListOpt();
+}
+
+void CBFace::drawBuffIDList(int drawDstX, int drawDstY, int drawDstW, int drawDstH) const
+{
+    const auto sdBuffIDListOpt = getSDBuffIDListOpt();
     if(!sdBuffIDListOpt.has_value()){
         return;
     }

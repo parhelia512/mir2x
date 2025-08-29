@@ -62,22 +62,24 @@ class ButtonBase: public Widget
         const int m_offset[3][2];
 
     protected:
-        std::function<void(Widget *      )> m_onOverIn;
-        std::function<void(Widget *      )> m_onOverOut;
-        std::function<void(Widget *, bool)> m_onClick;
-        std::function<void(Widget *      )> m_onTrigger;
+        std::function<void(Widget *           )> m_onOverIn;
+        std::function<void(Widget *           )> m_onOverOut;
+        std::function<void(Widget *, bool, int)> m_onClick;
+        std::function<void(Widget *        int)> m_onTrigger;
 
     public:
-        ButtonBase(Widget::VarDir,
+        ButtonBase(
+                Widget::VarDir,
                 Widget::VarOff,
                 Widget::VarOff,
+
                 Widget::VarSize,
                 Widget::VarSize,
 
-                std::function<void(Widget *      )> = nullptr,
-                std::function<void(Widget *      )> = nullptr,
-                std::function<void(Widget *, bool)> = nullptr,
-                std::function<void(Widget *      )> = nullptr,
+                std::function<void(Widget *           )> = nullptr,
+                std::function<void(Widget *           )> = nullptr,
+                std::function<void(Widget *, bool, int)> = nullptr,
+                std::function<void(Widget *,       int)> = nullptr,
 
                 std::optional<uint32_t> = {},
                 std::optional<uint32_t> = {},
@@ -95,32 +97,15 @@ class ButtonBase: public Widget
                 bool     = false);
 
     public:
-        virtual ~ButtonBase() = default;
-
-    public:
         bool processEventDefault(const SDL_Event &, bool, int, int) override;
 
     protected:
-        int offX() const
-        {
-            return m_offset[getState()][0];
-        }
-
-        int offY() const
-        {
-            return m_offset[getState()][1];
-        }
+        int offX() const { return m_offset[getState()][0]; }
+        int offY() const { return m_offset[getState()][1]; }
 
     public:
-        int getState() const
-        {
-            return m_state.getState();
-        }
-
-        int getLastState() const
-        {
-            return m_state.getLastState();
-        }
+        int     getState() const { return m_state.    getState(); }
+        int getLastState() const { return m_state.getLastState(); }
 
     public:
         void setState(int state)
@@ -147,7 +132,7 @@ class ButtonBase: public Widget
     private:
         void onOverIn();
         void onOverOut();
-        void onClick(bool);
-        void onTrigger();
+        void onClick(bool, int);
+        void onTrigger(int);
         void onBadEvent();
 };

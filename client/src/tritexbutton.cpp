@@ -12,25 +12,25 @@ TritexButton::TritexButton(
         Widget::VarOff argX,
         Widget::VarOff argY,
 
-        const uint32_t (& texIDList)[3],
-        const uint32_t (&seffIDList)[3],
+        const uint32_t (& argTexIDList)[3],
+        const uint32_t (&argSeffIDList)[3],
 
-        std::function<void(Widget *      )> fnOnOverIn,
-        std::function<void(Widget *      )> fnOnOverOut,
-        std::function<void(Widget *, bool)> fnOnClick,
-        std::function<void(Widget *      )> fnOnTrigger,
+        std::function<void(Widget *           )> argOnOverIn,
+        std::function<void(Widget *           )> argOnOverOut,
+        std::function<void(Widget *, bool, int)> argOnClick,
+        std::function<void(Widget *      , int)> argOnTrigger,
 
-        int offXOnOver,
-        int offYOnOver,
-        int offXOnClick,
-        int offYOnClick,
+        int argOffXOnOver,
+        int argOffYOnOver,
+        int argOffXOnClick,
+        int argOffYOnClick,
 
-        bool onClickDone,
-        bool radioMode,
-        bool alterColor,
+        bool argOnClickDone,
+        bool argRadioMode,
+        bool argAlterColor,
 
-        Widget *widgetPtr,
-        bool    autoDelete)
+        Widget *argParent,
+        bool    argAutoDelete)
 
     : ButtonBase
       {
@@ -40,33 +40,33 @@ TritexButton::TritexButton(
           0,
           0,
 
-          std::move(fnOnOverIn),
-          std::move(fnOnOverOut),
-          std::move(fnOnClick),
-          std::move(fnOnTrigger),
+          std::move(argOnOverIn),
+          std::move(argOnOverOut),
+          std::move(argOnClick),
+          std::move(argOnTrigger),
 
-          seffIDList[0],
-          seffIDList[1],
-          seffIDList[2],
+          argSeffIDList[0],
+          argSeffIDList[1],
+          argSeffIDList[2],
 
-          offXOnOver,
-          offYOnOver,
-          offXOnClick,
-          offYOnClick,
+          argOffXOnOver,
+          argOffYOnOver,
+          argOffXOnClick,
+          argOffYOnClick,
 
-          onClickDone,
-          radioMode,
+          argOnClickDone,
+          argRadioMode,
 
-          widgetPtr,
-          autoDelete,
+          argParent,
+          argAutoDelete,
       }
     , m_texIDList
       {
-          texIDList[0],
-          texIDList[1],
-          texIDList[2],
+          argTexIDList[0],
+          argTexIDList[1],
+          argTexIDList[2],
       }
-    , m_alterColor(alterColor)
+    , m_alterColor(argAlterColor)
 {
     const auto fnGetEdgeSize = [this](auto fn)
     {

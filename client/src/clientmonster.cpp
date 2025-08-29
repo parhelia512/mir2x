@@ -360,8 +360,8 @@ void ClientMonster::drawFrame(int viewX, int viewY, int focusMask, int frame, bo
             const int buffIconStartX = drawBarXP + 1;
             const int buffIconStartY = drawBarYP - buffIconDrawH;
 
-            if(getSDBuffIDList().has_value()){
-                for(int drawIconCount = 0; const auto id: getSDBuffIDList().value().idList){
+            if(getSDBuffIDListOpt().has_value()){
+                for(int drawIconCount = 0; const auto id: getSDBuffIDListOpt().value().idList){
                     const auto &br = DBCOM_BUFFRECORD(id);
                     fflassert(br);
 

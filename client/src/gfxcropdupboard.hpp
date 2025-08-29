@@ -19,7 +19,6 @@ class GfxCropDupBoard: public Widget
     public:
         GfxCropDupBoard(
                 Widget::VarDir argDir,
-
                 Widget::VarOff argX,
                 Widget::VarOff argY,
 

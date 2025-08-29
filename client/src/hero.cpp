@@ -233,8 +233,8 @@ void Hero::drawFrame(int viewX, int viewY, int, int frame, bool)
         const int buffIconStartX = drawHPX + 1;
         const int buffIconStartY = drawHPY - buffIconDrawH;
 
-        if(getSDBuffIDList().has_value()){
-            for(int drawIconCount = 0; const auto id: getSDBuffIDList().value().idList){
+        if(getSDBuffIDListOpt().has_value()){
+            for(int drawIconCount = 0; const auto id: getSDBuffIDListOpt().value().idList){
                 const auto &br = DBCOM_BUFFRECORD(id);
                 fflassert(br);
 

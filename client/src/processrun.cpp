@@ -461,7 +461,7 @@ void ProcessRun::draw() const
         }
     }
 
-    if(getMyHero()->getSDBuffIDList().has_value()){
+    if(getMyHero()->getSDBuffIDListOpt().has_value()){
         constexpr int buffIconDrawW = 30;
         constexpr int buffIconDrawH = 30;
         int buffIconOffX = g_sdlDevice->getRendererWidth() - buffIconDrawW;
@@ -470,7 +470,7 @@ void ProcessRun::draw() const
             buffIconOffX -= boardPtr->w();
         }
 
-        for(const auto id: getMyHero()->getSDBuffIDList().value().idList | std::views::reverse){
+        for(const auto id: getMyHero()->getSDBuffIDListOpt().value().idList | std::views::reverse){
             const auto &br = DBCOM_BUFFRECORD(id);
             fflassert(br);
 

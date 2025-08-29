@@ -7,6 +7,9 @@ class ProcessRun;
 class CBFace: public Widget
 {
     private:
+        constexpr static int BAR_HEIGHT = 5;
+
+    private:
         ProcessRun *m_processRun;
 
     private:
@@ -15,4 +18,12 @@ class CBFace: public Widget
 
     private:
         ShapeCropBoard m_drawBuffIDList;
+
+    private:
+        double getHPRatio() const;
+        uint32_t getFaceTexID() const;
+        const std::optional<SDBuffIDList> &getSDBuffIDListOpt() const;
+
+    private:
+        void drawBuffIDList(int, int, int, int) const;
 };

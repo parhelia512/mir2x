@@ -2,28 +2,18 @@
 #include <cstdint>
 #include <functional>
 
-#include "log.hpp"
 #include "widget.hpp"
-#include "pngtexdb.hpp"
-#include "levelbox.hpp"
 #include "acbutton.hpp"
-#include "sdldevice.hpp"
-#include "inputline.hpp"
 #include "texslider.hpp"
 #include "layoutboard.hpp"
-#include "texaniboard.hpp"
-#include "wmdaniboard.hpp"
 #include "tritexbutton.hpp"
 #include "alphaonbutton.hpp"
+#include "shapecropboard.hpp"
 #include "cbface.hpp"
 
 class ProcessRun;
-class ControlBoard;
 class CBMiddle: public Widget
 {
-    private:
-        friend class ControlBoard;
-
     private:
         ProcessRun *m_processRun;
 
@@ -34,18 +24,14 @@ class CBMiddle: public Widget
         FocusedFace m_face;
 
     private:
-        ImageBoard   m_bgImgFull;
-        GfxCropBoard m_bgImg;
-
+        ImageBoard      m_bgImgFull;
+        GfxCropDupBoard m_bgImg;
 
     private:
         TritexButton m_switchMode;
 
     private:
         TexSlider m_slider;
-
-    private:
-        InputLine m_cmdLine;
 
     private:
         CropViewBoard m_logView;
@@ -65,41 +51,6 @@ class CBMiddle: public Widget
                 bool     = false);
 
     public:
-        ~CBMiddle() = default;
-
-    private:
-        void drawFocusFace() const;
-        void drawMiddleExpand() const;
-        void drawMiddleDefault() const;
-        void drawLogBoardExpand() const;
-        void drawLogBoardDefault() const;
-        void drawInputGreyBackground() const;
-
-    public:
         void update(double) override;
         bool processEventDefault(const SDL_Event &, bool, int, int) override;
-
-    public:
-        void inputLineDone();
-
-    public:
-        void addParLog(const char *);
-
-    public:
-        void addLog(int, const char *);
-
-    public:
-        bool CheckMyHeroMoved();
-
-    private:
-        void switchExpandMode();
-
-    private:
-        void setButtonLoc();
-
-    public:
-        void onWindowResize(int, int);
-
-    private:
-        int logBoardStartY() const;
 };

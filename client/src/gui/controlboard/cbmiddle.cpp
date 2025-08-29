@@ -14,47 +14,6 @@
 #include "clientmonster.hpp"
 #include "teamstateboard.hpp"
 
-// for texture 0X00000012 and 0X00000013
-// I split it into many parts to fix different screen size
-// for screen width is not 800 we build a new interface using these two
-//
-// 0X00000012 : 800 x 133:  left and right
-// 0X00000013 : 456 x 131:  middle log
-// 0X00000022 : 127 x 41 :  title
-//
-//                         +-----------+                           ---
-//                          \  title  /                             ^
-// +------+==----------------+       +----------------==+--------+  |  --- <-- left/right is 133, middle is 131
-// |      $                                        +---+$        | 152  | ---
-// |      |                                        |   ||        |  |  133 | 120 as underlay log
-// |      |                                        +---+|        |  V   |  |
-// +------+---------------------------------------------+--------+ --- -- ---
-// ^      ^    ^           ^           ^          ^     ^        ^
-// | 178  | 50 |    110    |   127     |    50    | 119 |   166  | = 800
-//
-// |---fixed---|-------------repeat---------------|---fixed------|
-
-//
-// 0X00000027 : 456 x 298: char box frame
-//
-//                         +-----------+                        ---
-//                          \  title  /                          ^
-//        +==----------------+       +----------------==+ ---    |  ---- <-- startY
-//        $                                             $  ^     |   47
-//        |                                             |  |     |  ----
-//        |                                             |  |     |   |
-//        |                                             |  |     |  196: use to repeat, as m_stretchH
-//        |                                             | 298   319  |
-//        +---------------------------------------+-----+  |     |  ----
-//        |                                       |     |  |     |   55
-//        |                                       |() ()|  |     |   |
-//        |                                       |     |  v     v   |
-// +------+---------------------------------------+-----+--------+ --- -- ---
-// ^      ^    ^           ^           ^          ^     ^        ^
-// | 178  | 50 |    110    |   127     |    50    | 119 |   166  | = 800
-//
-// |---fixed---|-------------repeat---------------|---fixed------|
-
 extern Log *g_log;
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
@@ -65,7 +24,6 @@ CBMiddle::CBMiddle(
         Widget::VarOff argY,
 
         Widget::VarSize argW,
-        Widget::VarSize argH,
 
         ProcessRun *argProc,
 
@@ -79,15 +37,30 @@ CBMiddle::CBMiddle(
           std::move(argY),
 
           std::move(argW),
-          std::move(argH),
-
-          {},
+          0, // reset
 
           argParent,
           argAutoDelete,
       }
 
     , m_processRun(argProc)
+    , m_bg
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          [this](const Widget *){ return w(); },
+          [this](const Widget *){ return h(); },
+
+          [this](const Widget *self, int drawDstX, int drawDstY)
+          {
+              g_sdlDevice->fillRectangle(colorf::A_SHF(0XFF), drawDstX, drawDstY, self->w(), self->h());
+          },
+
+          this,
+          false,
+      }
 
     , m_bgImgFull
       {
@@ -104,50 +77,88 @@ CBMiddle::CBMiddle(
           },
       }
 
-    , m_bg
+    , m_bgImg
       {
           DIR_UPLEFT,
-          2,
-          14,
+          0,
+          0,
 
-          [this](const Widget *){ return w() - 4; },
+          [this](const Widget *){ return             w(); },
           [this](const Widget *){ return m_bgImgFull.h(); },
 
-          [this](const Widget *self, int drawDstX, int drawDstY)
-          {
-              g_sdlDevice->fillRectangle(colorf::A_SHF(0XFF), drawDstX, drawDstY, self->w(), self->h());
-          },
+          &m_bgImgFull,
+
+          50,
+          0,
+          287,
+          [this](const Widget *){ return m_bgImgFull.h(); },
 
           this,
           false,
       }
 
-    , m_cmdLine
+    , m_switchMode
       {
           DIR_UPLEFT,
-          7,
-          105,
+          [this](const Widget *){ return w() - 17; },
+          3,
 
-          [this](const Widget *){ return w() - 6; },
-          17,
+          {SYS_U32NIL, 0X00000028, 0X00000029},
+          {
+              SYS_U32NIL,
+              SYS_U32NIL,
+              0X01020000 + 105,
+          },
+
+          nullptr,
+          nullptr,
+          nullptr,
+          [this](Widget *, int clickCount)
+          {
+              if(auto parptr = hasParent<ControlBoard>()){
+                  parptr->onClick(clickCount);
+              }
+          },
+
+          0,
+          0,
+          0,
+          0,
 
           true,
-
-          1,
-          12,
-          0,
-          colorf::WHITE + colorf::A_SHF(255),
-
-          2,
-          colorf::WHITE + colorf::A_SHF(255),
-
-          nullptr,
-          [this](){ inputLineDone(); },
-          nullptr,
+          false,
+          true,
 
           this,
           false,
       }
+
+    // , m_cmdLine
+    //   {
+    //       DIR_UPLEFT,
+    //       7,
+    //       105,
+    //
+    //       [this](const Widget *){ return w() - 6; },
+    //       17,
+    //
+    //       true,
+    //
+    //       1,
+    //       12,
+    //       0,
+    //       colorf::WHITE + colorf::A_SHF(255),
+    //
+    //       2,
+    //       colorf::WHITE + colorf::A_SHF(255),
+    //
+    //       nullptr,
+    //       [this](){ inputLineDone(); },
+    //       nullptr,
+    //
+    //       this,
+    //       false,
+    //   }
 
     , m_logView
       {
@@ -440,17 +451,6 @@ CBMiddle::CBMiddle(
     fflassert(w() == g_sdlDevice->getRendererWidth());
 }
 
-void CBMiddle::update(double fUpdateTime)
-{
-    m_accuTime += fUpdateTime;
-    m_cmdLine.update(fUpdateTime);
-    m_logBoard.update(fUpdateTime);
-    m_arcAniBoard.update(fUpdateTime);
-
-    m_left.update(fUpdateTime);
-    m_right.update(fUpdateTime);
-}
-
 std::tuple<int, int> CBMiddle::scheduleStretch(int dstSize, int srcSize)
 {
     // use same way for default or expand mode
@@ -631,23 +631,9 @@ void CBMiddle::drawEx(int, int, int, int, int, int) const
     }
 }
 
-bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid)
+bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
 {
-    bool takeEvent = false;
-
-    takeEvent |= m_left               .processEvent(event, valid && !takeEvent);
-    takeEvent |= m_right              .processEvent(event, valid && !takeEvent);
-    takeEvent |= m_levelBox           .processEvent(event, valid && !takeEvent);
-    takeEvent |= m_slider             .processEvent(event, valid && !takeEvent);
-    takeEvent |= m_cmdLine            .processEvent(event, valid && !takeEvent);
-    takeEvent |= m_buttonSwitchMode   .processEvent(event, valid && !takeEvent);
-
-    if(m_expand){
-        takeEvent |= m_buttonEmoji.processEvent(event, valid && !takeEvent);
-        takeEvent |= m_buttonMute .processEvent(event, valid && !takeEvent);
-    }
-
-    if(takeEvent){
+    if(Widget::processEvent(event, valid, startDstX, startDstY)){
         return true;
     }
 
@@ -901,7 +887,7 @@ void CBMiddle::drawFocusFace() const
                         {
                             dynamic_cast<Hero *>(coPtr)->faceGfxID(),
                             coPtr->getHealthRatio().at(0),
-                            coPtr->getSDBuffIDList(),
+                            coPtr->getSDBuffIDListOpt(),
                         };
                     }
                 case UID_MON:
@@ -920,7 +906,7 @@ void CBMiddle::drawFocusFace() const
                         {
                             monFaceTexID,
                             coPtr->getHealthRatio().at(0),
-                            coPtr->getSDBuffIDList(),
+                            coPtr->getSDBuffIDListOpt(),
                         };
                     }
                 default:
@@ -934,7 +920,7 @@ void CBMiddle::drawFocusFace() const
         {
             m_processRun->getMyHero()->faceGfxID(),
             m_processRun->getMyHero()->getHealthRatio().at(0),
-            m_processRun->getMyHero()->getSDBuffIDList(),
+            m_processRun->getMyHero()->getSDBuffIDListOpt(),
         };
     }();
 
@@ -1008,18 +994,4 @@ void CBMiddle::drawFocusFace() const
             }
         }
     }
-}
-
-TritexButton *CBMiddle::getButton(const std::string_view &buttonName)
-{
-    if     (buttonName == "Inventory"    ){ return &m_right.m_buttonInventory    ; }
-    else if(buttonName == "HeroState"    ){ return &m_right.m_buttonHeroState    ; }
-    else if(buttonName == "HeroMagic"    ){ return &m_right.m_buttonHeroMagic    ; }
-    else if(buttonName == "Guild"        ){ return &m_right.m_buttonGuild        ; }
-    else if(buttonName == "Team"         ){ return &m_right.m_buttonTeam         ; }
-    else if(buttonName == "Quest"        ){ return &m_right.m_buttonQuest        ; }
-    else if(buttonName == "Horse"        ){ return &m_right.m_buttonHorse        ; }
-    else if(buttonName == "RuntimeConfig"){ return &m_right.m_buttonRuntimeConfig; }
-    else if(buttonName == "FriendChat"   ){ return &m_right.m_buttonFriendChat   ; }
-    else                                  { return nullptr                       ; }
 }

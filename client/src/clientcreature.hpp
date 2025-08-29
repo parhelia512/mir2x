@@ -205,7 +205,7 @@ class ClientCreature
         }
 
     public:
-        const auto &getSDBuffIDList() const
+        const auto &getSDBuffIDListOpt() const
         {
             return m_sdBuffIDList;
         }

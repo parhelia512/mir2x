@@ -2,12 +2,11 @@
 #include <functional>
 #include "widget.hpp"
 #include "bevent.hpp"
-#include "sdldevice.hpp"
 #include "textboard.hpp"
 #include "imageboard.hpp"
 
 class ProcessRun;
-class CBLevel: public Widget
+class CBLevel: public ButtonBase
 {
     private:
         ProcessRun *m_processRun;
@@ -16,13 +15,6 @@ class CBLevel: public Widget
         ImageBoard m_image;
         TextBoard  m_level;
 
-    private:
-        int m_state = BEVENT_OFF;
-
-    private:
-        std::function<void(int)> m_onDrag;
-        std::function<void(   )> m_onDoubleClick;
-
     public:
         CBLevel(
                 Widget::VarDir,
@@ -30,13 +22,8 @@ class CBLevel: public Widget
                 Widget::VarOff,
 
                 ProcessRun *,
+                std::function<void(Widget *)>,
 
-                const std::function<void(int)> &, // drag
-                const std::function<void(   )> &, // double-click
-
-                Widget * = nullptr, // parent
-                bool     = false);  // auto-delete
-
-    public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+                Widget * = nullptr,
+                bool     = false);
 };

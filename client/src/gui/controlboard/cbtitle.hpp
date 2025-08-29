@@ -1,5 +1,5 @@
 #include "widget.hpp"
-#include "levelbox.hpp"
+#include "cblevel.hpp"
 
 //                     |
 //                     v

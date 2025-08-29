@@ -8,31 +8,32 @@ extern SDLDevice *g_sdlDevice;
 extern SoundEffectDB *g_seffDB;
 
 ButtonBase::ButtonBase(
-        Widget::VarDir  argDir,
-        Widget::VarOff  argX,
-        Widget::VarOff  argY,
+        Widget::VarDir argDir,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
+
         Widget::VarSize argW,
         Widget::VarSize argH,
 
-        std::function<void(Widget *      )> fnOnOverIn,
-        std::function<void(Widget *      )> fnOnOverOut,
-        std::function<void(Widget *, bool)> fnOnClick,
-        std::function<void(Widget *      )> fnOnTrigger,
+        std::function<void(Widget *           )> argOnOverIn,
+        std::function<void(Widget *           )> argOnOverOut,
+        std::function<void(Widget *, bool, int)> argOnClick,
+        std::function<void(Widget *,       int)> argOnTrigger,
 
-        std::optional<uint32_t> seffIDOnOverIn,
-        std::optional<uint32_t> seffIDOnOverOut,
-        std::optional<uint32_t> seffIDOnClick,
+        std::optional<uint32_t> argSeffIDOnOverIn,
+        std::optional<uint32_t> argSeffIDOnOverOut,
+        std::optional<uint32_t> argSeffIDOnClick,
 
-        int offXOnOver,
-        int offYOnOver,
-        int offXOnClick,
-        int offYOnClick,
+        int argOffXOnOver,
+        int argOffYOnOver,
+        int argOffXOnClick,
+        int argOffYOnClick,
 
-        bool onClickDone,
-        bool radioMode,
+        bool argOnClickDone,
+        bool argRadioMode,
 
-        Widget *widgetPtr,
-        bool    autoFree)
+        Widget *argParent,
+        bool    argAutoDelete)
 
     : Widget
       {
@@ -44,31 +45,31 @@ ButtonBase::ButtonBase(
 
           {},
 
-          widgetPtr,
-          autoFree,
+          argParent,
+          argAutoDelete,
       }
 
-    , m_onClickDone(onClickDone)
-    , m_radioMode(radioMode)
+    , m_onClickDone(argOnClickDone)
+    , m_radioMode(argRadioMode)
 
     , m_seffID
       {
-          seffIDOnOverIn,
-          seffIDOnOverOut,
-          seffIDOnClick,
+          argSeffIDOnOverIn,
+          argSeffIDOnOverOut,
+          argSeffIDOnClick,
       }
 
     , m_offset
       {
-          {0            , 0          },
-          {offXOnOver   , offYOnOver },
-          {offXOnClick  , offYOnClick},
+          {0               , 0             },
+          {argOffXOnOver   , argOffYOnOver },
+          {argOffXOnClick  , argOffYOnClick},
       }
 
-    , m_onOverIn (std::move(fnOnOverIn ))
-    , m_onOverOut(std::move(fnOnOverOut))
-    , m_onClick  (std::move(fnOnClick  ))
-    , m_onTrigger(std::move(fnOnTrigger))
+    , m_onOverIn (std::move(argOnOverIn ))
+    , m_onOverOut(std::move(argOnOverOut))
+    , m_onClick  (std::move(argOnClick  ))
+    , m_onTrigger(std::move(argOnTrigger))
 {}
 
 bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
@@ -121,9 +122,9 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, int sta
                                 }
                                 else{
                                     setState(BEVENT_ON);
-                                    onClick(true);
+                                    onClick(true, event.button.clicks);
                                     if(m_onClickDone){
-                                        onTrigger();
+                                        onTrigger(event.button.clicks);
                                     }
                                 }
                                 break;
@@ -159,9 +160,9 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, int sta
                         case BEVENT_ON:
                             {
                                 setState(BEVENT_DOWN);
-                                onClick(false);
+                                onClick(false, event.button.clicks);
                                 if(!m_onClickDone){
-                                    onTrigger();
+                                    onTrigger(event.button.clicks);
                                 }
                                 break;
                             }
@@ -259,10 +260,10 @@ void ButtonBase::onOverOut()
     }
 }
 
-void ButtonBase::onClick(bool clickDone)
+void ButtonBase::onClick(bool clickDone, int clickCount)
 {
     if(m_onClick){
-        m_onClick(this, clickDone);
+        m_onClick(this, clickDone, clickCount);
     }
 
     if(clickDone){
@@ -275,10 +276,10 @@ void ButtonBase::onClick(bool clickDone)
     }
 }
 
-void ButtonBase::onTrigger()
+void ButtonBase::onTrigger(int clickCount)
 {
     if(m_onTrigger){
-        m_onTrigger(this);
+        m_onTrigger(this, clickCount);
     }
 }
 
