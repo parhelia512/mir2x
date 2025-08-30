@@ -154,6 +154,41 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarFlag;
         using WidgetTreeNode::VarColor;
 
+    private:
+        struct ROI final
+        {
+            int x = 0;
+            int y = 0;
+            int w = 0;
+            int h = 0;
+
+            bool empty() const;
+            bool in(int, int) const;
+
+            bool overlap(const ROI &) const;
+            bool overlap(int, int, int, int) const;
+
+            bool crop(RIO &rhs);
+            bool crop(int &, int &, int &, int &);
+        };
+
+        class ROIOpt final
+        {
+            private:
+                std::optional<Widget::ROI> m_roiOpt;
+
+            public:
+                ROIOpt() = default;
+                ROIOpt(std::nullopt_t) = default;
+
+            public:
+                ROIOpt(int, int, int, int);
+
+            public:
+                bool hasROI() const;
+                Widget::ROI evalROI(const Widget *) const;
+        };
+
     public:
         using WidgetTreeNode::ChildElement;
 
@@ -215,6 +250,10 @@ class Widget: public WidgetTreeNode
         static       std::function<uint32_t(const Widget *)> &asFuncColor(      Widget::VarColor &);
 
         static uint32_t evalColor(const Widget::VarColor &, const Widget *);
+
+    public:
+        static bool         hasROI(const Widget::ROIOpt &);
+        static Widget::ROI evalROI(const Widget::ROIOpt &, const Widget *);
 
     private:
         class RecursionDetector final

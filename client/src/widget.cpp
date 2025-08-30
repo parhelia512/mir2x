@@ -1,4 +1,5 @@
 #include <atomic>
+#include "mathf.hpp"
 #include "widget.hpp"
 
 WidgetTreeNode::WidgetTreeNode(Widget *argParent, bool argAutoDelete)
@@ -137,6 +138,43 @@ void WidgetTreeNode::purge()
     {
         return x.widget == nullptr;
     });
+}
+
+bool Widget::ROI::empty() const
+{
+    return (w <= 0) || (h <= 0);
+}
+
+bool Widget::ROI::in(int argX, int argY) const
+{
+    return mathf::pointInRectangle(argX, argY, x, y, w, h);
+}
+
+bool Widget::ROI::overlap(const Widget::ROI &rhs) const
+{
+    return mathf::rectangleOverlap(x, y, w, h, rhs.x, rhs.y, rhs.w, rhs.h);
+}
+
+bool Widget::ROI::crop(Widget::RIO &rhs)
+{
+    return mathf::rectangleOverlapRegion(x, y, w, h, rhs.x, rhs.y, rhs.w, rhs.h);
+}
+
+Widget::ROIOpt::ROIOpt(int argX, int argY, int argW, int argH)
+    : m_roi(Widget::ROI{argX, argY, argW, argH})
+{}
+
+Widget::ROI Widget::ROIOpt::evalROI(const Widget *widget) const
+{
+    if(m_roi.has_value()){
+        return m_roi.value();
+    }
+    else if(widget){
+        return Widget::ROI{0, 0, widget->w(), widget->h()};
+    }
+    else{
+        throw std::invalid_argument("widget");
+    }
 }
 
 bool Widget::hasIntDir(const Widget::VarDir &varDir)
@@ -356,6 +394,24 @@ uint32_t Widget::evalColor(const Widget::VarColor &varColor, const Widget *widge
             return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
         },
     }, varColor);
+}
+
+bool Widget::hasROI(const Widget::ROIOpt &roiOpt)
+{
+    return roiOpt.has_value();
+}
+
+Widget::ROI Widget::evalROI(const Widget::ROIOpt roiOpt, const Widget *widgetPtr)
+{
+    if(roiOpt.has_value()){
+        return roiOpt.value();
+    }
+    else if(widgetPtr){
+        return Widget::ROI{0, 0, widgetPtr->w(), widgetPtr->h()};
+    }
+    else{
+        throw fflerror("invalid arguments");
+    }
 }
 
 Widget::Widget(
