@@ -583,6 +583,64 @@ namespace mathf
         return true;
     }
 
+    inline bool cropViewROI(
+            int *srcX, int *srcY,
+            int *srcW, int *srcH,
+            int *dstX, int *dstY,
+
+            int viewerMarginX,
+            int viewerMarginY,
+
+            int viewerFullW, // margin included
+            int viewerFullH,
+
+            int viewedX,
+            int viewedY,
+            int viewedW,
+            int viewedH,
+
+            int viewedFullW,
+            int viewedFullH,
+
+            int dstRegionX = 0, int dstRegionY = 0, int dstRegionW = -1, int dstRegionH = -1)  // ROI of canvas, by default uses fully
+    {
+        fflassert(srcX);
+        fflassert(srcY);
+        fflassert(srcW);
+        fflassert(srcH);
+        fflassert(dstX);
+        fflassert(dstY);
+
+        const int viewedXOrig = viewedX;
+        const int viewedYOrig = viewedY;
+
+        if(!mathf::rectangleOverlapRegion<int>(0, 0, viewedFullW, viewedFullH, viewedX, viewedY, viewedW, viewedH)){
+            return false;
+        }
+
+        if(!mathf::cropChildROI(
+                    srcX, srcY,
+                    srcW, srcH,
+                    dstX, dstY,
+
+                    viewerFullW,
+                    viewerFullH,
+
+                    viewerMarginX + viewedX - viewedXOrig,
+                    viewerMarginY + viewedY - viewedYOrig,
+
+                    viewedW,
+                    viewedH,
+
+                    dstRegionX, dstRegionY, dstRegionW, dstRegionH)){
+            return false;
+        }
+
+        *srcX += viewedX;
+        *srcY += viewedY;
+        return true;
+    }
+
     class ARBVar final
     {
         // adjusted random binary variable

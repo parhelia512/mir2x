@@ -168,7 +168,7 @@ class Widget: public WidgetTreeNode
             bool overlap(const ROI &) const;
             bool overlap(int, int, int, int) const;
 
-            bool crop(RIO &rhs);
+            bool crop(RIO &);
             bool crop(int &, int &, int &, int &);
         };
 
@@ -250,10 +250,6 @@ class Widget: public WidgetTreeNode
         static       std::function<uint32_t(const Widget *)> &asFuncColor(      Widget::VarColor &);
 
         static uint32_t evalColor(const Widget::VarColor &, const Widget *);
-
-    public:
-        static bool         hasROI(const Widget::ROIOpt &);
-        static Widget::ROI evalROI(const Widget::ROIOpt &, const Widget *);
 
     private:
         class RecursionDetector final

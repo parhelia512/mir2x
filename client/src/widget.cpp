@@ -155,9 +155,19 @@ bool Widget::ROI::overlap(const Widget::ROI &rhs) const
     return mathf::rectangleOverlap(x, y, w, h, rhs.x, rhs.y, rhs.w, rhs.h);
 }
 
+bool Widget::ROI::overlap(int srcX, int srcY, int srcW, int srcH) const
+{
+    return mathf::rectangleOverlap(x, y, w, h, srcX, srcY, srcW, srcH);
+}
+
 bool Widget::ROI::crop(Widget::RIO &rhs)
 {
     return mathf::rectangleOverlapRegion(x, y, w, h, rhs.x, rhs.y, rhs.w, rhs.h);
+}
+
+bool Widget::ROI::crop(int &argX, int &argY, int &argW, int &argH)
+{
+    return mathf::rectangleOverlapRegion(x, y, w, h, argX, argY, argW, argH);
 }
 
 Widget::ROIOpt::ROIOpt(int argX, int argY, int argW, int argH)
@@ -166,14 +176,17 @@ Widget::ROIOpt::ROIOpt(int argX, int argY, int argW, int argH)
 
 Widget::ROI Widget::ROIOpt::evalROI(const Widget *widget) const
 {
-    if(m_roi.has_value()){
-        return m_roi.value();
-    }
-    else if(widget){
-        return Widget::ROI{0, 0, widget->w(), widget->h()};
+    fflassert(widget);
+    if(const Widget::ROI fullROI {0, 0, widget->w(), widget->h()}; m_roi.has_value()){
+        if(auto currROI = m_roi.value(); fullROI.crop(currROI)){
+            return currROI;
+        }
+        else{
+            return Widget::ROI{0, 0, 0, 0};
+        }
     }
     else{
-        throw std::invalid_argument("widget");
+        return fullROI;
     }
 }
 
