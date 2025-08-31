@@ -65,7 +65,7 @@ class ButtonBase: public Widget
         std::function<void(Widget *           )> m_onOverIn;
         std::function<void(Widget *           )> m_onOverOut;
         std::function<void(Widget *, bool, int)> m_onClick;
-        std::function<void(Widget *        int)> m_onTrigger;
+        std::function<void(Widget *,       int)> m_onTrigger;
 
     public:
         ButtonBase(
@@ -97,7 +97,7 @@ class ButtonBase: public Widget
                 bool     = false);
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
     protected:
         int offX() const { return m_offset[getState()][0]; }

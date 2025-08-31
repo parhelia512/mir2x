@@ -90,7 +90,7 @@ ACButton::ACButton(dir8_t dir, int x, int y, ProcessRun *proc, const std::vector
     setLabel();
 }
 
-void ACButton::drawEx(int dstX, int dstY, int, int, int, int) const
+void ACButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
 {
     const auto buttonName = m_buttonNameList.at(m_currButtonName);
     auto texPtr = g_progUseDB->retrieve(m_texMap.at(buttonName));

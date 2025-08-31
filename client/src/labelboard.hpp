@@ -68,8 +68,5 @@ class LabelBoard: public Widget
         }
 
     public:
-        void drawEx(int argDstX, int argDstY, int argSrcX, int argSrcY, int argSrcW, int argSrcH) const override
-        {
-            m_tpset.drawEx(argDstX, argDstY, argSrcX, argSrcY, argSrcW, argSrcH);
-        }
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 };

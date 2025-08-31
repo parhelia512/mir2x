@@ -147,7 +147,17 @@ bool Widget::ROI::empty() const
 
 bool Widget::ROI::in(int argX, int argY) const
 {
-    return mathf::pointInRectangle(argX, argY, x, y, w, h);
+    return mathf::pointInRectangle<int>(argX, argY, x, y, w, h);
+}
+
+bool Widget::ROI::crop(Widget::RIO &r) const
+{
+    if(r.empty()){
+        return false;
+    }
+
+    return mathf::cropSegment<int>(r.x, r.w, x, w)
+        && mathf::cropSegment<int>(r.y, r.h, y, h);
 }
 
 bool Widget::ROI::overlap(const Widget::ROI &rhs) const
@@ -155,38 +165,29 @@ bool Widget::ROI::overlap(const Widget::ROI &rhs) const
     return mathf::rectangleOverlap(x, y, w, h, rhs.x, rhs.y, rhs.w, rhs.h);
 }
 
-bool Widget::ROI::overlap(int srcX, int srcY, int srcW, int srcH) const
-{
-    return mathf::rectangleOverlap(x, y, w, h, srcX, srcY, srcW, srcH);
-}
-
-bool Widget::ROI::crop(Widget::RIO &rhs)
-{
-    return mathf::rectangleOverlapRegion(x, y, w, h, rhs.x, rhs.y, rhs.w, rhs.h);
-}
-
-bool Widget::ROI::crop(int &argX, int &argY, int &argW, int &argH)
-{
-    return mathf::rectangleOverlapRegion(x, y, w, h, argX, argY, argW, argH);
-}
-
 Widget::ROIOpt::ROIOpt(int argX, int argY, int argW, int argH)
     : m_roi(Widget::ROI{argX, argY, argW, argH})
+{}
+
+Widget::ROIOpt::ROIOpt(const Widget::ROI &roi)
+    : m_roi(roi)
 {}
 
 Widget::ROI Widget::ROIOpt::evalROI(const Widget *widget) const
 {
     fflassert(widget);
-    if(const Widget::ROI fullROI {0, 0, widget->w(), widget->h()}; m_roi.has_value()){
-        if(auto currROI = m_roi.value(); fullROI.crop(currROI)){
-            return currROI;
-        }
-        else{
-            return Widget::ROI{0, 0, 0, 0};
-        }
+    return evalROI(widget->roi());
+}
+
+Widget::ROI Widget::ROIOpt::evalROI(const Widget::ROI &roi) const
+{
+    if(m_roi.has_value()){
+        auto currROI = m_roi.value();
+        roi.crop(currROI);
+        return currROI;
     }
     else{
-        return fullROI;
+        return roi;
     }
 }
 
@@ -409,24 +410,6 @@ uint32_t Widget::evalColor(const Widget::VarColor &varColor, const Widget *widge
     }, varColor);
 }
 
-bool Widget::hasROI(const Widget::ROIOpt &roiOpt)
-{
-    return roiOpt.has_value();
-}
-
-Widget::ROI Widget::evalROI(const Widget::ROIOpt roiOpt, const Widget *widgetPtr)
-{
-    if(roiOpt.has_value()){
-        return roiOpt.value();
-    }
-    else if(widgetPtr){
-        return Widget::ROI{0, 0, widgetPtr->w(), widgetPtr->h()};
-    }
-    else{
-        throw fflerror("invalid arguments");
-    }
-}
-
 Widget::Widget(
         Widget::VarDir argDir,
         Widget::VarOff argX,
@@ -466,36 +449,22 @@ Widget::Widget(
     }
 }
 
-void Widget::drawChildEx(
-        const Widget *child,
-
-        int dstX,
-        int dstY,
-
-        int srcX,
-        int srcY,
-
-        int srcW,
-        int srcH) const
+void Widget::drawChildEx(const Widget *child, int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
     fflassert(child);
     fflassert(hasChild(child->id()));
 
-    if(!child->show()){
+    auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
         return;
     }
 
-    int drawSrcX = srcX;
-    int drawSrcY = srcY;
-    int drawSrcW = srcW;
-    int drawSrcH = srcH;
-    int drawDstX = dstX;
-    int drawDstY = dstY;
+    if(!mathf::cropChildROI(
+                &roiOpt->x, &roiOpt->y,
+                &roiOpt->w, &roiOpt->h,
 
-    if(mathf::cropChildROI(
-                &drawSrcX, &drawSrcY,
-                &drawSrcW, &drawSrcH,
-                &drawDstX, &drawDstY,
+                &dstX,
+                &dstY,
 
                 w(),
                 h(),
@@ -504,46 +473,44 @@ void Widget::drawChildEx(
                 child->dy(),
                 child-> w(),
                 child-> h())){
-        child->drawEx(drawDstX, drawDstY, drawSrcX, drawSrcY, drawSrcW, drawSrcH);
+        return;
     }
+
+    child->drawEx(dstX, dstY, roiOpt.value());
 }
 
-void Widget::drawAt(
-        dir8_t dstDir,
-        int    dstX,
-        int    dstY,
-
-        int dstRgnX = 0,
-        int dstRgnY = 0,
-
-        int dstRgnW = -1,
-        int dstRgnH = -1) const
+void Widget::drawAt(dir8_t dstDir, int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    int srcXCrop = 0;
-    int srcYCrop = 0;
-    int dstXCrop = dstX - xSizeOff(dstDir, w());
-    int dstYCrop = dstY - ySizeOff(dstDir, h());
-    int srcWCrop = w();
-    int srcHCrop = h();
+    auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
 
-    if(mathf::cropROI(
-                &srcXCrop, &srcYCrop,
-                &srcWCrop, &srcHCrop,
-                &dstXCrop, &dstYCrop,
+    dstX -= xSizeOff(dstDir, w());
+    dstY -= ySizeOff(dstDir, h());
+
+    if(!mathf::cropROI(
+                &roiOpt->x, &roiOpt->y,
+                &roiOpt->w, &roiOpt->h,
+
+                &dstX,
+                &dstY,
 
                 w(),
                 h(),
 
-                0, 0, -1, -1,
-                dstRgnX, dstRgnY, dstRgnW, dstRgnH)){
-        drawEx(dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
+                roiOpt->x, roiOpt->y,
+                roiOpt->w, roiOpt->h)){
+        return;
     }
+
+    drawEx(dstX, dstY, roiOpt.value());
 }
 
-void Widget::drawRoot()
+void Widget::drawRoot(int rootDstX, int rootDstY)
 {
     fflassert(!parent());
-    drawEx(dx(), dy(), 0, 0, w(), h());
+    drawEx(dx() + rootDstX, dy() + rootDstY, std::nullopt);
 }
 
 int Widget::sizeOff(int size, int index)
@@ -591,30 +558,30 @@ void Widget::update(double fUpdateTime)
     });
 }
 
-Widget *Widget::setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, int, int)> argHandler)
+Widget *Widget::setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, int, int, const Widget::ROIOpt &)> argHandler)
 {
     m_processEventHandler = std::move(argHandler);
     return this;
 }
 
-bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, Widget::ROIOpt &roi)
 {
-    if(m_processEventHandler){ return m_processEventHandler(this, event, valid, startDstX, startDstY); }
-    else                     { return   processEventDefault(      event, valid, startDstX, startDstY); }
+    if(m_processEventHandler){ return m_processEventHandler(this, event, valid, startDstX, startDstY, roi); }
+    else                     { return   processEventDefault(      event, valid, startDstX, startDstY, roi); }
 }
 
-bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
     return processEvent(event, valid, startDstX + dx(), startDstY + dy());
 }
 
-bool Widget::applyRootEvent(const SDL_Event &event, bool valid)
+bool Widget::applyRootEvent(const SDL_Event &event, bool valid, int rootDstX, int rootDstY)
 {
     fflassert(!parent());
-    return processEvent(event, valid, dx(), dy());
+    return processEvent(event, valid, dx() + rootDstX, dy() + rootDstY, std::nullopt);
 }
 
-bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
     if(!show()){
         return false;
@@ -658,7 +625,7 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDs
     return took;
 }
 
-void Widget::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void Widget::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
     if(!show()){
         return;
@@ -833,20 +800,64 @@ int Widget::dy() const
     return Widget::evalOff(m_y.first, this) + m_y.second - ySizeOff(dir(), h());
 }
 
+std::optional<Widget::ROI> Widget::cropDrawROI(int &dstX, int &dstY, const Widget::ROIOpt &roi) const
+{
+    const auto srcROI = roi.evalROI(this);
+    if(srcROI.empty()){
+        return std::nullopt;
+    }
+
+    const auto srcXDiff = srcROI.x - roi.get([](const auto &r){ return r.x; }, 0);
+    const auto srcYDiff = srcROI.y - roi.get([](const auto &r){ return r.y; }, 0);
+
+    dstX += srcXDiff;
+    dstY += srcYDiff;
+
+    return srcROI;
+}
+
 Widget *Widget::setData(std::any argData)
 {
     m_data = std::move(argData);
     return this;
 }
 
-bool Widget::in(int pixelX, int pixelY, int startDstX, int startDstY) const
+bool Widget::in(int pixelX, int pixelY, int startDstX, int startDstY, const Widget::ROIOpt &roi) const
 {
-    return mathf::pointInRectangle<int>(pixelX, pixelY, startDstX, startDstY, w(), h());
+    if(const auto roiOpt = cropDrawROI(startDstX, startDstY, roi); roiOpt.has_value()){
+        return roiOpt.value().in(pixelX - startDstX, pixelY - startDstY);
+    }
+    return false;
 }
 
-bool Widget::parentIn(int pixelX, int pixelY, int startDstX, int startDstY) const
+bool Widget::parentIn(int pixelX, int pixelY, int parentW, int parentH, int startDstX, int startDstY, const Widget::ROIOpt &roi) const
 {
-    return in(pixelX, pixelY, startDstX + dx(), startDstY + dy());
+    // helper function used in parents' drawEx()/processEventDefault()
+    // check if {pixelX, pixelY} is in current child, when its parent only viewed by: {startDstX, startDstY, roi}
+
+    auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
+    if(!mathf::cropChildROI(
+                &roiOpt->x, &roiOpt->y,
+                &roiOpt->w, &roiOpt->h,
+
+                &startDstX,
+                &startDstY,
+
+                parentW,
+                parentH,
+
+                dx(),
+                dy(),
+                w (),
+                h ())){
+        return false;
+    }
+
+    return in(pixelX, pixelY, startDstX, startDstY, roiOpt.value());
 }
 
 bool Widget::focus() const

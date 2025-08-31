@@ -4,20 +4,25 @@
 #include "pngtexdb.hpp"
 #include "sdldevice.hpp"
 #include "buttonbase.hpp"
+#include "imageboard.hpp"
+#include "shapecropboard.hpp"
 
 class AlphaOnButton: public ButtonBase
 {
     private:
-        uint8_t m_alphaMod;
-        uint32_t m_onColor;
+        const uint32_t m_modColor;
 
     private:
-        uint32_t m_texID;
+        const uint32_t m_texID;
 
     private:
-        int m_onOffX;
-        int m_onOffY;
-        int m_onRadius;
+        const int m_onOffX;
+        const int m_onOffY;
+        const int m_onRadius;
+
+    private:
+        ShapeCropBoard m_on;
+        ImageBoard     m_down;
 
     public:
         AlphaOnButton(
@@ -29,19 +34,16 @@ class AlphaOnButton: public ButtonBase
                 int,
                 int,
 
-                uint8_t,
                 uint32_t,
                 uint32_t,
 
-                std::function<void(Widget *      )> fnOnOverIn  = nullptr,
-                std::function<void(Widget *      )> fnOnOverOut = nullptr,
-                std::function<void(Widget *, bool)> fnOnClick   = nullptr,
-                std::function<void(Widget *      )> fnOnTrigger = nullptr,
+                std::function<void(Widget *           )> = nullptr,
+                std::function<void(Widget *           )> = nullptr,
+                std::function<void(Widget *, bool, int)> = nullptr,
+                std::function<void(Widget *,       int)> = nullptr,
 
-                bool    triggerOnDone = true,
-                Widget *pwidget       = nullptr,
-                bool    autoDelete    = false);
+                bool = true,
 
-    public:
-        void drawEx(int, int, int, int, int, int) const override;
+                Widget * = nullptr,
+                bool     = false);
 };

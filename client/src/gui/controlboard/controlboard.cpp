@@ -123,14 +123,9 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
       }
 {}
 
-void ControlBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+void ControlBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROPOpt &roi)
 {
-    bool takeEvent = false;
-
-    takeEvent |= Widget::processEvent(event, valid, startDstX, startDstY);
-    takeEvnet |= m_title.processEvent();
-
-    if(takeEvent){
+    if(Widget::processEvent(event, valid, startDstX, startDstY, roi)){
         return true;
     }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <limits>
 #include <random>
 #include <cstdlib>
 #include <cstdint>
@@ -50,6 +51,7 @@ namespace mathf
     };
 
     template <typename T> concept arithmetic = std::integral<T> || std::floating_point<T>;
+    template <typename T> concept signed_integer = std::numeric_limits<T>::is_signed && std::numeric_limits<T>::is_ingeter;
 }
 
 namespace mathf
@@ -200,6 +202,28 @@ namespace mathf
     template<mathf::arithmetic T> bool segmentOverlap(T nfX1, T nfW1, T nfX2, T nfW2)
     {
         return !(nfX1 >= nfX2 + nfW2 || nfX2 >= nfX1 + nfW1);
+    }
+
+    template<mathf::signed_integer T> bool cropSegment(T &fx, T &fw, T tx, T tw) // from -> to
+    {
+        if(fx + fw <= tx){
+            fx = fx + fw - 1;
+            fw = 0;
+            return false;
+        }
+        else if(tx + tw <= fx){
+            fw = 0;
+            return false;
+        }
+        else{
+            const auto rx = std::max<T>(fx, tx);
+            const auto rw = std::min<T>(fx + fw, tx + tw) - rx;
+
+            fx = rx;
+            fw = rw;
+
+            return fw > 0;
+        }
     }
 
     template<typename T> bool rectangleOverlap(T nfX1, T nfY1, T nfW1, T nfH1, T nfX2, T nfY2, T nfW2, T nfH2)

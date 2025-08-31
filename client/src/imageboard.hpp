@@ -56,7 +56,7 @@ class ImageBoard: public Widget
                 bool     = false);
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     public:
         void setColor(Widget::VarColor color)
@@ -82,5 +82,11 @@ class ImageBoard: public Widget
             else if(hflip         ) return { true, (((rotate    ) % 4) + 4) % 4};
             else if(         vflip) return { true, (((rotate + 2) % 4) + 4) % 4};
             else                    return {false, (((rotate    ) % 4) + 4) % 4};
+        }
+
+    public:
+        SDL_Texture *getTexture() const
+        {
+            return m_loadFunc ? m_loadFunc(this) : nullptr;
         }
 };

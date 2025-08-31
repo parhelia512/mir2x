@@ -7,6 +7,7 @@
 #include "texslider.hpp"
 #include "layoutboard.hpp"
 #include "tritexbutton.hpp"
+#include "cropviewboard.hpp"
 #include "alphaonbutton.hpp"
 #include "shapecropboard.hpp"
 #include "cbface.hpp"
@@ -21,7 +22,7 @@ class CBMiddle: public Widget
         ShapeCropBoard m_bg;
 
     private:
-        FocusedFace m_face;
+        CBFace m_face;
 
     private:
         ImageBoard      m_bgImgFull;

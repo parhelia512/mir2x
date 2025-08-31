@@ -154,7 +154,7 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarFlag;
         using WidgetTreeNode::VarColor;
 
-    private:
+    public:
         struct ROI final
         {
             int x = 0;
@@ -165,11 +165,8 @@ class Widget: public WidgetTreeNode
             bool empty() const;
             bool in(int, int) const;
 
+            bool crop(ROI &) const;
             bool overlap(const ROI &) const;
-            bool overlap(int, int, int, int) const;
-
-            bool crop(RIO &);
-            bool crop(int &, int &, int &, int &);
         };
 
         class ROIOpt final
@@ -179,14 +176,23 @@ class Widget: public WidgetTreeNode
 
             public:
                 ROIOpt() = default;
-                ROIOpt(std::nullopt_t) = default;
+                ROIOpt(std::nullopt_t): ROIOpt() {};
 
             public:
                 ROIOpt(int, int, int, int);
 
             public:
-                bool hasROI() const;
-                Widget::ROI evalROI(const Widget *) const;
+                ROIOpt(const Widget::ROI &);
+
+            public:
+                template<std::invocable<const Widget::ROI &> Func> auto get(Func && func, std::invoke_result_t<Func, const ROI &> def) const
+                {
+                    return m_roiOpt.has_value() ? func(m_roiOpt.value()) : def;
+                }
+
+            public:
+                Widget::ROI evalROI(const Widget *     ) const;
+                Widget::ROI evalROI(const Widget::ROI &) const;
         };
 
     public:
@@ -305,7 +311,7 @@ class Widget: public WidgetTreeNode
 
     private:
         std::function<void(Widget *)> m_afterResizeHandler;
-        std::function<bool(Widget *, const SDL_Event &, bool, int, int)> m_processEventHandler;
+        std::function<bool(Widget *, const SDL_Event &, bool, int, int, const Widget::ROIOpt &)> m_processEventHandler;
 
     public:
         Widget(
@@ -330,12 +336,12 @@ class Widget: public WidgetTreeNode
         virtual void update(double);
 
     public:
-        Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, int, int)>);
+        Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, int, int, const Widget::ROIOpt &)>);
 
-        virtual bool processEvent      (const SDL_Event &, bool, int, int) final;
-        virtual bool processParentEvent(const SDL_Event &, bool, int, int) final;
+        virtual bool processEvent      (const SDL_Event &, bool, int, int, const Widget::ROIOpt &) final;
+        virtual bool processParentEvent(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) final;
 
-        bool applyRootEvent(const SDL_Event &, bool);
+        bool applyRootEvent(const SDL_Event &, bool, int, int);
 
     protected:
         // @param
@@ -360,14 +366,14 @@ class Widget: public WidgetTreeNode
         //
         // above two view-window can show the same widget, but different part of it
         // and either view can capture and process event
-        virtual bool processEventDefault(const SDL_Event &, bool, int, int);
+        virtual bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &);
 
     public:
-        virtual void drawEx     (                int, int, int    , int    , int     , int     ) const      ;
-        virtual void drawChildEx(const Widget *, int, int, int    , int    , int     , int     ) const final;
-        virtual void drawAt     (        dir8_t, int, int, int = 0, int = 0, int = -1, int = -1) const final;
+        virtual void drawEx     (                int, int, const Widget::ROIOpt &               ) const      ;
+        virtual void drawChildEx(const Widget *, int, int, const Widget::ROIOpt &               ) const final;
+        virtual void drawAt     (        dir8_t, int, int, const Widget::ROIOpt & = std::nullopt) const final;
 
-        void drawRoot() const;
+        void drawRoot(int, int) const;
 
     public:
         Widget *setAfterResize(std::function<void(Widget *)>);
@@ -395,6 +401,15 @@ class Widget: public WidgetTreeNode
         virtual int rdy(const Widget * = nullptr) const final;
 
     public:
+        Widget::ROI roi() const
+        {
+            return {0, 0, w(), h()};
+        }
+
+    protected:
+        std::optional<Widget::ROI> cropDrawROI(int &, int &, const Widget::ROIOpt &) const;
+
+    public:
         auto & data(this auto && self)
         {
             return self.m_data;
@@ -404,8 +419,8 @@ class Widget: public WidgetTreeNode
         Widget *setData(std::any);
 
     public:
-        virtual bool       in(int, int, int, int) const;
-        virtual bool parentIn(int, int, int, int) const final;
+        virtual bool       in(int, int,           int, int, const Widget::ROIOpt &) const;
+        virtual bool parentIn(int, int, int, int, int, int, const Widget::ROIOpt &) const final;
 
     public:
         virtual bool focus() const;

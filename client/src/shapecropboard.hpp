@@ -23,5 +23,5 @@ class ShapeCropBoard: public Widget
                 bool     = false);
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 };

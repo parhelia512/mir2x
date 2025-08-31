@@ -83,14 +83,13 @@ CBRight::CBRight(
           1,
           10,
 
-          80,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE + colorf::A_SHF(80),
           0X00000042,
 
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto cb = hasParent<ControlBoard>()){
                   cb->addLog(0, "exchange doesn't implemented yet");
@@ -111,14 +110,13 @@ CBRight::CBRight(
           1,
           10,
 
-          80,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE + colorf::A_SHF(80),
           0X00000043,
 
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto p = dynamic_cast<MiniMapBoard *>(m_processRun->getWidget("MiniMapBoard"))){
                   if(p->getMiniMapTexture()){
@@ -146,14 +144,13 @@ CBRight::CBRight(
           1,
           10,
 
-          80,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE + colorf::A_SHF(80),
           0X00000044,
 
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               m_processRun->flipDrawMagicKey();
           },
@@ -177,7 +174,7 @@ CBRight::CBRight(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("InventoryBoard")){
                   p->flipShow();
@@ -212,7 +209,7 @@ CBRight::CBRight(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("PlayerStateBoard")){
                   p->flipShow();
@@ -247,7 +244,7 @@ CBRight::CBRight(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("SkillBoard")){
                   p->flipShow();
@@ -282,7 +279,7 @@ CBRight::CBRight(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("GuildBoard")){
                   p->flipShow();
@@ -317,7 +314,7 @@ CBRight::CBRight(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               auto boardPtr = dynamic_cast<TeamStateBoard *>(m_processRun->getWidget("TeamStateBoard"));
               auto  heroPtr = m_processRun->getMyHero();
@@ -361,7 +358,7 @@ CBRight::CBRight(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("QuestStateBoard")){
                   p->flipShow();
@@ -398,7 +395,7 @@ CBRight::CBRight(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("HorseBoard")){
                   p->flipShow();
@@ -433,7 +430,7 @@ CBRight::CBRight(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("RuntimeConfigBoard")){
                   p->flipShow();
@@ -468,7 +465,7 @@ CBRight::CBRight(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("FriendChatBoard")){
                   p->flipShow();

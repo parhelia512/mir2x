@@ -92,3 +92,11 @@ void LabelBoard::setImageMaskColor(uint32_t argColor)
 {
     m_tpset.setImageMaskColor(argColor);
 }
+
+void LabelBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+{
+    const auto srcXOrig = roi.get([](const auto &r){ return r.x; }, 0);
+    const auto srcYOrig = roi.get([](const auto &r){ return r.y; }, 0);
+
+    m_tpset.drawEx(dstX, dstY, srcX, srcY, srcW, srcH);
+}

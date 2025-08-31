@@ -72,7 +72,7 @@ ButtonBase::ButtonBase(
     , m_onTrigger(std::move(argOnTrigger))
 {}
 
-bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
     if(!valid){
         if(m_radioMode){

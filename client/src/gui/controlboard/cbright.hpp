@@ -7,6 +7,7 @@
 #include "imageboard.hpp"
 #include "tritexbutton.hpp"
 #include "gfxcropboard.hpp"
+#include "alphaonbutton.hpp"
 
 class ProcessRun;
 class ControlBoard;

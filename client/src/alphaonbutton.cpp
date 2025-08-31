@@ -12,18 +12,17 @@ AlphaOnButton::AlphaOnButton(
         Widget::VarOff argX,
         Widget::VarOff argY,
 
-        int onOffX,
-        int onOffY,
-        int onRadius,
+        int argOnOffX,
+        int argOnOffY,
+        int argOnRadius,
 
-        uint8_t alphaMod,
-        uint32_t onColor,
-        uint32_t downTexID,
+        uint32_t argModColor,
+        uint32_t argDownTexID,
 
-        std::function<void(Widget *      )> fnOnOverIn,
-        std::function<void(Widget *      )> fnOnOverOut,
-        std::function<void(Widget *, bool)> fnOnClick,
-        std::function<void(Widget *      )> fnOnTrigger,
+        std::function<void(Widget *           )> fnOnOverIn,
+        std::function<void(Widget *           )> fnOnOverOut,
+        std::function<void(Widget *, bool, int)> fnOnClick,
+        std::function<void(Widget *,       int)> fnOnTrigger,
 
         bool    triggerOnDone,
         Widget *pwidget,
@@ -57,49 +56,75 @@ AlphaOnButton::AlphaOnButton(
           pwidget,
           autoDelete,
       }
-    , m_alphaMod(alphaMod)
-    , m_onColor(onColor)
-    , m_texID(downTexID)
-    , m_onOffX(onOffX)
-    , m_onOffY(onOffY)
-    , m_onRadius(onRadius)
+
+    , m_modColor(argModColor)
+    , m_texID(argDownTexID)
+    , m_onOffX(argOnOffX)
+    , m_onOffY(argOnOffY)
+    , m_onRadius(argOnRadius)
+
+    , m_on
+      {
+          DIR_UPLEFT,
+          m_onOffX,
+          m_onOffY,
+
+          [this](const Widget *){ return w(); },
+          [this](const Widget *){ return h(); },
+
+          [this](const Widget *, int drawDstX, int drawDstY)
+          {
+              if(auto texPtr = g_sdlDevice->getCover(m_onRadius, 360)){
+                  const SDLDeviceHelper::EnableRenderBlendMode enableBlendMode(SDL_BLENDMODE_BLEND);
+                  const SDLDeviceHelper::EnableTextureModColor enableModColor(texPtr, m_modColor);
+                  g_sdlDevice->drawTexture(texPtr, drawDstX, drawDstY);
+              }
+          },
+
+          this,
+          false,
+      }
+
+    , m_img
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          {},
+          {},
+
+          [this](const Widget *) -> SDL_Texture *
+          {
+              if(getState() == BEVENT_DOWN){
+                  return g_progUseDB->retrieve(m_texID);
+              }
+              return nullptr;
+          },
+
+          false,
+          false,
+          0,
+
+          colorf::WHITE + colorf::A_SHF(0XFF),
+
 {
-    if(auto texPtr = g_progUseDB->retrieve(m_texID); !texPtr){
-        throw fflerror("can't load down texture: %llu", to_llu(m_texID));
-    }
+    m_on  .setShow([this](const Widget *){ return getState() == BEVENT_ON  ; });
+    m_down.setShow([this](const Widget *){ return getState() == BEVENT_DOWN; });
 
-    setSize([this](const Widget *){ return SDLDeviceHelper::getTextureWidth (g_progUseDB->retrieve(m_texID)); },
-            [this](const Widget *){ return SDLDeviceHelper::getTextureHeight(g_progUseDB->retrieve(m_texID)); });
-}
+    setSize([this](const Widget *)
+    {
+        if(auto texPtr = g_progUseDB->retrieve(m_texID)){
+            return SDLDeviceHelper::getTextureWidth(texPtr);
+        }
+        return 0;
+    },
 
-void AlphaOnButton::drawEx(int dstX, int dstY, int, int, int, int) const
-{
-    switch(getState()){
-        case BEVENT_ON:
-            {
-                auto texPtr = g_sdlDevice->getCover(m_onRadius, 360);
-                if(!texPtr){
-                    throw fflerror("can't get round cover: radius = %llu", to_llu(m_onRadius));
-                }
-
-                SDLDeviceHelper::EnableRenderBlendMode enableBlendMode(SDL_BLENDMODE_BLEND);
-                SDLDeviceHelper::EnableTextureModColor enableModColor(texPtr, colorf::RGBA(m_onColor, m_onColor, m_onColor, m_alphaMod));
-                g_sdlDevice->drawTexture(texPtr, dstX + m_onOffX, dstY + m_onOffY);
-                break;
-            }
-        case BEVENT_DOWN:
-            {
-                auto texPtr = g_progUseDB->retrieve(m_texID);
-                if(!texPtr){
-                    throw fflerror("can't get down texture: texID = %llu", to_llu(m_texID));
-                }
-
-                g_sdlDevice->drawTexture(texPtr, dstX, dstY);
-                break;
-            }
-        default:
-            {
-                break;
-            }
-    }
+    [this](const Widget *)
+    {
+        if(auto texPtr = g_progUseDB->retrieve(m_texID)){
+            return SDLDeviceHelper::getTextureHeight(texPtr);
+        }
+        return 0;
+    });
 }

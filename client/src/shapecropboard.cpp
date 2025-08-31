@@ -30,16 +30,17 @@ ShapeCropBoard::ShapeCropBoard(Widget::VarDir argDir,
     , m_drawFunc(std::move(argDrawFunc))
 {}
 
-void ShapeCropBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void ShapeCropBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(!show()){
-        return;
-    }
-
     if(!m_drawFunc){
         return;
     }
 
-    const SDLDeviceHelper::EnableRenderClipRectangle enableClip(dstX, dstY, srcW, srcH);
-    m_drawFunc(this, dstX - srcX, dstY - srcY);
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
+    const SDLDeviceHelper::EnableRenderCropRectangle enableClip(dstX, dstY, roiOpt->w, roiOpt->h);
+    m_drawFunc(this, dstX - roiOpt->x, dstY - roiOpt->y);
 }

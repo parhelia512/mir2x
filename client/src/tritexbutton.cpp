@@ -91,8 +91,23 @@ TritexButton::TritexButton(
             fnGetEdgeSize([](SDL_Texture *texPtr){ return SDLDeviceHelper::getTextureHeight(texPtr); }));
 }
 
-void TritexButton::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void TritexButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
+    if(!show()){
+        return;
+    }
+
+    const auto srcROI = roi.evalROI(this);
+    if(srcROI.empty()){
+        return;
+    }
+
+    const auto srcXDiff = srcROI.x - roi.get([](const auto &r){ return r.x; }, 0);
+    const auto srcYDiff = srcROI.y - roi.get([](const auto &r){ return r.y; }, 0);
+
+    dstX += srcXDiff;
+    dstY += srcYDiff;
+
     if(auto texPtr = g_progUseDB->retrieve(m_texIDList[getState()])){
         const int offX = m_offset[getState()][0];
         const int offY = m_offset[getState()][1];

@@ -72,21 +72,14 @@ ImageBoard::ImageBoard(
     setH((m_rotate % 2 == 0) ? varTexH : varTexW);
 }
 
-void ImageBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void ImageBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(w() <= 0){
-        return ;
-    }
-
-    if(h() <= 0){
-        return ;
-    }
-
-    if(!colorf::A(Widget::evalColor(m_varColor, this))){
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
         return;
     }
 
-    if(!mathf::cropROI(&srcX, &srcY, &srcW, &srcH, &dstX, &dstY, w(), h())){
+    if(!colorf::A(Widget::evalColor(m_varColor, this))){
         return;
     }
 
@@ -98,7 +91,16 @@ void ImageBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int sr
         centerOffX,
         centerOffY,
 
-        rotateDegree] = [dstX, dstY, srcX, srcY, srcW, srcH, this]() -> std::array<int, 9>
+        rotateDegree] = [
+            dstX,
+            dstY,
+
+            srcX = roiOpt->x,
+            srcY = roiOpt->y,
+            srcW = roiOpt->w,
+            srcH = roiOpt->h,
+
+            this]() -> std::array<int, 9>
     {
         // draw rotate and flip
         // all corners are indexed as 0, 1, 2, 3
