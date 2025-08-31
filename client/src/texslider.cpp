@@ -17,12 +17,13 @@ TexSlider::TexSlider(
         Widget::VarSize argH,
 
         bool argHSlider,
-        int argSliderIndex,
+        int  argSliderIndex,
 
         std::function<void(float)> argOnChanged,
 
         Widget *argParent,
-        bool argAutoDelete)
+        bool    argAutoDelete)
+
     : Slider
       {
           std::move(argDir),
@@ -42,6 +43,31 @@ TexSlider::TexSlider(
       }
 
     , m_sliderTexInfo(getSliderTexInfo(argSliderIndex))
+    , m_debugDraw
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          [this](const Widget *){ return w(); },
+          [this](const Widget *){ return h(); },
+
+          [this](const Widget *, int drawDstX, int drawDstY)
+          {
+              if(g_clientArgParser->debugSlider){
+                  g_sdlDevice->drawRectangle(colorf::GREEN + colorf::A_SHF(255), drawDstX, drawDstY, w(), h());
+
+                  const auto [valCenterX, valCenterY] = getValueCenter(drawDstX, drawDstY);
+                  g_sdlDevice->drawLine(colorf::YELLOW + colorf::A_SHF(255), valCenterX, valCenterY, valCenterX - m_sliderTexInfo.offX, valCenterY - m_sliderTexInfo.offY);
+
+                  const auto [sliderX, sliderY, sliderW, sliderH] = getSliderRectangle(drawDstX, drawDstY);
+                  g_sdlDevice->drawRectangle(colorf::RED + colorf::A_SHF(255), sliderX, sliderY, sliderW, sliderH);
+              }
+          },
+
+          this,
+          false,
+      }
 {
     fflassert(w() > 0);
     fflassert(h() > 0);
@@ -51,12 +77,8 @@ TexSlider::TexSlider(
     fflassert(g_progUseDB->retrieve(m_sliderTexInfo.texID), str_printf("%08X.PNG", m_sliderTexInfo.texID));
 }
 
-void TexSlider::drawEx(int, int, int, int, int, int) const
+void TexSlider::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(g_clientArgParser->debugSlider){
-        g_sdlDevice->drawRectangle(colorf::GREEN + colorf::A_SHF(255), x(), y(), w(), h());
-    }
-
     const auto [valCenterX, valCenterY] = getValueCenter();
     if(auto texPtr = g_progUseDB->retrieve(m_sliderTexInfo.texID)){
         const SDLDeviceHelper::EnableTextureModColor enableTexModColor(texPtr, active() ? colorf::RGBA(0XFF, 0XFF, 0XFF, 0XFF) : colorf::RGBA(0X80, 0X80, 0X80, 0XFF));
@@ -76,14 +98,5 @@ void TexSlider::drawEx(int, int, int, int, int, int) const
         case BEVENT_ON  : fnDrawCover(active() ? (colorf::BLUE + colorf::A_SHF(200)) : (colorf::WHITE + colorf::A_SHF(255))); break;
         case BEVENT_DOWN: fnDrawCover(active() ? (colorf::RED  + colorf::A_SHF(200)) : (colorf::WHITE + colorf::A_SHF(255))); break;
         default: break;
-    }
-
-    if(g_clientArgParser->debugSlider){
-        g_sdlDevice->drawLine(colorf::YELLOW + colorf::A_SHF(255), valCenterX, valCenterY, valCenterX - m_sliderTexInfo.offX, valCenterY - m_sliderTexInfo.offY);
-    }
-
-    if(g_clientArgParser->debugSlider){
-        const auto [sliderX, sliderY, sliderW, sliderH] = getSliderRectangle();
-        g_sdlDevice->drawRectangle(colorf::RED + colorf::A_SHF(255), sliderX, sliderY, sliderW, sliderH);
     }
 }

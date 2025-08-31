@@ -4,6 +4,7 @@
 #include "totype.hpp"
 #include "widget.hpp"
 #include "slider.hpp"
+#include "shapecropboard.hpp"
 
 class TexSlider: public Slider
 {
@@ -44,6 +45,9 @@ class TexSlider: public Slider
     private:
         const SliderTexInfo &m_sliderTexInfo;
 
+    private:
+        ShapeCropBoard m_debugDraw;
+
     public:
         TexSlider(
                 Widget::VarDir,
@@ -61,5 +65,5 @@ class TexSlider: public Slider
                 bool     = false);
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        void drawEx(int, int, const Widget::ROPOpt &) const override;
 };

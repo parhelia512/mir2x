@@ -85,7 +85,7 @@ AlphaOnButton::AlphaOnButton(
           false,
       }
 
-    , m_img
+    , m_down
       {
           DIR_UPLEFT,
           0,

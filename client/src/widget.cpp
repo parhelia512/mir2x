@@ -364,37 +364,37 @@ bool Widget::evalFlag(const Widget::VarFlag &varFlag, const Widget *widgetPtr)
     }, varFlag);
 }
 
-bool Widget::hasU32Color(const Widget::VarColor &varColor)
+bool Widget::hasU32(const Widget::VarU32 &varU32)
 {
-    return varColor.index() == 0;
+    return varU32.index() == 0;
 }
 
-bool Widget::hasFuncColor(const Widget::VarColor &varColor)
+bool Widget::hasFuncU32(const Widget::VarU32 &varU32)
 {
-    return varColor.index() == 1;
+    return varU32.index() == 1;
 }
 
-uint32_t Widget::asU32Color(const Widget::VarColor &varColor)
+uint32_t Widget::asU32(const Widget::VarU32 &varU32)
 {
-    return std::get<uint32_t>(varColor);
+    return std::get<uint32_t>(varU32);
 }
 
-uint32_t &Widget::asU32Color(Widget::VarColor &varColor)
+uint32_t &Widget::asU32(Widget::VarU32 &varU32)
 {
-    return std::get<uint32_t>(varColor);
+    return std::get<uint32_t>(varU32);
 }
 
-const std::function<uint32_t(const Widget *)> &Widget::asFuncColor(const Widget::VarColor &varColor)
+const std::function<uint32_t(const Widget *)> &Widget::asFuncU32(const Widget::VarU32 &varU32)
 {
-    return std::get<std::function<uint32_t(const Widget *)>>(varColor);
+    return std::get<std::function<uint32_t(const Widget *)>>(varU32);
 }
 
-std::function<uint32_t(const Widget *)> &Widget::asFuncColor(Widget::VarColor &varColor)
+std::function<uint32_t(const Widget *)> &Widget::asFuncU32(Widget::VarU32 &varU32)
 {
-    return std::get<std::function<uint32_t(const Widget *)>>(varColor);
+    return std::get<std::function<uint32_t(const Widget *)>>(varU32);
 }
 
-uint32_t Widget::evalColor(const Widget::VarColor &varColor, const Widget *widgetPtr)
+uint32_t Widget::evalU32(const Widget::VarU32 &varU32, const Widget *widgetPtr)
 {
     return std::visit(VarDispatcher
     {
@@ -407,7 +407,53 @@ uint32_t Widget::evalColor(const Widget::VarColor &varColor, const Widget *widge
         {
             return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
         },
-    }, varColor);
+    }, varU32);
+}
+
+bool Widget::hasBlendMode(const Widget::VarBlendMode &varBlendMode)
+{
+    return varBlendMode.index() == 0;
+}
+
+bool Widget::hasFuncBlendMode(const Widget::VarBlendMode &varBlendMode)
+{
+    return varBlendMode.index() == 1;
+}
+
+SDL_BlendMode Widget::asBlendMode(const Widget::VarBlendMode &varBlendMode)
+{
+    return std::get<SDL_BlendMode>(varBlendMode);
+}
+
+SDL_BlendMode &Widget::asBlendMode(Widget::VarBlendMode &varBlendMode)
+{
+    return std::get<SDL_BlendMode>(varBlendMode);
+}
+
+const std::function<SDL_BlendMode(const Widget *)> &Widget::asFuncBlendMode(const Widget::VarBlendMode &varBlendMode)
+{
+    return std::get<std::function<SDL_BlendMode(const Widget *)>>(varBlendMode);
+}
+
+std::function<SDL_BlendMode(const Widget *)> &Widget::asFuncBlendMode(Widget::VarBlendMode &varBlendMode)
+{
+    return std::get<std::function<SDL_BlendMode(const Widget *)>>(varBlendMode);
+}
+
+SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, const Widget *widget)
+{
+    return std::visit(VarDispatcher
+    {
+        [](SDL_BlendMode arg)
+        {
+            return arg;
+        },
+
+        [widget](const auto &arg)
+        {
+            return arg ? arg(widget) : throw fflerror("invalid argument");
+        },
+    }, varBlendMode);
 }
 
 Widget::Widget(

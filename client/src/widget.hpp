@@ -30,11 +30,12 @@ class WidgetTreeNode // tree concept, used by class Widget only
         template<typename IN, typename OUT                  > using check_const_cond_out_ptr_t = check_const_cond_t<IN, const OUT *, OUT *>;
 
     protected:
-        using VarDir   = std::variant<             dir8_t, std::function<  dir8_t(const Widget *)>>;
-        using VarOff   = std::variant<                int, std::function<     int(const Widget *)>>;
-        using VarSize  = std::variant<std::monostate, int, std::function<     int(const Widget *)>>;
-        using VarFlag  = std::variant<               bool, std::function<    bool(const Widget *)>>;
-        using VarColor = std::variant<           uint32_t, std::function<uint32_t(const Widget *)>>;
+        using VarDir       = std::variant<             dir8_t, std::function<       dir8_t(const Widget *)>>;
+        using VarOff       = std::variant<                int, std::function<          int(const Widget *)>>;
+        using VarU32       = std::variant<           uint32_t, std::function<     uint32_t(const Widget *)>>;
+        using VarSize      = std::variant<std::monostate, int, std::function<          int(const Widget *)>>;
+        using VarFlag      = std::variant<               bool, std::function<         bool(const Widget *)>>;
+        using VarBlendMode = std::variant<      SDL_BlendMode, std::function<SDL_BlendMode(const Widget *)>>;
 
     private:
         friend class Widget;
@@ -150,9 +151,9 @@ class Widget: public WidgetTreeNode
     public:
         using WidgetTreeNode::VarDir;
         using WidgetTreeNode::VarOff;
+        using WidgetTreeNode::VarU32;
         using WidgetTreeNode::VarSize;
         using WidgetTreeNode::VarFlag;
-        using WidgetTreeNode::VarColor;
 
     public:
         struct ROI final
@@ -246,16 +247,28 @@ class Widget: public WidgetTreeNode
         static bool evalFlag(const Widget::VarFlag &, const Widget *);
 
     public:
-        static bool hasU32Color (const Widget::VarColor &);
-        static bool hasFuncColor(const Widget::VarColor &);
+        static bool hasU32    (const Widget::VarU32 &);
+        static bool hasFuncU32(const Widget::VarU32 &);
 
-        static uint32_t  asU32Color(const Widget::VarColor &);
-        static uint32_t &asU32Color(      Widget::VarColor &);
+        static uint32_t  asU32(const Widget::VarU32 &);
+        static uint32_t &asU32(      Widget::VarU32 &);
 
-        static const std::function<uint32_t(const Widget *)> &asFuncColor(const Widget::VarColor &);
-        static       std::function<uint32_t(const Widget *)> &asFuncColor(      Widget::VarColor &);
+        static const std::function<uint32_t(const Widget *)> &asFuncU32(const Widget::VarU32 &);
+        static       std::function<uint32_t(const Widget *)> &asFuncU32(      Widget::VarU32 &);
 
-        static uint32_t evalColor(const Widget::VarColor &, const Widget *);
+        static uint32_t evalU32(const Widget::VarU32 &, const Widget *);
+
+    public:
+        static bool hasBlendMode    (const Widget::VarBlendMode &);
+        static bool hasFuncBlendMode(const Widget::VarBlendMode &);
+
+        static uint32_t  asBlendMode(const Widget::VarBlendMode &);
+        static uint32_t &asBlendMode(      Widget::VarBlendMode &);
+
+        static const std::function<uint32_t(const Widget *)> &asFuncBlendMode(const Widget::VarBlendMode &);
+        static       std::function<uint32_t(const Widget *)> &asFuncBlendMode(      Widget::VarBlendMode &);
+
+        static uint32_t evalBlendMode(const Widget::VarBlendMode &, const Widget *);
 
     private:
         class RecursionDetector final

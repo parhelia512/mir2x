@@ -13,7 +13,7 @@ TextBoard::TextBoard(
         uint8_t argFontSize,
         uint8_t argFontStyle,
 
-        Widget::VarColor argColor,
+        Widget::VarU32 argColor,
 
         Widget *argParent,
         bool    argAutoDelete)

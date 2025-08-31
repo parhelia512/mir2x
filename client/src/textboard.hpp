@@ -32,7 +32,7 @@ class TextBoard: public Widget
                 uint8_t = 10,
                 uint8_t =  0,
 
-                Widget::VarColor = colorf::WHITE + colorf::A_SHF(0XFF),
+                Widget::VarU32 = colorf::WHITE + colorf::A_SHF(0XFF),
 
                 Widget * = nullptr,
                 bool     = false);
@@ -53,7 +53,7 @@ class TextBoard: public Widget
             m_fontStyle = argFontStyle;
         }
 
-        void setFontColor(Widget::VarColor argColor)
+        void setFontColor(Widget::VarU32 argColor)
         {
             m_image.setColor(std::move(argColor));
         }

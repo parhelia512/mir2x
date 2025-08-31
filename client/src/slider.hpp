@@ -72,7 +72,7 @@ class Slider: public Widget
         {}
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
     public:
         float getValue() const
@@ -112,4 +112,7 @@ class Slider: public Widget
         {
             return m_hslider;
         }
+
+    protected:
+        bool inSlider(int, int, int, int, const Widget::ROIOpt &) const;
 };

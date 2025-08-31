@@ -23,7 +23,7 @@ class ImageBoard: public Widget
     private:
         Widget::VarSize  m_varW;
         Widget::VarSize  m_varH;
-        Widget::VarColor m_varColor;
+        Widget::VarU32 m_varColor;
 
     private:
         std::function<SDL_Texture *(const Widget *)> m_loadFunc;
@@ -50,7 +50,7 @@ class ImageBoard: public Widget
                 bool = false,
                 int  = 0,
 
-                Widget::VarColor = colorf::WHITE + colorf::A_SHF(0XFF),
+                Widget::VarU32 = colorf::WHITE + colorf::A_SHF(0XFF),
 
                 Widget * = nullptr,
                 bool     = false);
@@ -59,7 +59,7 @@ class ImageBoard: public Widget
         void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     public:
-        void setColor(Widget::VarColor color)
+        void setColor(Widget::VarU32 color)
         {
             m_varColor = std::move(color);
         }

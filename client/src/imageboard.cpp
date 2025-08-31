@@ -19,7 +19,7 @@ ImageBoard::ImageBoard(
         bool argVFlip,
         int  argRotate,
 
-        Widget::VarColor argColor,
+        Widget::VarU32 argColor,
 
         Widget *argParent,
         bool    argAutoDelete)
