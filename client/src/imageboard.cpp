@@ -20,6 +20,7 @@ ImageBoard::ImageBoard(
         int  argRotate,
 
         Widget::VarU32 argColor,
+        Widget::VarBlendMode argBlendMode,
 
         Widget *argParent,
         bool    argAutoDelete)
@@ -41,6 +42,7 @@ ImageBoard::ImageBoard(
     , m_varW(std::move(argW))
     , m_varH(std::move(argH))
     , m_varColor(std::move(argColor))
+    , m_varBlendMode(std::move(argBlendMode))
     , m_loadFunc(std::move(argLoadFunc))
     , m_xformPair(getHFlipRotatePair(argHFlip, argVFlip, argRotate))
 {
@@ -259,7 +261,9 @@ void ImageBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
         imgSrcX = texW - imgSrcX - imgSrcW;
     }
 
-    SDLDeviceHelper::EnableTextureModColor enableColor(texPtr, Widget::evalColor(m_varColor, this));
+    const SDLDeviceHelper::EnableTextureModColor enableColor(texPtr, Widget::evalColor(m_varColor, this));
+    const SDLDeviceHelper::EnableTextureBlendMode enableBlendMode(texPtr, Widget::evalBlendMode(m_varBlendMode, this));
+
     g_sdlDevice->drawTextureEx(
             texPtr,
 

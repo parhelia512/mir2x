@@ -41,7 +41,7 @@ class CheckLabel: public Widget
                 bool     = false);  // auto-delete
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     public:
         bool processEventDefault(const SDL_Event &, bool, int, int) override;

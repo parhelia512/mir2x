@@ -233,7 +233,7 @@ HorseBoard::HorseBoard(
     setShow(false);
 }
 
-bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
     if(!valid){
         return consumeFocus(false);
@@ -243,11 +243,11 @@ bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
         return consumeFocus(false);
     }
 
-    if(m_close.processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_up   .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_down .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_hide .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_show .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_close.processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_up   .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_down .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_hide .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_show .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:

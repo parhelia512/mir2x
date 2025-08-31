@@ -5,7 +5,6 @@
 #include "sdldevice.hpp"
 #include "buttonbase.hpp"
 #include "imageboard.hpp"
-#include "shapecropboard.hpp"
 
 class AlphaOnButton: public ButtonBase
 {
@@ -21,8 +20,8 @@ class AlphaOnButton: public ButtonBase
         const int m_onRadius;
 
     private:
-        ShapeCropBoard m_on;
-        ImageBoard     m_down;
+        ImageBoard m_on;
+        ImageBoard m_down;
 
     public:
         AlphaOnButton(

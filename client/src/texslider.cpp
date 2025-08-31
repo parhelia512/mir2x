@@ -43,6 +43,91 @@ TexSlider::TexSlider(
       }
 
     , m_sliderTexInfo(getSliderTexInfo(argSliderIndex))
+
+    , m_image
+      {
+          DIR_UPLEFT,
+          [this](const Widget *){ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.offX; },
+          [this](const Widget *){ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.offY; },
+
+          {},
+          {},
+
+          [this](const Widget *) -> SDL_Texture *
+          {
+              return g_progUseDB->retrieve(m_sliderTexInfo.texID);
+          },
+
+          false,
+          false,
+          0,
+
+          [this](const Widget *)
+          {
+              if(active()){ return colorf::WHITE + colorf::A_SHF(0XFF); }
+              else        { return colorf::GREY  + colorf::A_SHF(0XFF); }
+          },
+
+          SDL_BLENDMODE_NONE,
+
+          this,
+          false,
+      }
+
+    , m_cover
+      {
+          DIR_UPLEFT,
+          [this](const Widget *){ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
+          [this](const Widget *){ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
+
+          {},
+          {},
+
+          [this](const Widget *) -> SDL_Texture *
+          {
+              switch(m_sliderState){
+                  case BEVENT_ON:
+                  case BEVENT_DOWN:
+                      {
+                          return g_sdlDevice->getCover(m_sliderTexInfo.cover, 360);
+                      }
+                  default:
+                      {
+                          return nullptr;
+                      }
+              }
+          },
+
+          false,
+          false,
+          0,
+
+          [this](const Widget *)
+          {
+              switch(m_sliderState){
+                  case BEVENT_ON:
+                      {
+                          if(active()){ return colorf::BLUE  + colorf::A_SHF(200); }
+                          else        { return colorf::WHITE + colorf::A_SHF(255); }
+                      }
+                  case BEVENT_DOWN:
+                      {
+                          if(active()){ return colorf::RED   + colorf::A_SHF(200); }
+                          else        { return colorf::WHITE + colorf::A_SHF(255); }
+                      }
+                  default:
+                      {
+                          return colorf::WHITE + colorf::A_SHF(255);
+                      }
+              }
+          },
+
+          SDL_BLENDMODE_BLEND,
+
+          this,
+          false,
+      }
+
     , m_debugDraw
       {
           DIR_UPLEFT,
@@ -75,28 +160,4 @@ TexSlider::TexSlider(
     fflassert(m_sliderTexInfo.h > 0);
     fflassert(m_sliderTexInfo.cover > 0);
     fflassert(g_progUseDB->retrieve(m_sliderTexInfo.texID), str_printf("%08X.PNG", m_sliderTexInfo.texID));
-}
-
-void TexSlider::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
-{
-    const auto [valCenterX, valCenterY] = getValueCenter();
-    if(auto texPtr = g_progUseDB->retrieve(m_sliderTexInfo.texID)){
-        const SDLDeviceHelper::EnableTextureModColor enableTexModColor(texPtr, active() ? colorf::RGBA(0XFF, 0XFF, 0XFF, 0XFF) : colorf::RGBA(0X80, 0X80, 0X80, 0XFF));
-        g_sdlDevice->drawTexture(texPtr, valCenterX - m_sliderTexInfo.offX, valCenterY - m_sliderTexInfo.offY);
-    }
-
-    const auto fnDrawCover = [valCenterX, valCenterY, this](uint32_t color)
-    {
-        if(auto texPtr = g_sdlDevice->getCover(m_sliderTexInfo.cover, 360)){
-            const SDLDeviceHelper::EnableTextureModColor enableTexModColor(texPtr, color);
-            const SDLDeviceHelper::EnableRenderBlendMode enableDrawBlendMode(SDL_BLENDMODE_BLEND);
-            g_sdlDevice->drawTexture(texPtr, valCenterX - m_sliderTexInfo.cover, valCenterY - m_sliderTexInfo.cover);
-        }
-    };
-
-    switch(m_sliderState){
-        case BEVENT_ON  : fnDrawCover(active() ? (colorf::BLUE + colorf::A_SHF(200)) : (colorf::WHITE + colorf::A_SHF(255))); break;
-        case BEVENT_DOWN: fnDrawCover(active() ? (colorf::RED  + colorf::A_SHF(200)) : (colorf::WHITE + colorf::A_SHF(255))); break;
-        default: break;
-    }
 }

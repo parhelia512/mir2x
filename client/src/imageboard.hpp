@@ -21,9 +21,12 @@
 class ImageBoard: public Widget
 {
     private:
-        Widget::VarSize  m_varW;
-        Widget::VarSize  m_varH;
+        Widget::VarSize m_varW;
+        Widget::VarSize m_varH;
+
+    private:
         Widget::VarU32 m_varColor;
+        Widget::VarBlendMode m_varBlendMode;
 
     private:
         std::function<SDL_Texture *(const Widget *)> m_loadFunc;
@@ -50,7 +53,8 @@ class ImageBoard: public Widget
                 bool = false,
                 int  = 0,
 
-                Widget::VarU32 = colorf::WHITE + colorf::A_SHF(0XFF),
+                Widget::VarU32       = colorf::WHITE + colorf::A_SHF(0XFF),
+                Widget::VarBlendMode = SDL_BLENDMODE_NONE,
 
                 Widget * = nullptr,
                 bool     = false);

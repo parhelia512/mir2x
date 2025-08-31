@@ -72,14 +72,17 @@ AlphaOnButton::AlphaOnButton(
           [this](const Widget *){ return w(); },
           [this](const Widget *){ return h(); },
 
-          [this](const Widget *, int drawDstX, int drawDstY)
+          [this](const Widget *) -> SDL_Texture *
           {
-              if(auto texPtr = g_sdlDevice->getCover(m_onRadius, 360)){
-                  const SDLDeviceHelper::EnableRenderBlendMode enableBlendMode(SDL_BLENDMODE_BLEND);
-                  const SDLDeviceHelper::EnableTextureModColor enableModColor(texPtr, m_modColor);
-                  g_sdlDevice->drawTexture(texPtr, drawDstX, drawDstY);
-              }
+              return (getState() == BEVENT_ON) ? g_sdlDevice->getCover(m_onRadius, 360) : nullptr;
           },
+
+          false,
+          false,
+          0,
+
+          m_modColor,
+          SDL_BLENDMODE_BLEND,
 
           this,
           false,
@@ -96,10 +99,7 @@ AlphaOnButton::AlphaOnButton(
 
           [this](const Widget *) -> SDL_Texture *
           {
-              if(getState() == BEVENT_DOWN){
-                  return g_progUseDB->retrieve(m_texID);
-              }
-              return nullptr;
+              return (getState() == BEVENT_DOWN) ? g_progUseDB->retrieve(m_texID) : nullptr;
           },
 
           false,
@@ -107,7 +107,11 @@ AlphaOnButton::AlphaOnButton(
           0,
 
           colorf::WHITE + colorf::A_SHF(0XFF),
+          SDL_BLENDMODE_NONE,
 
+          this,
+          false,
+      }
 {
     m_on  .setShow([this](const Widget *){ return getState() == BEVENT_ON  ; });
     m_down.setShow([this](const Widget *){ return getState() == BEVENT_DOWN; });

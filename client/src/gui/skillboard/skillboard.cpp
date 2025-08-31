@@ -60,17 +60,30 @@ void SkillBoard::SkillBoardConfig::setMagicKey(uint32_t magicID, std::optional<c
     }
 }
 
-SkillBoard::MagicIconButton::MagicIconButton(int argX, int argY, uint32_t argMagicID, SkillBoardConfig *configPtr, ProcessRun *proc, Widget *widgetPtr, bool autoDelete)
+SkillBoard::MagicIconButton::MagicIconButton(
+        dir8_t argDir,
+
+        int argX,
+        int argY,
+
+        uint32_t argMagicID,
+
+        SkillBoardConfig *argConfigPtr,
+        ProcessRun       *argProc,
+
+        Widget *argParent,
+        bool    argAutoDelete)
+
     : Widget
       {
-          DIR_UPLEFT,
+          argDir,
           argX,
           argY,
           0,
           0,
           {},
-          widgetPtr,
-          autoDelete,
+          argParent,
+          argAutoDelete,
       }
 
     , m_magicID([argMagicID]() -> uint32_t
@@ -80,17 +93,8 @@ SkillBoard::MagicIconButton::MagicIconButton(int argX, int argY, uint32_t argMag
           return argMagicID;
       }())
 
-    , m_config([configPtr]()
-      {
-          fflassert(configPtr);
-          return configPtr;
-      }())
-
-    , m_processRun([proc]()
-      {
-          fflassert(proc);
-          return proc;
-      }())
+    , m_config(argConfigPtr)
+    , m_processRun(argProc)
 
     , m_icon
       {
@@ -134,10 +138,10 @@ SkillBoard::MagicIconButton::MagicIconButton(int argX, int argY, uint32_t argMag
     setH(m_icon.h() + 8);
 }
 
-void SkillBoard::MagicIconButton::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void SkillBoard::MagicIconButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
     if(const auto levelOpt = m_config->getMagicLevel(magicID()); levelOpt.has_value()){
-        Widget::drawEx(dstX, dstY, srcX, srcY, srcW, srcH);
+        Widget::drawEx(dstX, dstY, roi);
 
         const LabelBoard magicLevel
         {
@@ -155,7 +159,7 @@ void SkillBoard::MagicIconButton::drawEx(int dstX, int dstY, int srcX, int srcY,
         magicLevel.drawAt(DIR_UPLEFT, (dstX - srcX) + (m_icon.w() - 2), (dstY - srcY) + (m_icon.h() - 1), dstX, dstY, srcW, srcH);
 
         if(const auto keyOpt = m_config->getMagicKey(magicID()); keyOpt.has_value()){
-            const LabelShadowBoard magicKey
+            const TextShadowBoard magicKey
             {
                 DIR_UPLEFT,
                 0,

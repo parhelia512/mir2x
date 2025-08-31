@@ -39,98 +39,68 @@ CheckBox::CheckBox(dir8_t argDir,
     , m_valSetter  (std::move(argValSetter  ))
     , m_valOnChange(std::move(argValOnChange))
 
-    , m_checkImage
+    , m_img
       {
           DIR_NONE,
-          w() / 2,
-          h() / 2,
+          [this](const Widget *){ return w() / 2; },
+          [this](const Widget *){ return h() / 2; },
 
           {},
           {},
 
-          loadFunc,
+          [](const Widget *) -> SDL_Texture *
+          {
+              return g_progUseDB->retrieve(0X00000480);
+          },
 
           false,
           false,
           0,
 
           colorf::WHITE + colorf::A_SHF(0XFF),
+          SDL_BLENDMODE_NONE,
 
           this,
           false,
       }
-{}
 
-void CheckBox::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+    , m_box
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          [this](const Widget *){ return w(); },
+          [this](const Widget *){ return h(); },
+
+          [this](const Widget *, int drawDstX, int drawDstY)
+          {
+              // +----1----+
+              // |        ||
+              // 4        52
+              // |        ||
+              // |----6---+|
+              // +----3----+
+
+              const auto  solidColor = m_color;
+              const auto shadowColor = colorf::maskRGB(m_color) + colorf::A_SHF(colorf::A(m_color) / 2);
+
+              g_sdlDevice->drawLine( solidColor, drawDstX +       0, drawDstY +       0, drawDstX + w() - 1, drawDstY +       0); // 1
+              g_sdlDevice->drawLine( solidColor, drawDstX + w() - 1, drawDstY +       0, drawDstX + w() - 1, drawDstY + h() - 1); // 2
+              g_sdlDevice->drawLine( solidColor, drawDstX +       0, drawDstY + h() - 1, drawDstX + w() - 1, drawDstY + h() - 1); // 3
+              g_sdlDevice->drawLine( solidColor, drawDstX +       0, drawDstY +       0, drawDstX +       0, drawDstY + h() - 1); // 4
+              g_sdlDevice->drawLine(shadowColor, drawDstX + w() - 2, drawDstY +       0, drawDstX + w() - 2, drawDstY + h() - 2); // 5
+              g_sdlDevice->drawLine(shadowColor, drawDstX +       0, drawDstY + h() - 2, drawDstX + w() - 2, drawDstY + h() - 2); // 6
+          },
+
+          this,
+          false,
+      }
 {
-    if(getter()){
-        int drawSrcX = srcX;
-        int drawSrcY = srcY;
-        int drawSrcW = srcW;
-        int drawSrcH = srcH;
-        int drawDstX = dstX;
-        int drawDstY = dstY;
-
-        if(mathf::cropChildROI(
-                    &drawSrcX, &drawSrcY,
-                    &drawSrcW, &drawSrcH,
-                    &drawDstX, &drawDstY,
-
-                    w(),
-                    h(),
-
-                    m_checkImage.dx(),
-                    m_checkImage.dy(),
-                    m_checkImage.w(),
-                    m_checkImage.h())){
-            m_checkImage.drawEx(drawDstX, drawDstY, drawSrcX, drawSrcY, drawSrcW, drawSrcH);
-        }
-    }
-
-    const auto fnCropDrawLine = [dstX, dstY, srcX, srcY, srcW, srcH, this](uint32_t color, int startX, int startY, int endX, int endY)
-    {
-        int drawSrcX = srcX;
-        int drawSrcY = srcY;
-        int drawSrcW = srcW;
-        int drawSrcH = srcH;
-        int drawDstX = dstX;
-        int drawDstY = dstY;
-
-        if(mathf::cropChildROI(
-                    &drawSrcX, &drawSrcY,
-                    &drawSrcW, &drawSrcH,
-                    &drawDstX, &drawDstY,
-
-                    w(),
-                    h(),
-
-                    startX,
-                    startY,
-                    endX - startX + 1,
-                    endY - startY + 1)){
-            g_sdlDevice->drawLine(color, drawDstX, drawDstY, drawDstX + drawSrcW - 1, drawDstY + drawSrcH - 1);
-        }
-    };
-
-    // +----1----+
-    // |        ||
-    // 4        52
-    // |        ||
-    // |----6---+|
-    // +----3----+
-
-    const auto  solidColor = m_color;
-    const auto shadowColor = colorf::maskRGB(m_color) + colorf::A_SHF(colorf::A(m_color) / 2);
-
-    fnCropDrawLine( solidColor,       0,       0, w() - 1,       0); // 1
-    fnCropDrawLine( solidColor, w() - 1,       0, w() - 1, h() - 1); // 2
-    fnCropDrawLine( solidColor,       0, h() - 1, w() - 1, h() - 1); // 3
-    fnCropDrawLine( solidColor,       0,       0,       0, h() - 1); // 4
-    fnCropDrawLine(shadowColor, w() - 2,       0, w() - 2, h() - 2); // 5
-    fnCropDrawLine(shadowColor,       0, h() - 2, w() - 2, h() - 2); // 6
+    m_img.setShow([this](const Widget *){ return getter(); });
 }
 
-bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
     if(!valid){
         return consumeFocus(false);
@@ -140,14 +110,19 @@ bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, int start
         return consumeFocus(false);
     }
 
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return consumeFocus(false);
+    }
+
     switch(event.type){
         case SDL_MOUSEBUTTONUP:
             {
-                return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY));
+                return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y, startDstX, startDstY)){
+                if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     toggle();
                     return consumeFocus(true);
                 }
@@ -157,7 +132,7 @@ bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, int start
             }
         case SDL_MOUSEMOTION:
             {
-                return consumeFocus(in(event.motion.x, event.motion.y, startDstX, startDstY));
+                return consumeFocus(in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()));
             }
         case SDL_KEYUP:
             {
@@ -217,9 +192,4 @@ void CheckBox::setter(bool value)
     if(m_valSetter){
         m_valSetter(this, value);
     }
-}
-
-SDL_Texture *CheckBox::loadFunc(const Widget *)
-{
-    return g_progUseDB->retrieve(0X00000480);
 }

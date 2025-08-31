@@ -38,5 +38,5 @@ class HorseBoard: public Widget
                 bool     = false);
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 };

@@ -616,9 +616,38 @@ bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int
     else                     { return   processEventDefault(      event, valid, startDstX, startDstY, roi); }
 }
 
-bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+// {startDstX, startDstY, roi} is based on parent widget
+// calculate sub-roi for current child widget
+bool Widget::processParentEvent(const SDL_Event &event, bool valid, int parentW, int parentH, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    return processEvent(event, valid, startDstX + dx(), startDstY + dy());
+    const auto roiOpt = roi.evalROI({0, 0, parentW, parentH});
+    if(roiOpt.empty()){
+        return false;
+    }
+
+    const auto srcXDiff = roiOpt.x - roi.get([](const auto &r){ return r.x; }, 0);
+    const auto srcYDiff = roiOpt.y - roi.get([](const auto &r){ return r.y; }, 0);
+
+    startDstX += srcXDiff;
+    startDstY += srcYDiff;
+
+    if(!mathf::cropChildROI(
+                &roiOpt->x, &roiOpt->y,
+                &roiOpt->w, &roiOpt->h,
+
+                &startDstX,
+                &startDstY,
+
+                parentW,
+                parentH,
+
+                dx(),
+                dy(),
+                w(),
+                h())){
+        return false;
+    }
+    return processEvent(event, valid, startDstX, startDstY, roiOpt.value());
 }
 
 bool Widget::applyRootEvent(const SDL_Event &event, bool valid, int rootDstX, int rootDstY)
@@ -629,18 +658,14 @@ bool Widget::applyRootEvent(const SDL_Event &event, bool valid, int rootDstX, in
 
 bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    if(!show()){
-        return false;
-    }
-
     bool took = false;
     uint64_t focusedWidgetID = 0;
 
-    foreachChild(false, [&event, valid, &took, &focusedWidgetID, startDstX, startDstY, this](Widget *widget, bool)
+    foreachChild(false, [&event, valid, &took, &focusedWidgetID, startDstX, startDstY, &roi, this](Widget *widget, bool)
     {
         if(widget->show()){
             const bool validEvent = valid && !took;
-            const bool takenEvent = widget->processParentEvent(event, validEvent, startDstX, startDstY);
+            const bool takenEvent = widget->processParentEvent(event, validEvent, startDstX, startDstY, roi);
 
             if(!validEvent && takenEvent){
                 throw fflerror("widget %s takes invalid event", widget->name());
@@ -673,34 +698,10 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDs
 
 void Widget::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(!show()){
-        return;
-    }
-
-    foreachChild([srcX, srcY, dstX, dstY, srcW, srcH, this](const Widget *widget, bool)
+    foreachChild([dstX, dstY, &roi, this](const Widget *widget, bool)
     {
         if(widget->show()){
-            int srcXCrop = srcX;
-            int srcYCrop = srcY;
-            int dstXCrop = dstX;
-            int dstYCrop = dstY;
-            int srcWCrop = srcW;
-            int srcHCrop = srcH;
-
-            if(mathf::cropChildROI(
-                        &srcXCrop, &srcYCrop,
-                        &srcWCrop, &srcHCrop,
-                        &dstXCrop, &dstYCrop,
-
-                        w(),
-                        h(),
-
-                        widget->dx(),
-                        widget->dy(),
-                        widget-> w(),
-                        widget-> h())){
-                widget->drawEx(dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
-            }
+            drawChildEx(widget, dstX, dstY, roi);
         }
     });
 }

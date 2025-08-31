@@ -32,7 +32,8 @@ class TextBoard: public Widget
                 uint8_t = 10,
                 uint8_t =  0,
 
-                Widget::VarU32 = colorf::WHITE + colorf::A_SHF(0XFF),
+                Widget::VarU32       = colorf::WHITE + colorf::A_SHF(0XFF),
+                Widget::VarBlendMode = SDL_BLENDMODE_NONE,
 
                 Widget * = nullptr,
                 bool     = false);
@@ -69,8 +70,8 @@ class TextBoard: public Widget
             return m_textFunc ? m_textFunc(this).empty() : true;
         }
 
-        void drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const override
+        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
         {
-            return m_image.drawEx(dstX, dstY, srcX, srcY, srcW, srcH);
+            return m_image.drawEx(dstX, dstY, roi);
         }
 };

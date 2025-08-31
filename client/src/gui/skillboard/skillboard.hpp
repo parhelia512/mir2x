@@ -9,7 +9,7 @@
 #include "labelboard.hpp"
 #include "texslider.hpp"
 #include "tritexbutton.hpp"
-#include "labelshadowboard.hpp"
+#include "textshadowboard.hpp"
 
 class ProcessRun;
 class SkillBoard: public Widget
@@ -109,10 +109,10 @@ class SkillBoard: public Widget
                 MagicIconButton(int, int, uint32_t, SkillBoardConfig *, ProcessRun *, Widget *widgetPtr = nullptr, bool autoDelete = false);
 
             public:
-                void drawEx(int, int, int, int, int, int) const override;
+                void drawEx(int, int, const Widget::ROIOpt &) const override;
 
             public:
-                bool processEventDefault(const SDL_Event &, bool, int, int) override;
+                bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
             public:
                 bool cursorOn() const
@@ -166,7 +166,7 @@ class SkillBoard: public Widget
                 }
 
             public:
-                void drawEx(int, int, int, int, int, int) const override;
+                void drawEx(int, int, const Widget::ROIOpt &) const override;
 
             public:
                 const auto &getMagicIconButtonList() const
@@ -200,7 +200,7 @@ class SkillBoard: public Widget
 
     public:
         void drawTabName() const;
-        void drawEx(int, int, int, int, int, int) const override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     public:
         bool processEventDefault(const SDL_Event &, bool, int, int) override;

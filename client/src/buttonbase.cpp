@@ -107,7 +107,7 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, int sta
     switch(event.type){
         case SDL_MOUSEBUTTONUP:
             {
-                if(in(event.button.x, event.button.y, startDstX, startDstY)){
+                if(in(event.button.x, event.button.y, startDstX, startDstY, roi)){
                     switch(getState()){
                         case BEVENT_OFF:
                             {
@@ -149,7 +149,7 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y, startDstX, startDstY)){
+                if(in(event.button.x, event.button.y, startDstX, startDstY, roi)){
                     switch(getState()){
                         case BEVENT_OFF:
                             {
@@ -186,7 +186,7 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
         case SDL_MOUSEMOTION:
             {
-                if(in(event.motion.x, event.motion.y, startDstX, startDstY)){
+                if(in(event.motion.x, event.motion.y, startDstX, startDstY, roi)){
                     switch(getState()){
                         case BEVENT_OFF:
                             {

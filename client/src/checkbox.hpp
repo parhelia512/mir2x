@@ -3,6 +3,7 @@
 #include "widget.hpp"
 #include "sdldevice.hpp"
 #include "imageboard.hpp"
+#include "shapecropboard.hpp"
 
 class CheckBox: public Widget
 {
@@ -18,7 +19,8 @@ class CheckBox: public Widget
         std::function<void(      Widget *, bool)> m_valOnChange;
 
     private:
-        ImageBoard m_checkImage;
+        ImageBoard     m_img;
+        ShapeCropBoard m_box;
 
     public:
         CheckBox(
@@ -38,10 +40,7 @@ class CheckBox: public Widget
                 bool     = false);  // auto-delete
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
-
-    public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
     public:
         void setColor(uint32_t color)
@@ -55,7 +54,4 @@ class CheckBox: public Widget
     public:
         bool getter(    ) const;
         void setter(bool);
-
-    private:
-        static SDL_Texture *loadFunc(const Widget *);
 };
