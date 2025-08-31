@@ -116,7 +116,7 @@ MiniMapBoard::MiniMapBoard(ProcessRun *runPtr, Widget *parent, bool autoDelete)
     setShow(false);
 }
 
-void MiniMapBoard::drawEx(int, int, int, int, int, int) const
+void MiniMapBoard::drawEx(int, int, const Widget::ROIOpt &) const
 {
     drawMiniMapTexture();
     m_buttonAlpha.draw();
