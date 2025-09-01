@@ -258,3 +258,17 @@ void ControlBoard::addLog(int logType, const char *log)
     m_middle      .m_slider.setValue(1.0f, false);
     m_middleExpand.m_slider.setValue(1.0f, false);
 }
+
+Widget *ControlBoard::getButton(const std::string_view &buttonName)
+{
+    if     (buttonName == "Inventory"    ){ return &m_right.m_buttonInventory    ; }
+    else if(buttonName == "HeroState"    ){ return &m_right.m_buttonHeroState    ; }
+    else if(buttonName == "HeroMagic"    ){ return &m_right.m_buttonHeroMagic    ; }
+    else if(buttonName == "Guild"        ){ return &m_right.m_buttonGuild        ; }
+    else if(buttonName == "Team"         ){ return &m_right.m_buttonTeam         ; }
+    else if(buttonName == "Quest"        ){ return &m_right.m_buttonQuest        ; }
+    else if(buttonName == "Horse"        ){ return &m_right.m_buttonHorse        ; }
+    else if(buttonName == "RuntimeConfig"){ return &m_right.m_buttonRuntimeConfig; }
+    else if(buttonName == "FriendChat"   ){ return &m_right.m_buttonFriendChat   ; }
+    else                                  { return nullptr                       ; }
+}

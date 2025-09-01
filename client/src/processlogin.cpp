@@ -22,10 +22,10 @@ extern ClientArgParser *g_clientArgParser;
 
 ProcessLogin::ProcessLogin()
 	: Process()
-	, m_button1(DIR_UPLEFT, 150, 482, {0X00000005, 0X00000006, 0X00000007}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ doCreateAccount();  })
-	, m_button2(DIR_UPLEFT, 352, 482, {0X00000008, 0X00000009, 0X0000000A}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ doChangePassword(); })
-	, m_button3(DIR_UPLEFT, 554, 482, {0X0000000B, 0X0000000C, 0X0000000D}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ doExit();           })
-        , m_button4(DIR_UPLEFT, 600, 536, {0X0000000E, 0X0000000F, 0X00000010}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ doLogin();          })
+	, m_button1(DIR_UPLEFT, 150, 482, {0X00000005, 0X00000006, 0X00000007}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doCreateAccount();  })
+	, m_button2(DIR_UPLEFT, 352, 482, {0X00000008, 0X00000009, 0X0000000A}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doChangePassword(); })
+	, m_button3(DIR_UPLEFT, 554, 482, {0X0000000B, 0X0000000C, 0X0000000D}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doExit();           })
+        , m_button4(DIR_UPLEFT, 600, 536, {0X0000000E, 0X0000000F, 0X00000010}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doLogin();          })
 	, m_idBox
       {
           DIR_UPLEFT,
@@ -130,15 +130,15 @@ void ProcessLogin::draw() const
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000004),   0, 465);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000011), 103, 536);
 
-    m_button1.draw();
-    m_button2.draw();
-    m_button3.draw();
-    m_button4.draw();
+    m_button1.drawRoot(0, 0);
+    m_button2.drawRoot(0, 0);
+    m_button3.drawRoot(0, 0);
+    m_button4.drawRoot(0, 0);
 
-    m_idBox      .draw();
-    m_passwordBox.draw();
+    m_idBox      .drawRoot(0, 0);
+    m_passwordBox.drawRoot(0, 0);
 
-    m_buildSignature.draw();
+    m_buildSignature.drawRoot(0, 0);
 
     const int notifX = (800 - m_notifyBoard.pw()) / 2;
     const int notifY = (600 - m_notifyBoard. h()) / 2;
@@ -182,12 +182,12 @@ void ProcessLogin::processEvent(const SDL_Event &event)
 
     bool takeEvent = false;
 
-    takeEvent |= m_button1    .processEvent(event, !takeEvent);
-    takeEvent |= m_button2    .processEvent(event, !takeEvent);
-    takeEvent |= m_button3    .processEvent(event, !takeEvent);
-    takeEvent |= m_button4    .processEvent(event, !takeEvent);
-    takeEvent |= m_idBox      .processEvent(event, !takeEvent);
-    takeEvent |= m_passwordBox.processEvent(event, !takeEvent);
+    takeEvent |= m_button1    .applyRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_button2    .applyRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_button3    .applyRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_button4    .applyRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_idBox      .applyRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_passwordBox.applyRootEvent(event, !takeEvent, 0, 0);
 }
 
 void ProcessLogin::doLogin()

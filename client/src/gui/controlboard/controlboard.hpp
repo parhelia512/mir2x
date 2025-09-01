@@ -1,4 +1,5 @@
 #pragma once
+#include <string_view>
 #include "widget.hpp"
 #include "cbleft.hpp"
 #include "cbright.hpp"
@@ -102,4 +103,7 @@ class ControlBoard: public Widget
 
     public:
         void addLog(int, const char *);
+
+    public:
+        Widget *getButton(const std::string_view &);
 };

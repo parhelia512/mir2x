@@ -129,7 +129,7 @@ void PlayerStateBoard::update(double)
 {
 }
 
-void PlayerStateBoard::drawEx(int, int, const Widget::ROIOpt &) const
+void PlayerStateBoard::drawEx(int startDstX, int startDstY, const Widget::ROIOpt &) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X06000000)){
         g_sdlDevice->drawTexture(texPtr, startDstX, startDstY);

@@ -21,11 +21,11 @@ extern ClientArgParser *g_clientArgParser;
 
 ProcessCreateChar::ProcessCreateChar()
     : Process()
-    , m_warrior(DIR_UPLEFT, 339, 539, {0X0D000030, 0X0D000031, 0X0D000032}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ m_job = JOB_WARRIOR; })
-    , m_wizard (DIR_UPLEFT, 381, 539, {0X0D000040, 0X0D000041, 0X0D000042}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ m_job = JOB_WIZARD ; })
-    , m_taoist (DIR_UPLEFT, 424, 539, {0X0D000050, 0X0D000051, 0X0D000052}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ m_job = JOB_TAOIST ; })
-    , m_submit (DIR_UPLEFT, 512, 549, {0X0D000010, 0X0D000011, 0X0D000012}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ onSubmit(); }, 0, 0, 0, 0, true, false)
-    , m_exit   (DIR_UPLEFT, 554, 549, {0X0D000020, 0X0D000021, 0X0D000022}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ onExit();   }, 0, 0, 0, 0, true, false)
+    , m_warrior(DIR_UPLEFT, 339, 539, {0X0D000030, 0X0D000031, 0X0D000032}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ m_job = JOB_WARRIOR; })
+    , m_wizard (DIR_UPLEFT, 381, 539, {0X0D000040, 0X0D000041, 0X0D000042}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ m_job = JOB_WIZARD ; })
+    , m_taoist (DIR_UPLEFT, 424, 539, {0X0D000050, 0X0D000051, 0X0D000052}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ m_job = JOB_TAOIST ; })
+    , m_submit (DIR_UPLEFT, 512, 549, {0X0D000010, 0X0D000011, 0X0D000012}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onSubmit(); }, 0, 0, 0, 0, true, false)
+    , m_exit   (DIR_UPLEFT, 554, 549, {0X0D000020, 0X0D000021, 0X0D000022}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onExit();   }, 0, 0, 0, 0, true, false)
 
     , m_nameBox
       {
@@ -111,22 +111,22 @@ void ProcessCreateChar::draw() const
     }
 
     g_sdlDevice->fillRectangle(colorf::RGBA(  0,   0,   0, 255), 355, 520, 90, 15);
-    m_nameBox.draw();
+    m_nameBox.drawRoot(0, 0);
     g_sdlDevice->drawRectangle(colorf::RGBA(231, 231, 189, 100), 355, 520, 90, 15);
 
     if(auto texPtr = g_progUseDB->retrieve(0X0D000001)){
         g_sdlDevice->drawTexture(texPtr, 320, 500);
     }
 
-    m_warrior.draw();
-    m_wizard .draw();
-    m_taoist .draw();
+    m_warrior.drawRoot(0, 0);
+    m_wizard .drawRoot(0, 0);
+    m_taoist .drawRoot(0, 0);
 
-    m_submit.draw();
-    m_exit  .draw();
+    m_submit.drawRoot(0, 0);
+    m_exit  .drawRoot(0, 0);
 
     if(!g_clientArgParser->disableIME){
-        g_imeBoard->draw();
+        g_imeBoard->drawRoot(0, 0);
     }
 
     const int notifX = (800 - m_notifyBoard.pw()) / 2;
@@ -144,15 +144,15 @@ void ProcessCreateChar::processEvent(const SDL_Event &event)
 {
     bool tookEvent = false;
     if(!g_clientArgParser->disableIME){
-        tookEvent |= g_imeBoard->processEvent(event, !tookEvent);
+        tookEvent |= g_imeBoard->applyRootEvent(event, !tookEvent, 0, 0);
     }
 
-    tookEvent |= m_warrior.processEvent(event, !tookEvent);
-    tookEvent |= m_wizard .processEvent(event, !tookEvent);
-    tookEvent |= m_taoist .processEvent(event, !tookEvent);
-    tookEvent |= m_submit .processEvent(event, !tookEvent);
-    tookEvent |= m_exit   .processEvent(event, !tookEvent);
-    tookEvent |= m_nameBox.processEvent(event, !tookEvent);
+    tookEvent |= m_warrior.applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_wizard .applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_taoist .applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_submit .applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_exit   .applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_nameBox.applyRootEvent(event, !tookEvent, 0, 0);
 
     if(!tookEvent){
         switch(event.type){

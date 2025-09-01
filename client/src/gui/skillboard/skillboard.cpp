@@ -509,9 +509,10 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
         return consumeFocus(true);
     }
 
-    if(auto pageROI = Widget::makeROI(getPageRectange()); roi->crop(pageROI)){
+    bool captureEvent = false;
+    if(auto pageROI = Widget::makeROI(getPageRectange()); roiOpt->crop(pageROI)){
         const auto loc = SDLDeviceHelper::getMousePLoc();
-        const bool captureEvent = (loc.x >= 0 && loc.y >= 0) && pageROI.in(loc.x - remapXDiff, loc.y - remapYDiff);
+        captureEvent = (loc.x >= 0 && loc.y >= 0) && pageROI.in(loc.x - remapXDiff, loc.y - remapYDiff);
 
         if(m_skillPageList.at(m_selectedTabIndex)->processParentEvent(event, captureEvent && valid, startDstX, startDstY, roiOpt.value())){
             return consumeFocus(true);

@@ -11,6 +11,7 @@
 #include "pathf.hpp"
 #include "raiitimer.hpp"
 #include "sysconst.hpp"
+#include "log.hpp"
 #include "mapbindb.hpp"
 #include "pngtexdb.hpp"
 #include "bgmusicdb.hpp"
