@@ -60,7 +60,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
           },
@@ -92,7 +92,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -123,7 +123,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -154,7 +154,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -185,7 +185,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -216,7 +216,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -247,7 +247,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -278,7 +278,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -309,7 +309,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 

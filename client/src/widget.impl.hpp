@@ -81,10 +81,10 @@ template<typename SELF> auto WidgetTreeNode::foreachChild(this SELF && self, boo
 template<typename SELF> auto WidgetTreeNode::foreachChild(this SELF && self, std::invocable<check_const_cond_out_ptr_t<SELF, Widget>, bool> auto f) -> std::conditional_t<std::is_same_v<std::invoke_result_t<decltype(f), Widget *, bool>, bool>, bool, void>
 {
     if constexpr (std::is_same_v<std::invoke_result_t<decltype(f), check_const_cond_out_ptr_t<SELF, Widget>, bool>, bool>){
-        return foreachChild(true, f);
+        return self.foreachChild(true, f);
     }
     else{
-        foreachChild(true, f);
+        self.foreachChild(true, f);
     }
 }
 
