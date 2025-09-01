@@ -218,12 +218,12 @@ bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, int start
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(input.in(event.button.x, event.button.y)){
+                if(input.parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     setFocus(false);
                     return input.consumeFocus(true, std::addressof(input.layout));
                 }
 
-                if(chat.processEvent(event, true, startDstX, startDstY, roiOpt.value())){
+                if(chat.processParentEvent(event, true, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 

@@ -109,20 +109,21 @@ SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
     }
 }
 
-bool SearchAutoCompletionItem::processEventDefault(const SDL_Event &event, bool valid)
+bool SearchAutoCompletionItem::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    if(!valid){
-        return consumeFocus(false);
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
     }
 
-    if(!show()){
+    if(!valid){
         return consumeFocus(false);
     }
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y)){
+                if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     hasParent<SearchPage>()->candidates.setShow(true);
                     hasParent<SearchPage>()->autocompletes.setShow(false);
                     hasParent<SearchPage>()->input.input.setInput(byID ? std::to_string(candidate.id).c_str() : candidate.name.c_str());
@@ -132,7 +133,7 @@ bool SearchAutoCompletionItem::processEventDefault(const SDL_Event &event, bool 
             }
         default:
             {
-                return Widget::processEventDefault(event, valid);
+                return Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value());
             }
     }
 }

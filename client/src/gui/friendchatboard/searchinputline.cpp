@@ -76,7 +76,8 @@ SearchInputLine::SearchInputLine(Widget::VarDir argDir,
           false,
           0,
 
-          colorf::WHITE + colorf::A_SHF(0XFF),
+          colorf::WHITE_A255,
+          SDL_BLENDMODE_NONE,
 
           this,
           false,

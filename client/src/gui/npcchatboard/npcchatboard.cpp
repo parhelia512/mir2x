@@ -90,7 +90,7 @@ NPCChatBoard::NPCChatBoard(
       {
           [this](const Widget *)
           {
-              if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
+              if(g_progUseDB->retrieve(getNPCFaceKey())){
                   return DIR_LEFT;
               }
               else{

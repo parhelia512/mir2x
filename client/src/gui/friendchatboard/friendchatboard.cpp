@@ -173,7 +173,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
@@ -199,7 +199,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                               },
                           },
@@ -224,7 +224,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                               },
                           },
@@ -249,7 +249,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                               },
                           },
