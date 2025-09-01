@@ -1,4 +1,6 @@
 #include "widget.hpp"
+#include "imageboard.hpp"
+#include "texaniboard.hpp"
 #include "cblevel.hpp"
 
 //                     |
@@ -24,4 +26,15 @@ class CBTitle: public Widget
 
     private:
         CBLevel m_level;
+
+    public:
+        CBTitle(
+                Widget::VarDir,
+                Widget::VarOff,
+                Widget::VarOff,
+
+                ProcessRun *,
+
+                Widget * = nullptr,
+                bool    = true);
 };

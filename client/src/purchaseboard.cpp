@@ -351,11 +351,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
     }
 }
 
-void PurchaseBoard::update(double)
-{
-}
-
-void PurchaseBoard::drawEx(int dstX, int dstY, int, int, int, int) const
+void PurchaseBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
 {
     if(auto pTexture = g_progUseDB->retrieve(0X08000000 + extendedBoardGfxID())){
         g_sdlDevice->drawTexture(pTexture, dstX, dstY);
@@ -401,7 +397,7 @@ void PurchaseBoard::drawEx(int dstX, int dstY, int, int, int, int) const
     }
 }
 
-bool PurchaseBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool PurchaseBoard::processEventDefault(const SDL_Event &event, bool valid, int, int, const Widget::ROIOpt &)
 {
     if(!valid){
         return consumeFocus(false);

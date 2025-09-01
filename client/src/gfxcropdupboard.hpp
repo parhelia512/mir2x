@@ -66,9 +66,10 @@ class GfxCropDupBoard: public Widget
         }
 
     public:
-        void drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const override
+        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
         {
-            if(!show()){
+            const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+            if(!roiOpt.has_value()){
                 return;
             }
 
@@ -138,12 +139,12 @@ class GfxCropDupBoard: public Widget
                 {static_cast<const Widget *>(&bottomDup  ),       w0, h() - h2},
                 {static_cast<const Widget *>(&bottomRight), w() - w2, h() - h2},
             }){
-                int drawSrcX = srcX;
-                int drawSrcY = srcY;
-                int drawSrcW = srcW;
-                int drawSrcH = srcH;
                 int drawDstX = dstX;
                 int drawDstY = dstY;
+                int drawSrcX = roiOpt->x;
+                int drawSrcY = roiOpt->y;
+                int drawSrcW = roiOpt->w;
+                int drawSrcH = roiOpt->h;
 
                 if(mathf::cropChildROI(
                             &drawSrcX, &drawSrcY,
@@ -157,7 +158,7 @@ class GfxCropDupBoard: public Widget
                             offY,
                             widgetPtr->w(),
                             widgetPtr->h())){
-                    widgetPtr->drawEx(drawDstX, drawDstY, drawSrcX, drawSrcY, drawSrcW, drawSrcH);
+                    widgetPtr->drawEx(drawDstX, drawDstY, {drawSrcX, drawSrcY, drawSrcW, drawSrcH});
                 }
             }
         }

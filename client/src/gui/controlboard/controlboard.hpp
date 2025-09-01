@@ -62,7 +62,7 @@ class ControlBoard: public Widget
         ProcessRun *m_processRun;
 
     private:
-        CBMode m_mode = MODE_DEFAULT;
+        CBMode m_mode = CBM_DEF;
 
     private:
         CBLeft  m_left;
@@ -72,4 +72,11 @@ class ControlBoard: public Widget
 
         CBMiddle       m_middle;
         CBMiddleExpand m_middleExpand;
+
+    public:
+        ControlBoard(
+                ProcessRun *,
+
+                Widget * = nullptr,
+                bool     = false);
 };

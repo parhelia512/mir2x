@@ -878,9 +878,10 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
     setShow(false);
 }
 
-void FriendChatBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void FriendChatBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(!show()){
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
         return;
     }
 
@@ -894,12 +895,12 @@ void FriendChatBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, i
         static_cast<const Widget *>( m_uiPageList[m_uiPage].slider),
         static_cast<const Widget *>(&m_close),
     }){
-        int drawSrcX = srcX;
-        int drawSrcY = srcY;
-        int drawSrcW = srcW;
-        int drawSrcH = srcH;
         int drawDstX = dstX;
         int drawDstY = dstY;
+        int drawSrcX = roiOpt->x;
+        int drawSrcY = roiOpt->y;
+        int drawSrcW = roiOpt->w;
+        int drawSrcH = roiOpt->h;
 
         if(mathf::cropChildROI(
                     &drawSrcX, &drawSrcY,
@@ -913,27 +914,27 @@ void FriendChatBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, i
                     p->dy(),
                     p-> w(),
                     p-> h())){
-            p->drawEx(drawDstX, drawDstY, drawSrcX, drawSrcY, drawSrcW, drawSrcH);
+            p->drawEx(drawDstX, drawDstY, {drawSrcX, drawSrcY, drawSrcW, drawSrcH});
         }
     }
 }
 
-bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(!valid){
         m_dragIndex.reset();
         return consumeFocus(false);
     }
 
-    if(!show()){
-        m_dragIndex.reset();
-        return consumeFocus(false);
-    }
-
-    if(m_close                        .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_uiPageList[m_uiPage].slider ->processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_uiPageList[m_uiPage].page   ->processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_uiPageList[m_uiPage].control->processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_close                        .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_uiPageList[m_uiPage].slider ->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_uiPageList[m_uiPage].page   ->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_uiPageList[m_uiPage].control->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:
@@ -956,19 +957,19 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(m_uiPageList[m_uiPage].page->parentIn(event.button.x, event.button.y, startDstX, startDstY)){
-                    if(m_uiPageList[m_uiPage].page->processParentEvent(event, true, startDstX, startDstY)){
+                if(m_uiPageList[m_uiPage].page->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                    if(m_uiPageList[m_uiPage].page->processParentEvent(event, true, startDstX, startDstY, roiOpt.value())){
                         return consumeFocus(true, m_uiPageList[m_uiPage].page);
                     }
                 }
 
                 m_dragIndex = getEdgeDragIndex(event.button.x, event.button.y);
-                return consumeFocus(in(event.button.x, event.button.y));
+                return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
             }
         case SDL_MOUSEBUTTONUP:
             {
                 m_dragIndex.reset();
-                return consumeFocus(in(event.button.x, event.button.y));
+                return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
             }
         case SDL_MOUSEMOTION:
             {
@@ -1017,15 +1018,18 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
                         }
                     }
                     else{
+                        const auto remapXDiff = startDstX - roiOpt->x;
+                        const auto remapYDiff = startDstY - roiOpt->y;
+
                         const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
 
                         const int maxX = rendererW - w();
                         const int maxY = rendererH - h();
 
-                        const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
-                        const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+                        const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
+                        const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
 
-                        moveBy(newX - startDstX, newY - startDstY);
+                        moveBy(newX - remapXDiff, newY - remapYDiff);
                     }
                     return consumeFocus(true);
                 }
@@ -1034,7 +1038,7 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
         case SDL_MOUSEWHEEL:
             {
                 if(m_uiPageList[m_uiPage].page->focus()){
-                    if(m_uiPageList[m_uiPage].page->processEvent(event, true)){
+                    if(m_uiPageList[m_uiPage].page->processEvent(event, true, startDstX, startDstY, roiOpt.value())){
                         return consumeFocus(true, m_uiPageList[m_uiPage].page);
                     }
                 }

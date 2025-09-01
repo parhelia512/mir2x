@@ -13,11 +13,11 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           [this](const Widget *)
           {
               switch(m_mode){
-                  case MODE_HIDE:
+                  case CBM_HIDE:
                       {
                           return CBTitle::UP_HEIGHT;
                       }
-                  case MODE_DEFAULT:
+                  case CBM_DEF:
                       {
                           return m_middle.h() + CBTitle::UP_HEIGHT;
                       }
@@ -122,33 +122,3 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           false,
       }
 {}
-
-void ControlBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROPOpt &roi)
-{
-    if(Widget::processEvent(event, valid, startDstX, startDstY, roi)){
-        return true;
-    }
-
-    switch(event.type){
-        case SDL_KEYDOWN:
-            {
-                switch(event.key.keysym.sym){
-                    case SDLK_RETURN:
-                        {
-                            return valid && m_cmdLine.consumeFocus(true);
-                        }
-                    default:
-                        {
-                            return false;
-                        }
-                }
-            }
-        case SDL_MOUSEBUTTONUP:
-        case SDL_MOUSEBUTTONDOWN:
-        case SDL_MOUSEMOTION:
-        default:
-            {
-                return false;
-            }
-    }
-}

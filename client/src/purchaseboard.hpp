@@ -70,13 +70,10 @@ class PurchaseBoard: public Widget
         PurchaseBoard(ProcessRun *, Widget * = nullptr, bool = false);
 
     public:
-        void update(double) override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
-
-    public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
     public:
         void loadSell(uint64_t, std::vector<uint32_t>);

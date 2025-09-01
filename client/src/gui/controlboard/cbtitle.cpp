@@ -25,6 +25,7 @@ CBTitle::CBTitle(
           argAutoDelete,
       }
 
+    , m_processRun(argProc)
     , m_bg
       {
           DIR_UPLEFT,
@@ -34,7 +35,7 @@ CBTitle::CBTitle(
           {},
           {},
 
-          [](const Widget *))
+          [](const Widget *)
           {
               return g_progUseDB->retrieve(0X00000022);
           },
@@ -43,7 +44,8 @@ CBTitle::CBTitle(
           false,
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
+          SDL_BLENDMODE_NONE,
 
           this,
           false,
@@ -81,4 +83,4 @@ CBTitle::CBTitle(
           this,
           false,
       }
-
+{}

@@ -618,22 +618,14 @@ void CBMiddle::drawMiddleExpand() const
     m_slider.draw();
 }
 
-void CBMiddle::drawEx(int, int, int, int, int, int) const
+bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOPt &roi)
 {
-    m_left.draw();
-    m_right.draw();
-
-    if(m_expand){
-        drawMiddleExpand();
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
     }
-    else{
-        drawMiddleDefault();
-    }
-}
 
-bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
-{
-    if(Widget::processEvent(event, valid, startDstX, startDstY)){
+    if(Widget::processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 

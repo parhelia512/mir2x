@@ -53,5 +53,5 @@ class CBMiddle: public Widget
 
     public:
         void update(double) override;
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 };

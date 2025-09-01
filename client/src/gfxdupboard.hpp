@@ -35,17 +35,24 @@ class GfxDupBoard: public Widget
                   argAutoDelete,
               }
 
-            , m_gfxWidget([argWidget]{ fflassert(argWidget); return argWidget; }())
+            , m_gfxWidget(argWidget)
         {}
 
     public:
-        void drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const override
+        const Widget *gfxWidget() const
         {
-            if(!show()){
+            return m_gfxWidget;
+        }
+
+    public:
+        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
+        {
+            const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+            if(!roiOpt.has_value()){
                 return;
             }
 
-            const auto fnCropDraw = [dstX, dstY, srcW, srcH, this](int onCropBrdX, int onCropBrdY, int onCropBrdW, int onCropBrdH, int onScreenX, int onScreenY)
+            const auto fnCropDraw = [dstX, dstY, &roiOpt, this](int onCropBrdX, int onCropBrdY, int onCropBrdW, int onCropBrdH, int onScreenX, int onScreenY)
             {
                 if(mathf::cropROI(
                             &onCropBrdX, &onCropBrdY,
@@ -57,19 +64,17 @@ class GfxDupBoard: public Widget
                             m_gfxWidget->w(),
                             m_gfxWidget->h(),
 
-                            0, 0, -1, -1, dstX, dstY, srcW, srcH)){
-                    m_gfxWidget->drawEx(onScreenX, onScreenY, onCropBrdX, onCropBrdY, onCropBrdW, onCropBrdH);
+                            0, 0, -1, -1, dstX, dstY, roiOpt->w, roiOpt->h)){
+                    m_gfxWidget->drawEx(onScreenX, onScreenY, {onCropBrdX, onCropBrdY, onCropBrdW, onCropBrdH});
                 }
             };
 
-            const auto extendedDstX = dstX - srcX;
-            const auto extendedDstY = dstY - srcY;
+            const int extendedDstX = dstX - roiOpt->x;
+            const int extendedDstY = dstY - roiOpt->y;
 
-            int doneDrawWidth = 0;
-            while(doneDrawWidth < w()){
+            for(int doneDrawWidth = 0; doneDrawWidth < w();){
                 const int drawWidth = std::min<int>(m_gfxWidget->w(), w() - doneDrawWidth);
-                int doneDrawHeight = 0;
-                while(doneDrawHeight < h()){
+                for(int doneDrawHeight = 0; doneDrawHeight < h();){
                     const int drawHeight = std::min<int>(m_gfxWidget->h(), h() - doneDrawHeight);
                     fnCropDraw(0, 0, drawWidth, drawHeight, extendedDstX + doneDrawWidth, extendedDstY + doneDrawHeight);
                     doneDrawHeight += drawHeight;
