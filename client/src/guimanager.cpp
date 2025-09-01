@@ -22,6 +22,9 @@ GUIManager::GUIManager(ProcessRun *argProc)
     , m_processRun(argProc)
     , m_NPCChatBoard
       {
+          DIR_UPLEFT,
+          0,
+          0,
           argProc,
       }
 

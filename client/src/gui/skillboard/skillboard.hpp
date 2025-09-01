@@ -106,7 +106,7 @@ class SkillBoard: public Widget
                 TritexButton m_icon;
 
             public:
-                MagicIconButton(int, int, uint32_t, SkillBoardConfig *, ProcessRun *, Widget *widgetPtr = nullptr, bool autoDelete = false);
+                MagicIconButton(dir8_t, int, int, uint32_t, SkillBoardConfig *, ProcessRun *, Widget * = nullptr, bool = false);
 
             public:
                 void drawEx(int, int, const Widget::ROIOpt &) const override;
@@ -155,6 +155,7 @@ class SkillBoard: public Widget
                     fflassert(iconGfx);
                     m_magicIconButtonList.push_back(new SkillBoard::MagicIconButton
                     {
+                        DIR_UPLEFT,
                         iconGfx.x * 60 + 12,
                         iconGfx.y * 65 + 13,
                         argMagicID,
