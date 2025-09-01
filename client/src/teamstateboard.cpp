@@ -266,7 +266,7 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *w
     }
 }
 
-void TeamStateBoard::drawEx(int, int, int, int, int, int) const
+void TeamStateBoard::drawEx(int, int, const Widget::ROIOpt &) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X00000150)){
         const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
@@ -332,7 +332,7 @@ void TeamStateBoard::drawEx(int, int, int, int, int, int) const
     m_close       .draw();
 }
 
-bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int, int, const Widget::ROIOpt &)
 {
     if(!valid){
         return consumeFocus(false);
