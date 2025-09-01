@@ -57,5 +57,5 @@ void ProcessSync::draw() const
 
     const int infoX = (800 - m_processBarInfo.w()) / 2;
     const int infoY = 528 + (texH - m_processBarInfo.h()) / 2;
-    m_processBarInfo.drawEx(infoX, infoY, 0, 0, m_processBarInfo.w(), m_processBarInfo.h());
+    m_processBarInfo.drawEx(infoX, infoY, {0, 0, m_processBarInfo.w(), m_processBarInfo.h()});
 }

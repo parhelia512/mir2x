@@ -20,10 +20,10 @@ extern PNGTexOffDB *g_selectCharDB;
 
 ProcessSelectChar::ProcessSelectChar()
     : Process()
-	, m_start (DIR_UPLEFT, 335,  75, {0X0C000030, 0X0C000030, 0X0C000031}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ onStart (); })
-	, m_create(DIR_UPLEFT, 565, 130, {0X0C000010, 0X0C000010, 0X0C000011}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ onCreate(); })
-	, m_delete(DIR_UPLEFT, 110, 305, {0X0C000020, 0X0C000020, 0X0C000021}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ onDelete(); })
-	, m_exit  (DIR_UPLEFT,  45, 544, {0X0C000040, 0X0C000040, 0X0C000041}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *){ onExit  (); })
+    , m_start (DIR_UPLEFT, 335,  75, {0X0C000030, 0X0C000030, 0X0C000031}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onStart (); })
+    , m_create(DIR_UPLEFT, 565, 130, {0X0C000010, 0X0C000010, 0X0C000011}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onCreate(); })
+    , m_delete(DIR_UPLEFT, 110, 305, {0X0C000020, 0X0C000020, 0X0C000021}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onDelete(); })
+    , m_exit  (DIR_UPLEFT,  45, 544, {0X0C000040, 0X0C000040, 0X0C000041}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onExit  (); })
 
     , m_notifyBoard
       {
@@ -78,17 +78,17 @@ void ProcessSelectChar::draw() const
         g_sdlDevice->drawTexture(texPtr, 0, 0);
     }
 
-    m_start .draw();
-    m_create.draw();
-    m_delete.draw();
-    m_exit  .draw();
+    m_start .drawRoot(0, 0);
+    m_create.drawRoot(0, 0);
+    m_delete.drawRoot(0, 0);
+    m_exit  .drawRoot(0, 0);
 
     if(hasChar()){
         drawChar();
         drawCharName();
     }
 
-    m_deleteInput.draw();
+    m_deleteInput.drawRoot(0, 0);
 
     const int notifX = (800 - m_notifyBoard.pw()) / 2;
     const int notifY = (600 - m_notifyBoard. h()) / 2;
@@ -104,11 +104,11 @@ void ProcessSelectChar::draw() const
 void ProcessSelectChar::processEvent(const SDL_Event &event)
 {
     bool tookEvent = false;
-    tookEvent |= m_start      .processEvent(event, !tookEvent);
-    tookEvent |= m_create     .processEvent(event, !tookEvent);
-    tookEvent |= m_delete     .processEvent(event, !tookEvent);
-    tookEvent |= m_exit       .processEvent(event, !tookEvent);
-    tookEvent |= m_deleteInput.processEvent(event, !tookEvent);
+    tookEvent |= m_start      .applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_create     .applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_delete     .applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_exit       .applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_deleteInput.applyRootEvent(event, !tookEvent, 0, 0);
 
     if(!tookEvent){
     }

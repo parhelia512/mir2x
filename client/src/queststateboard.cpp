@@ -53,7 +53,8 @@ QuestStateBoard::QuestStateBoard(
           false,
           0,
 
-          colorf::WHITE + colorf::A_SHF(155),
+          colorf::WHITE_A255,
+          SDL_BLENDMODE_NONE,
 
           this,
           false,
@@ -165,7 +166,7 @@ QuestStateBoard::QuestStateBoard(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
           },

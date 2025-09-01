@@ -498,7 +498,7 @@ void ProcessRun::draw() const
         g_sdlDevice->fillRectangle(colorf::RGBA(128, 0, 0, 64), 0, 0, winW, winH);
     }
 
-    m_guiManager.draw();
+    m_guiManager.drawRoot(0, 0);
     if(const auto selectedItemID = getMyHero()->getInvPack().getGrabbedItem().itemID){
         if(const auto &ir = DBCOM_ITEMRECORD(selectedItemID)){
             if(auto texPtr = g_itemDB->retrieve(ir.pkgGfxID | 0X01000000)){

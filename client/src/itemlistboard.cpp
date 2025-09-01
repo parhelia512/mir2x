@@ -324,8 +324,8 @@ void ItemListBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
             const int rightBoxX = rightStartX + c * m_boxW;
             const int rightBoxY = rightStartY + r * m_boxH;
 
-            const int remapXDiff = startDstX - roiOpt->x;
-            const int remapYDiff = startDstY - roiOpt->y;
+            const int remapXDiff = dstX - roiOpt->x;
+            const int remapYDiff = dstY - roiOpt->y;
 
             if(auto texPtr = g_itemDB->retrieve(ir.pkgGfxID | 0X02000000)){
                 const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
