@@ -43,6 +43,7 @@ GUIManager::GUIManager(ProcessRun *argProc)
 
     , m_horseBoard
       {
+          DIR_UPLEFT,
           g_sdlDevice->getRendererWidth()  / 2 - 128,
           g_sdlDevice->getRendererHeight() / 2 - 161,
           argProc,
@@ -100,6 +101,7 @@ GUIManager::GUIManager(ProcessRun *argProc)
 
     , m_questStateBoard
       {
+          DIR_UPLEFT,
           g_sdlDevice->getRendererWidth()  / 2 - 145,
           g_sdlDevice->getRendererHeight() / 2 - 223,
           argProc,
@@ -108,6 +110,7 @@ GUIManager::GUIManager(ProcessRun *argProc)
 
     , m_quickAccessBoard
       {
+          DIR_UPLEFT,
           0,
           g_sdlDevice->getRendererHeight() - m_controlBoard.h() - 48,
           argProc,
@@ -157,12 +160,13 @@ GUIManager::GUIManager(ProcessRun *argProc)
     }
 }
 
-void GUIManager::drawEx(int, int, const Widget::ROIOpt &) const
+void GUIManager::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    m_miniMapBoard .draw();
-    m_NPCChatBoard .draw();
-    m_controlBoard .draw();
-    m_purchaseBoard.draw();
+    m_miniMapBoard.drawRoot(0, 0);
+    m_NPCChatBoard.drawRoot(0, 0);
+    m_controlBoard.drawRoot(0, 0);
+
+    drawChildEx(&m_purchaseBoard, dstX, dstY, roi);
 
     const auto [w, h] = g_sdlDevice->getRendererSize();
     Widget::drawEx(0, 0, 0, 0, w, h);

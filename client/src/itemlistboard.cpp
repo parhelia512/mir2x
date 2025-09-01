@@ -39,7 +39,7 @@ ItemListBoard::ItemListBoard(int argX, int argY, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               m_page = to_uz(mathf::bound<int>(to_d(m_page) - 1, 0, to_d(pageCount()) - 1));
           },
@@ -72,7 +72,7 @@ ItemListBoard::ItemListBoard(int argX, int argY, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               onSelect();
           },
@@ -105,7 +105,7 @@ ItemListBoard::ItemListBoard(int argX, int argY, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               m_page = to_uz(mathf::bound<int>(to_d(m_page) + 1, 0, to_d(pageCount()) - 1));
           },
@@ -138,7 +138,7 @@ ItemListBoard::ItemListBoard(int argX, int argY, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               onClose();
               setShow(false);

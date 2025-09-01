@@ -223,8 +223,13 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
                 return upperItemSpace(argWidget);
             }, argAutoDelete},
         },
-    })->setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid)
+    })->setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
     {
+        const auto roiOpt = self->cropDrawROI(startDstX, startDstY, roi);
+        if(!roiOpt.has_value()){
+            return false;
+        }
+
         if(!valid){
             return self->consumeFocus(false);
         }
@@ -243,7 +248,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
             }
         });
 
-        if(menuWidget->processEvent(event, valid)){
+        if(menuWidget->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
             return self->consumeFocus(true, menuWidget);
         }
 

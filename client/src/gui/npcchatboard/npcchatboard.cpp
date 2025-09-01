@@ -174,7 +174,7 @@ NPCChatBoard::NPCChatBoard(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
           },

@@ -501,8 +501,13 @@ void LayoutBoard::setLineWidth(int argLineWidth)
     }
 }
 
-bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(m_parNodeList.empty()){
         return false;
     }
@@ -653,7 +658,7 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, int st
                 }();
 
                 const auto [eventPX, eventPY] = SDLDeviceHelper::getEventPLoc(event).value();
-                const auto fnHandleEvent = [&event, newEvent, eventPX, eventPY, startDstX, startDstY, this](ParNode *node, bool currValid) -> bool
+                const auto fnHandleEvent = [&event, newEvent, eventPX, eventPY, startDstX, startDstY, &roiOpt, this](ParNode *node, bool currValid) -> bool
                 {
                     if(!currValid){
                         node->tpset->clearEvent(-1);
@@ -704,7 +709,7 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, int st
                 }
 
                 if(!takeEvent && event.type != SDL_MOUSEMOTION){
-                    takeEvent = in(eventPX, eventPY, startDstX, startDstY);
+                    takeEvent = in(eventPX, eventPY, startDstX, startDstY, roiOpt.value());
                 }
 
                 if(takeEvent){

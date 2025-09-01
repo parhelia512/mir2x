@@ -75,7 +75,7 @@ InputStringBoard::InputStringBoard(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               inputLineDone();
               setShow(false);
@@ -109,7 +109,7 @@ InputStringBoard::InputStringBoard(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
               m_input.clear();
@@ -142,15 +142,20 @@ void InputStringBoard::update(double ms)
     m_input.update(ms);
 }
 
-void InputStringBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
+void InputStringBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
     if(auto texPtr = g_progUseDB->retrieve(0X07000000)){
         g_sdlDevice->drawTexture(texPtr, dstX, dstY);
     }
 
-    m_input    .draw();
-    m_yesButton.draw();
-    m_nopButton.draw();
+    drawChildEx(&m_input    , dstX, dstY, roiOpt.value());
+    drawChildEx(&m_yesButton, dstX, dstY, roiOpt.value());
+    drawChildEx(&m_nopButton, dstX, dstY, roiOpt.value());
 
     const LayoutBoard textInfoBoard
     {
@@ -177,10 +182,10 @@ void InputStringBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
         LALIGN_JUSTIFY,
     };
 
-    textInfoBoard.drawAt(DIR_NONE, x() + w() / 2, y() + 120);
+    drawAsChildEx(&textInfoBoard, DIR_NONE, w() / 2, 120, dstX, dstY, roiOpt.value());
 
     if(m_input.focus()){
-        g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(32), m_input.x(), m_input.y(), m_input.w(), m_input.h());
+        g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(32), dstX + m_input.dx(), dstY + m_input.dy(), m_input.w(), m_input.h());
     }
 }
 

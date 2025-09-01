@@ -49,7 +49,7 @@ InventoryBoard::InventoryBoard(int nX, int nY, ProcessRun *pRun, Widget *pwidget
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               m_processRun->getMyHero()->getInvPack().repack();
           },
@@ -81,7 +81,7 @@ InventoryBoard::InventoryBoard(int nX, int nY, ProcessRun *pRun, Widget *pwidget
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
               m_sdInvOp.clear();
@@ -119,7 +119,7 @@ InventoryBoard::InventoryBoard(int nX, int nY, ProcessRun *pRun, Widget *pwidget
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               commitInvOp();
           },
@@ -222,8 +222,13 @@ void InventoryBoard::update(double fUpdateTime)
     m_wmdAniBoard.update(fUpdateTime);
 }
 
-void InventoryBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
+void InventoryBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
     if(auto pTexture = g_progUseDB->retrieve(0X0000001B)){
         g_sdlDevice->drawTexture(pTexture, dstX, dstY);
     }
@@ -255,16 +260,17 @@ void InventoryBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
 
     drawGold();
     drawInvOpTitle();
-    m_wmdAniBoard.draw();
-    m_slider     .draw();
-    m_closeButton.draw();
+
+    drawChildEx(&m_wmdAniBoard, dstX, dstY, roiOpt.value());
+    drawChildEx(&m_slider     , dstX, dstY, roiOpt.value());
+    drawChildEx(&m_closeButton, dstX, dstY, roiOpt.value());
 
     if(m_sdInvOp.invOp == INVOP_NONE){
-        m_sortButton.draw();
+        drawChildEx(&m_sortButton, dstX, dstY, roiOpt.value());
     }
     else if(m_selectedIndex >= 0){
         g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X0000B0), dstX + m_invOpButtonX, dstY + m_invOpButtonY);
-        m_invOpButton.draw();
+        drawChildEx(&m_invOpButton, dstX, dstY, roiOpt.value());
         if(m_invOpCost >= 0){
             drawInvOpCost();
         }
@@ -323,15 +329,18 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
+                    const auto remapXDiff = startDstX - roiOpt->x;
+                    const auto remapYDiff = startDstY - roiOpt->y;
+
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+                    const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
 
-                    moveBy(newX - startDstX, newY - startDstY);
+                    moveBy(newX - remapXDiff, newY - remapYDiff);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);

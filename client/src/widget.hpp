@@ -446,7 +446,7 @@ class Widget: public WidgetTreeNode
             return {0, 0, w(), h()};
         }
 
-    protected:
+    public:
         std::optional<Widget::ROI> cropDrawROI(int &, int &, const Widget::ROIOpt &) const;
 
     public:

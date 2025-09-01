@@ -263,7 +263,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(!in(event.button.x, event.button.y)){
+                if(!in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     dropFocus();
                     return true;
                 }
@@ -293,7 +293,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
 
                     moveBy(newX - remapXDiff, newY - remapYDiff);
                 }
-                else if(in(event.motion.x, event.motion.y)){
+                else if(in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value())){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
                         if(m_labelBoardList.at(i)->parentIn(event.motion.x, event.motion.y, w(), h(), startDstX, startDstY, roiOpt.value())){
                             m_labelBoardList.at(i)->setFontColor(m_fontColorHover);
@@ -312,7 +312,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
     }
 }
 
-void IMEBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
+void IMEBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
     //        +---------------------------------------------------------------------------------- m_startX
     //        |
@@ -386,14 +386,14 @@ void IMEBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
             m_font,
             m_fontSize,
             m_fontStyle,
-            m_fontColor).draw();
+            m_fontColor).drawRoot(0, 0);
 
     g_sdlDevice->drawLine(m_separatorColor,
             dstX      , dstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2,
             dstX + w(), dstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2);
 
     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-        m_labelBoardList.at(i)->draw();
+        drawChildEx(m_labelBoardList.at(i).get(), dstX, dstY, roi);
     }
 
     if(auto tex = g_progUseDB->retrieve(0X09000006)){

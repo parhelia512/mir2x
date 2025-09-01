@@ -140,6 +140,11 @@ SkillBoard::MagicIconButton::MagicIconButton(
 
 void SkillBoard::MagicIconButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
     if(const auto levelOpt = m_config->getMagicLevel(magicID()); levelOpt.has_value()){
         Widget::drawEx(dstX, dstY, roi);
 
@@ -156,7 +161,7 @@ void SkillBoard::MagicIconButton::drawEx(int dstX, int dstY, const Widget::ROIOp
 
             colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
         };
-        magicLevel.drawAt(DIR_UPLEFT, (dstX - srcX) + (m_icon.w() - 2), (dstY - srcY) + (m_icon.h() - 1), dstX, dstY, srcW, srcH);
+        magicLevel.drawAt(DIR_UPLEFT, (dstX - roiOpt->x) + (m_icon.w() - 2), (dstY - roiOpt->y) + (m_icon.h() - 1), roiOpt.value());
 
         if(const auto keyOpt = m_config->getMagicKey(magicID()); keyOpt.has_value()){
             const TextShadowBoard magicKey
@@ -164,9 +169,14 @@ void SkillBoard::MagicIconButton::drawEx(int dstX, int dstY, const Widget::ROIOp
                 DIR_UPLEFT,
                 0,
                 0,
+
                 2,
                 2,
-                str_printf(u8"%c", std::toupper(keyOpt.value())).c_str(),
+
+                [keyOpt, this](const Widget *)
+                {
+                    return str_printf("%c", std::toupper(keyOpt.value()));
+                },
 
                 3,
                 20,
@@ -175,7 +185,7 @@ void SkillBoard::MagicIconButton::drawEx(int dstX, int dstY, const Widget::ROIOp
                 colorf::RGBA(0XFF, 0X80, 0X00, 0XE0),
                 colorf::RGBA(0X00, 0X00, 0X00, 0XE0),
             };
-            magicKey.drawAt(DIR_UPLEFT, (dstX - srcX + 2), (dstY - srcY + 2), dstX, dstY, srcW, srcH);
+            magicKey.drawAt(DIR_UPLEFT, (dstX - roiOpt->x + 2), (dstY - roiOpt->y + 2), roiOpt.value());
         }
     }
 }
@@ -215,15 +225,20 @@ SkillBoard::SkillPage::SkillPage(uint32_t pageImage, SkillBoardConfig *configPtr
     setSize(r[2], r[3]);
 }
 
-void SkillBoard::SkillPage::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void SkillBoard::SkillPage::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
     if(auto texPtr = g_progUseDB->retrieve(m_pageImage)){
-        int srcXCrop = srcX;
-        int srcYCrop = srcY;
         int dstXCrop = dstX;
         int dstYCrop = dstY;
-        int srcWCrop = srcW;
-        int srcHCrop = srcH;
+        int srcXCrop = roiOpt->x;
+        int srcYCrop = roiOpt->y;
+        int srcWCrop = roiOpt->w;
+        int srcHCrop = roiOpt->h;
 
         const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
         if(mathf::cropROI(
@@ -236,7 +251,7 @@ void SkillBoard::SkillPage::drawEx(int dstX, int dstY, int srcX, int srcY, int s
             g_sdlDevice->drawTexture(texPtr, dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
         }
     }
-    Widget::drawEx(dstX, dstY, srcX, srcY, srcW, srcH);
+    Widget::drawEx(dstX, dstY, roiOpt.value());
 }
 
 SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)

@@ -232,8 +232,8 @@ void InputLine::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
         return;
     }
 
-    int cursorY = startDstY + tpsetY;
-    int cursorX = startDstX + tpsetX + [this]()
+    int cursorY = dstY + tpsetY;
+    int cursorX = dstX + tpsetX + [this]()
     {
         if(m_tpset.empty() || m_cursor == 0){
             return 0;
@@ -250,12 +250,12 @@ void InputLine::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
     int cursorW = m_cursorWidth;
     int cursorH = std::max<int>(m_tpset.ph(), h());
 
-    if(mathf::rectangleOverlapRegion(dstX, dstY, srcW, srcH, cursorX, cursorY, cursorW, cursorH)){
+    if(mathf::rectangleOverlapRegion(dstX, dstY, roiOpt->w, roiOpt->h, cursorX, cursorY, cursorW, cursorH)){
         g_sdlDevice->fillRectangle(m_cursorColor, cursorX, cursorY, cursorW, cursorH);
     }
 
     if(g_clientArgParser->debugDrawInputLine){
-        g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), startDstX, startDstY, w(), h());
+        g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), dstX, dstY, w(), h());
     }
 }
 

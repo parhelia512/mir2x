@@ -112,7 +112,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
           },
@@ -957,7 +957,7 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(m_uiPageList[m_uiPage].page->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(m_uiPageList[m_uiPage].page->parentIn(event.button.x, event.button.y, w(), h(), startDstX, startDstY, roiOpt.value())){
                     if(m_uiPageList[m_uiPage].page->processParentEvent(event, true, startDstX, startDstY, roiOpt.value())){
                         return consumeFocus(true, m_uiPageList[m_uiPage].page);
                     }
@@ -1558,11 +1558,11 @@ std::optional<int> FriendChatBoard::getEdgeDragIndex(int eventX, int eventY) con
     //                               ^
     //                               |
 
-    const int x0 = startDstX;
+    const int x0 = eventX;
     const int x1 = x0       + UIPage_DRAGBORDER[2];
     const int x2 = x0 + w() - UIPage_DRAGBORDER[3];
 
-    const int y0 = startDstY;
+    const int y0 = eventY;
     const int y1 = y0       + UIPage_DRAGBORDER[0];
     const int y2 = y0 + h() - UIPage_DRAGBORDER[1];
 

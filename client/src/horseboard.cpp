@@ -90,7 +90,7 @@ HorseBoard::HorseBoard(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
           },
@@ -122,7 +122,7 @@ HorseBoard::HorseBoard(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -153,7 +153,7 @@ HorseBoard::HorseBoard(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -184,7 +184,7 @@ HorseBoard::HorseBoard(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -215,7 +215,7 @@ HorseBoard::HorseBoard(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
           },
 
@@ -236,19 +236,20 @@ HorseBoard::HorseBoard(
 
 bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(!valid){
         return consumeFocus(false);
     }
 
-    if(!show()){
-        return consumeFocus(false);
-    }
-
-    if(m_close.processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_up   .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_down .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_hide .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_show .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_close.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_up   .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_down .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_hide .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_show .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:
@@ -268,15 +269,18 @@ bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
+                    const auto remapXDiff = startDstX - roiOpt->x;
+                    const auto remapYDiff = startDstY - roiOpt->y;
+
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+                    const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
 
-                    moveBy(newX - startDstX, newY - startDstY);
+                    moveBy(newX - remapXDiff, newY - remapYDiff);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);
