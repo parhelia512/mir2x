@@ -605,5 +605,6 @@ void SkillBoard::drawTabName() const
 
         colorf::WHITE + colorf::A_SHF(255),
     };
-    tabName.drawAt(DIR_UPLEFT, x() + 30, y() + 400);
+    // tabName.drawAt(DIR_UPLEFT, x() + 30, y() + 400);
+    tabName.drawAt(DIR_UPLEFT, 30, 400);
 }

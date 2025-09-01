@@ -559,8 +559,8 @@ int InventoryBoard::getPackBinIndex(int locPX, int locPY) const
 
 std::tuple<int, int> InventoryBoard::getInvGrid(int locPX, int locPY) const
 {
-    const int gridPX0 = m_invGridX0 + startDstX;
-    const int gridPY0 = m_invGridY0 + startDstY;
+    const int gridPX0 = m_invGridX0; // + startDstX;
+    const int gridPY0 = m_invGridY0; // + startDstY;
 
     if(!mathf::pointInRectangle<int>(locPX, locPY, gridPX0, gridPY0, SYS_INVGRIDGW * SYS_INVGRIDPW, SYS_INVGRIDGH * SYS_INVGRIDPH)){
         return {-1, -1};
