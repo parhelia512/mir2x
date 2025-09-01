@@ -621,7 +621,8 @@ void ProcessRun::on_SM_NPCSELL(const uint8_t *buf, size_t bufSize)
     auto npcChatBoardPtr  = dynamic_cast<NPCChatBoard  *>(getGUIManager()->getWidget("NPCChatBoard"));
 
     if(npcChatBoardPtr->show()){
-        purchaseBoardPtr->moveTo(npcChatBoardPtr->x(), npcChatBoardPtr->y() + npcChatBoardPtr->h());
+        // purchaseBoardPtr->moveTo(npcChatBoardPtr->x(), npcChatBoardPtr->y() + npcChatBoardPtr->h());
+        purchaseBoardPtr->moveTo(0, 0 + npcChatBoardPtr->h());
     }
     else{
         purchaseBoardPtr->moveTo(0, 0);
@@ -871,7 +872,8 @@ void ProcessRun::on_SM_SHOWSECUREDITEMLIST(const uint8_t *buf, size_t bufSize)
     auto itemBoardPtr = dynamic_cast<SecuredItemListBoard *>(getWidget("SecuredItemListBoard"));
 
     if(chatBoardPtr->show()){
-        itemBoardPtr->moveTo(chatBoardPtr->x(), chatBoardPtr->y() + chatBoardPtr->h());
+        // itemBoardPtr->moveTo(chatBoardPtr->x(), chatBoardPtr->y() + chatBoardPtr->h());
+        itemBoardPtr->moveTo(0, 0 + chatBoardPtr->h());
     }
     else{
         itemBoardPtr->moveTo(0, 0);

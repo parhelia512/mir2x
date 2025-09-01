@@ -39,11 +39,15 @@ CBMiddle::CBMiddle(
           std::move(argW),
           0, // reset
 
+          {},
+
           argParent,
           argAutoDelete,
       }
 
     , m_processRun(argProc)
+    , m_logBoard(hasParent<ControlBoard>()->m_logBoard)
+
     , m_bg
       {
           DIR_UPLEFT,
@@ -130,100 +134,8 @@ CBMiddle::CBMiddle(
           [this](Widget *, int clickCount)
           {
               if(auto parptr = hasParent<ControlBoard>()){
-                  parptr->onClick(clickCount);
+                  parptr->onClickSwitchModeButton(clickCount);
               }
-          },
-
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
-
-    , m_logView
-      {
-          DIR_UPLEFT,
-          9,
-          11,
-
-          std::addressof(m_logBoard),
-
-          0,
-          [this](const Widget *) { return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
-          [this](const Widget *) { return m_logBoard.w(); },
-          83,
-
-          {},
-
-          this,
-          false,
-      }
-
-    , m_inputBg
-      {
-          DIR_UPLEFT,
-          7,
-          104,
-
-          [this](const Widget *){ return w() - 110; },
-          17,
-
-          [this](const Widget *self, int drawDstX, int drawDstY)
-          {
-              if(m_cmdLine.focus()){
-                  SDLDeviceHelper::EnableRenderBlendMode enableRenderBlendMode(SDL_BLENDMODE_BLEND);
-                  g_sdlDevice->fillRectangle(colorf::GREY + colorf::A_SHF(48), drawDstX, drawDstY, self->w(), self->h());
-              }
-          },
-
-          this,
-          false,
-      }
-
-    , m_bgImg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          &m_bgImgFull,
-
-          0,
-          0,
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          {},
-
-          this,
-          false,
-      }
-
-    , m_switchMode
-      {
-          DIR_UPLEFT,
-          boardW - 178 - 181,
-          3,
-          {SYS_U32NIL, 0X00000028, 0X00000029},
-          {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
-          },
-
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *)
-          {
-              switchExpandMode();
           },
 
           0,
@@ -242,7 +154,7 @@ CBMiddle::CBMiddle(
     , m_slider
       {
           DIR_UPLEFT,
-          boardW - 178 - 176,
+          [this](const Widget *){ return w() - 178},
           40,
           5,
           60,
@@ -251,24 +163,23 @@ CBMiddle::CBMiddle(
           2,
           nullptr,
 
-          &m_middle,
+          this,
+          false,
       }
+
 
     , m_logView
       {
           DIR_UPLEFT,
-          10,
-          10,
+          9,
+          11,
 
-          [this](const Widget *)
-          {
-              return std::addressof(hasParent<ControlBoard>()->m_logBoard);
-          },
+          std::addressof(m_logBoard),
 
           0,
-          0,
-          100,
-          100,
+          [this](const Widget *) { return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
+          [this](const Widget *) { return m_logBoard.w(); },
+          83,
 
           {},
 

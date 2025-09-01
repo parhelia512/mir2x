@@ -178,10 +178,10 @@ bool ItemListBoard::processEventDefault(const SDL_Event &event, bool valid, int 
         return consumeFocus(false);
     }
 
-    if(m_leftButton  .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_selectButton.processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_rightButton .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_closeButton .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_leftButton  .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){ return true; }
+    if(m_selectButton.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){ return true; }
+    if(m_rightButton .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){ return true; }
+    if(m_closeButton .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){ return true; }
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
@@ -352,7 +352,7 @@ void ItemListBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
             }
 
             const bool gridSelected = m_selectedPageGrid.has_value() && (m_selectedPageGrid.value() == i);
-            const bool cursorOn = [rightBoxX, rightBoxY, this]() -> bool
+            const bool cursorOn = [rightBoxX, rightBoxY, remapXDiff, remapYDiff, this]() -> bool
             {
                 const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
                 return mathf::pointInRectangle<int>(mousePX, mousePY, remapXDiff + rightBoxX, remapYDiff + rightBoxY, m_boxW, m_boxH);

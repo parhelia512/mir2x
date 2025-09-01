@@ -355,16 +355,16 @@ bool GuildBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
         return consumeFocus(false);
     }
 
-    if(m_closeButton       .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_announcement      .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_members           .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_chat              .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_editAnnouncement  .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_removeMember      .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_disbandGuild      .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_editMemberPosition.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_dissolveCovenant  .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_slider            .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_closeButton       .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_announcement      .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_members           .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_chat              .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_editAnnouncement  .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_removeMember      .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_disbandGuild      .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_editMemberPosition.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_dissolveCovenant  .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_slider            .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:

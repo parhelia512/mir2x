@@ -271,14 +271,14 @@ void MiniMapBoard::drawMiniMapTexture(int startDstX, int startDstY) const
     }
 
     const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-    if(in(mousePX, mousePY)){
+    if(in(mousePX, mousePY, startDstX, startDstY, roi())){
         const auto onMapPX = std::lround((mousePX - startDstX + srcX) * 1.0 * mapW / texW);
         const auto onMapPY = std::lround((mousePY - startDstY + srcY) * 1.0 * mapH / texH);
 
         const auto locStr = str_printf(u8"[%ld,%ld]", onMapPX, onMapPY);
         LabelBoard locBoard(DIR_DOWNRIGHT, mousePX, mousePY, locStr.c_str(), 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF));
-        g_sdlDevice->fillRectangle((m_processRun->canMove(true, 0, onMapPX, onMapPY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200), locBoard.startDstX, locBoard.startDstY, locBoard.w(), locBoard.h());
-        locBoard.draw();
+        g_sdlDevice->fillRectangle((m_processRun->canMove(true, 0, onMapPX, onMapPY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200), mousePX, mousePY, locBoard.w(), locBoard.h());
+        locBoard.drawRoot(0, 0);
     }
 }
 

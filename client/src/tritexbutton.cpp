@@ -97,16 +97,10 @@ void TritexButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
         return;
     }
 
-    const auto srcROI = roi.evalROI(this);
-    if(srcROI.empty()){
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
         return;
     }
-
-    const auto srcXDiff = srcROI.x - roi.get([](const auto &r){ return r.x; }, 0);
-    const auto srcYDiff = srcROI.y - roi.get([](const auto &r){ return r.y; }, 0);
-
-    dstX += srcXDiff;
-    dstY += srcYDiff;
 
     if(auto texPtr = g_progUseDB->retrieve(m_texIDList[getState()])){
         const int offX = m_offset[getState()][0];
@@ -150,6 +144,6 @@ void TritexButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
                 return SDL_BLENDMODE_BLEND;
             }
         }());
-        g_sdlDevice->drawTexture(texPtr, dstX + offX, dstY + offY, srcX, srcY, srcW, srcH); // TODO: need to crop src region for offset
+        g_sdlDevice->drawTexture(texPtr, dstX + offX, dstY + offY, roiOpt->x, roiOpt->y, roiOpt->w, roiOpt->h); // TODO: need to crop roiOpt-> region for offset
     }
 }

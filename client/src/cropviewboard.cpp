@@ -55,7 +55,7 @@ CropViewBoard::CropViewBoard(
     });
 }
 
-void CropViewWindow::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void CropViewBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
     if(!show()){
         return;
@@ -142,5 +142,6 @@ bool CropViewBoard::processEventDefault(const SDL_Event &event, bool valid, int 
                 gfxPtr->h())){
         return false;
     }
-    gfxPtr->processEvent(event, valid, startDstX, startDstY, {srcX, srcY, srcW, srcH});
+
+    return gfxPtr->processEvent(event, valid, startDstX, startDstY, {srcX, srcY, srcW, srcH});
 }

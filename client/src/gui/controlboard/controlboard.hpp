@@ -105,5 +105,8 @@ class ControlBoard: public Widget
         void addLog(int, const char *);
 
     public:
-        Widget *getButton(const std::string_view &);
+       TritexButton *getButton(const std::string_view &);
+
+    private:
+       void onClickSwitchModeButton(int);
 };

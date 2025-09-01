@@ -292,21 +292,21 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roi)){
+    if(m_closeButton.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){
         return true;
     }
 
-    if(m_slider.processParentEvent(event, valid, startDstX, startDstY, roi)){
+    if(m_slider.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){
         return true;
     }
 
     if(m_sdInvOp.invOp == INVOP_NONE){
-        if(m_sortButton.processParentEvent(event, valid, startDstX, startDstY, roi)){
+        if(m_sortButton.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){
             return true;
         }
     }
     else{
-        if(m_selectedIndex >= 0 && m_invOpButton.processParentEvent(event, valid, startDstX, startDstY, roi)){
+        if(m_selectedIndex >= 0 && m_invOpButton.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){
             return true;
         }
     }

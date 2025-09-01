@@ -46,7 +46,7 @@ bool Slider::processEventDefault(const SDL_Event &event, bool valid, int startDs
                 }
                 else if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     m_sliderState = BEVENT_ON;
-                    setValue([&event, this]() -> float
+                    setValue([&event, startDstX, startDstY, &roiOpt, this]() -> float
                     {
                         if(m_hslider){
                             return ((event.button.x - (startDstX - roiOpt->x)) * 1.0f) / std::max<int>(1, w());

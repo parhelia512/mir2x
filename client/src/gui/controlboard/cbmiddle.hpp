@@ -24,6 +24,9 @@ class CBMiddle: public Widget
         ProcessRun *m_processRun;
 
     private:
+        LayoutBoard &m_logBoard;
+
+    private:
         ShapeCropBoard m_bg;
 
     private:

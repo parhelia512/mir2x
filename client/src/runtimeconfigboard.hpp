@@ -180,7 +180,7 @@ class RuntimeConfigBoard: public Widget
                                 int,
 
                                 const char8_t *,
-                                std::function<void(Widget *)>,
+                                std::function<void(Widget *, int)>,
 
                                 Widget * = nullptr,
                                 bool     = false);

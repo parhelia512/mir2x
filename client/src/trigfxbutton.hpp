@@ -20,8 +20,8 @@ class TrigfxButton: public ButtonBase
 
                 std::function<void(Widget *      )> = nullptr,
                 std::function<void(Widget *      )> = nullptr,
-                std::function<void(Widget *, bool)> = nullptr,
-                std::function<void(Widget *      )> = nullptr,
+                std::function<void(Widget *, bool, int)> = nullptr,
+                std::function<void(Widget *      , int)> = nullptr,
 
                 int = 0,
                 int = 0,

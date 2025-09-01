@@ -25,9 +25,11 @@ class QuickAccessBoard: public Widget
                     Widget::VarSize,
                     Widget::VarSize,
 
+                    int,
                     ProcessRun *,
-                    Widget *,
-                    bool);
+
+                    Widget * = nullptr,
+                    bool     = false);
         };
 
     private:

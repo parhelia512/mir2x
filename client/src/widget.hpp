@@ -166,8 +166,8 @@ class Widget: public WidgetTreeNode
             bool empty() const;
             bool in(int, int) const;
 
-            bool crop(ROI &) const;
-            bool overlap(const ROI &) const;
+            bool crop(Widget::ROI &) const;
+            bool overlap(const Widget::ROI &) const;
         };
 
         class ROIOpt final
@@ -265,11 +265,11 @@ class Widget: public WidgetTreeNode
         static bool hasBlendMode    (const Widget::VarBlendMode &);
         static bool hasFuncBlendMode(const Widget::VarBlendMode &);
 
-        static uint32_t  asBlendMode(const Widget::VarBlendMode &);
-        static uint32_t &asBlendMode(      Widget::VarBlendMode &);
+        static SDL_BlendMode  asBlendMode(const Widget::VarBlendMode &);
+        static SDL_BlendMode &asBlendMode(      Widget::VarBlendMode &);
 
-        static const std::function<uint32_t(const Widget *)> &asFuncBlendMode(const Widget::VarBlendMode &);
-        static       std::function<uint32_t(const Widget *)> &asFuncBlendMode(      Widget::VarBlendMode &);
+        static const std::function<SDL_BlendMode(const Widget *)> &asFuncBlendMode(const Widget::VarBlendMode &);
+        static       std::function<SDL_BlendMode(const Widget *)> &asFuncBlendMode(      Widget::VarBlendMode &);
 
         static SDL_BlendMode evalBlendMode(const Widget::VarBlendMode &, const Widget *);
 
@@ -354,8 +354,8 @@ class Widget: public WidgetTreeNode
     public:
         Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, int, int, const Widget::ROIOpt &)>);
 
-        virtual bool processEvent      (const SDL_Event &, bool, int, int, const Widget::ROIOpt &) final;
-        virtual bool processParentEvent(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) final;
+        virtual bool processEvent      (const SDL_Event &, bool,           int, int, const Widget::ROIOpt &) final;
+        virtual bool processParentEvent(const SDL_Event &, bool, int, int, int, int, const Widget::ROIOpt &) final;
 
         bool applyRootEvent(const SDL_Event &, bool, int, int);
 

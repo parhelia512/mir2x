@@ -1,4 +1,12 @@
+#pragma once
 #include "widget.hpp"
+#include "shapecropboard.hpp"
+#include "cropviewboard.hpp"
+#include "imageboard.hpp"
+#include "gfxcropdupboard.hpp"
+#include "tritexbutton.hpp"
+#include "texslider.hpp"
+#include "layoutboard.hpp"
 
 class ProcessRun;
 class ControlBoard;
@@ -9,6 +17,7 @@ class CBMiddleExpand: public Widget
 
     private:
         ProcessRun *m_processRun;
+        LayoutBoard &m_logBoard;
 
     private:
         ShapeCropBoard m_bg;

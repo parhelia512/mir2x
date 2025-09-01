@@ -102,8 +102,8 @@ class PurchaseBoard: public Widget
         static std::tuple<int, int, int, int> getExt1PageGridLoc(int, int);
 
     private:
-        void drawExt1() const;
-        void drawExt2() const;
+        void drawExt1(int, int, const Widget::ROI &) const;
+        void drawExt2(int, int, const Widget::ROI &) const;
         void drawExt1GridHoverText(int) const;
 
     private:

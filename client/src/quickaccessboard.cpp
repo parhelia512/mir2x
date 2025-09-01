@@ -34,6 +34,8 @@ QuickAccessBoard::Grid::Grid(
           std::move(argW),
           std::move(argH),
 
+          {},
+
           argParent,
           argAutoDelete,
       }
@@ -50,9 +52,9 @@ QuickAccessBoard::Grid::Grid(
           [this](const Widget *){ return w(); },
           [this](const Widget *){ return h(); },
 
-          [](const Widget *self, int drawDstX, int drawDstY)
+          [this](const Widget *self, int drawDstX, int drawDstY)
           {
-               if(const auto [mouseX, mouseY] = SDLDeviceHelper::getMousePLoc(); self->in(mouseX, mouseY, drawDstX, drawDstY)){
+               if(const auto [mouseX, mouseY] = SDLDeviceHelper::getMousePLoc(); self->in(mouseX, mouseY, drawDstX, drawDstY, roi())){
                    g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(64), drawDstX, drawDstY, self->w(), self->h());
                }
           },
@@ -84,6 +86,7 @@ QuickAccessBoard::Grid::Grid(
           0,
 
           colorf::WHITE + colorf::A_SHF(255),
+          SDL_BLENDMODE_NONE,
 
           this,
           false,
@@ -95,7 +98,7 @@ QuickAccessBoard::Grid::Grid(
           [this](const Widget *){ return w() - 1; },
           0,
 
-          [](const Widget *) -> std::string
+          [this](const Widget *) -> std::string
           {
               if(const auto &item = proc->getMyHero()->getBelt(slot); item && (item.count > 1)){
                   return std::to_string(item.count);
@@ -108,6 +111,7 @@ QuickAccessBoard::Grid::Grid(
           0,
 
           colorf::WHITE + colorf::A_SHF(255),
+          SDL_BLENDMODE_NONE,
 
           this,
           false,
@@ -158,6 +162,7 @@ QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
           0,
 
           colorf::WHITE + colorf::A_SHF(255),
+          SDL_BLENDMODE_NONE,
 
           this,
           false,
@@ -178,7 +183,7 @@ QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
           },

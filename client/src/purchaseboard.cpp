@@ -40,7 +40,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
               setExtendedItemID(0);
@@ -74,7 +74,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setExtendedItemID(selectedItemID());
               m_closeExt1Button.setOff();
@@ -109,7 +109,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setExtendedItemID(0);
           },
@@ -142,7 +142,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               m_ext1Page = std::max<int>(0, m_ext1Page - 1);
           },
@@ -175,7 +175,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               const auto [itemID, seqID] = getExtSelectedItemSeqID();
               if(itemID){
@@ -211,7 +211,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(const auto ext1PageCount = extendedPageCount(); ext1PageCount > 0){
                   m_ext1Page = std::min<int>(ext1PageCount - 1, m_ext1Page + 1);
@@ -249,7 +249,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setExtendedItemID(0);
           },
@@ -282,7 +282,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               const auto [itemID, seqID] = getExtSelectedItemSeqID();
               if(!itemID){
@@ -351,15 +351,23 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
     }
 }
 
-void PurchaseBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
+void PurchaseBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
     if(auto pTexture = g_progUseDB->retrieve(0X08000000 + extendedBoardGfxID())){
         g_sdlDevice->drawTexture(pTexture, dstX, dstY);
     }
 
-    m_closeButton .draw();
-    m_selectButton.draw();
-    m_slider      .draw();
+    drawChildEx(&m_closeButton, dstX, dstY, roiOpt.value());
+    drawChildEx(&m_selectButton, dstX, dstY, roiOpt.value());
+    drawChildEx(&m_slider, dstX, dstY, roiOpt.value());
+
+    const auto remapX = dstX - roiOpt->x;
+    const auto remapY = dstY - roiOpt->y;
 
     int startY = m_startY;
     LabelBoard label
@@ -378,74 +386,75 @@ void PurchaseBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
 
     for(size_t startIndex = getStartIndex(), i = startIndex; i < std::min<size_t>(m_itemList.size(), startIndex + 4); ++i){
         if(const auto &ir = DBCOM_ITEMRECORD(m_itemList[i])){
-            drawItemInGrid(ir.type, ir.pkgGfxID, x() + m_startX, y() + startY);
+            drawItemInGrid(ir.type, ir.pkgGfxID, remapX + m_startX, remapY + startY);
 
             label.setText(u8"%s", to_cstr(ir.name));
-            label.drawAt(DIR_UPLEFT, x() + m_startX + m_boxW + 10, y() + startY + (m_boxH - label.h()) / 2);
+            label.drawAt(DIR_UPLEFT, remapX + m_startX + m_boxW + 10, remapY + startY + (m_boxH - label.h()) / 2);
 
             if(m_selected == to_d(i)){
-                g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(64), x() + m_startX, y() + startY, 252 - 19, m_boxH);
+                g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(64), remapX + m_startX, remapY + startY, 252 - 19, m_boxH);
             }
             startY += m_lineH;
         }
     }
 
     switch(extendedBoardGfxID()){
-        case 1: drawExt1(); break;
-        case 2: drawExt2(); break;
+        case 1: drawExt1(dstX, dstY, roiOpt.value()); break;
+        case 2: drawExt2(dstX, dstY, roiOpt.value()); break;
         default: break;
     }
 }
 
-bool PurchaseBoard::processEventDefault(const SDL_Event &event, bool valid, int, int, const Widget::ROIOpt &)
+bool PurchaseBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(!valid){
         return consumeFocus(false);
     }
 
-    if(!show()){
-        return consumeFocus(false);
-    }
-
-    if(m_closeButton.processEvent(event, valid)){
+    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_selectButton.processEvent(event, valid)){
+    if(m_selectButton.processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_slider.processEvent(event, valid)){
+    if(m_slider.processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
     switch(extendedBoardGfxID()){
         case 1:
             {
-                if(m_closeExt1Button.processEvent(event, valid)){
+                if(m_closeExt1Button.processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_leftExt1Button.processEvent(event, valid)){
+                if(m_leftExt1Button.processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_selectExt1Button.processEvent(event, valid)){
+                if(m_selectExt1Button.processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_rightExt1Button.processEvent(event, valid)){
+                if(m_rightExt1Button.processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
                 break;
             }
         case 2:
             {
-                if(m_closeExt2Button.processEvent(event, valid)){
+                if(m_closeExt2Button.processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_selectExt2Button.processEvent(event, valid)){
+                if(m_selectExt2Button.processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     if(m_processRun->getWidget("InputStringBoard")->focus()){
                         setFocus(false);
                     }
@@ -459,11 +468,14 @@ bool PurchaseBoard::processEventDefault(const SDL_Event &event, bool valid, int,
             }
     }
 
+    const auto remapX = startDstX - roiOpt->x;
+    const auto remapY = startDstY - roiOpt->y;
+
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
                 for(int i = 0; i < 4; ++i){
-                    if(mathf::pointInRectangle<int>(event.button.x - x(), event.button.y - y(), 19, 15 + (57 - 15) * i, 252 - 19, 53 - 15)){
+                    if(mathf::pointInRectangle<int>(event.button.x - remapX, event.button.y - remapY, 19, 15 + (57 - 15) * i, 252 - 19, 53 - 15)){
                         m_selected = i + getStartIndex();
                         if(event.button.clicks >= 2){
                             if(const auto itemID = selectedItemID()){
@@ -482,12 +494,12 @@ bool PurchaseBoard::processEventDefault(const SDL_Event &event, bool valid, int,
         case SDL_MOUSEWHEEL:
             {
                 const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-                if(mathf::pointInRectangle<int>(mousePX - x(), mousePY - y(), 19, 15, 252 - 19, 15 + (57 - 15) * 4)){
+                if(mathf::pointInRectangle<int>(mousePX - remapX, mousePY - remapY, 19, 15, 252 - 19, 15 + (57 - 15) * 4)){
                     if(m_itemList.size() > 4){
                         m_slider.addValue((event.wheel.y > 0 ? -1.0 : 1.0) / (m_itemList.size() - 4), false);
                     }
                 }
-                else if(extendedBoardGfxID() == 1 && extendedPageCount() > 0 && mathf::pointInRectangle<int>(mousePX - x(), mousePY - y(), 313, 41, 152, 114)){
+                else if(extendedBoardGfxID() == 1 && extendedPageCount() > 0 && mathf::pointInRectangle<int>(mousePX - remapX, mousePY - remapY, 313, 41, 152, 114)){
                     if(event.wheel.y > 0){
                         m_ext1Page--;
                     }
@@ -580,12 +592,12 @@ int PurchaseBoard::getExt1PageGrid() const
         return -1;
     }
 
-    const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-    if(mathf::pointInRectangle<int>(mousePX - x(), mousePY - y(), 313, 41, 152, 114)){
-        const int r = (mousePY - y() -  41) / m_boxH;
-        const int c = (mousePX - x() - 313) / m_boxW;
-        return r * 4 + c;
-    }
+    // const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
+    // if(mathf::pointInRectangle<int>(mousePX - x(), mousePY - y(), 313, 41, 152, 114)){
+    //     const int r = (mousePY - y() -  41) / m_boxH;
+    //     const int c = (mousePX - x() - 313) / m_boxW;
+    //     return r * 4 + c;
+    // }
     return -1;
 }
 
@@ -650,16 +662,16 @@ void PurchaseBoard::drawExt1GridHoverText(int itemIndex) const
     hoverTextBoard.drawAt(DIR_UPLEFT, mousePX + 10, mousePY + 10);
 }
 
-void PurchaseBoard::drawExt1() const
+void PurchaseBoard::drawExt1(int dstX, int dstY, const Widget::ROI &roi) const
 {
     if(extendedBoardGfxID() != 1){
         throw fflreach();
     }
 
-    m_closeExt1Button .draw();
-    m_leftExt1Button  .draw();
-    m_selectExt1Button.draw();
-    m_rightExt1Button .draw();
+    drawChildEx(&m_closeExt1Button, dstX, dstY, roi);
+    drawChildEx(&m_leftExt1Button,  dstX, dstY, roi);
+    drawChildEx(&m_selectExt1Button, dstX, dstY, roi);
+    drawChildEx(&m_rightExt1Button, dstX, dstY, roi);
 
     const int ext1PageCount = extendedPageCount();
     if(ext1PageCount <= 0){
@@ -669,6 +681,9 @@ void PurchaseBoard::drawExt1() const
     if(m_ext1Page >= ext1PageCount){
         throw fflerror("invalid ext1Page: ext1Page = %d, listSize = %zu", m_ext1Page, m_sdSellItemList.list.size());
     }
+
+    const auto remapX = dstX - roi.x;
+    const auto remapY = dstY - roi.y;
 
     int cursorOnGridIndex = -1;
     for(int r = 0; r < 3; ++r){
@@ -689,7 +704,7 @@ void PurchaseBoard::drawExt1() const
             const int rightBoxX = rightStartX + c * m_boxW;
             const int rightBoxY = rightStartY + r * m_boxH;
 
-            drawItemInGrid(ir.type, ir.pkgGfxID, x() + rightBoxX, y() + rightBoxY);
+            drawItemInGrid(ir.type, ir.pkgGfxID, remapX + rightBoxX, remapY + rightBoxY);
             LabelBoard
             {
                 DIR_UPLEFT,
@@ -702,18 +717,18 @@ void PurchaseBoard::drawExt1() const
                 0,
 
                 colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-            }.drawAt(DIR_UPLEFT, x() + rightBoxX, y() + rightBoxY);
+            }.drawAt(DIR_UPLEFT, remapX + rightBoxX, remapY + rightBoxY);
 
             const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
             const bool gridSelected = (m_ext1PageGridSelected >= 0) && ((size_t)(m_ext1PageGridSelected) == i);
-            const bool cursorOn = [rightBoxX, rightBoxY, mousePX, mousePY, this]() -> bool
+            const bool cursorOn = [rightBoxX, rightBoxY, mousePX, mousePY, remapX, remapY, this]() -> bool
             {
-                return mathf::pointInRectangle<int>(mousePX, mousePY, x() + rightBoxX, y() + rightBoxY, m_boxW, m_boxH);
+                return mathf::pointInRectangle<int>(mousePX, mousePY, remapX + rightBoxX, remapY + rightBoxY, m_boxW, m_boxH);
             }();
 
             if(gridSelected || cursorOn){
                 const uint32_t gridColor = gridSelected ? (colorf::BLUE + colorf::A_SHF(96)) : (colorf::WHITE + colorf::A_SHF(96));
-                g_sdlDevice->fillRectangle(gridColor, x() + rightBoxX, y() + rightBoxY, m_boxW, m_boxH);
+                g_sdlDevice->fillRectangle(gridColor, remapX + rightBoxX, remapY + rightBoxY, m_boxW, m_boxH);
             }
 
             if(cursorOn){
@@ -734,14 +749,14 @@ void PurchaseBoard::drawExt1() const
         0,
 
         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-    }.drawAt(DIR_NONE, x() + 389, y() + 18);
+    }.drawAt(DIR_NONE, remapX + 389, remapY + 18);
 
     if(cursorOnGridIndex >= 0){
         drawExt1GridHoverText(cursorOnGridIndex);
     }
 }
 
-void PurchaseBoard::drawExt2() const
+void PurchaseBoard::drawExt2(int dstX, int dstY, const Widget::ROI &roi) const
 {
     if(extendedBoardGfxID() != 2){
         throw fflreach();
@@ -752,8 +767,8 @@ void PurchaseBoard::drawExt2() const
         throw fflerror("unexpected extSeqID: %llu", to_llu(extSeqID));
     }
 
-    m_closeExt2Button .draw();
-    m_selectExt2Button.draw();
+    drawChildEx(&m_closeExt2Button, dstX, dstY, roi);
+    drawChildEx(&m_selectExt2Button, dstX, dstY, roi);
 
     if(m_sdSellItemList.list.empty()){
         return;
@@ -765,9 +780,12 @@ void PurchaseBoard::drawExt2() const
         throw fflerror("bad item in sell list: itemID = %llu, seqID = %llu", to_llu(sellItem.item.itemID), to_llu(sellItem.item.seqID));
     }
 
+    const auto remapX = dstX - roi.x;
+    const auto remapY = dstY - roi.y;
+
     constexpr int rightStartX = 303;
     constexpr int rightStartY =  16;
-    drawItemInGrid(ir.type, ir.pkgGfxID, x() + rightStartX, y() + rightStartY);
+    drawItemInGrid(ir.type, ir.pkgGfxID, remapX + rightStartX, remapY + rightStartY);
 
     LabelBoard
     {
@@ -781,7 +799,7 @@ void PurchaseBoard::drawExt2() const
         0,
 
         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-    }.drawAt(DIR_LEFT, x() + 350 + 3, y() + 35);
+    }.drawAt(DIR_LEFT, remapX + 350 + 3, remapY + 35);
 }
 
 std::tuple<uint32_t, uint32_t> PurchaseBoard::getExtSelectedItemSeqID() const

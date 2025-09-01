@@ -1,4 +1,7 @@
+#include "sdldevice.hpp"
 #include "cbmiddleexpand.hpp"
+
+extern SDLDevice *g_sdlDevice;
 
 CBMiddleExpand::CBMiddleExpand(
         Widget::VarDir argDir,
@@ -29,6 +32,7 @@ CBMiddleExpand::CBMiddleExpand(
       }
 
     , m_processRun(argProc)
+    , m_logBoard(hasParent<ControlBoard>()->m_logBoard)
 
     , m_bg
       {

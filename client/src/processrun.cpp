@@ -548,7 +548,7 @@ void ProcessRun::draw() const
 
 void ProcessRun::processEvent(const SDL_Event &event)
 {
-    const bool tookEvent = m_guiManager.applyRootEvent(event);
+    const bool tookEvent = m_guiManager.applyRootEvent(event, true, 0, 0);
     m_guiManager.purge();
 
     if(tookEvent){
@@ -1974,12 +1974,9 @@ void ProcessRun::drawGroundItem(int x0, int y0, int x1, int y1) const
 
             if(mouseOver){
                 LabelBoard itemName(DIR_UPLEFT, 0, 0, ir.name, 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF));
-                const int boardW = itemName.w();
-                const int boardH = itemName.h();
-
                 const int drawNameX = x * SYS_MAPGRIDXP - m_viewX + SYS_MAPGRIDXP / 2 - itemName.w() / 2;
                 const int drawNameY = y * SYS_MAPGRIDYP - m_viewY + SYS_MAPGRIDYP / 2 - itemName.h() / 2 - 20;
-                itemName.drawEx(drawNameX, drawNameY, 0, 0, boardW, boardH);
+                itemName.drawAt(DIR_UPLEFT, drawNameX, drawNameY);
             }
         }
     }
@@ -2118,8 +2115,8 @@ void ProcessRun::drawMouseLocation() const
     LabelBoard locPixelBoard(DIR_UPLEFT, 10, 10, locPixel.c_str(), 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0X00));
     LabelBoard locGridBoard (DIR_UPLEFT, 10, 30, locGrid .c_str(), 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0X00));
 
-    locPixelBoard.draw();
-    locGridBoard .draw();
+    locPixelBoard.drawRoot(0, 0);
+    locGridBoard .drawRoot(0, 0);
 }
 
 void ProcessRun::drawFPS() const
@@ -2130,9 +2127,9 @@ void ProcessRun::drawFPS() const
     const int winWidth = g_sdlDevice->getRendererWidth();
     fpsBoard.moveTo(winWidth - fpsBoard.w(), 0);
 
-    g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(200), fpsBoard.x() - 1, fpsBoard.y(), fpsBoard.w() + 1, fpsBoard.h());
-    g_sdlDevice->drawRectangle(colorf::BLUE  + colorf::A_SHF(255), fpsBoard.x() - 1, fpsBoard.y(), fpsBoard.w() + 1, fpsBoard.h());
-    fpsBoard.draw();
+    g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(200), fpsBoard.dx() - 1, fpsBoard.dy(), fpsBoard.w() + 1, fpsBoard.h());
+    g_sdlDevice->drawRectangle(colorf::BLUE  + colorf::A_SHF(255), fpsBoard.dx() - 1, fpsBoard.dy(), fpsBoard.w() + 1, fpsBoard.h());
+    fpsBoard.drawRoot(0, 0);
 }
 
 void ProcessRun::checkMagicSpell(const SDL_Event &event)

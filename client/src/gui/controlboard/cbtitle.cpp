@@ -1,5 +1,8 @@
 #include "widget.hpp"
 #include "cbtitle.hpp"
+#include "pngtexdb.hpp"
+
+extern PNGTexDB *g_progUseDB;
 
 CBTitle::CBTitle(
         Widget::VarDir argDir,

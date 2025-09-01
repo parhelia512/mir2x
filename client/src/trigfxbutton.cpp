@@ -10,8 +10,8 @@ TrigfxButton::TrigfxButton(Widget::VarDir argDir,
 
         std::function<void(Widget *      )> argOnOverIn,
         std::function<void(Widget *      )> argOnOverOut,
-        std::function<void(Widget *, bool)> argOnClick,
-        std::function<void(Widget *      )> argOnTrigger,
+        std::function<void(Widget *, bool, int)> argOnClick,
+        std::function<void(Widget *,      int)> argOnTrigger,
 
         int argOffXOnOver,
         int argOffYOnOver,
@@ -73,7 +73,8 @@ void TrigfxButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
     if(auto gfxPtr = m_gfxList[getState()]){
         const int offX = m_offset[getState()][0];
         const int offY = m_offset[getState()][1];
-        gfxPtr->drawEx(dstX + offX, dstY + offY, srcX, srcY, srcW, srcH);
+        // gfxPtr->drawEx(dstX + offX, dstY + offY, srcX, srcY, srcW, srcH);
+        gfxPtr->drawEx(dstX + offX, dstY + offY, roiOpt.value());
     }
 }
 

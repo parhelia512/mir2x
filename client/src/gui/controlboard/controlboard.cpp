@@ -259,7 +259,7 @@ void ControlBoard::addLog(int logType, const char *log)
     m_middleExpand.m_slider.setValue(1.0f, false);
 }
 
-Widget *ControlBoard::getButton(const std::string_view &buttonName)
+TritexButton *ControlBoard::getButton(const std::string_view &buttonName)
 {
     if     (buttonName == "Inventory"    ){ return &m_right.m_buttonInventory    ; }
     else if(buttonName == "HeroState"    ){ return &m_right.m_buttonHeroState    ; }

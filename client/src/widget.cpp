@@ -150,14 +150,17 @@ bool Widget::ROI::in(int argX, int argY) const
     return mathf::pointInRectangle<int>(argX, argY, x, y, w, h);
 }
 
-bool Widget::ROI::crop(Widget::RIO &r) const
+bool Widget::ROI::crop(Widget::ROI &r) const
 {
     if(r.empty()){
         return false;
     }
 
-    return mathf::cropSegment<int>(r.x, r.w, x, w)
-        && mathf::cropSegment<int>(r.y, r.h, y, h);
+    // return mathf::cropSegment<int>(r.x, r.w, this->x, this->w)
+    //     && mathf::cropSegment<int>(r.y, r.h, this->y, this->h);
+
+    return mathf::cropSegment(r.x, r.w, this->x, this->w)
+        && mathf::cropSegment(r.y, r.h, this->y, this->h);
 }
 
 bool Widget::ROI::overlap(const Widget::ROI &rhs) const
@@ -166,11 +169,11 @@ bool Widget::ROI::overlap(const Widget::ROI &rhs) const
 }
 
 Widget::ROIOpt::ROIOpt(int argX, int argY, int argW, int argH)
-    : m_roi(Widget::ROI{argX, argY, argW, argH})
+    : m_roiOpt(Widget::ROI{argX, argY, argW, argH})
 {}
 
 Widget::ROIOpt::ROIOpt(const Widget::ROI &roi)
-    : m_roi(roi)
+    : m_roiOpt(roi)
 {}
 
 Widget::ROI Widget::ROIOpt::evalROI(const Widget *widget) const
@@ -181,8 +184,8 @@ Widget::ROI Widget::ROIOpt::evalROI(const Widget *widget) const
 
 Widget::ROI Widget::ROIOpt::evalROI(const Widget::ROI &roi) const
 {
-    if(m_roi.has_value()){
-        auto currROI = m_roi.value();
+    if(m_roiOpt.has_value()){
+        auto currROI = m_roiOpt.value();
         roi.crop(currROI);
         return currROI;
     }
@@ -571,7 +574,7 @@ void Widget::drawAsChildEx(
     gfxWidget->drawEx(dstX, dstY, roiOpt.value());
 }
 
-void Widget::drawRoot(int rootDstX, int rootDstY)
+void Widget::drawRoot(int rootDstX, int rootDstY) const
 {
     fflassert(!parent());
     drawEx(dx() + rootDstX, dy() + rootDstY, std::nullopt);
@@ -628,7 +631,7 @@ Widget *Widget::setProcessEvent(std::function<bool(Widget *, const SDL_Event &, 
     return this;
 }
 
-bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, Widget::ROIOpt &roi)
+bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
     if(m_processEventHandler){ return m_processEventHandler(this, event, valid, startDstX, startDstY, roi); }
     else                     { return   processEventDefault(      event, valid, startDstX, startDstY, roi); }
@@ -638,16 +641,10 @@ bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int
 // calculate sub-roi for current child widget
 bool Widget::processParentEvent(const SDL_Event &event, bool valid, int parentW, int parentH, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    const auto roiOpt = roi.evalROI({0, 0, parentW, parentH});
-    if(roiOpt.empty()){
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
         return false;
     }
-
-    const auto srcXDiff = roiOpt.x - roi.get([](const auto &r){ return r.x; }, 0);
-    const auto srcYDiff = roiOpt.y - roi.get([](const auto &r){ return r.y; }, 0);
-
-    startDstX += srcXDiff;
-    startDstY += srcYDiff;
 
     if(!mathf::cropChildROI(
                 &roiOpt->x, &roiOpt->y,

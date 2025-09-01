@@ -931,10 +931,10 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
         return consumeFocus(false);
     }
 
-    if(m_close                        .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_uiPageList[m_uiPage].slider ->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_uiPageList[m_uiPage].page   ->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_uiPageList[m_uiPage].control->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_close                        .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_uiPageList[m_uiPage].slider ->processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_uiPageList[m_uiPage].page   ->processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_uiPageList[m_uiPage].control->processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:
@@ -958,7 +958,7 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
         case SDL_MOUSEBUTTONDOWN:
             {
                 if(m_uiPageList[m_uiPage].page->parentIn(event.button.x, event.button.y, w(), h(), startDstX, startDstY, roiOpt.value())){
-                    if(m_uiPageList[m_uiPage].page->processParentEvent(event, true, startDstX, startDstY, roiOpt.value())){
+                    if(m_uiPageList[m_uiPage].page->processParentEvent(event, true, w(), h(), startDstX, startDstY, roiOpt.value())){
                         return consumeFocus(true, m_uiPageList[m_uiPage].page);
                     }
                 }

@@ -3,6 +3,7 @@
 #include "sdldevice.hpp"
 #include "cbface.hpp"
 #include "processrun.hpp"
+#include "clientmonster.hpp"
 
 PNGTexDB *g_progUseDB;
 SDLDevice *g_sdlDevice;
@@ -31,10 +32,11 @@ CBFace::CBFace(
 
           {},
 
-          this,
-          false,
+          argParent,
+          argAutoDelete,
       }
 
+    , m_processRun(argProc)
     , m_face
       {
           DIR_UPLEFT,
@@ -56,6 +58,7 @@ CBFace::CBFace(
           0,
 
           colorf::WHITE + colorf::A_SHF(255),
+          SDL_BLENDMODE_NONE,
 
           this,
           false,
@@ -77,13 +80,14 @@ CBFace::CBFace(
           [](const Widget *)
           {
               return g_progUseDB->retrieve(0X00000015);
-          }
+          },
 
           false,
           false,
           0,
 
           colorf::WHITE + colorf::A_SHF(255),
+          SDL_BLENDMODE_NONE,
 
           this,
           false,
@@ -133,7 +137,7 @@ uint32_t CBFace::getFaceTexID() const
                 }
             case UID_MON:
                 {
-                    if(const auto lookID = dynamic_cast<ClientMonster*>(coPtr)->lookID(); lookID >= 0){
+                    if(const auto lookID = dynamic_cast<ClientMonster *>(coPtr)->lookID(); lookID >= 0){
                         return UINT32_C(0X01000000) + (lookID - LID_BEGIN);
                     }
                     return SYS_U32NIL;

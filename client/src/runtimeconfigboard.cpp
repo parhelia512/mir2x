@@ -298,7 +298,7 @@ RuntimeConfigBoard::PullMenu::PullMenu(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               m_menuList.flipShow();
           },
@@ -350,7 +350,7 @@ RuntimeConfigBoard::PullMenu::PullMenu(
 
     m_menuList.moveAt(DIR_UPLEFT, m_menuTitleBackground.dx() + 3, m_menuTitleBackground.dy() + m_menuTitleBackground.h() - 2);
 
-    m_menuTitleCrop.setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid)
+    m_menuTitleCrop.setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
     {
         if(!valid){
             return self->consumeFocus(false);
@@ -360,7 +360,7 @@ RuntimeConfigBoard::PullMenu::PullMenu(
             case SDL_MOUSEBUTTONUP:
                 {
                     const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                    if(self->in(eventX, eventY)){
+                    if(self->in(eventX, eventY, startDstX, startDstY, roi)){
                         m_menuList.setShow(true);
                         return self->consumeFocus(true);
                     }
@@ -503,7 +503,7 @@ bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, b
             {
                 if(m_menuList.show()){
                     const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                    if(!m_menuList.parentIn(eventX, eventY, startDstX, startDstY, roiOpt.value())){
+                    if(!m_menuList.parentIn(eventX, eventY, w(), h(), startDstX, startDstY, roiOpt.value())){
                         m_menuList.setShow(false);
                     }
                 }
@@ -522,7 +522,7 @@ RuntimeConfigBoard::MenuPage::TabHeader::TabHeader(
         int argY,
 
         const char8_t *argLabel,
-        std::function<void(Widget *)> argOnClick,
+        std::function<void(Widget *, int)> argOnClick,
 
         Widget *argParent,
         bool    argAutoDelete)
@@ -666,7 +666,7 @@ RuntimeConfigBoard::MenuPage::MenuPage(
             0,
 
             tabName,
-            [this, tab = tab](Widget *self)
+            [this, tab = tab](Widget *self, int)
             {
                 if(m_selectedHeader){
                     std::any_cast<Widget *>(m_selectedHeader->data())->setShow(false);

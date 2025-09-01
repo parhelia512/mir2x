@@ -76,7 +76,7 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *w
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               m_showCandidateList = !m_showCandidateList;
               if(m_showCandidateList){
@@ -117,7 +117,7 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *w
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(m_showCandidateList && (m_selectedIndex[m_showCandidateList] >= 0)){
                   m_processRun->requestJoinTeam(getSDTeamPlayer(m_selectedIndex[m_showCandidateList]).uid);
@@ -152,7 +152,7 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *w
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(!m_showCandidateList && (m_selectedIndex[m_showCandidateList] >= 0)){
                   m_processRun->requestLeaveTeam(getSDTeamPlayer(m_selectedIndex[m_showCandidateList]).uid);
@@ -187,7 +187,7 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *w
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               refresh();
           },
@@ -220,7 +220,7 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *w
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
           },
@@ -266,13 +266,21 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *w
     }
 }
 
-void TeamStateBoard::drawEx(int, int, const Widget::ROIOpt &) const
+void TeamStateBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
+    const auto remapXDiff = dstX - roiOpt->x;
+    const auto remapYDiff = dstY - roiOpt->y;
+
     if(auto texPtr = g_progUseDB->retrieve(0X00000150)){
         const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
         const auto texRepeatStartY = m_uidRegionY + (m_uidRegionH - m_texRepeatH) / 2;
 
-        g_sdlDevice->drawTexture(texPtr, x(), y(), 0, 0, texW, texRepeatStartY);
+        g_sdlDevice->drawTexture(texPtr, remapXDiff, remapYDiff, 0, 0, texW, texRepeatStartY);
 
         const auto neededUIDRegionH = lineShowCount() * lineHeight();
         const auto neededRepeatTexH = neededUIDRegionH - (m_uidRegionH - m_texRepeatH);
@@ -281,18 +289,18 @@ void TeamStateBoard::drawEx(int, int, const Widget::ROIOpt &) const
         const auto repeatRest  = neededRepeatTexH % m_texRepeatH;
 
         for(size_t i = 0; i < repeatCount; ++i){
-            g_sdlDevice->drawTexture(texPtr, x(), y() + texRepeatStartY + i * m_texRepeatH, 0, texRepeatStartY, texW, m_texRepeatH);
+            g_sdlDevice->drawTexture(texPtr, remapXDiff, remapYDiff + texRepeatStartY + i * m_texRepeatH, 0, texRepeatStartY, texW, m_texRepeatH);
         }
 
         if(repeatRest > 0){
-            g_sdlDevice->drawTexture(texPtr, x(), y() + texRepeatStartY + repeatCount * m_texRepeatH, 0, texRepeatStartY, texW, repeatRest);
+            g_sdlDevice->drawTexture(texPtr, remapXDiff, remapYDiff + texRepeatStartY + repeatCount * m_texRepeatH, 0, texRepeatStartY, texW, repeatRest);
         }
 
         const int texRepeatEndY = texRepeatStartY + m_texRepeatH;
-        g_sdlDevice->drawTexture(texPtr, x(), y() + texRepeatStartY + neededRepeatTexH, 0, texRepeatEndY, texW, texH - texRepeatEndY);
+        g_sdlDevice->drawTexture(texPtr, remapXDiff, remapYDiff + texRepeatStartY + neededRepeatTexH, 0, texRepeatEndY, texW, texH - texRepeatEndY);
 
         LabelBoard header(DIR_NONE, 0, 0, m_showCandidateList ? u8"申请加入" : u8"当前队伍", 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF));
-        header.drawAt(DIR_NONE, x() + w() / 2, y() + 57);
+        header.drawAt(DIR_NONE, remapXDiff + w() / 2, remapYDiff + 57);
     }
 
     const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
@@ -302,11 +310,11 @@ void TeamStateBoard::drawEx(int, int, const Widget::ROIOpt &) const
 
     for(size_t i = 0; (i < lineShowCount()) && (i + m_startIndex[m_showCandidateList] < lineCount()); ++i){
         if((m_selectedIndex[m_showCandidateList] >= 0) && (to_d(i) + m_startIndex[m_showCandidateList] == m_selectedIndex[m_showCandidateList])){
-            g_sdlDevice->fillRectangle(m_selectedBGColor, x() + m_uidRegionX, y() + m_uidRegionY + i * lineHeight(), m_uidRegionW, lineHeight());
+            g_sdlDevice->fillRectangle(m_selectedBGColor, remapXDiff + m_uidRegionX, remapYDiff + m_uidRegionY + i * lineHeight(), m_uidRegionW, lineHeight());
         }
 
-        if(mathf::pointInRectangle<int>(mousePX, mousePY, x() + m_uidRegionX, y() + m_uidRegionY + i * lineHeight(), m_uidRegionW, lineHeight())){
-            g_sdlDevice->fillRectangle(m_hoveredColor, x() + m_uidRegionX, y() + m_uidRegionY + i * lineHeight(), m_uidRegionW, lineHeight());
+        if(mathf::pointInRectangle<int>(mousePX, mousePY, remapXDiff + m_uidRegionX, remapYDiff + m_uidRegionY + i * lineHeight(), m_uidRegionW, lineHeight())){
+            g_sdlDevice->fillRectangle(m_hoveredColor, remapXDiff + m_uidRegionX, remapYDiff + m_uidRegionY + i * lineHeight(), m_uidRegionW, lineHeight());
         }
 
         const auto &sdTP = getSDTeamPlayer(i + m_startIndex[m_showCandidateList]);
@@ -321,58 +329,62 @@ void TeamStateBoard::drawEx(int, int, const Widget::ROIOpt &) const
 
         line.clear();
         line.loadXML(str_printf("<par>%d %s</par>", to_d(i) + m_startIndex[m_showCandidateList], nameText.c_str()).c_str());
-        line.drawEx(x() + m_uidRegionX + (m_uidRegionW - m_uidTextRegionW) / 2, y() + m_uidRegionY + m_lineSpace / 2 + i * lineHeight(), 0, 0, std::min<int>(line.pw(), m_uidTextRegionW), line.ph());
+        line.drawEx(remapXDiff + m_uidRegionX + (m_uidRegionW - m_uidTextRegionW) / 2, remapYDiff + m_uidRegionY + m_lineSpace / 2 + i * lineHeight(), 0, 0, std::min<int>(line.pw(), m_uidTextRegionW), line.ph());
     }
 
-    m_enableTeam  .draw();
-    m_switchShow  .draw();
-    m_addMember   .draw();
-    m_deleteMember.draw();
-    m_refresh     .draw();
-    m_close       .draw();
+    drawChildEx(&m_enableTeam, dstX, dstY, roiOpt.value());
+    drawChildEx(&m_switchShow, dstX, dstY, roiOpt.value());
+    drawChildEx(&m_addMember, dstX, dstY, roiOpt.value());
+    drawChildEx(&m_deleteMember, dstX, dstY, roiOpt.value());
+    drawChildEx(&m_refresh, dstX, dstY, roiOpt.value());
+    drawChildEx(&m_close, dstX, dstY, roiOpt.value());
 }
 
-bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int, int, const Widget::ROIOpt &)
+bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(!valid){
         return consumeFocus(false);
     }
 
-    if(!show()){
-        return consumeFocus(false);
-    }
-
-    if(m_enableTeam.processEvent(event, valid)){
+    if(m_enableTeam.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_switchShow.processEvent(event, valid)){
+    if(m_switchShow.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_addMember.processEvent(event, valid)){
+    if(m_addMember.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_deleteMember.processEvent(event, valid)){
+    if(m_deleteMember.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_refresh.processEvent(event, valid)){
+    if(m_refresh.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_close.processEvent(event, valid)){
+    if(m_close.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
+
+    const auto remapXDiff = startDstX - roiOpt->x;
+    const auto remapYDiff = startDstY - roiOpt->y;
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
                 int selectedLine = -1;
                 for(size_t i = 0; i < lineShowCount(); ++i){
-                    const auto lineX = x() + m_uidRegionX;
-                    const auto lineY = y() + m_uidRegionY + i * lineHeight();
+                    const auto lineX = remapXDiff + m_uidRegionX;
+                    const auto lineY = remapYDiff + m_uidRegionY + i * lineHeight();
                     if(mathf::pointInRectangle<int>(event.button.x, event.button.y, lineX, lineY, m_uidRegionW, lineHeight())){
                         selectedLine = i;
                         break;
@@ -402,7 +414,7 @@ bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int
         case SDL_MOUSEWHEEL:
             {
                 const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-                if(mathf::pointInRectangle<int>(mousePX, mousePY, x() + m_uidRegionX, y() + m_uidRegionY, m_uidRegionW, lineHeight() * lineShowCount())){
+                if(mathf::pointInRectangle<int>(mousePX, mousePY, remapXDiff + m_uidRegionX, remapYDiff + m_uidRegionY, m_uidRegionW, lineHeight() * lineShowCount())){
                     if(lineCount() <= lineShowCount()){
                         m_startIndex[m_showCandidateList] = 0;
                     }
@@ -417,14 +429,14 @@ bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
-                    moveBy(newX - x(), newY - y());
+                    const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
+                    moveBy(newX - remapXDiff, newY - remapYDiff);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);

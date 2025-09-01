@@ -10,7 +10,7 @@ CBLevel::CBLevel(
         Widget::VarOff argY,
 
         ProcessRun *argProc,
-        std::function<void(Widget *)> argOnClick,
+        std::function<void(Widget *, int)> argOnClick,
 
         Widget *argParent,
         bool    argAutoDelete)
@@ -73,6 +73,8 @@ CBLevel::CBLevel(
               }
           },
 
+          SDL_BLENDMODE_NONE,
+
           this,
           false,
       }
@@ -91,7 +93,9 @@ CBLevel::CBLevel(
           0,
           12,
           0,
+
           colorf::YELLOW + colorf::A_SHF(255),
+          SDL_BLENDMODE_NONE,
 
           this,
           false,

@@ -129,13 +129,13 @@ void PlayerStateBoard::update(double)
 {
 }
 
-void PlayerStateBoard::drawEx(int startDstX, int startDstY, const Widget::ROIOpt &) const
+void PlayerStateBoard::drawEx(int startDstX, int startDstY, const Widget::ROIOpt &roi) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X06000000)){
         g_sdlDevice->drawTexture(texPtr, startDstX, startDstY);
     }
 
-    const auto fnDrawLabel = [this](int labelX, int labelY, const std::u8string &s, uint32_t color = colorf::WHITE)
+    const auto fnDrawLabel = [startDstX, startDstY, this](int labelX, int labelY, const std::u8string &s, uint32_t color = colorf::WHITE)
     {
         LabelBoard(DIR_UPLEFT, 0, 0, s.c_str(), 1, 12, 0, colorf::maskRGB(color) + colorf::A_SHF(255)).drawAt(DIR_NONE, startDstX + labelX, startDstY + labelY);
     };
@@ -346,7 +346,8 @@ void PlayerStateBoard::drawEx(int startDstX, int startDstY, const Widget::ROIOpt
             g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), startDstX + m_gridList[i].x, startDstY + m_gridList[i].y, m_gridList[i].w, m_gridList[i].h);
         }
     }
-    m_closeButton.draw();
+
+    drawChildEx(&m_closeButton, startDstX, startDstY, roi);
 }
 
 bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
@@ -360,7 +361,7 @@ bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, i
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_closeButton.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
@@ -407,7 +408,7 @@ bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, i
                                     break;
                                 }
                             }
-                            return consumeFocus(in(event.button.x, event.button.y));
+                            return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
                         }
                     default:
                         {

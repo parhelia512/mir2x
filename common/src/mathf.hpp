@@ -204,7 +204,29 @@ namespace mathf
         return !(nfX1 >= nfX2 + nfW2 || nfX2 >= nfX1 + nfW1);
     }
 
-    template<mathf::signed_integer T> bool cropSegment(T &fx, T &fw, T tx, T tw) // from -> to
+    // template<mathf::signed_integer T> bool cropSegment(T &fx, T &fw, T tx, T tw) // from -> to
+    // {
+    //     if(fx + fw <= tx){
+    //         fx = fx + fw - 1;
+    //         fw = 0;
+    //         return false;
+    //     }
+    //     else if(tx + tw <= fx){
+    //         fw = 0;
+    //         return false;
+    //     }
+    //     else{
+    //         const auto rx = std::max<T>(fx, tx);
+    //         const auto rw = std::min<T>(fx + fw, tx + tw) - rx;
+    //
+    //         fx = rx;
+    //         fw = rw;
+    //
+    //         return fw > 0;
+    //     }
+    // }
+
+    inline bool cropSegment(int &fx, int &fw, int tx, int tw) // from -> to
     {
         if(fx + fw <= tx){
             fx = fx + fw - 1;
@@ -216,8 +238,8 @@ namespace mathf
             return false;
         }
         else{
-            const auto rx = std::max<T>(fx, tx);
-            const auto rw = std::min<T>(fx + fw, tx + tw) - rx;
+            const auto rx = std::max<int>(fx, tx);
+            const auto rw = std::min<int>(fx + fw, tx + tw) - rx;
 
             fx = rx;
             fw = rw;

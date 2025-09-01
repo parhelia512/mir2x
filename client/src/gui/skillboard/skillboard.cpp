@@ -459,7 +459,7 @@ bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bo
         return false;
     }
 
-    const auto result = m_icon.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value());
+    const auto result = m_icon.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value());
     if(event.type == SDL_KEYDOWN && cursorOn()){
         if(const auto key = SDLDeviceHelper::getKeyChar(event, false); (key >= '0' && key <= '9') || (key >= 'a' && key <= 'z')){
             if(m_config->hasMagicID(magicID())){
@@ -491,21 +491,21 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
     const auto remapXDiff = startDstX - roiOpt->x;
     const auto remapYDiff = startDstY - roiOpt->y;
 
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_closeButton.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
         consumeFocus(false);
         return true;
     }
 
     bool tabConsumed = false;
     for(auto buttonPtr: m_tabButtonList){
-        tabConsumed |= buttonPtr->processParentEvent(event, valid && !tabConsumed, startDstX, startDstY, roiOpt.value());
+        tabConsumed |= buttonPtr->processParentEvent(event, valid && !tabConsumed, w(), h(), startDstX, startDstY, roiOpt.value());
     }
 
     if(tabConsumed){
         return consumeFocus(true);
     }
 
-    if(m_slider.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_slider.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
         return consumeFocus(true);
     }
 
@@ -514,7 +514,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
         const auto loc = SDLDeviceHelper::getMousePLoc();
         captureEvent = (loc.x >= 0 && loc.y >= 0) && pageROI.in(loc.x - remapXDiff, loc.y - remapYDiff);
 
-        if(m_skillPageList.at(m_selectedTabIndex)->processParentEvent(event, captureEvent && valid, startDstX, startDstY, roiOpt.value())){
+        if(m_skillPageList.at(m_selectedTabIndex)->processParentEvent(event, captureEvent && valid, w(), h(), startDstX, startDstY, roiOpt.value())){
             return consumeFocus(true);
         }
     }

@@ -4,6 +4,7 @@
 #include "bevent.hpp"
 #include "textboard.hpp"
 #include "imageboard.hpp"
+#include "buttonbase.hpp"
 
 class ProcessRun;
 class CBLevel: public ButtonBase
@@ -22,7 +23,7 @@ class CBLevel: public ButtonBase
                 Widget::VarOff,
 
                 ProcessRun *,
-                std::function<void(Widget *)>,
+                std::function<void(Widget *, int)>,
 
                 Widget * = nullptr,
                 bool     = false);

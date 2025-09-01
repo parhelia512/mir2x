@@ -131,7 +131,7 @@ ChatItemRef::ChatItemRef(
               m_cross.setFontSize(ChatItemRef::CROSS_FONT_SIZES[0]);
           },
 
-          [this](Widget *, bool clickDone)
+          [this](Widget *, bool clickDone, int)
           {
               if(clickDone){
               }
@@ -140,7 +140,7 @@ ChatItemRef::ChatItemRef(
               }
           },
 
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
           },
