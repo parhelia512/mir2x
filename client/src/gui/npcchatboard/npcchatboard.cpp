@@ -12,21 +12,114 @@ extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 extern ClientArgParser *g_clientArgParser;
 
-NPCChatBoard::NPCChatBoard(ProcessRun *proc, Widget *pwidget, bool autoDelete)
-    : Widget(DIR_UPLEFT, 0, 0, 386, 204, {}, pwidget, autoDelete)
+// with face
+// all margins are same
+//
+// +-----------------------------+
+// | +----+ +------------------+ |
+// | |    | |                  | |
+// | |    | |                  | |
+// | |    | |                  | |
+// | +----+ +------------------+ |
+// +-----------------------------+
+//
+// without face
+// +-----------------------------+
+// | +-------------------------+ |
+// | |                         | |
+// | |                         | |
+// | |                         | |
+// | +-------------------------+ |
+// +-----------------------------+
+
+NPCChatBoard::NPCChatBoard(
+        Widget::VarDir argDir,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
+
+        ProcessRun *argProc,
+
+        Widget *argParent,
+        bool    argAutoDelete)
+
+    : Widget
+      {
+          std::move(argDir),
+          std::move(argX),
+          std::move(argY),
+
+          0, // need to reset
+          0, // need to reset
+
+          {},
+          {},
+
+          argParent,
+          argAutoDelete,
+      }
+
     , m_margin(35)
-    , m_process(proc)
-    , m_chatBoard
+    , m_processRun(argProc)
+
+    , m_face
       {
           DIR_UPLEFT,
           m_margin,
           m_margin,
-          386 - m_margin * 2,
+
+          {},
+          {},
+
+          [this](const Widget *)
+          {
+              return g_progUseDB->retrieve(getNPCFaceKey());
+          },
+
+          false,
+          false,
+          0,
+
+          colorf::WHITE_A255,
+          SDL_BLENDMODE_NONE,
+
+          this,
+          false,
+      }
+
+    , m_chatBoard
+      {
+          [this](const Widget *)
+          {
+              if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
+                  return DIR_LEFT;
+              }
+              else{
+                  return DIR_NONE;
+              }
+          },
+
+          [this](const Widget *)
+          {
+              if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
+                  return m_margin * 2 + SDLDeviceHelper::getTextureWidth(texPtr);
+              }
+              else{
+                  return w() / 2;
+              }
+          },
+
+          [this](const Widget *)
+          {
+              return h() / 2;
+          },
+
+          0, // line width, need reset
 
           nullptr,
           0,
 
-          {0, 5, 0, 0},
+          {0, 0, 0, 0},
+
           false,
           false,
           false,
@@ -36,7 +129,7 @@ NPCChatBoard::NPCChatBoard(ProcessRun *proc, Widget *pwidget, bool autoDelete)
           12,
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
           0,
 
           LALIGN_JUSTIFY,
@@ -60,13 +153,17 @@ NPCChatBoard::NPCChatBoard(ProcessRun *proc, Widget *pwidget, bool autoDelete)
                   }
               }
           },
+
           this,
+          false,
       }
+
     , m_buttonClose
       {
           DIR_UPLEFT,
-          100,
-          100,
+          [this](const Widget *){ return w() - 40; },
+          [this](const Widget *){ return h() - 43; },
+
           {SYS_U32NIL, 0X0000001C, 0X0000001D},
           {
               SYS_U32NIL,
@@ -80,7 +177,6 @@ NPCChatBoard::NPCChatBoard(ProcessRun *proc, Widget *pwidget, bool autoDelete)
           [this](Widget *)
           {
               setShow(false);
-              // m_process->sendNPCEvent(m_npcUID, m_eventPath, SYS_EXIT);
           },
 
           0,
@@ -93,76 +189,36 @@ NPCChatBoard::NPCChatBoard(ProcessRun *proc, Widget *pwidget, bool autoDelete)
           true,
 
           this,
+          false,
       }
 {
-    if(m_margin < 0){
-        throw fflerror("invalid margin: %d", m_margin);
-    }
-
-    auto fnAssertImage = [](uint32_t key, int w, int h)
-    {
-        if(auto texPtr = g_progUseDB->retrieve(key)){
-            if(SDLDeviceHelper::getTextureSize(texPtr) == std::tuple<int, int>{w, h}){
-                return;
-            }
-        }
-        throw fflerror("image assertion failed: key = %llu, w = %d, h = %d", to_llu(key), w, h);
-    };
-
-    fnAssertImage(0X00000050, 386, 160);
-    fnAssertImage(0X00000051, 386, 160);
-    fnAssertImage(0X00000053, 386,  44);
-    fnAssertImage(0X00000054, 386,  44);
+    fflassert(m_margin >= 0);
     setShow(false);
-}
 
-void NPCChatBoard::drawWithNPCFace() const
-{
-    // |<------------386 ----------->|
-    // +-----------------------------+ ---
-    // | +----+ +------------------+ |  ^
-    // | |    | |                  | |  |
-    // | |    | |                  | |  160 + middlePixels + 44
-    // | |    | |                  | |  |
-    // | +----+ +------------------+ |  v
-    // +-----------------------------+ ---
+    m_face.setShow([this](const Widget *) -> bool
+    {
+        return g_progUseDB->retrieve(getNPCFaceKey());
+    });
 
-    auto facePtr = g_progUseDB->retrieve(getNPCFaceKey());
-    if(!facePtr){
-        throw fflerror("no valid NPC face image");
-    }
+    setSize([this](const Widget *)
+    {
+        if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
+            return m_margin * 3 + SDLDeviceHelper::getTextureWidth(texPtr) + m_chatBoard.w();
+        }
+        else{
+            return m_margin * 2 + m_chatBoard.w();
+        }
+    },
 
-    drawFrame();
-    g_sdlDevice->drawTexture(facePtr, m_margin, (h() - SDLDeviceHelper::getTextureHeight(facePtr)) / 2);
-
-    m_chatBoard.draw();
-    m_buttonClose.draw();
-}
-
-void NPCChatBoard::drawPlain() const
-{
-    // |<------------386 ----------->|
-    // +-----------------------------+ ---
-    // | +-------------------------+ |  ^
-    // | |                         | |  |
-    // | |                         | |  160 + middlePixels + 44
-    // | |                         | |  |
-    // | +-------------------------+ |  v
-    // +-----------------------------+ ---
-
-    drawFrame();
-    m_chatBoard.draw();
-    m_buttonClose.draw();
-}
-
-void NPCChatBoard::drawEx(int, int, int, int, int, int) const
-{
-    if(g_progUseDB->retrieve(getNPCFaceKey())){
-        drawWithNPCFace();
-    }
-    else{
-        drawPlain();
-    }
+    [this](const Widget *)
+    {
+        if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
+            return m_margin * 2 + std::max<int>(SDLDeviceHelper::getTextureWidth(texPtr), m_chatBoard.w());
+        }
+        else{
+            return m_margin * 2 + m_chatBoard.w();
+        }
+    });
 }
 
 void NPCChatBoard::loadXML(uint64_t uid, const char *eventPath, const char *xmlString)
@@ -173,88 +229,29 @@ void NPCChatBoard::loadXML(uint64_t uid, const char *eventPath, const char *xmlS
 
     m_npcUID = uid;
     m_eventPath = eventPath;
+
     m_chatBoard.clear();
 
     if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
-        m_chatBoard.setLineWidth(386 - m_margin * 3 - SDLDeviceHelper::getTextureWidth(texPtr));
+        m_chatBoard.setLineWidth(w() - m_margin * 3 - SDLDeviceHelper::getTextureWidth(texPtr));
     }
     else{
-        m_chatBoard.setLineWidth(386 - m_margin * 2);
+        m_chatBoard.setLineWidth(w() - m_margin * 2);
     }
+
     m_chatBoard.loadXML(xmlString);
-
-    setW(386);
-    setH(160 + getMiddlePixels() + 44);
-
-    m_buttonClose.moveTo(w() - 40, h() - 43);
-    if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
-        m_chatBoard.moveTo(m_margin * 2 + SDLDeviceHelper::getTextureWidth(texPtr), (h() - m_chatBoard.h()) / 2);
-    }
-    else{
-        m_chatBoard.moveTo(m_margin, (h() - m_chatBoard.h()) / 2);
-    }
 }
 
 void NPCChatBoard::onClickEvent(const char *path, const char *id, const char *args, bool autoClose)
 {
     if(g_clientArgParser->debugClickEvent){
-        m_process->addCBLog(CBLOG_SYS, u8"clickEvent: path = %s, id = %s, args = %s", to_cstr(path), to_cstr(id), to_cstr(args));
+        m_processRun->addCBLog(CBLOG_SYS, u8"clickEvent: path = %s, id = %s, args = %s", to_cstr(path), to_cstr(id), to_cstr(args));
     }
 
     fflassert(str_haschar(id));
-    m_process->sendNPCEvent(m_npcUID, path, id, args ? std::make_optional<std::string>(args) : std::nullopt);
+    m_processRun->sendNPCEvent(m_npcUID, path, id, args ? std::make_optional<std::string>(args) : std::nullopt);
 
     if(autoClose){
         setShow(false);
     }
-}
-
-int NPCChatBoard::getMiddlePixels() const
-{
-    // repeat bottom 100 pixels of texture 0X00000051
-    // but still round to at least 20 pixels, to prevent too thin stripe
-
-    if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
-        const auto [faceW, faceH] = SDLDeviceHelper::getTextureSize(texPtr);
-        if(faceW + m_margin * 3 + m_chatBoard.w() >= 386){
-            throw fflerror("chat board size error");
-        }
-
-        const auto minBoardHeight = 160 + 44 - m_margin * 2;
-        const auto maxHeight = std::max<int>(faceH, m_chatBoard.h());
-
-        if(maxHeight < minBoardHeight){
-            return 0;
-        }
-        return ((maxHeight - minBoardHeight + 19) / 20) * 20;
-    }
-
-    // not using NPC face key
-    // plain drawing
-
-    const int minPlainHeight = 160 + 44 - m_margin * 2;
-    if(m_chatBoard.h() < minPlainHeight){
-        return 0;
-    }
-    return ((m_chatBoard.h() - minPlainHeight + 19) / 20) * 20;
-}
-
-void NPCChatBoard::drawFrame() const
-{
-    const auto middlePixels = getMiddlePixels();
-    auto frameUp   = g_progUseDB->retrieve(0X00000051);
-    auto frameDown = g_progUseDB->retrieve(0X00000053);
-
-    g_sdlDevice->drawTexture(frameUp, 0, 0);
-
-    constexpr int bottomPixels = 100;
-    int donePixels = 0;
-
-    while(donePixels < middlePixels){
-        const auto currPixels = std::min<int>(bottomPixels, middlePixels - donePixels);
-        g_sdlDevice->drawTexture(frameUp, 0, 160 + donePixels, 0, 160 - bottomPixels, 386, currPixels);
-        donePixels += currPixels;
-    }
-
-    g_sdlDevice->drawTexture(frameDown, 0, 160 + middlePixels);
 }

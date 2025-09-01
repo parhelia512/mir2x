@@ -10,38 +10,36 @@ class ProcessRun;
 class NPCChatBoard: public Widget
 {
     private:
-        int m_margin;
-        ProcessRun *m_process;
+        const int m_margin;
 
     private:
-        LayoutBoard  m_chatBoard;
-        TritexButton m_buttonClose;
-
-    private:
-        uint64_t m_npcUID;
+        uint64_t m_npcUID = 0;
         std::string m_eventPath;
 
-    public:
-        NPCChatBoard(ProcessRun *, Widget *pwidget = nullptr, bool autoDelete = false);
-
-    public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+    private:
+        ProcessRun *m_processRun;
 
     private:
-        void drawFrame() const;
+        ImageBoard m_face;
+        LayoutBoard m_chatBoard;
+        TritexButton m_buttonClose;
 
-    private:
-        void drawPlain() const;
-        void drawWithNPCFace() const;
+    public:
+        NPCChatBoard(
+                Widget::VarDir,
+                Widget::VarOff,
+                Widget::VarOff,
+
+                ProcessRun *,
+
+                Widget * = nullptr,
+                bool     = false);
 
     public:
         void loadXML(uint64_t, const char *, const char *);
 
     private:
         void onClickEvent(const char *, const char *, const char *, bool);
-
-    private:
-        int getMiddlePixels() const;
 
     private:
         uint32_t getNPCFaceKey() const
