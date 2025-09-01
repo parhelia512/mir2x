@@ -78,7 +78,7 @@ CBTitle::CBTitle(
           10,
 
           argProc,
-          [this]() // double-click
+          [this](Widget *, int) // double-click
           {
 
           },

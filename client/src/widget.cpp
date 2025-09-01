@@ -641,7 +641,7 @@ bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int
 // calculate sub-roi for current child widget
 bool Widget::processParentEvent(const SDL_Event &event, bool valid, int parentW, int parentH, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
     if(!roiOpt.has_value()){
         return false;
     }
@@ -680,7 +680,7 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDs
     {
         if(widget->show()){
             const bool validEvent = valid && !took;
-            const bool takenEvent = widget->processParentEvent(event, validEvent, startDstX, startDstY, roi);
+            const bool takenEvent = widget->processParentEvent(event, validEvent, w(), h(), startDstX, startDstY, roi);
 
             if(!validEvent && takenEvent){
                 throw fflerror("widget %s takes invalid event", widget->name());
@@ -855,11 +855,6 @@ int Widget::rdy(const Widget *widget) const
     else{
         return dy();
     }
-}
-
-int Widget::dy() const
-{
-    return Widget::evalOff(m_y.first, this) + m_y.second - ySizeOff(dir(), h());
 }
 
 std::optional<Widget::ROI> Widget::cropDrawROI(int &dstX, int &dstY, const Widget::ROIOpt &roi) const

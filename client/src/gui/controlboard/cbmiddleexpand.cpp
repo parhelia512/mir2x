@@ -1,4 +1,5 @@
 #include "sdldevice.hpp"
+#include "controlboard.hpp"
 #include "cbmiddleexpand.hpp"
 
 extern SDLDevice *g_sdlDevice;
