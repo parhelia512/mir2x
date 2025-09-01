@@ -1,4 +1,7 @@
 #pragma once
+#include <cstdint>
+#include <optional>
+#include "serdesmsg.hpp"
 #include "widget.hpp"
 #include "imageboard.hpp"
 #include "shapecropboard.hpp"

@@ -274,20 +274,21 @@ void ChatItem::update(double fUpdateTime)
     accuTime += fUpdateTime;
 }
 
-bool ChatItem::processEventDefault(const SDL_Event &event, bool valid)
+bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    if(!valid){
-        return consumeFocus(false);
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(roiOpt.has_value()){
+        return false;
     }
 
-    if(!show()){
+    if(!valid){
         return consumeFocus(false);
     }
 
     if(true
             && event.type == SDL_MOUSEBUTTONUP
             && event.button.button == SDL_BUTTON_RIGHT
-            && background.in(event.button.x, event.button.y)){
+            && background.in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()){
 
         if(auto chatPage = hasParent<ChatPage>()){
             if(chatPage->menu){
@@ -343,7 +344,7 @@ bool ChatItem::processEventDefault(const SDL_Event &event, bool valid)
         return true;
     }
 
-    if(Widget::processEventDefault(event, valid)){
+    if(Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value())){
         if(!focus()){
             setFocus(true);
         }

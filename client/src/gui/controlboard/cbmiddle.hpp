@@ -10,6 +10,7 @@
 #include "cropviewboard.hpp"
 #include "alphaonbutton.hpp"
 #include "shapecropboard.hpp"
+#include "gfxcropdupboard.hpp"
 #include "cbface.hpp"
 
 class ProcessRun;
