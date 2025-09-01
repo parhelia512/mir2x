@@ -351,7 +351,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                                   setUIPage(UIPage_FRIENDLIST);
                               },
@@ -437,7 +437,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
@@ -463,7 +463,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                                   setUIPage(UIPage_FRIENDSEARCH);
                               },
@@ -489,7 +489,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                                   setUIPage(UIPage_CREATEGROUP);
                               },
@@ -575,7 +575,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
@@ -658,7 +658,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
@@ -684,7 +684,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                                   std::vector<uint32_t> dbidList;
                                   dynamic_cast<FriendListPage *>(m_uiPageList[UIPage_CREATEGROUP].page)->canvas.foreachChild([&dbidList](const Widget *widget, bool)
@@ -758,7 +758,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               nullptr,
                               nullptr,
                               nullptr,
-                              [this](Widget *)
+                              [this](Widget *, int)
                               {
                                   dynamic_cast<FriendListPage *>(m_uiPageList[UIPage_CREATEGROUP].page)->canvas.foreachChild([](Widget *widget, bool)
                                   {

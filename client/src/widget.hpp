@@ -271,7 +271,7 @@ class Widget: public WidgetTreeNode
         static const std::function<uint32_t(const Widget *)> &asFuncBlendMode(const Widget::VarBlendMode &);
         static       std::function<uint32_t(const Widget *)> &asFuncBlendMode(      Widget::VarBlendMode &);
 
-        static uint32_t evalBlendMode(const Widget::VarBlendMode &, const Widget *);
+        static SDL_BlendMode evalBlendMode(const Widget::VarBlendMode &, const Widget *);
 
     private:
         class RecursionDetector final

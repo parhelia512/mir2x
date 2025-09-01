@@ -67,10 +67,10 @@ class IMEBoard: public Widget
         void update(double) override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     public:
         void gainFocus(std::string, std::string, Widget *, std::function<void(std::string)>);

@@ -81,7 +81,7 @@ void ImageBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
         return;
     }
 
-    if(!colorf::A(Widget::evalColor(m_varColor, this))){
+    if(!colorf::A(Widget::evalU32(m_varColor, this))){
         return;
     }
 
@@ -261,7 +261,7 @@ void ImageBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
         imgSrcX = texW - imgSrcX - imgSrcW;
     }
 
-    const SDLDeviceHelper::EnableTextureModColor enableColor(texPtr, Widget::evalColor(m_varColor, this));
+    const SDLDeviceHelper::EnableTextureModColor enableColor(texPtr, Widget::evalU32(m_varColor, this));
     const SDLDeviceHelper::EnableTextureBlendMode enableBlendMode(texPtr, Widget::evalBlendMode(m_varBlendMode, this));
 
     g_sdlDevice->drawTextureEx(

@@ -159,8 +159,13 @@ size_t IMEBoard::totalLabelWidth() const
     return totalWidth;
 }
 
-bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(!valid){
         if(focus()){
             dropFocus();
@@ -249,7 +254,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
                 if(event.button.button == SDL_BUTTON_LEFT){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
                         m_labelBoardList[i]->setFontColor(m_fontColor);
-                        if(m_labelBoardList[i]->parentIn(event.button.x, event.button.y, startDstX, startDstY)){
+                        if(m_labelBoardList[i]->parentIn(event.button.x, event.button.y, w(), h(), startDstX, startDstY, roiOpt.value())){
                             m_ime.select(i);
                         }
                     }
@@ -264,7 +269,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
                 }
 
                 for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                    if(m_labelBoardList.at(i)->parentIn(event.button.x, event.button.y, startDstX, startDstY)){
+                    if(m_labelBoardList.at(i)->parentIn(event.button.x, event.button.y, w(), h(), startDstX, startDstY, roiOpt.value())){
                         m_labelBoardList.at(i)->setFontColor(m_fontColorPressed);
                     }
                     else{
@@ -276,18 +281,21 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
         case SDL_MOUSEMOTION:
             {
                 if(event.motion.state & SDL_BUTTON_LMASK){
+                    const auto remapXDiff = startDstX - roiOpt->x;
+                    const auto remapYDiff = startDstY - roiOpt->y;
+
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+                    const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
 
-                    moveBy(newX - startDstX, newY - startDstY);
+                    moveBy(newX - remapXDiff, newY - remapYDiff);
                 }
                 else if(in(event.motion.x, event.motion.y)){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                        if(m_labelBoardList.at(i)->parentIn(event.motion.x, event.motion.y, startDstX, startDstY)){
+                        if(m_labelBoardList.at(i)->parentIn(event.motion.x, event.motion.y, w(), h(), startDstX, startDstY, roiOpt.value())){
                             m_labelBoardList.at(i)->setFontColor(m_fontColorHover);
                         }
                         else{
@@ -304,7 +312,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
     }
 }
 
-void IMEBoard::drawEx(int dstX, int dstY, int, int, int, int) const
+void IMEBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
 {
     //        +---------------------------------------------------------------------------------- m_startX
     //        |

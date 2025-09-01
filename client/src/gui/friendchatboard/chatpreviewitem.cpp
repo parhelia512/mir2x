@@ -55,7 +55,8 @@ ChatPreviewItem::ChatPreviewItem(
           false,
           0,
 
-          colorf::WHITE + colorf::A_SHF(0XFF),
+          colorf::WHITE_A255,
+          SDL_BLENDMODE_NONE,
 
           this,
           false,
@@ -132,7 +133,7 @@ ChatPreviewItem::ChatPreviewItem(
 
           [this](const Widget *, int drawDstX, int drawDstY)
           {
-              if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); in(mousePX, mousePY)){
+              if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); in(mousePX, mousePY, drawDstX, drawDstY, roi())){
                   g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
                   g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
               }
