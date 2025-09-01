@@ -154,7 +154,7 @@ CBMiddle::CBMiddle(
     , m_slider
       {
           DIR_UPLEFT,
-          [this](const Widget *){ return w() - 178},
+          [this](const Widget *){ return w() - 178; },
           40,
           5,
           60,
@@ -188,7 +188,7 @@ CBMiddle::CBMiddle(
       }
 {}
 
-bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOPt &roi)
+bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
     const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
     if(!roiOpt.has_value()){

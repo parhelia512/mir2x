@@ -351,27 +351,27 @@ bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int
         return consumeFocus(false);
     }
 
-    if(m_enableTeam.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_enableTeam.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_switchShow.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_switchShow.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_addMember.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_addMember.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_deleteMember.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_deleteMember.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_refresh.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_refresh.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_close.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_close.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
         return true;
     }
 

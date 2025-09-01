@@ -1230,7 +1230,7 @@ bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid,
         static_cast<Widget *>(&m_pageSocial),
         static_cast<Widget *>(&m_pageGameConfig),
     }){
-        if(widgetPtr->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+        if(widgetPtr->processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
             return true;
         }
     }

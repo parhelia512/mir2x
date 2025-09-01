@@ -1,7 +1,9 @@
+#include "pngtexdb.hpp"
 #include "sdldevice.hpp"
 #include "controlboard.hpp"
 #include "cbmiddleexpand.hpp"
 
+extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
 CBMiddleExpand::CBMiddleExpand(
@@ -92,8 +94,8 @@ CBMiddleExpand::CBMiddleExpand(
           0,
           0,
 
-          [this](const Widget *){ return w(); }
-          [this](const Widget *){ return h(); }
+          [this](const Widget *){ return w(); },
+          [this](const Widget *){ return h(); },
 
           &m_bgImgFull,
 
@@ -101,7 +103,6 @@ CBMiddleExpand::CBMiddleExpand(
           47,
           287,
           196,
-          {},
 
           this,
           false,
@@ -110,7 +111,7 @@ CBMiddleExpand::CBMiddleExpand(
     , m_buttonSwitchMode
       {
           DIR_UPLEFT,
-          boardW - 178 - 181,
+          [this](const Widget *){ return w() - 178; },
           3,
           {SYS_U32NIL, 0X00000028, 0X00000029},
           {
@@ -122,9 +123,9 @@ CBMiddleExpand::CBMiddleExpand(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int clickDone)
           {
-              switchExpandMode();
+              hasParent<ControlBoard>()->onClickSwitchModeButton(clickDone);
           },
 
           0,
@@ -143,7 +144,7 @@ CBMiddleExpand::CBMiddleExpand(
     , m_buttonEmoji
       {
           DIR_UPLEFT,
-          boardW - 178 - 260,
+          [this](const Widget *){ return w() - 178; },
           87,
           {SYS_U32NIL, 0X00000023, 0X00000024},
           {
@@ -173,7 +174,7 @@ CBMiddleExpand::CBMiddleExpand(
     , m_buttonMute
       {
           DIR_UPLEFT,
-          boardW - 178 - 220,
+          [this](const Widget *){ return w() - 220; },
           87,
           {SYS_U32NIL, 0X00000025, 0X00000026},
           {
@@ -203,7 +204,7 @@ CBMiddleExpand::CBMiddleExpand(
     , m_slider
       {
           DIR_UPLEFT,
-          boardW - 178 - 176,
+          [this](const Widget *){ return w() - 176; },
           40,
           5,
           60,

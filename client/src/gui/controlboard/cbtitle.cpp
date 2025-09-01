@@ -74,7 +74,7 @@ CBTitle::CBTitle(
     , m_level
       {
           DIR_NONE,
-          [this](const Widget *){ return w() / 2; }
+          [this](const Widget *){ return w() / 2; },
           10,
 
           argProc,

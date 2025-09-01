@@ -169,7 +169,7 @@ const std::optional<SDBuffIDList> &CBFace::getSDBuffIDListOpt() const
     return m_processRun->getMyHero()->getSDBuffIDListOpt();
 }
 
-void CBFace::drawBuffIDList(int drawDstX, int drawDstY, int drawDstW, int drawDstH) const
+void CBFace::drawBuffIDList(int drawDstX, int drawDstY, int, int) const
 {
     const auto sdBuffIDListOpt = getSDBuffIDListOpt();
     if(!sdBuffIDListOpt.has_value()){

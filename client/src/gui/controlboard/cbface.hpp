@@ -16,6 +16,9 @@ class CBFace: public Widget
         ProcessRun *m_processRun;
 
     private:
+        double m_accuTime = 0;
+
+    private:
         ImageBoard m_face;
         ImageBoard m_hpBar;
 
@@ -42,4 +45,10 @@ class CBFace: public Widget
 
     private:
         void drawBuffIDList(int, int, int, int) const;
+
+    private:
+        void update(double fUpdateTime) override
+        {
+            m_accuTime += fUpdateTime;
+        }
 };
