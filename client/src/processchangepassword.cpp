@@ -163,7 +163,7 @@ ProcessChangePassword::ProcessChangePassword()
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               doPostPasswordChange();
           },
@@ -192,7 +192,7 @@ ProcessChangePassword::ProcessChangePassword()
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               doExit();
           },
@@ -239,10 +239,10 @@ void ProcessChangePassword::draw() const
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000003), 0, 75);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000004), 0, 75, 0, 0, 800, 450);
 
-    m_boxID.draw();
-    m_boxPwd.draw();
-    m_boxNewPwd.draw();
-    m_boxNewPwdConfirm.draw();
+    m_boxID.drawRoot(0, 0);
+    m_boxPwd.drawRoot(0, 0);
+    m_boxNewPwd.drawRoot(0, 0);
+    m_boxNewPwdConfirm.drawRoot(0, 0);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X0A000001), m_x, m_y);
 
     const auto fnDrawInput = [](int x, int y, int dx, auto &title, auto &check)
@@ -265,18 +265,18 @@ void ProcessChangePassword::draw() const
     fnDrawInput(m_x + 129, m_y + 173, 10, m_LBNewPwd       , m_LBCheckNewPwd       );
     fnDrawInput(m_x + 129, m_y + 220, 10, m_LBNewPwdConfirm, m_LBCheckNewPwdConfirm);
 
-    m_submit.draw();
-    m_quit.draw();
+    m_submit.drawRoot(0, 0);
+    m_quit.drawRoot(0, 0);
 
     if(hasInfo()){
         g_sdlDevice->fillRectangle(colorf::BLUE + colorf::A_SHF(32), 0, 75, 800, 450);
-        m_infoStr.draw();
+        m_infoStr.drawRoot(0, 0);
     }
 }
 
 void ProcessChangePassword::processEvent(const SDL_Event &event)
 {
-    if(m_quit.processEvent(event, true)){
+    if(m_quit.applyRootEvent(event, true, 0, 0)){
         return;
     }
 
@@ -285,7 +285,7 @@ void ProcessChangePassword::processEvent(const SDL_Event &event)
         return;
     }
 
-    if(m_submit.processEvent(event, true)){
+    if(m_submit.applyRootEvent(event, true, 0, 0)){
         return;
     }
 
@@ -328,10 +328,10 @@ void ProcessChangePassword::processEvent(const SDL_Event &event)
     // widget idbox and pwdbox are not independent from each other
     // tab in one box will grant focus to another
 
-    m_boxID           .processEvent(event, true);
-    m_boxPwd          .processEvent(event, true);
-    m_boxNewPwd       .processEvent(event, true);
-    m_boxNewPwdConfirm.processEvent(event, true);
+    m_boxID           .applyRootEvent(event, true, 0, 0);
+    m_boxPwd          .applyRootEvent(event, true, 0, 0);
+    m_boxNewPwd       .applyRootEvent(event, true, 0, 0);
+    m_boxNewPwdConfirm.applyRootEvent(event, true, 0, 0);
 
     localCheck();
 }

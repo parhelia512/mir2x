@@ -534,7 +534,8 @@ void InventoryBoard::drawInvOpCost() const
 
         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
     };
-    queryResultBoard.drawAt(DIR_NONE, startDstX + 132, startDstY + 503);
+    // queryResultBoard.drawAt(DIR_NONE, startDstX + 132, startDstY + 503);
+    queryResultBoard.drawAt(DIR_NONE, 132, 503);
 }
 
 int InventoryBoard::getPackBinIndex(int locPX, int locPY) const

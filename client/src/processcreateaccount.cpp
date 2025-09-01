@@ -128,7 +128,7 @@ ProcessCreateAccount::ProcessCreateAccount()
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               doPostAccount();
           },
@@ -157,7 +157,7 @@ ProcessCreateAccount::ProcessCreateAccount()
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               doExit();
           },
@@ -202,9 +202,9 @@ void ProcessCreateAccount::draw() const
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000003), 0, 75);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000004), 0, 75, 0, 0, 800, 450);
 
-    m_boxID.draw();
-    m_boxPwd.draw();
-    m_boxPwdConfirm.draw();
+    m_boxID.drawRoot(0, 0);
+    m_boxPwd.drawRoot(0, 0);
+    m_boxPwdConfirm.drawRoot(0, 0);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X0A000000), m_x, m_y);
 
     const auto fnDrawInput = [](int x, int y, int dx, auto &title, auto &check)
@@ -226,18 +226,18 @@ void ProcessCreateAccount::draw() const
     fnDrawInput(m_x + 129, m_y + 143, 10, m_LBPwd       , m_LBCheckPwd       );
     fnDrawInput(m_x + 129, m_y + 198, 10, m_LBPwdConfirm, m_LBCheckPwdConfirm);
 
-    m_submit.draw();
-    m_quit.draw();
+    m_submit.drawRoot(0, 0);
+    m_quit.drawRoot(0, 0);
 
     if(hasInfo()){
         g_sdlDevice->fillRectangle(colorf::BLUE + colorf::A_SHF(32), 0, 75, 800, 450);
-        m_infoStr.draw();
+        m_infoStr.drawRoot(0, 0);
     }
 }
 
 void ProcessCreateAccount::processEvent(const SDL_Event &event)
 {
-    if(m_quit.processEvent(event, true)){
+    if(m_quit.applyRootEvent(event, true, 0, 0)){
         return;
     }
 
@@ -246,7 +246,7 @@ void ProcessCreateAccount::processEvent(const SDL_Event &event)
         return;
     }
 
-    if(m_submit.processEvent(event, true)){
+    if(m_submit.applyRootEvent(event, true, 0, 0)){
         return;
     }
 
@@ -288,9 +288,9 @@ void ProcessCreateAccount::processEvent(const SDL_Event &event)
     // widget idbox and pwdbox are not independent from each other
     // tab in one box will grant focus to another
 
-    m_boxID        .processEvent(event, true);
-    m_boxPwd       .processEvent(event, true);
-    m_boxPwdConfirm.processEvent(event, true);
+    m_boxID        .applyRootEvent(event, true, 0, 0);
+    m_boxPwd       .applyRootEvent(event, true, 0, 0);
+    m_boxPwdConfirm.applyRootEvent(event, true, 0, 0);
 
     localCheck();
 }

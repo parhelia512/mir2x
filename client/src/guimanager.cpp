@@ -304,7 +304,8 @@ void GUIManager::onWindowResize()
     setH(g_sdlDevice->getRendererHeight());
     m_runtimeConfigBoard.updateWindowSizeLabel(w(), h(), true);
 
-    m_controlBoard.onWindowResize(w(), h());
+    // m_controlBoard.onWindowResize(w(), h());
+    m_controlBoard.afterResize();
     m_controlBoard.moveTo(0, h() - 133);
 
     if(m_miniMapBoard.getMiniMapTexture()){
