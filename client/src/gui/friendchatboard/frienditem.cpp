@@ -56,9 +56,9 @@ FriendItem::FriendItem(
           [this](const Widget *){ return w(); },
           [this](const Widget *){ return h(); },
 
-          [this](const Widget *, int drawDstX, int drawDstY)
+          [this](const Widget *self, int drawDstX, int drawDstY)
           {
-              if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); in(mousePX, mousePY, drawDstX, drawDstY)){
+              if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); in(mousePX, mousePY, drawDstX, drawDstY, self->w(), self->h())){
                   g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
                   g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
               }

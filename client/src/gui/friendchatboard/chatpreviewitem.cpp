@@ -165,20 +165,21 @@ ChatPreviewItem::ChatPreviewItem(
     });
 }
 
-bool ChatPreviewItem::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool ChatPreviewItem::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    if(!valid){
-        return consumeFocus(false);
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
     }
 
-    if(!show()){
+    if(!valid){
         return consumeFocus(false);
     }
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y, startDstX, startDstY)){
+                if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     FriendChatBoard::getParentBoard(this)->m_processRun->requestLatestChatMessage({this->cpid.asU64()}, 50, true, true);
                     FriendChatBoard::getParentBoard(this)->queryChatPeer(this->cpid, [canvas = this->parent(), widgetID = this->id(), this](const SDChatPeer *peer, bool)
                     {

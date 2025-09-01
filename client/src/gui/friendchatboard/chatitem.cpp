@@ -288,7 +288,7 @@ bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, int start
     if(true
             && event.type == SDL_MOUSEBUTTONUP
             && event.button.button == SDL_BUTTON_RIGHT
-            && background.in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()){
+            && background.in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
 
         if(auto chatPage = hasParent<ChatPage>()){
             if(chatPage->menu){
@@ -332,8 +332,8 @@ bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, int start
             }),
 
             DIR_UPLEFT,
-            event.button.x - chatPage->x(),
-            event.button.y - chatPage->y(),
+            event.button.x - (startDstX - roiOpt->x),
+            event.button.y - (startDstY - roiOpt->y),
             true);
 
             chatPage->menu->setShow(true);

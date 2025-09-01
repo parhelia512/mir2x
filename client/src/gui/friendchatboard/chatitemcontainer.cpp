@@ -136,11 +136,11 @@ ChatItemContainer::ChatItemContainer(
           DIR_NONE,
           false,
 
-          [this](const Widget *, int, int)
+          [this](const Widget *, int startDstX, int startDstY)
           {
               g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64),
-                      nomsg.x() - ChatItemContainer::BACKGROUND_MARGIN,
-                      nomsg.y() - ChatItemContainer::BACKGROUND_MARGIN,
+                      startDstX - ChatItemContainer::BACKGROUND_MARGIN,
+                      startDstY - ChatItemContainer::BACKGROUND_MARGIN,
                       nomsg.w() + ChatItemContainer::BACKGROUND_MARGIN * 2,
                       nomsg.h() + ChatItemContainer::BACKGROUND_MARGIN * 2, ChatItemContainer::BACKGROUND_CORNER);
           },
@@ -159,11 +159,11 @@ ChatItemContainer::ChatItemContainer(
           DIR_NONE,
           false,
 
-          [this](const Widget *, int, int)
+          [this](const Widget *, int startDstX, int startDstY)
           {
               g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64),
-                      ops.x() - ChatItemContainer::BACKGROUND_MARGIN,
-                      ops.y() - ChatItemContainer::BACKGROUND_MARGIN,
+                      startDstX - ChatItemContainer::BACKGROUND_MARGIN,
+                      startDstY - ChatItemContainer::BACKGROUND_MARGIN,
                       ops.w() + ChatItemContainer::BACKGROUND_MARGIN * 2,
                       ops.h() + ChatItemContainer::BACKGROUND_MARGIN * 2, ChatItemContainer::BACKGROUND_CORNER);
           },
