@@ -1,8 +1,8 @@
 #include "log.hpp"
 #include "controlboard.hpp"
 
-Log *g_log;
-SDLDevice *g_sdlDevice;
+extern Log *g_log;
+extern SDLDevice *g_sdlDevice;
 
 ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoDelete)
     : Widget
@@ -272,3 +272,6 @@ TritexButton *ControlBoard::getButton(const std::string_view &buttonName)
     else if(buttonName == "FriendChat"   ){ return &m_right.m_buttonFriendChat   ; }
     else                                  { return nullptr                       ; }
 }
+
+void ControlBoard::onClickSwitchModeButton(int)
+{}

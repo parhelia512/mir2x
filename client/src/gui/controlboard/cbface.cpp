@@ -5,8 +5,8 @@
 #include "processrun.hpp"
 #include "clientmonster.hpp"
 
-PNGTexDB *g_progUseDB;
-SDLDevice *g_sdlDevice;
+extern PNGTexDB *g_progUseDB;
+extern SDLDevice *g_sdlDevice;
 
 CBFace::CBFace(
         Widget::VarDir argDir,
