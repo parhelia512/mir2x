@@ -1,8 +1,10 @@
 #pragma once
 #include <cstdint>
 #include "widget.hpp"
+#include "imageboard.hpp"
 #include "layoutboard.hpp"
 #include "tritexbutton.hpp"
+#include "gfxcropdupboard.hpp"
 
 class ProcessRun;
 class NPCChatBoard: public Widget
@@ -23,7 +25,7 @@ class NPCChatBoard: public Widget
         NPCChatBoard(ProcessRun *, Widget *pwidget = nullptr, bool autoDelete = false);
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     private:
         void drawFrame() const;

@@ -433,9 +433,18 @@ void SkillBoard::drawEx(int dstX, int dstY, int, int, int, int) const
     pagePtr->drawEx(dstX + r[0], dstY + r[1], r[0] - pagePtr->dx(), r[1] - pagePtr->dy(), r[2], r[3]);
 }
 
-bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    const auto result = m_icon.processParentEvent(event, valid, startDstX, startDstY);
+    if(!show()){
+        return false;
+    }
+
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
+    const auto result = m_icon.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value());
     if(event.type == SDL_KEYDOWN && cursorOn()){
         if(const auto key = SDLDeviceHelper::getKeyChar(event, false); (key >= '0' && key <= '9') || (key >= 'a' && key <= 'z')){
             if(m_config->hasMagicID(magicID())){
@@ -453,51 +462,57 @@ bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bo
     return result;
 }
 
-bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(!valid){
         return consumeFocus(false);
     }
 
-    if(!show()){
-        return consumeFocus(false);
-    }
+    const auto remapXDiff = startDstX - roiOpt->x;
+    const auto remapYDiff = startDstY - roiOpt->y;
 
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY)){
-        return consumeFocus(show());
+    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+        consumeFocus(false);
+        return true;
     }
 
     bool tabConsumed = false;
     for(auto buttonPtr: m_tabButtonList){
-        tabConsumed |= buttonPtr->processParentEvent(event, valid && !tabConsumed, startDstX, startDstY);
+        tabConsumed |= buttonPtr->processParentEvent(event, valid && !tabConsumed, startDstX, startDstY, roiOpt.value());
     }
 
     if(tabConsumed){
         return consumeFocus(true);
     }
 
-    if(m_slider.processParentEvent(event, valid, startDstX, startDstY)){
+    if(m_slider.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return consumeFocus(true);
     }
 
-    const auto r = getPageRectange();
-    const auto loc = SDLDeviceHelper::getMousePLoc();
-    const bool captureEvent = (loc.x >= 0 && loc.y >= 0) && mathf::pointInRectangle(loc.x, loc.y, x() + r[0], y() + r[1], r[2], r[3]);
+    if(auto pageROI = Widget::makeROI(getPageRectange()); roi->crop(pageROI)){
+        const auto loc = SDLDeviceHelper::getMousePLoc();
+        const bool captureEvent = (loc.x >= 0 && loc.y >= 0) && pageROI.in(loc.x - remapXDiff, loc.y - remapYDiff);
 
-    if(m_skillPageList.at(m_selectedTabIndex)->processParentEvent(event, captureEvent && valid, startDstX, startDstY)){
-        return consumeFocus(true);
+        if(m_skillPageList.at(m_selectedTabIndex)->processParentEvent(event, captureEvent && valid, startDstX, startDstY, roiOpt.value())){
+            return consumeFocus(true);
+        }
     }
 
     switch(event.type){
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, x() + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, y() + event.motion.yrel));
+                    const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
 
                     moveBy(newX - startDstX, newY - startDstY);
                     return consumeFocus(true);
@@ -509,7 +524,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
                 switch(event.button.button){
                     case SDL_BUTTON_LEFT:
                         {
-                            return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY));
+                            return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
                         }
                     default:
                         {
@@ -519,7 +534,9 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
         case SDL_MOUSEWHEEL:
             {
+                auto r = getPageRectange();
                 auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
+
                 if(captureEvent && (r[3] < pagePtr->h())){
                     m_slider.addValue(event.wheel.y * -0.1f, false);
                     pagePtr->moveTo(r[0], r[1] - to_d((pagePtr->h() - r[3]) * m_slider.getValue()));

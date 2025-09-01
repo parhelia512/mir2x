@@ -281,10 +281,6 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
         return consumeFocus(false);
     }
 
-    if(!show()){
-        return false;
-    }
-
     if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY)){
         return true;
     }

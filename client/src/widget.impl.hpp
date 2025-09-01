@@ -1,3 +1,15 @@
+template<typename T> Widget::ROI Widget::makeROI(const T &t)
+{
+    const auto [x, y, w, h] = t;
+    return Widget::ROI
+    {
+        .x = x,
+        .y = y,
+        .w = w,
+        .h = h,
+    };
+}
+
 auto WidgetTreeNode::parent(this auto && self, unsigned level) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
     check_const_cond_out_ptr_t<decltype(self), Widget> p = std::addressof(self);

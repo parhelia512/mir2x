@@ -57,6 +57,7 @@ class TextShadowBoard: public Widget
                   argFontStyle,
 
                   std::move(argFontShadowColor),
+                  SDL_BLENDMODE_NONE,
 
                   this,
                   false,
@@ -75,6 +76,7 @@ class TextShadowBoard: public Widget
                   argFontStyle,
 
                   std::move(argFontColor),
+                  SDL_BLENDMODE_NONE,
 
                   this,
                   false,

@@ -197,6 +197,9 @@ class Widget: public WidgetTreeNode
         };
 
     public:
+        template<typename T> static Widget::ROI makeROI(const T &);
+
+    public:
         using WidgetTreeNode::ChildElement;
 
     public:
@@ -379,6 +382,19 @@ class Widget: public WidgetTreeNode
         //
         // above two view-window can show the same widget, but different part of it
         // and either view can capture and process event
+        //
+        // for drawEx() and processEventDefault(), it doesn't check show()
+        //
+        //     1. if need to manually draw a widget, we ignore show() result
+        //     2. if draw by its parent, parent needs to check show()
+        //
+        // but processEventDefault() and drawEx() needs to check if given ROI is empty
+        // we agree that if a widget is not show() or ROI is empty, it
+        //
+        //     1. won't accept any event
+        //     2. won't alter any internal state, directly bypass the event
+        //     3. parent needs to change focus outside, not inside widget itself
+        //
         virtual bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &);
 
     public:

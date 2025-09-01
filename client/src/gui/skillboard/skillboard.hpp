@@ -203,7 +203,7 @@ class SkillBoard: public Widget
         void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
     private:
         static std::array<int, 4> getPageRectange()

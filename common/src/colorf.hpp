@@ -71,6 +71,11 @@ namespace colorf
     constexpr uint32_t GREY    = RGB(0X80, 0X80, 0X80);
     constexpr uint32_t WHITE   = RGB(0XFF, 0XFF, 0XFF);
 
+    constexpr uint32_t WHITE_A255 = WHITE + A_SHF(255);
+    constexpr uint32_t   RED_A255 =   RED + A_SHF(255);
+    constexpr uint32_t GREEN_A255 = GREEN + A_SHF(255);
+    constexpr uint32_t  BLUE_A255 =  BLUE + A_SHF(255);
+
     constexpr uint32_t modRGBA(uint32_t origColor, uint32_t modColor)
     {
         const float r_R = 1.0f * R(modColor) / 255.0;

@@ -2,6 +2,7 @@
 #include "widget.hpp"
 #include "serdesmsg.hpp"
 #include "texslider.hpp"
+#include "imageboard.hpp"
 #include "tritexbutton.hpp"
 
 class ProcessRun;
@@ -9,6 +10,9 @@ class GuildBoard: public Widget
 {
     private:
         ProcessRun *m_processRun;
+
+    private:
+        ImageBoard m_bg;
 
     private:
         TritexButton m_closeButton;
@@ -30,8 +34,5 @@ class GuildBoard: public Widget
         GuildBoard(int, int, ProcessRun *, Widget * = nullptr, bool = false);
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
-
-    public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 };

@@ -14,6 +14,7 @@ TextBoard::TextBoard(
         uint8_t argFontStyle,
 
         Widget::VarU32 argColor,
+        Widget::VarBlendMode argBlendMode,
 
         Widget *argParent,
         bool    argAutoDelete)
@@ -56,6 +57,7 @@ TextBoard::TextBoard(
           0,
 
           std::move(argColor),
+          std::move(argBlendMode),
 
           this,
           false,
