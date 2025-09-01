@@ -1,5 +1,7 @@
+#include "log.hpp"
 #include "controlboard.hpp"
 
+Log *g_log;
 SDLDevice *g_sdlDevice;
 
 ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoDelete)
@@ -32,6 +34,42 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
 
           argParent,
           argAutoDelete
+      }
+
+    , m_logBoard
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+          0, // need reset
+
+          nullptr,
+          0,
+
+          {},
+
+          false,
+          false,
+          false,
+          false,
+
+          1,
+          12,
+          0,
+
+          colorf::WHITE_A255,
+          0,
+
+          LALIGN_JUSTIFY,
+          0,
+          0,
+
+          2,
+          colorf::WHITE_A255,
+
+          nullptr,
+          nullptr,
+          nullptr,
       }
 
     , m_left
@@ -122,3 +160,62 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           false,
       }
 {}
+
+void ControlBoard::addParLog(const char *log)
+{
+    fflassert(str_haschar(log));
+    m_logBoard.addParXML(m_logBoard.parCount(), {0, 0, 0, 0}, log);
+
+    m_middle      .m_slider.setValue(1.0f, false);
+    m_middleExpand.m_slider.setValue(1.0f, false);
+}
+
+void ControlBoard::addLog(int logType, const char *log)
+{
+    if(!log){
+        throw fflerror("null log string");
+    }
+
+    switch(logType){
+        case CBLOG_ERR:
+            {
+                g_log->addLog(LOGTYPE_WARNING, "%s", log);
+                break;
+            }
+        default:
+            {
+                g_log->addLog(LOGTYPE_INFO, "%s", log);
+                break;
+            }
+    }
+
+    tinyxml2::XMLDocument xmlDoc(true, tinyxml2::PEDANTIC_WHITESPACE);
+    const char *xmlString = [logType]() -> const char *
+    {
+        // use hex to give alpha
+        // color::String2Color has no alpha component
+
+        switch(logType){
+            case CBLOG_SYS: return "<par bgcolor = \"rgb(0x00, 0x80, 0x00)\"></par>";
+            case CBLOG_DBG: return "<par bgcolor = \"rgb(0x00, 0x00, 0xff)\"></par>";
+            case CBLOG_ERR: return "<par bgcolor = \"rgb(0xff, 0x00, 0x00)\"></par>";
+            case CBLOG_DEF:
+            default       : return "<par></par>";
+        }
+    }();
+
+    if(xmlDoc.Parse(xmlString) != tinyxml2::XML_SUCCESS){
+        throw fflerror("parse xml template failed: %s", xmlString);
+    }
+
+    // to support <, >, / in xml string
+    // don't directly pass the raw string to addParXML
+    xmlDoc.RootElement()->SetText(log);
+
+    tinyxml2::XMLPrinter printer;
+    xmlDoc.Print(&printer);
+    m_logBoard.addParXML(m_logBoard.parCount(), {0, 0, 0, 0}, printer.CStr());
+
+    m_middle      .m_slider.setValue(1.0f, false);
+    m_middleExpand.m_slider.setValue(1.0f, false);
+}

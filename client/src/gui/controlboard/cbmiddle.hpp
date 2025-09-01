@@ -13,8 +13,12 @@
 #include "cbface.hpp"
 
 class ProcessRun;
+class ControlBoard;
 class CBMiddle: public Widget
 {
+    private:
+        friend class ControlBoard;
+
     private:
         ProcessRun *m_processRun;
 

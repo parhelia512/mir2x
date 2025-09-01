@@ -65,6 +65,9 @@ class ControlBoard: public Widget
         CBMode m_mode = CBM_DEF;
 
     private:
+        LayoutBoard m_logBoard;
+
+    private:
         CBLeft  m_left;
         CBRight m_right;
 
@@ -79,4 +82,10 @@ class ControlBoard: public Widget
 
                 Widget * = nullptr,
                 bool     = false);
+
+    public:
+        void addParLog(const char *);
+
+    public:
+        void addLog(int, const char *);
 };

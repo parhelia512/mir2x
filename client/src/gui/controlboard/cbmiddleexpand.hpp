@@ -1,8 +1,12 @@
 #include "widget.hpp"
 
 class ProcessRun;
+class ControlBoard;
 class CBMiddleExpand: public Widget
 {
+    private:
+        friend class ControlBoard;
+
     private:
         ProcessRun *m_processRun;
 

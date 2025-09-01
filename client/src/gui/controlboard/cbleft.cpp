@@ -263,7 +263,7 @@ CBLeft::CBLeft(
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("QuickAccessBoard")){
                   p->flipShow();
@@ -297,7 +297,7 @@ CBLeft::CBLeft(
           nullptr,
           nullptr,
           nullptr,
-          [](Widget *)
+          [](Widget *, int)
           {
               std::exit(0);
           },

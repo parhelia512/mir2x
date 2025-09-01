@@ -40,7 +40,8 @@ AcutionBoard::AcutionBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           false,
           false,
 
-          colorf::WHITE + colorf::A_SHF(0XFF),
+          colorf::WHITE_A255,
+          SDL_BLENDMODE_NONE,
 
           this,
           false,
