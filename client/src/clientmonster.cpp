@@ -404,7 +404,7 @@ void ClientMonster::drawFrame(int viewX, int viewY, int focusMask, int frame, bo
                 const int nLH = m_nameBoard.h();
                 const int nDrawNameXP = drawBarXP + nBarW / 2 - nLW / 2;
                 const int nDrawNameYP = drawBarYP + 20;
-                m_nameBoard.drawEx(nDrawNameXP, nDrawNameYP, 0, 0, nLW, nLH);
+                m_nameBoard.drawEx(nDrawNameXP, nDrawNameYP, {0, 0, nLW, nLH});
             }
         }
     }

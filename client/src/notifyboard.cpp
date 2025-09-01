@@ -95,20 +95,25 @@ void NotifyBoard::update(double)
     }
 }
 
-void NotifyBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void NotifyBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
     int startX = 0;
     int startY = 0;
 
     for(const auto &tp: m_boardList){
         const auto p = tp.typeset.get();
 
-        int srcXCrop = srcX;
-        int srcYCrop = srcY;
         int dstXCrop = dstX;
         int dstYCrop = dstY;
-        int srcWCrop = srcW;
-        int srcHCrop = srcH;
+        int srcXCrop = roiOpt->x;
+        int srcYCrop = roiOpt->y;
+        int srcWCrop = roiOpt->w;
+        int srcHCrop = roiOpt->h;
 
         if(!mathf::cropROI(
                     &srcXCrop, &srcYCrop,

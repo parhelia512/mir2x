@@ -83,9 +83,10 @@ void MenuButton::updateMenuButtonSize()
     setH(m_margin[0] + m_gfxWidget->h() + std::max<int>(                   m_margin[1], m_menuBoard->show() ? m_menuBoard->h() : 0));
 }
 
-void MenuButton::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void MenuButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(!show()){
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
         return;
     }
 
@@ -94,12 +95,12 @@ void MenuButton::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int sr
             continue;
         }
 
-        int srcXCrop = srcX;
-        int srcYCrop = srcY;
         int dstXCrop = dstX;
         int dstYCrop = dstY;
-        int srcWCrop = srcW;
-        int srcHCrop = srcH;
+        int srcXCrop = roiOpt->x;
+        int srcYCrop = roiOpt->y;
+        int srcWCrop = roiOpt->w;
+        int srcHCrop = roiOpt->h;
 
         if(!mathf::cropChildROI(
                     &srcXCrop, &srcYCrop,
@@ -116,7 +117,7 @@ void MenuButton::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int sr
             continue;
         }
 
-        widget->drawEx(dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
+        widget->drawEx(dstXCrop, dstYCrop, {srcXCrop, srcYCrop, srcWCrop, srcHCrop});
         if(widget == m_gfxWidget){
             switch(m_button.getState()){
                 case BEVENT_ON  : g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(128), dstXCrop, dstYCrop, srcWCrop, srcHCrop); break;
@@ -127,13 +128,14 @@ void MenuButton::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int sr
     }
 }
 
-bool MenuButton::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool MenuButton::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    if(!valid){
-        return consumeFocus(false);
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
     }
 
-    if(!show()){
+    if(!valid){
         return consumeFocus(false);
     }
 
@@ -144,7 +146,7 @@ bool MenuButton::processEventDefault(const SDL_Event &event, bool valid, int sta
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(m_menuBoard->in(event.button.x, event.button.y, startDstX, startDstY)){
+                if(m_menuBoard->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     m_menuBoard->setShow(false);
                 }
                 return consumeFocus(false);

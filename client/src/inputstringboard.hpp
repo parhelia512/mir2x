@@ -33,10 +33,7 @@ class InputStringBoard: public Widget
         void update(double) override;
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
-
-    public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     private:
         void inputLineDone();

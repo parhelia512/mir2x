@@ -63,8 +63,13 @@ TrigfxButton::TrigfxButton(Widget::VarDir argDir,
     initButtonSize();
 }
 
-void TrigfxButton::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void TrigfxButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
     if(auto gfxPtr = m_gfxList[getState()]){
         const int offX = m_offset[getState()][0];
         const int offY = m_offset[getState()][1];

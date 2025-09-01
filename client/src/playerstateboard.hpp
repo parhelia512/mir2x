@@ -38,11 +38,11 @@ class PlayerStateBoard: public Widget
         void update(double) override;
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
         void drawWear();
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
     private:
         void drawItemHoverText(int) const;

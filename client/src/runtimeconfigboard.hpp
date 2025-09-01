@@ -63,9 +63,9 @@ class RuntimeConfigBoard: public Widget
                     m_input.update(fUpdateTime);
                 }
 
-                bool processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY) override
+                bool processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi) override
                 {
-                    return m_input.processEvent(event, valid, startDstX, startDstY);
+                    return m_input.processEvent(event, valid, startDstX, startDstY, roi);
                 }
         };
 
@@ -111,10 +111,10 @@ class RuntimeConfigBoard: public Widget
                         bool     = false);
 
             public:
-                void drawEx(int, int, int, int, int, int) const override;
+                void drawEx(int, int, const Widget::ROIOpt &) const override;
 
             public:
-                bool processEventDefault(const SDL_Event &, bool, int, int) override;
+                bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
             public:
                 LabelBoard *getMenuTitle()
@@ -235,10 +235,10 @@ class RuntimeConfigBoard: public Widget
         RuntimeConfigBoard(int, int, int, int, ProcessRun *, Widget * = nullptr, bool = false);
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
     private:
         void reportRuntimeConfig(int);

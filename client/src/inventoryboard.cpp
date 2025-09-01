@@ -222,7 +222,7 @@ void InventoryBoard::update(double fUpdateTime)
     m_wmdAniBoard.update(fUpdateTime);
 }
 
-void InventoryBoard::drawEx(int dstX, int dstY, int, int, int, int) const
+void InventoryBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
 {
     if(auto pTexture = g_progUseDB->retrieve(0X0000001B)){
         g_sdlDevice->drawTexture(pTexture, dstX, dstY);
@@ -275,27 +275,32 @@ void InventoryBoard::drawEx(int dstX, int dstY, int, int, int, int) const
     }
 }
 
-bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(!valid){
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY)){
+    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roi)){
         return true;
     }
 
-    if(m_slider.processParentEvent(event, valid, startDstX, startDstY)){
+    if(m_slider.processParentEvent(event, valid, startDstX, startDstY, roi)){
         return true;
     }
 
     if(m_sdInvOp.invOp == INVOP_NONE){
-        if(m_sortButton.processParentEvent(event, valid, startDstX, startDstY)){
+        if(m_sortButton.processParentEvent(event, valid, startDstX, startDstY, roi)){
             return true;
         }
     }
     else{
-        if(m_selectedIndex >= 0 && m_invOpButton.processParentEvent(event, valid, startDstX, startDstY)){
+        if(m_selectedIndex >= 0 && m_invOpButton.processParentEvent(event, valid, startDstX, startDstY, roi)){
             return true;
         }
     }

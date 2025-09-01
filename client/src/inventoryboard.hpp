@@ -8,8 +8,9 @@
 #pragma once
 #include <string>
 #include "widget.hpp"
-#include "labelboard.hpp"
 #include "texslider.hpp"
+#include "labelboard.hpp"
+#include "wmdaniboard.hpp"
 #include "tritexbutton.hpp"
 
 class ProcessRun;
@@ -59,10 +60,10 @@ class InventoryBoard: public Widget
         void update(double) override;
 
     public:
-        void drawEx(int, int, int, int, int, int) const override;
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
     private:
         std::string getGoldStr() const;

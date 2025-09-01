@@ -2,7 +2,6 @@
 #include <initializer_list>
 #include "mathf.hpp"
 #include "widget.hpp"
-#include "gfxdupboard.hpp"
 #include "gfxcropboard.hpp"
 
 class GfxCutoutBoard: public Widget
@@ -56,9 +55,10 @@ class GfxCutoutBoard: public Widget
         {}
 
     public:
-        void drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const override
+        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
         {
-            if(!show()){
+            const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+            if(!roiOpt.has_value()){
                 return;
             }
 
@@ -67,8 +67,7 @@ class GfxCutoutBoard: public Widget
             int cropSrcW = m_cropW;
             int cropSrcH = m_cropH;
 
-            if(!mathf::rectangleOverlapRegion<int>(0, 0, w(), h(), cropSrcX, cropSrcY, cropSrcW, cropSrcH)){
-                m_gfxWidget->drawEx(dstX, dstY, srcX, srcY, srcW, srcH);
+            if(!mathf::rectangleOverlapRegion<int>(0, 0, m_gfxWidget->w(), m_gfxWidget->h(), cropSrcX, cropSrcY, cropSrcW, cropSrcH)){
                 return;
             }
 
@@ -108,12 +107,12 @@ class GfxCutoutBoard: public Widget
                 static_cast<const Widget *>(&right ),
                 static_cast<const Widget *>(&bottom),
             }){
-                int drawSrcX = srcX;
-                int drawSrcY = srcY;
-                int drawSrcW = srcW;
-                int drawSrcH = srcH;
                 int drawDstX = dstX;
                 int drawDstY = dstY;
+                int drawSrcX = roiOpt->x;
+                int drawSrcY = roiOpt->y;
+                int drawSrcW = roiOpt->w;
+                int drawSrcH = roiOpt->h;
 
                 if(mathf::cropChildROI(
                             &drawSrcX, &drawSrcY,
@@ -127,7 +126,7 @@ class GfxCutoutBoard: public Widget
                             p->dy(),
                             p-> w(),
                             p-> h())){
-                    p->drawEx(drawDstX, drawDstY, drawSrcX, drawSrcY, drawSrcW, drawSrcH);
+                    p->drawEx(drawDstX, drawDstY, {drawSrcX, drawSrcY, drawSrcW, drawSrcH});
                 }
             }
         }

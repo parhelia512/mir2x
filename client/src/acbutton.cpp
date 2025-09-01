@@ -19,7 +19,7 @@ ACButton::ACButton(dir8_t dir, int x, int y, ProcessRun *proc, const std::vector
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               m_currButtonName = (m_currButtonName + 1) % m_buttonNameList.size();
               setLabel();
@@ -103,7 +103,7 @@ void ACButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
     SDL_SetTextureColorMod(texPtr, 255, 255, 255);
 
     g_sdlDevice->drawTexture(texPtr, dstX, dstY);
-    m_labelBoard.drawEx(dstX + w() + 5, dstY, 0, 0, m_labelBoard.w(), m_labelBoard.h());
+    m_labelBoard.drawEx(dstX + w() + 5, dstY, {});
 
     switch(getState()){
         case BEVENT_ON:

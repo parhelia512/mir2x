@@ -402,6 +402,17 @@ class Widget: public WidgetTreeNode
         virtual void drawChildEx(const Widget *, int, int, const Widget::ROIOpt &               ) const final;
         virtual void drawAt     (        dir8_t, int, int, const Widget::ROIOpt & = std::nullopt) const final;
 
+        virtual void drawAsChildEx(
+                const Widget *,
+
+                dir8_t, // gfxWidget location as child of calling widget
+                int,    // use dir()/dx()/dy() if gfxWidget is a real child of calling widget
+                int,    //
+
+                int,    // {dstX, dstY, roi} of calling widget
+                int,
+                const Widget::ROIOpt &) const final;
+
         void drawRoot(int, int) const;
 
     public:

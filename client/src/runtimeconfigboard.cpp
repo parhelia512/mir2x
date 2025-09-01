@@ -459,12 +459,8 @@ RuntimeConfigBoard::LabelSliderBar::LabelSliderBar(
     m_slider   .moveAt(DIR_LEFT, m_labelCrop.dx() + m_labelCrop.w(), h() / 2);
 }
 
-void RuntimeConfigBoard::PullMenu::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void RuntimeConfigBoard::PullMenu::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(!show()){
-        return;
-    }
-
     for(const auto p:
     {
         static_cast<const Widget *>(&m_menuTitleBackground),
@@ -473,46 +469,24 @@ void RuntimeConfigBoard::PullMenu::drawEx(int dstX, int dstY, int srcX, int srcY
         static_cast<const Widget *>(&m_button),
         static_cast<const Widget *>(&m_menuList),
     }){
-        if(!p->show()){
-            continue;
+        if(p->show()){
+            drawChildEx(p, dstX, dstY, roi);
         }
-
-        int srcXCrop = srcX;
-        int srcYCrop = srcY;
-        int dstXCrop = dstX;
-        int dstYCrop = dstY;
-        int srcWCrop = srcW;
-        int srcHCrop = srcH;
-
-        if(!mathf::cropChildROI(
-                    &srcXCrop, &srcYCrop,
-                    &srcWCrop, &srcHCrop,
-                    &dstXCrop, &dstYCrop,
-
-                    w(),
-                    h(),
-
-                    p->dx(),
-                    p->dy(),
-                    p-> w(),
-                    p-> h())){
-            continue;
-        }
-        p->drawEx(dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
     }
 }
 
-bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(!valid){
         return consumeFocus(false);
     }
 
-    if(!show()){
-        return consumeFocus(false);
-    }
-
-    if(Widget::processEventDefault(event, valid, startDstX, startDstY)){
+    if(Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value())){
         if(!focus()){
             if(!m_menuList.show()){
                 consumeFocus(true, &m_button);
@@ -529,7 +503,7 @@ bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, b
             {
                 if(m_menuList.show()){
                     const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                    if(!m_menuList.parentIn(eventX, eventY, startDstX, startDstY)){
+                    if(!m_menuList.parentIn(eventX, eventY, startDstX, startDstY, roiOpt.value())){
                         m_menuList.setShow(false);
                     }
                 }
@@ -1220,12 +1194,8 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
     setShow(false);
 }
 
-void RuntimeConfigBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void RuntimeConfigBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(!show()){
-        return;
-    }
-
     for(const auto p:
     {
         static_cast<const Widget *>(&m_frameBoard),
@@ -1235,37 +1205,20 @@ void RuntimeConfigBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW
         static_cast<const Widget *>(&m_pageSocial),
         static_cast<const Widget *>(&m_pageGameConfig),
     }){
-        auto drawSrcX = srcX;
-        auto drawSrcY = srcY;
-        auto drawSrcW = srcW;
-        auto drawSrcH = srcH;
-        auto drawDstX = dstX;
-        auto drawDstY = dstY;
-
-        if(mathf::cropChildROI(
-                    &drawSrcX, &drawSrcY,
-                    &drawSrcW, &drawSrcH,
-                    &drawDstX, &drawDstY,
-
-                    w(),
-                    h(),
-
-                    p->dx(),
-                    p->dy(),
-                    p-> w(),
-                    p-> h())){
-            p->drawEx(drawDstX, drawDstY, drawSrcX, drawSrcY, drawSrcW, drawSrcH);
+        if(p->show()){
+            drawChildEx(p, dstX, dstY, roi);
         }
     }
 }
 
-bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    if(!valid){
-        return consumeFocus(false);
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
     }
 
-    if(!show()){
+    if(!valid){
         return consumeFocus(false);
     }
 
@@ -1277,7 +1230,7 @@ bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid,
         static_cast<Widget *>(&m_pageSocial),
         static_cast<Widget *>(&m_pageGameConfig),
     }){
-        if(widgetPtr->processParentEvent(event, valid, startDstX, startDstY)){
+        if(widgetPtr->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
             return true;
         }
     }
@@ -1293,15 +1246,18 @@ bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid,
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
+                    const auto remapXDiff = startDstX - roiOpt->x;
+                    const auto remapYDiff = startDstY - roiOpt->y;
+
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+                    const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
 
-                    moveBy(newX - startDstX, newY - startDstY);
+                    moveBy(newX - remapXDiff, newY - remapYDiff);
                     return consumeFocus(true);
                 }
 		return false;
@@ -1309,7 +1265,7 @@ bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid,
         case SDL_MOUSEBUTTONUP:
         case SDL_MOUSEBUTTONDOWN:
             {
-                return consumeFocus(in(event.button.x, event.button.y));
+                return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
             }
         default:
             {

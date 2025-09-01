@@ -154,7 +154,7 @@ GUIManager::GUIManager(ProcessRun *argProc)
     }
 }
 
-void GUIManager::drawEx(int, int, int, int, int, int) const
+void GUIManager::drawEx(int, int, const Widget::ROIOpt &) const
 {
     m_miniMapBoard .draw();
     m_NPCChatBoard .draw();
@@ -178,7 +178,7 @@ void GUIManager::update(double fUpdateTime)
     }
 }
 
-bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
     switch(event.type){
         case SDL_WINDOWEVENT:
@@ -207,10 +207,10 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int sta
         tookEvent |= g_imeBoard->applyRootEvent(event, valid && !tookEvent);
     }
 
-    tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent, startDstX, startDstY);
-    tookEvent |= m_controlBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY);
-    tookEvent |= m_NPCChatBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY);
-    tookEvent |= m_miniMapBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY);
+    tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
+    tookEvent |= m_controlBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
+    tookEvent |= m_NPCChatBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
+    tookEvent |= m_miniMapBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
 
     return tookEvent;
 }

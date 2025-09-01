@@ -129,7 +129,7 @@ void PlayerStateBoard::update(double)
 {
 }
 
-void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
+void PlayerStateBoard::drawEx(int, int, const Widget::ROIOpt &) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X06000000)){
         g_sdlDevice->drawTexture(texPtr, startDstX, startDstY);
@@ -349,32 +349,36 @@ void PlayerStateBoard::drawEx(int, int, int, int, int, int) const
     m_closeButton.draw();
 }
 
-bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(!valid){
         return consumeFocus(false);
     }
 
-    if(!show()){
-        return consumeFocus(false);
-    }
-
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY)){
+    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
     switch(event.type){
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
+                    const auto remapXDiff = startDstX - roiOpt->x;
+                    const auto remapYDiff = startDstY - roiOpt->y;
+
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
 
-                    const int newX = std::max<int>(0, std::min<int>(maxX, startDstX + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, startDstY + event.motion.yrel));
+                    const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
+                    const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
 
-                    moveBy(newX - startDstX, newY - startDstY);
+                    moveBy(newX - remapXDiff, newY - remapYDiff);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);

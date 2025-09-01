@@ -58,7 +58,7 @@ class QuestStateBoard: public Widget
         void update(double) override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int) override;
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 
     public:
         void    setQuestDesp(SDQuestDespList  );

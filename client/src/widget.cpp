@@ -499,30 +499,7 @@ void Widget::drawChildEx(const Widget *child, int dstX, int dstY, const Widget::
 {
     fflassert(child);
     fflassert(hasChild(child->id()));
-
-    auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
-        return;
-    }
-
-    if(!mathf::cropChildROI(
-                &roiOpt->x, &roiOpt->y,
-                &roiOpt->w, &roiOpt->h,
-
-                &dstX,
-                &dstY,
-
-                w(),
-                h(),
-
-                child->dx(),
-                child->dy(),
-                child-> w(),
-                child-> h())){
-        return;
-    }
-
-    child->drawEx(dstX, dstY, roiOpt.value());
+    drawAsChildEx(child, child->dir(), child->dx(), child->dy(), dstX, dstY, roi);
 }
 
 void Widget::drawAt(dir8_t dstDir, int dstX, int dstY, const Widget::ROIOpt &roi) const
@@ -551,6 +528,47 @@ void Widget::drawAt(dir8_t dstDir, int dstX, int dstY, const Widget::ROIOpt &roi
     }
 
     drawEx(dstX, dstY, roiOpt.value());
+}
+
+void Widget::drawAsChildEx(
+        const Widget *gfxWidget,
+
+        dir8_t gfxDir,
+        int    gfxDx,
+        int    gfxDy,
+
+        int dstX,
+        int dstY,
+        const Widget::ROIOpt &roi) const
+{
+    auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
+    if(!gfxWidget){
+        return;
+    }
+
+    if(!mathf::cropChildROI(
+                &roiOpt->x, &roiOpt->y,
+                &roiOpt->w, &roiOpt->h,
+
+                &dstX,
+                &dstY,
+
+                w(),
+                h(),
+
+                gfxDx - xSizeOff(gfxDir, gfxWidget->w()),
+                gfxDy - ySizeOff(gfxDir, gfxWidget->h()),
+
+                gfxWidget->w(),
+                gfxWidget->h())){
+        return;
+    }
+
+    gfxWidget->drawEx(dstX, dstY, roiOpt.value());
 }
 
 void Widget::drawRoot(int rootDstX, int rootDstY)

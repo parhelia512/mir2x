@@ -142,7 +142,7 @@ void InputStringBoard::update(double ms)
     m_input.update(ms);
 }
 
-void InputStringBoard::drawEx(int dstX, int dstY, int, int, int, int) const
+void InputStringBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X07000000)){
         g_sdlDevice->drawTexture(texPtr, dstX, dstY);
@@ -182,23 +182,6 @@ void InputStringBoard::drawEx(int dstX, int dstY, int, int, int, int) const
     if(m_input.focus()){
         g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(32), m_input.x(), m_input.y(), m_input.w(), m_input.h());
     }
-}
-
-bool InputStringBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
-{
-    if(!valid){
-        return consumeFocus(false);
-    }
-
-    if(!show()){
-        return consumeFocus(false);
-    }
-
-    if(m_input    .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_yesButton.processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_nopButton.processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-
-    return true;
 }
 
 void InputStringBoard::inputLineDone()

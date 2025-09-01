@@ -167,20 +167,21 @@ ItemListBoard::ItemListBoard(int argX, int argY, Widget *widgetPtr, bool autoDel
     }
 }
 
-bool ItemListBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool ItemListBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
     if(!valid){
         return consumeFocus(false);
     }
 
-    if(!show()){
-        return consumeFocus(false);
-    }
-
-    if(m_leftButton  .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_selectButton.processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_rightButton .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
-    if(m_closeButton .processParentEvent(event, valid, startDstX, startDstY)){ return true; }
+    if(m_leftButton  .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_selectButton.processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_rightButton .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_closeButton .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
@@ -264,7 +265,7 @@ void ItemListBoard::drawGridHoverLayout(size_t index) const
     hoverTextBoard.drawAt(DIR_UPLEFT, mousePX + margin, mousePY + margin);
 }
 
-void ItemListBoard::drawEx(int dstX, int dstY, int, int, int, int) const
+void ItemListBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X08000001)){
         g_sdlDevice->drawTexture(texPtr, dstX, dstY, m_gfxSrcX, m_gfxSrcY, m_gfxSrcW, m_gfxSrcH);

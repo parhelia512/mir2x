@@ -96,9 +96,10 @@ ResizableFrameBoard::ResizableFrameBoard(
     fflassert(argH >= m_cornerSize * 2);
 }
 
-void ResizableFrameBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void ResizableFrameBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(!show()){
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
         return;
     }
 
@@ -107,12 +108,12 @@ void ResizableFrameBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int src
         static_cast<const Widget *>(&m_frameCropDup),
         static_cast<const Widget *>(&m_close),
     }){
-        int drawSrcX = srcX;
-        int drawSrcY = srcY;
-        int drawSrcW = srcW;
-        int drawSrcH = srcH;
         int drawDstX = dstX;
         int drawDstY = dstY;
+        int drawSrcX = roiOpt->x;
+        int drawSrcY = roiOpt->y;
+        int drawSrcW = roiOpt->w;
+        int drawSrcH = roiOpt->h;
 
         if(mathf::cropChildROI(
                     &drawSrcX, &drawSrcY,
@@ -126,7 +127,7 @@ void ResizableFrameBoard::drawEx(int dstX, int dstY, int srcX, int srcY, int src
                     p->dy(),
                     p-> w(),
                     p-> h())){
-            p->drawEx(drawDstX, drawDstY, drawSrcX, drawSrcY, drawSrcW, drawSrcH);
+            p->drawEx(drawDstX, drawDstY, {drawSrcX, drawSrcY, drawSrcW, drawSrcH});
         }
     }
 }

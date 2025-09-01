@@ -35,12 +35,8 @@ class TrigfxButton: public ButtonBase
                 bool     = false);
 
     public:
-        void drawEx(int,                 // dst x on the screen coordinate
-                    int,                 // dst y on the screen coordinate
-                    int,                 // src x on the widget, take top-left as origin
-                    int,                 // src y on the widget, take top-left as origin
-                    int,                 // size to draw
-                    int) const override; // size to draw
+        void drawEx(int, int, const Widget::ROIOpt &) const override;
+
     private:
         void initButtonSize();
 

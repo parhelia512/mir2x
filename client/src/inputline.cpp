@@ -71,10 +71,15 @@ InputLine::InputLine(
     , m_onChange(std::move(argOnChange))
 {}
 
-bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    if(!valid){
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
         return false;
+    }
+
+    if(!valid){
+        return consumeFocus(false);
     }
 
     switch(event.type){
@@ -162,7 +167,7 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int star
         case SDL_MOUSEBUTTONUP:
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(!in(event.button.x, event.button.y, startDstX, startDstY)){
+                if(!in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     return consumeFocus(false);
                 }
 
@@ -188,14 +193,19 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int star
     }
 }
 
-void InputLine::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const
+void InputLine::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    int srcCropX = srcX;
-    int srcCropY = srcY;
-    int srcCropW = srcW;
-    int srcCropH = srcH;
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
     int dstCropX = dstX;
     int dstCropY = dstY;
+    int srcCropX = roiOpt->x;
+    int srcCropY = roiOpt->y;
+    int srcCropW = roiOpt->w;
+    int srcCropH = roiOpt->h;
 
     const int tpsetX = 0;
     const int tpsetY = 0 + (h() - (m_tpset.empty() ? m_tpset.getDefaultFontHeight() : m_tpset.ph())) / 2;
