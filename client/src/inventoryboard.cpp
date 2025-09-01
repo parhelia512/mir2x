@@ -354,7 +354,7 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
                 switch(event.button.button){
                     case SDL_BUTTON_LEFT:
                         {
-                            if(in(event.button.x, event.button.y)){
+                            if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                                 if(m_sdInvOp.invOp == INVOP_NONE){
                                     if(const int selectedPackIndex = getPackBinIndex(event.button.x, event.button.y); selectedPackIndex >= 0){
                                         auto selectedPackBin = invPackRef.getPackBinList().at(selectedPackIndex);
@@ -400,7 +400,7 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
                         }
                     case SDL_BUTTON_RIGHT:
                         {
-                            if(in(event.button.x, event.button.y)){
+                            if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                                 if(const int selectedPackIndex = getPackBinIndex(event.button.x, event.button.y); selectedPackIndex >= 0){
                                     const auto &packBin = invPackRef.getPackBinList().at(selectedPackIndex);
                                     packBinConsume(packBin);
@@ -483,7 +483,8 @@ void InventoryBoard::drawGold() const
 
         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
     };
-    goldBoard.drawAt(DIR_NONE, startDstX + 132, startDstY + 486);
+    // goldBoard.drawAt(DIR_NONE, startDstX + 132, startDstY + 486);
+    goldBoard.drawAt(DIR_NONE, 132, 486);
 }
 
 void InventoryBoard::drawInvOpTitle() const
@@ -510,7 +511,8 @@ void InventoryBoard::drawInvOpTitle() const
 
         colorf::WHITE + colorf::A_SHF(255),
     };
-    title.drawAt(DIR_NONE, startDstX + 238, startDstY + 25);
+    // title.drawAt(DIR_NONE, startDstX + 238, startDstY + 25);
+    title.drawAt(DIR_NONE, 238, 25);
 }
 
 void InventoryBoard::drawInvOpCost() const

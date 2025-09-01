@@ -215,8 +215,8 @@ std::optional<size_t> ItemListBoard::getPageGrid() const
 {
     const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
 
-    const int onBoardPX = mousePX - x();
-    const int onBoardPY = mousePY - y();
+    const int onBoardPX = mousePX;// - x();
+    const int onBoardPY = mousePY;// - y();
 
     if(mathf::pointInRectangle<int>(onBoardPX, onBoardPY, m_startX, m_startY, m_boxW * 4, m_boxH * 3)){
         const size_t r = to_uz(onBoardPY - m_startY) / m_boxH;
@@ -265,16 +265,21 @@ void ItemListBoard::drawGridHoverLayout(size_t index) const
     hoverTextBoard.drawAt(DIR_UPLEFT, mousePX + margin, mousePY + margin);
 }
 
-void ItemListBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
+void ItemListBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
+    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
+    if(!roiOpt.has_value()){
+        return;
+    }
+
     if(auto texPtr = g_progUseDB->retrieve(0X08000001)){
         g_sdlDevice->drawTexture(texPtr, dstX, dstY, m_gfxSrcX, m_gfxSrcY, m_gfxSrcW, m_gfxSrcH);
     }
 
-    m_leftButton  .draw();
-    m_selectButton.draw();
-    m_rightButton .draw();
-    m_closeButton .draw();
+    drawChildEx(&m_leftButton  , dstX, dstY, roiOpt.value());
+    drawChildEx(&m_selectButton, dstX, dstY, roiOpt.value());
+    drawChildEx(&m_rightButton , dstX, dstY, roiOpt.value());
+    drawChildEx(&m_closeButton , dstX, dstY, roiOpt.value());
 
     const auto fnDrawTitle = [this](const std::u8string &title)
     {
@@ -290,7 +295,7 @@ void ItemListBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
             0,
 
             colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-        }.drawAt(DIR_NONE, x() + 99, y() + 18);
+        }.drawAt(DIR_NONE, 99, 18); // (DIR_NONE, x() + 99, y() + 18);
     };
 
     if(pageCount() > 0){
@@ -319,11 +324,15 @@ void ItemListBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
             const int rightBoxX = rightStartX + c * m_boxW;
             const int rightBoxY = rightStartY + r * m_boxH;
 
+            const int remapXDiff = startDstX - roiOpt->x;
+            const int remapYDiff = startDstY - roiOpt->y;
+
             if(auto texPtr = g_itemDB->retrieve(ir.pkgGfxID | 0X02000000)){
                 const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
                 const int rightDrawX = rightBoxX + (m_boxW - texW) / 2;
                 const int rightDrawY = rightBoxY + (m_boxH - texH) / 2;
-                g_sdlDevice->drawTexture(texPtr, x() + rightDrawX, y() + rightDrawY);
+
+                g_sdlDevice->drawTexture(texPtr, remapXDiff + rightDrawX, remapYDiff + rightDrawY);
             }
 
             if(const auto header = getGridHeader(i); !header.empty()){
@@ -339,19 +348,19 @@ void ItemListBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
                     0,
 
                     colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-                }.drawAt(DIR_UPLEFT, x() + rightBoxX, y() + rightBoxY);
+                }.drawAt(DIR_UPLEFT, remapXDiff + rightBoxX, remapYDiff + rightBoxY);
             }
 
             const bool gridSelected = m_selectedPageGrid.has_value() && (m_selectedPageGrid.value() == i);
             const bool cursorOn = [rightBoxX, rightBoxY, this]() -> bool
             {
                 const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-                return mathf::pointInRectangle<int>(mousePX, mousePY, x() + rightBoxX, y() + rightBoxY, m_boxW, m_boxH);
+                return mathf::pointInRectangle<int>(mousePX, mousePY, remapXDiff + rightBoxX, remapYDiff + rightBoxY, m_boxW, m_boxH);
             }();
 
             if(gridSelected || cursorOn){
                 const uint32_t gridColor = gridSelected ? (colorf::BLUE + colorf::A_SHF(96)) : (colorf::WHITE + colorf::A_SHF(96));
-                g_sdlDevice->fillRectangle(gridColor, x() + rightBoxX, y() + rightBoxY, m_boxW, m_boxH);
+                g_sdlDevice->fillRectangle(gridColor, remapXDiff + rightBoxX, remapYDiff + rightBoxY, m_boxW, m_boxH);
             }
 
             if(cursorOn){

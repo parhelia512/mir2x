@@ -172,11 +172,11 @@ class ModalStringBoardImpl: public Widget
         }
 
     public:
-        void drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int srcH) const override
+        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
         {
-            drawChildEx(&m_imageUpDup, dstX, dstY, srcX, srcY, srcW, srcH);
-            drawChildEx(&m_imageDown , dstX, dstY, srcX, srcY, srcW, srcH);
-            drawChildEx(&m_board     , dstX, dstY, srcX, srcY, srcW, srcH);
+            drawChildEx(&m_imageUpDup, dstX, dstY, roi);
+            drawChildEx(&m_imageDown , dstX, dstY, roi);
+            drawChildEx(&m_board     , dstX, dstY, roi);
         }
 };
 
@@ -204,6 +204,6 @@ void ModalStringBoard::drawScreen(bool drainEvents) const
     }
 
     g_sdlDevice->clearScreen();
-    m_boardImpl->draw();
+    m_boardImpl->drawRoot(0, 0);
     g_sdlDevice->present();
 }

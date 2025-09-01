@@ -52,7 +52,6 @@ NPCChatBoard::NPCChatBoard(
           0, // need to reset
 
           {},
-          {},
 
           argParent,
           argAutoDelete,

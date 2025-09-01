@@ -44,7 +44,7 @@ MiniMapBoard::MiniMapBoard(ProcessRun *runPtr, Widget *parent, bool autoDelete)
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               m_alphaOn = !m_alphaOn;
               if(m_alphaOn){
@@ -87,7 +87,7 @@ MiniMapBoard::MiniMapBoard(ProcessRun *runPtr, Widget *parent, bool autoDelete)
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               if(getMiniMapTexture()){
                   flipExtended();
@@ -116,16 +116,17 @@ MiniMapBoard::MiniMapBoard(ProcessRun *runPtr, Widget *parent, bool autoDelete)
     setShow(false);
 }
 
-void MiniMapBoard::drawEx(int, int, const Widget::ROIOpt &) const
+void MiniMapBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
     drawMiniMapTexture();
-    m_buttonAlpha.draw();
-    m_buttonExtend.draw();
+    drawChildEx(&m_buttonAlpha, dstX, dstY, roi);
+    drawChildEx(&m_buttonExtend, dstX, dstY, roi);
 }
 
-bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid)
+bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &)
 {
-    if(!show()){
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
         return false;
     }
 
@@ -136,8 +137,8 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid)
     }
 
     bool took = false;
-    took |= m_buttonAlpha .processEvent(event, valid && !took);
-    took |= m_buttonExtend.processEvent(event, valid && !took);
+    took |= m_buttonAlpha .processEvent(event, valid && !took, startDstX, startDstY, roiOpt.value());
+    took |= m_buttonExtend.processEvent(event, valid && !took, startDstX, startDstY, roiOpt.value());
 
     if(took){
         return true;
@@ -147,8 +148,10 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid)
         case SDL_MOUSEBUTTONDOWN:
             {
                 if(event.button.button == SDL_BUTTON_RIGHT){
-                    if(in(event.button.x, event.button.y)){
-                        const auto [onMapPX, onMapPY] = mouseOnMapGLoc(event.button.x - x(), event.button.y - y());
+                    if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                        const auto remapXDiff = startDstX - roiOpt->x;
+                        const auto remapYDiff = startDstY - roiOpt->y;
+                        const auto [onMapPX, onMapPY] = mouseOnMapGLoc(event.button.x - remapXDiff, event.button.y - remapYDiff);
                         m_processRun->requestSpaceMove(std::get<0>(m_processRun->getMap()), onMapPX, onMapPY);
                         return true;
                     }

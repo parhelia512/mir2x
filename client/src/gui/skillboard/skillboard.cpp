@@ -328,7 +328,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
 
                   nullptr,
 
-                  [i, this](Widget *)
+                  [i, this](Widget *, int)
                   {
                       if(m_selectedTabIndex == i){
                           return;
@@ -402,7 +402,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
           nullptr,
           nullptr,
           nullptr,
-          [this](Widget *)
+          [this](Widget *, int)
           {
               setShow(false);
           },
@@ -429,23 +429,23 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
     }
 }
 
-void SkillBoard::drawEx(int dstX, int dstY, int, int, int, int) const
+void SkillBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X05000000)){
         g_sdlDevice->drawTexture(texPtr, dstX, dstY);
     }
 
     drawTabName();
-    m_slider.draw();
-    m_closeButton.draw();
+    drawChildEx(&m_slider, dstX, dstY, roi);
+    drawChildEx(&m_closeButton, dstX, dstY, roi);
 
     for(auto buttonPtr: m_tabButtonList){
-        buttonPtr->draw();
+        drawChildEx(buttonPtr, dstX, dstY, roi);
     }
 
     const auto r = SkillBoard::getPageRectange();
     auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
-    pagePtr->drawEx(dstX + r[0], dstY + r[1], r[0] - pagePtr->dx(), r[1] - pagePtr->dy(), r[2], r[3]);
+    pagePtr->drawEx(dstX + r[0], dstY + r[1], {r[0] - pagePtr->dx(), r[1] - pagePtr->dy(), r[2], r[3]});
 }
 
 bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
