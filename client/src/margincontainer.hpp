@@ -95,9 +95,9 @@ class MarginContainer: public Widget
         }
 
     public:
-        bool processEventDefault(const SDL_Event &event, bool valid) override
+        bool processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi) override
         {
-            return contained()->processEvent(event, valid);
+            return contained()->processEvent(event, valid, startDstX, startDstY, roi);
         }
 
     public:

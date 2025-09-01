@@ -120,23 +120,24 @@ void FriendItem::setFuncWidget(Widget *argFuncWidget, bool argAutoDelete)
     addChild(argFuncWidget, argAutoDelete);
 }
 
-bool FriendItem::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY)
+bool FriendItem::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    if(!valid){
-        return consumeFocus(false);
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
     }
 
-    if(!show()){
+    if(!valid){
         return consumeFocus(false);
     }
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(Widget::processEventDefault(event, valid, startDstX, startDstY)){
+                if(Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value())){
                     return consumeFocus(true);
                 }
-                else if(in(event.button.x, event.button.y, startDstX, startDstY)){
+                else if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     if(onClick){
                         onClick(this);
                     }
@@ -148,7 +149,7 @@ bool FriendItem::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
         default:
             {
-                return Widget::processEventDefault(event, valid, startDstX, startDstY);
+                return Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value());
             }
     }
 }

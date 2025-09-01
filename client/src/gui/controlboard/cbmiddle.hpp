@@ -47,8 +47,6 @@ class CBMiddle: public Widget
                 Widget::VarDir,
                 Widget::VarOff,
                 Widget::VarOff,
-
-                Widget::VarSize,
                 Widget::VarSize,
 
                 ProcessRun *,
@@ -57,6 +55,5 @@ class CBMiddle: public Widget
                 bool     = false);
 
     public:
-        void update(double) override;
         bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 };

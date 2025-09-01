@@ -31,4 +31,16 @@ class CBMiddleExpand: public Widget
         TexSlider m_slider;
 
     public:
+        CBMiddleExpand(
+                Widget::VarDir,
+                Widget::VarOff,
+                Widget::VarOff,
+
+                Widget::VarSize,
+                Widget::VarSize,
+
+                ProcessRun *,
+
+                Widget * = nullptr,
+                bool     = false);
 };

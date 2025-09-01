@@ -36,6 +36,7 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           argAutoDelete
       }
 
+    , m_processRun(argProc)
     , m_logBoard
       {
           DIR_UPLEFT,
@@ -72,6 +73,44 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           nullptr,
       }
 
+    , m_cmdLine
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+          0, // need reset
+
+          nullptr,
+          0,
+
+          {},
+
+          false,
+          false,
+          false,
+          false,
+
+          1,
+          12,
+          0,
+
+          colorf::WHITE_A255,
+          0,
+
+          LALIGN_JUSTIFY,
+          0,
+          0,
+
+          2,
+          colorf::WHITE_A255,
+
+          nullptr,
+          []()
+          {
+          },
+          nullptr,
+      }
+
     , m_left
       {
           DIR_DOWNLEFT,
@@ -85,9 +124,27 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
 
     , m_right
       {
-          DIR_DOWNRIGHT
+          DIR_DOWNRIGHT,
           [this](const Widget *){ return w() - 1; },
           [this](const Widget *){ return h() - 1; },
+
+          argProc,
+          this,
+          false,
+      }
+
+    , m_title
+      {
+          DIR_UP,
+          [this](const Widget *)
+          {
+              return (w() - m_left.w() - m_right.w()) / 2;
+          },
+
+          [this](const Widget *)
+          {
+              return CBTitle::UP_HEIGHT;
+          },
 
           argProc,
           this,
@@ -136,24 +193,6 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           },
 
           {},
-
-          argProc,
-          this,
-          false,
-      }
-
-    , m_title
-      {
-          DIR_UP,
-          [this](const Widget *)
-          {
-              return (w() - m_left.w() - m_right.w()) / 2;
-          },
-
-          [this](const Widget *)
-          {
-              return CBTitle::UP_HEIGHT;
-          },
 
           argProc,
           this,

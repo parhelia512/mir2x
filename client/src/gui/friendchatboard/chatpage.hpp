@@ -90,7 +90,8 @@ struct ChatPage: public Widget
     void  enableChatRef(uint64_t, std::string);
     void disableChatRef();
 
-    void afterResizeDefault() override;
-    bool processEventDefault(const SDL_Event &, bool) override;
     static ChatItemRef *createChatItemRef(uint64_t, std::string, Widget *, bool);
+
+    void afterResizeDefault() override;
+    bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
 };

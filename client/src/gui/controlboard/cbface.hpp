@@ -22,6 +22,19 @@ class CBFace: public Widget
     private:
         ShapeCropBoard m_drawBuffIDList;
 
+    public:
+        CBFace( Widget::VarDir,
+                Widget::VarOff,
+                Widget::VarOff,
+
+                Widget::VarSize,
+                Widget::VarSize,
+
+                ProcessRun *,
+
+                Widget * = nullptr,
+                bool     = false);
+
     private:
         double getHPRatio() const;
         uint32_t getFaceTexID() const;

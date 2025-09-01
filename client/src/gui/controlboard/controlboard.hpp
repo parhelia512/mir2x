@@ -55,9 +55,22 @@ enum CBMode: int
     CBM_MAXIMIZE,
 };
 
+enum
+{
+    CBLOG_DEF = 0,
+    CBLOG_SYS,
+    CBLOG_DBG,
+    CBLOG_ERR,
+};
+
+class CBMiddle;
 class ProcessRun;
 class ControlBoard: public Widget
 {
+    private:
+        friend class CBMiddle;
+        friend class CBMiddleExpand;
+
     private:
         ProcessRun *m_processRun;
 
@@ -66,6 +79,7 @@ class ControlBoard: public Widget
 
     private:
         LayoutBoard m_logBoard;
+        LayoutBoard m_cmdLine;
 
     private:
         CBLeft  m_left;
