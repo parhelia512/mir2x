@@ -51,8 +51,8 @@ class GfxCutoutBoard: public Widget
 
             , m_cropX(argCropX)
             , m_cropY(argCropY)
-            , m_cropW([argCropW]{ fflassert(argCropW >= 0); return argCropW; }())
-            , m_cropH([argCropH]{ fflassert(argCropH >= 0); return argCropH; }())
+            , m_cropW(fflcheck(argCropW, argCropW >= 0))
+            , m_cropH(fflcheck(argCropH, argCropH >= 0))
         {}
 
     public:
