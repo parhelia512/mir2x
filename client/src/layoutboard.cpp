@@ -151,7 +151,7 @@ LayoutBoard::LayoutBoard(
         throw fflerror("invalid default paragraph parameters");
     }
 
-    if(argInitXML){
+    if(str_haschar(argInitXML)){
         loadXML(argInitXML, argParLimit);
     }
 
