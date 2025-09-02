@@ -1115,28 +1115,30 @@ void Widget::moveAt(Widget::VarDir argDir, Widget::VarOff argX, Widget::VarOff a
 
 Widget *Widget::disableSetSize()
 {
-    m_canSetSize = true; // can not flip back
+    m_canSetSize = false; // can not flip back
     return this;
 }
 
 Widget *Widget::setW(Widget::VarSize argSize)
 {
     if(m_canSetSize){
+        m_w = std::move(argSize);
+        return this;
+    }
+    else{
         throw fflerror("can not resize %s", name());
     }
-
-    m_w = std::move(argSize);
-    return this;
 }
 
 Widget *Widget::setH(Widget::VarSize argSize)
 {
     if(m_canSetSize){
+        m_h = std::move(argSize);
+        return this;
+    }
+    else{
         throw fflerror("can not resize %s", name());
     }
-
-    m_h = std::move(argSize);
-    return this;
 }
 
 Widget *Widget::setSize(Widget::VarSize argW, Widget::VarSize argH)
