@@ -595,7 +595,7 @@ RuntimeConfigBoard::MenuPage::MenuPage(
         int argX,
         int argY,
 
-        Widget::VarSize argSeperatorW,
+        Widget::VarOptSize argSeperatorW,
         int argGap,
 
         std::initializer_list<std::tuple<const char8_t *, Widget *, bool>> argTabList,

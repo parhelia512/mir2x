@@ -8,8 +8,8 @@ ChatPage::ChatPage(
         Widget::VarDir  argDir,
         Widget::VarInt  argX,
         Widget::VarInt  argY,
-        Widget::VarSize argW,
-        Widget::VarSize argH,
+        Widget::VarOptSize argW,
+        Widget::VarOptSize argH,
 
         Widget *argParent,
         bool argAutoDelete)

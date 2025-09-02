@@ -14,8 +14,8 @@ class ShapeCropBoard: public Widget
                 Widget::VarInt,
                 Widget::VarInt,
 
-                Widget::VarSize,
-                Widget::VarSize,
+                Widget::VarOptSize,
+                Widget::VarOptSize,
 
                 std::function<void(const Widget *, int, int)>,
 

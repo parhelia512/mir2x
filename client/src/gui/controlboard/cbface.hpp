@@ -30,8 +30,8 @@ class CBFace: public Widget
                 Widget::VarInt,
                 Widget::VarInt,
 
-                Widget::VarSize,
-                Widget::VarSize,
+                Widget::VarOptSize,
+                Widget::VarOptSize,
 
                 ProcessRun *,
 

@@ -76,8 +76,8 @@ struct ChatPage: public Widget
             Widget::VarDir,
             Widget::VarInt,
             Widget::VarInt,
-            Widget::VarSize,
-            Widget::VarSize,
+            Widget::VarOptSize,
+            Widget::VarOptSize,
 
             Widget * = nullptr,
             bool     = false);

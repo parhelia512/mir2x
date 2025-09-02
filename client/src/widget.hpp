@@ -33,8 +33,8 @@ class WidgetTreeNode // tree concept, used by class Widget only
         using VarDir       = std::variant<             dir8_t, std::function<       dir8_t(const Widget *)>>;
         using VarInt       = std::variant<                int, std::function<          int(const Widget *)>>;
         using VarU32       = std::variant<           uint32_t, std::function<     uint32_t(const Widget *)>>;
-        using VarSize      = std::variant<std::monostate, int, std::function<          int(const Widget *)>>;
-        using VarMargin    = std::variant<                int, std::function<          int(const Widget *)>>;
+        using VarOptSize      = std::variant<std::monostate, int, std::function<          int(const Widget *)>>;
+        using VarSize    = std::variant<                int, std::function<          int(const Widget *)>>;
         using VarBool      = std::variant<               bool, std::function<         bool(const Widget *)>>;
         using VarBlendMode = std::variant<      SDL_BlendMode, std::function<SDL_BlendMode(const Widget *)>>;
 
@@ -153,7 +153,7 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarDir;
         using WidgetTreeNode::VarInt;
         using WidgetTreeNode::VarU32;
-        using WidgetTreeNode::VarSize;
+        using WidgetTreeNode::VarOptSize;
         using WidgetTreeNode::VarBool;
 
     public:
@@ -228,15 +228,15 @@ class Widget: public WidgetTreeNode
         static int evalOff(const Widget::VarInt &, const Widget *);
 
     public:
-        static bool hasSize    (const Widget::VarSize &);
-        static bool hasIntSize (const Widget::VarSize &);
-        static bool hasFuncSize(const Widget::VarSize &);
+        static bool hasSize    (const Widget::VarOptSize &);
+        static bool hasIntSize (const Widget::VarOptSize &);
+        static bool hasFuncSize(const Widget::VarOptSize &);
 
-        static int  asIntSize(const Widget::VarSize &);
-        static int &asIntSize(      Widget::VarSize &);
+        static int  asIntSize(const Widget::VarOptSize &);
+        static int &asIntSize(      Widget::VarOptSize &);
 
-        static const std::function<int(const Widget *)> &asFuncSize(const Widget::VarSize &);
-        static       std::function<int(const Widget *)> &asFuncSize(      Widget::VarSize &);
+        static const std::function<int(const Widget *)> &asFuncSize(const Widget::VarOptSize &);
+        static       std::function<int(const Widget *)> &asFuncSize(      Widget::VarOptSize &);
 
     public:
         static bool hasBoolFlag(const Widget::VarBool &);
@@ -319,8 +319,8 @@ class Widget: public WidgetTreeNode
         bool m_canSetSize = true;
 
     private:
-        Widget::VarSize m_w;
-        Widget::VarSize m_h;
+        Widget::VarOptSize m_w;
+        Widget::VarOptSize m_h;
 
     private:
         mutable bool m_hCalc = false;
@@ -336,8 +336,8 @@ class Widget: public WidgetTreeNode
                 Widget::VarInt,
                 Widget::VarInt,
 
-                Widget::VarSize = {},
-                Widget::VarSize = {},
+                Widget::VarOptSize = {},
+                Widget::VarOptSize = {},
 
                 std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> = {},
 
@@ -495,9 +495,9 @@ class Widget: public WidgetTreeNode
         Widget *disableSetSize();
 
     public:
-        virtual Widget *setW(Widget::VarSize) final;
-        virtual Widget *setH(Widget::VarSize) final;
-        virtual Widget *setSize(Widget::VarSize, Widget::VarSize) final;
+        virtual Widget *setW(Widget::VarOptSize) final;
+        virtual Widget *setH(Widget::VarOptSize) final;
+        virtual Widget *setSize(Widget::VarOptSize, Widget::VarOptSize) final;
 };
 
 #include "widget.impl.hpp"

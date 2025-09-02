@@ -15,7 +15,7 @@ ChatInputContainer::ChatInputContainer(
         Widget::VarDir  argDir,
         Widget::VarInt  argX,
         Widget::VarInt  argY,
-        Widget::VarSize argW,
+        Widget::VarOptSize argW,
 
         Widget *argParent,
         bool    argAutoDelete)

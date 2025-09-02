@@ -23,7 +23,7 @@ CBMiddle::CBMiddle(
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        Widget::VarSize argW,
+        Widget::VarOptSize argW,
 
         ProcessRun *argProc,
 

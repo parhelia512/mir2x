@@ -73,8 +73,8 @@ class ButtonBase: public Widget
                 Widget::VarInt,
                 Widget::VarInt,
 
-                Widget::VarSize,
-                Widget::VarSize,
+                Widget::VarOptSize,
+                Widget::VarOptSize,
 
                 std::function<void(Widget *           )> = nullptr,
                 std::function<void(Widget *           )> = nullptr,

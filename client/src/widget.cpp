@@ -286,37 +286,37 @@ int Widget::evalOff(const Widget::VarInt &varOffset, const Widget *widgetPtr)
     }, varOffset);
 }
 
-bool Widget::hasSize(const Widget::VarSize &varSize)
+bool Widget::hasSize(const Widget::VarOptSize &varSize)
 {
     return varSize.index() != 0;
 }
 
-bool Widget::hasIntSize(const Widget::VarSize &varSize)
+bool Widget::hasIntSize(const Widget::VarOptSize &varSize)
 {
     return varSize.index() == 1;
 }
 
-bool Widget::hasFuncSize(const Widget::VarSize &varSize)
+bool Widget::hasFuncSize(const Widget::VarOptSize &varSize)
 {
     return varSize.index() == 2;
 }
 
-int Widget::asIntSize(const Widget::VarSize &varSize)
+int Widget::asIntSize(const Widget::VarOptSize &varSize)
 {
     return std::get<int>(varSize);
 }
 
-int &Widget::asIntSize(Widget::VarSize &varSize)
+int &Widget::asIntSize(Widget::VarOptSize &varSize)
 {
     return std::get<int>(varSize);
 }
 
-const std::function<int(const Widget *)> &Widget::asFuncSize(const Widget::VarSize &varSize)
+const std::function<int(const Widget *)> &Widget::asFuncSize(const Widget::VarOptSize &varSize)
 {
     return std::get<std::function<int(const Widget *)>>(varSize);
 }
 
-std::function<int(const Widget *)> &Widget::asFuncSize(Widget::VarSize &varSize)
+std::function<int(const Widget *)> &Widget::asFuncSize(Widget::VarOptSize &varSize)
 {
     return std::get<std::function<int(const Widget *)>>(varSize);
 }
@@ -464,8 +464,8 @@ Widget::Widget(
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        Widget::VarSize argW,
-        Widget::VarSize argH,
+        Widget::VarOptSize argW,
+        Widget::VarOptSize argH,
 
         std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> argChildList,
 
@@ -1119,7 +1119,7 @@ Widget *Widget::disableSetSize()
     return this;
 }
 
-Widget *Widget::setW(Widget::VarSize argSize)
+Widget *Widget::setW(Widget::VarOptSize argSize)
 {
     if(m_canSetSize){
         m_w = std::move(argSize);
@@ -1130,7 +1130,7 @@ Widget *Widget::setW(Widget::VarSize argSize)
     }
 }
 
-Widget *Widget::setH(Widget::VarSize argSize)
+Widget *Widget::setH(Widget::VarOptSize argSize)
 {
     if(m_canSetSize){
         m_h = std::move(argSize);
@@ -1141,7 +1141,7 @@ Widget *Widget::setH(Widget::VarSize argSize)
     }
 }
 
-Widget *Widget::setSize(Widget::VarSize argW, Widget::VarSize argH)
+Widget *Widget::setSize(Widget::VarOptSize argW, Widget::VarOptSize argH)
 {
     return setW(std::move(argW))->setH(std::move(argH));
 }

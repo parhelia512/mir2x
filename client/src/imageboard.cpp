@@ -10,8 +10,8 @@ ImageBoard::ImageBoard(
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        Widget::VarSize argW,
-        Widget::VarSize argH,
+        Widget::VarOptSize argW,
+        Widget::VarOptSize argH,
 
         std::function<SDL_Texture *(const Widget *)> argLoadFunc,
 
@@ -54,7 +54,7 @@ ImageBoard::ImageBoard(
         std::tie(texW, texH) = SDLDeviceHelper::getTextureSize(texPtr);
     }
 
-    const auto varTexW = Widget::hasSize(m_varW) ? m_varW : Widget::VarSize([this](const Widget *)
+    const auto varTexW = Widget::hasSize(m_varW) ? m_varW : Widget::VarOptSize([this](const Widget *)
     {
         if(auto texPtr = m_loadFunc ? m_loadFunc(this) : nullptr){
             return SDLDeviceHelper::getTextureWidth(texPtr);
@@ -62,7 +62,7 @@ ImageBoard::ImageBoard(
         return 0;
     });
 
-    const auto varTexH = Widget::hasSize(m_varH) ? m_varH : Widget::VarSize([this](const Widget *)
+    const auto varTexH = Widget::hasSize(m_varH) ? m_varH : Widget::VarOptSize([this](const Widget *)
     {
         if(auto texPtr = m_loadFunc ? m_loadFunc(this) : nullptr){
             return SDLDeviceHelper::getTextureHeight(texPtr);

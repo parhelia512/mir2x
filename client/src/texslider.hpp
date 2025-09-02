@@ -59,8 +59,8 @@ class TexSlider: public Slider
                 Widget::VarInt,
                 Widget::VarInt,
 
-                Widget::VarSize,
-                Widget::VarSize,
+                Widget::VarOptSize,
+                Widget::VarOptSize,
 
                 bool,
                 int,

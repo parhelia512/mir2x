@@ -9,7 +9,7 @@ struct ChatInputContainer: public Widget
             Widget::VarDir,
             Widget::VarInt,
             Widget::VarInt,
-            Widget::VarSize, // width only
+            Widget::VarOptSize, // width only
 
             Widget * = nullptr,
             bool     = false);

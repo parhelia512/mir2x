@@ -12,8 +12,8 @@ ButtonBase::ButtonBase(
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        Widget::VarSize argW,
-        Widget::VarSize argH,
+        Widget::VarOptSize argW,
+        Widget::VarOptSize argH,
 
         std::function<void(Widget *           )> argOnOverIn,
         std::function<void(Widget *           )> argOnOverOut,

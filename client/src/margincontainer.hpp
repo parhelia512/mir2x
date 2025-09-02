@@ -13,8 +13,8 @@ class MarginContainer: public Widget
                 Widget::VarInt argX,
                 Widget::VarInt argY,
 
-                Widget::VarSize argW,
-                Widget::VarSize argH,
+                Widget::VarOptSize argW,
+                Widget::VarOptSize argH,
 
                 Widget *argWidget,
 

@@ -5,8 +5,8 @@ ShapeCropBoard::ShapeCropBoard(Widget::VarDir argDir,
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        Widget::VarSize argW,
-        Widget::VarSize argH,
+        Widget::VarOptSize argW,
+        Widget::VarOptSize argH,
 
         std::function<void(const Widget *, int, int)> argDrawFunc,
 

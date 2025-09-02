@@ -11,8 +11,8 @@ CBMiddleExpand::CBMiddleExpand(
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        Widget::VarSize argW,
-        Widget::VarSize argH,
+        Widget::VarOptSize argW,
+        Widget::VarOptSize argH,
 
         ProcessRun *argProc,
 

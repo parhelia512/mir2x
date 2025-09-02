@@ -22,14 +22,14 @@ class GfxCropDupBoard: public Widget
                 Widget::VarInt argX,
                 Widget::VarInt argY,
 
-                Widget::VarSize argW,
-                Widget::VarSize argH,
+                Widget::VarOptSize argW,
+                Widget::VarOptSize argH,
 
                 const Widget *argWidget,
 
                 Widget::VarInt argCropX,
                 Widget::VarInt argCropY,
-                Widget::VarInt argCropW, // don't use VarSize because empty VarSize is not well-defined
+                Widget::VarInt argCropW, // don't use VarOptSize because empty VarOptSize is not well-defined
                 Widget::VarInt argCropH, // ...
 
                 Widget *argParent     = nullptr,

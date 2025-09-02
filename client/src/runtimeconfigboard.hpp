@@ -197,7 +197,7 @@ class RuntimeConfigBoard: public Widget
                         int,
                         int,
 
-                        Widget::VarSize,
+                        Widget::VarOptSize,
                         int,
 
                         std::initializer_list<std::tuple<const char8_t *, Widget *, bool>>,

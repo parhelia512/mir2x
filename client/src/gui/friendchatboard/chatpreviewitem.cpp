@@ -13,7 +13,7 @@ ChatPreviewItem::ChatPreviewItem(
         Widget::VarDir  argDir,
         Widget::VarInt  argX,
         Widget::VarInt  argY,
-        Widget::VarSize argW,
+        Widget::VarOptSize argW,
 
         const SDChatPeerID &argCPID,
         const char8_t *argChatXMLStr,

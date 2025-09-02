@@ -10,7 +10,7 @@ MenuBoard::MenuBoard(
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        Widget::VarSize argVarW,
+        Widget::VarOptSize argVarW,
         std::array<int, 4> argMargin,
 
         int argCorner,
@@ -48,7 +48,7 @@ MenuBoard::MenuBoard(
           0,
           0,
 
-          [argVarW = std::move(argVarW), argMargin, this]() -> Widget::VarSize
+          [argVarW = std::move(argVarW), argMargin, this]() -> Widget::VarOptSize
           {
               fflassert(argMargin[2] >= 0, argMargin);
               fflassert(argMargin[3] >= 0, argMargin);
