@@ -147,14 +147,14 @@ class GfxCropBoard: public Widget
         }
 
     public:
-        int gfxCropX() const { return                  Widget::evalOff(m_gfxCropX, this) ; }
-        int gfxCropY() const { return                  Widget::evalOff(m_gfxCropY, this) ; }
-        int gfxCropW() const { return std::max<int>(0, Widget::evalOff(m_gfxCropW, this)); }
-        int gfxCropH() const { return std::max<int>(0, Widget::evalOff(m_gfxCropH, this)); }
+        int gfxCropX() const { return                  Widget::evalInt(m_gfxCropX, this) ; }
+        int gfxCropY() const { return                  Widget::evalInt(m_gfxCropY, this) ; }
+        int gfxCropW() const { return std::max<int>(0, Widget::evalInt(m_gfxCropW, this)); }
+        int gfxCropH() const { return std::max<int>(0, Widget::evalInt(m_gfxCropH, this)); }
 
     public:
         int margin(int index) const
         {
-            return std::max<int>(0, Widget::evalOff(m_margin[((index % 4) + 4) % 4], this));
+            return std::max<int>(0, Widget::evalInt(m_margin[((index % 4) + 4) % 4], this));
         }
 };

@@ -218,7 +218,7 @@ dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *p)
     varDir);
 }
 
-int Widget::evalOff(const Widget::VarInt &varOffset, const Widget *p)
+int Widget::evalInt(const Widget::VarInt &varOffset, const Widget *p)
 {
     return std::visit(VarDispatcher
     {
@@ -627,12 +627,12 @@ int Widget::h() const
 
 int Widget::dx() const
 {
-    return Widget::evalOff(m_x.first, this) + m_x.second - xSizeOff(dir(), w());
+    return Widget::evalInt(m_x.first, this) + m_x.second - xSizeOff(dir(), w());
 }
 
 int Widget::dy() const
 {
-    return Widget::evalOff(m_y.first, this) + m_y.second - ySizeOff(dir(), h());
+    return Widget::evalInt(m_y.first, this) + m_y.second - ySizeOff(dir(), h());
 }
 
 int Widget::rdx(const Widget *widget) const

@@ -207,7 +207,7 @@ class Widget: public WidgetTreeNode
 
     public:
         static dir8_t        evalDir      (const Widget::VarDir       &, const Widget *);
-        static int           evalOff      (const Widget::VarInt       &, const Widget *);
+        static int           evalInt      (const Widget::VarInt       &, const Widget *);
         static uint32_t      evalU32      (const Widget::VarU32       &, const Widget *);
         static int           evalSize     (const Widget::VarSize      &, const Widget *);
         static int           evalSizeOpt  (const Widget::VarSizeOpt   &, const Widget *, const auto &);

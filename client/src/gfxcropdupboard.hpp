@@ -65,10 +65,10 @@ class GfxCropDupBoard: public Widget
                 return;
             }
 
-            int cropSrcX = Widget::evalOff(m_cropX, this);
-            int cropSrcY = Widget::evalOff(m_cropY, this);
-            int cropSrcW = Widget::evalOff(m_cropW, this);
-            int cropSrcH = Widget::evalOff(m_cropH, this);
+            int cropSrcX = Widget::evalInt(m_cropX, this);
+            int cropSrcY = Widget::evalInt(m_cropY, this);
+            int cropSrcW = Widget::evalInt(m_cropW, this);
+            int cropSrcH = Widget::evalInt(m_cropH, this);
 
             fflassert(cropSrcW >= 0, cropSrcW);
             fflassert(cropSrcH >= 0, cropSrcH);

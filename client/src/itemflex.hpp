@@ -59,7 +59,7 @@ class ItemFlex: public Widget
             if(m_hbox){
                 addChildAt(argWidget, DIR_UPLEFT, [this](const Widget *self)
                 {
-                    const int itemSpace = std::max<int>(0, Widget::evalOff(m_itemSpace, this));
+                    const int itemSpace = std::max<int>(0, Widget::evalInt(m_itemSpace, this));
                     int offset = 0;
 
                     for(auto widget: m_origChildList){
@@ -84,7 +84,7 @@ class ItemFlex: public Widget
             else{
                 addChildAt(argWidget, DIR_UPLEFT, 0, [this](const Widget *self)
                 {
-                    const int itemSpace = std::max<int>(0, Widget::evalOff(m_itemSpace, this));
+                    const int itemSpace = std::max<int>(0, Widget::evalInt(m_itemSpace, this));
                     int offset = 0;
 
                     for(auto widget: m_origChildList){
