@@ -11,8 +11,8 @@ extern SDLDevice *g_sdlDevice;
 
 TexAniBoard::TexAniBoard(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         uint32_t argStartTexID,
         size_t   argFrameCount,

@@ -8,8 +8,8 @@ class MarginWrapper: public Widget
     public:
         MarginWrapper(
                 Widget::VarDir argDir,
-                Widget::VarOff argX,
-                Widget::VarOff argY,
+                Widget::VarInt argX,
+                Widget::VarInt argY,
 
                 Widget *argWidget,
                 bool    argWidgetAutoDelete,
@@ -72,5 +72,5 @@ class MarginWrapper: public Widget
 
     public:
         void addChild  (Widget *,                                                 bool) override { throw fflreach(); }
-        void addChildAt(Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool) override { throw fflreach(); }
+        void addChildAt(Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool) override { throw fflreach(); }
 };

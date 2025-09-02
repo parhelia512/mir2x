@@ -31,10 +31,10 @@ class WidgetTreeNode // tree concept, used by class Widget only
 
     protected:
         using VarDir       = std::variant<             dir8_t, std::function<       dir8_t(const Widget *)>>;
-        using VarOff       = std::variant<                int, std::function<          int(const Widget *)>>;
+        using VarInt       = std::variant<                int, std::function<          int(const Widget *)>>;
         using VarU32       = std::variant<           uint32_t, std::function<     uint32_t(const Widget *)>>;
         using VarSize      = std::variant<std::monostate, int, std::function<          int(const Widget *)>>;
-        using VarFlag      = std::variant<               bool, std::function<         bool(const Widget *)>>;
+        using VarBool      = std::variant<               bool, std::function<         bool(const Widget *)>>;
         using VarBlendMode = std::variant<      SDL_BlendMode, std::function<SDL_BlendMode(const Widget *)>>;
 
     private:
@@ -125,7 +125,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
 
     public:
         virtual void addChild  (Widget *, bool);
-        virtual void addChildAt(Widget *, WidgetTreeNode::VarDir, WidgetTreeNode::VarOff, WidgetTreeNode::VarOff, bool);
+        virtual void addChildAt(Widget *, WidgetTreeNode::VarDir, WidgetTreeNode::VarInt, WidgetTreeNode::VarInt, bool);
 
     public:
         bool hasChild() const
@@ -150,10 +150,10 @@ class Widget: public WidgetTreeNode
 
     public:
         using WidgetTreeNode::VarDir;
-        using WidgetTreeNode::VarOff;
+        using WidgetTreeNode::VarInt;
         using WidgetTreeNode::VarU32;
         using WidgetTreeNode::VarSize;
-        using WidgetTreeNode::VarFlag;
+        using WidgetTreeNode::VarBool;
 
     public:
         struct ROI final
@@ -215,16 +215,16 @@ class Widget: public WidgetTreeNode
         static dir8_t evalDir(const Widget::VarDir &, const Widget *);
 
     public:
-        static bool hasIntOff (const Widget::VarOff &);
-        static bool hasFuncOff(const Widget::VarOff &);
+        static bool hasIntOff (const Widget::VarInt &);
+        static bool hasFuncOff(const Widget::VarInt &);
 
-        static int  asIntOff(const Widget::VarOff &);
-        static int &asIntOff(      Widget::VarOff &);
+        static int  asIntOff(const Widget::VarInt &);
+        static int &asIntOff(      Widget::VarInt &);
 
-        static const std::function<int(const Widget *)> &asFuncOff(const Widget::VarOff &);
-        static       std::function<int(const Widget *)> &asFuncOff(      Widget::VarOff &);
+        static const std::function<int(const Widget *)> &asFuncOff(const Widget::VarInt &);
+        static       std::function<int(const Widget *)> &asFuncOff(      Widget::VarInt &);
 
-        static int evalOff(const Widget::VarOff &, const Widget *);
+        static int evalOff(const Widget::VarInt &, const Widget *);
 
     public:
         static bool hasSize    (const Widget::VarSize &);
@@ -238,16 +238,16 @@ class Widget: public WidgetTreeNode
         static       std::function<int(const Widget *)> &asFuncSize(      Widget::VarSize &);
 
     public:
-        static bool hasBoolFlag(const Widget::VarFlag &);
-        static bool hasFuncFlag(const Widget::VarFlag &);
+        static bool hasBoolFlag(const Widget::VarBool &);
+        static bool hasFuncFlag(const Widget::VarBool &);
 
-        static bool  asBoolFlag(const Widget::VarFlag &);
-        static bool &asBoolFlag(      Widget::VarFlag &);
+        static bool  asBoolFlag(const Widget::VarBool &);
+        static bool &asBoolFlag(      Widget::VarBool &);
 
-        static const std::function<bool(const Widget *)> &asFuncFlag(const Widget::VarFlag &);
-        static       std::function<bool(const Widget *)> &asFuncFlag(      Widget::VarFlag &);
+        static const std::function<bool(const Widget *)> &asFuncFlag(const Widget::VarBool &);
+        static       std::function<bool(const Widget *)> &asFuncFlag(      Widget::VarBool &);
 
-        static bool evalFlag(const Widget::VarFlag &, const Widget *);
+        static bool evalFlag(const Widget::VarBool &, const Widget *);
 
     public:
         static bool hasU32    (const Widget::VarU32 &);
@@ -298,8 +298,8 @@ class Widget: public WidgetTreeNode
         };
 
     protected:
-        std::pair<Widget::VarFlag, bool> m_show   {true, false};
-        std::pair<Widget::VarFlag, bool> m_active {true, false};
+        std::pair<Widget::VarBool, bool> m_show   {true, false};
+        std::pair<Widget::VarBool, bool> m_active {true, false};
 
     protected:
         bool m_focus  = false;
@@ -311,8 +311,8 @@ class Widget: public WidgetTreeNode
         Widget::VarDir m_dir;
 
     private:
-        std::pair<Widget::VarOff, int> m_x;
-        std::pair<Widget::VarOff, int> m_y;
+        std::pair<Widget::VarInt, int> m_x;
+        std::pair<Widget::VarInt, int> m_y;
 
     private:
         bool m_canSetSize = true;
@@ -332,13 +332,13 @@ class Widget: public WidgetTreeNode
     public:
         Widget(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 Widget::VarSize = {},
                 Widget::VarSize = {},
 
-                std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool>> = {},
+                std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> = {},
 
                 Widget * = nullptr,
                 bool     = false);
@@ -474,21 +474,21 @@ class Widget: public WidgetTreeNode
         bool       show() const;
         bool  localShow() const;
         void   flipShow();
-        Widget *setShow(Widget::VarFlag);
+        Widget *setShow(Widget::VarBool);
 
     public:
         bool      active() const;
         bool localActive() const;
         void  flipActive();
-        Widget *setActive(Widget::VarFlag);
+        Widget *setActive(Widget::VarBool);
 
     public:
-        void moveXTo(Widget::VarOff);
-        void moveYTo(Widget::VarOff);
+        void moveXTo(Widget::VarInt);
+        void moveYTo(Widget::VarInt);
 
-        void moveTo(                Widget::VarOff, Widget::VarOff);
-        void moveBy(                Widget::VarOff, Widget::VarOff);
-        void moveAt(Widget::VarDir, Widget::VarOff, Widget::VarOff);
+        void moveTo(                Widget::VarInt, Widget::VarInt);
+        void moveBy(                Widget::VarInt, Widget::VarInt);
+        void moveAt(Widget::VarDir, Widget::VarInt, Widget::VarInt);
 
     public:
         Widget *disableSetSize();

@@ -7,8 +7,8 @@ extern SDLDevice *g_sdlDevice;
 
 MenuBoard::MenuBoard(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         Widget::VarSize argVarW,
         std::array<int, 4> argMargin,

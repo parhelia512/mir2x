@@ -14,8 +14,8 @@ class NPCChatFrame: public Widget
     public:
         NPCChatFrame(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 Widget::VarSize,
                 Widget::VarSize,

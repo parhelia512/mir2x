@@ -6,8 +6,8 @@ extern SDLDevice *g_sdlDevice;
 
 CBLevel::CBLevel(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         ProcessRun *argProc,
         std::function<void(Widget *, int)> argOnClick,

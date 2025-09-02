@@ -9,8 +9,8 @@ extern SDLDevice *g_sdlDevice;
 
 AlphaOnButton::AlphaOnButton(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         int argOnOffX,
         int argOnOffY,

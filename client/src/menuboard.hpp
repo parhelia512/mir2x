@@ -29,8 +29,8 @@ class MenuBoard: public Widget
     public:
         MenuBoard(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 Widget::VarSize,
                 std::array<int, 4> = {},

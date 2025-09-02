@@ -27,8 +27,8 @@ class NPCChatBoard: public Widget
     public:
         NPCChatBoard(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 ProcessRun *,
 

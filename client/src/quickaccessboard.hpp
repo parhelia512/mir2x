@@ -19,8 +19,8 @@ class QuickAccessBoard: public Widget
             TextBoard      count;
 
             Grid(   Widget::VarDir,
-                    Widget::VarOff,
-                    Widget::VarOff,
+                    Widget::VarInt,
+                    Widget::VarInt,
 
                     Widget::VarSize,
                     Widget::VarSize,

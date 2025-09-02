@@ -27,8 +27,8 @@ class CBFace: public Widget
 
     public:
         CBFace( Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 Widget::VarSize,
                 Widget::VarSize,

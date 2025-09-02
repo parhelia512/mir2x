@@ -23,8 +23,8 @@ class TextBoard: public Widget
     public:
         TextBoard(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 std::function<std::string(const Widget *)>,
 

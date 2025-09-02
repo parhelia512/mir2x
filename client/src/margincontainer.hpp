@@ -10,8 +10,8 @@ class MarginContainer: public Widget
     public:
         MarginContainer(
                 Widget::VarDir argDir,
-                Widget::VarOff argX,
-                Widget::VarOff argY,
+                Widget::VarInt argX,
+                Widget::VarInt argY,
 
                 Widget::VarSize argW,
                 Widget::VarSize argH,
@@ -102,7 +102,7 @@ class MarginContainer: public Widget
 
     public:
         void addChild  (Widget *,                                                 bool) override { throw fflreach(); }
-        void addChildAt(Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool) override { throw fflreach(); }
+        void addChildAt(Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool) override { throw fflreach(); }
 
     public:
         const Widget *contained() const { return lastChild(); }

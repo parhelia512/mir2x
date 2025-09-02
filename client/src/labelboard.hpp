@@ -17,8 +17,8 @@ class LabelBoard: public Widget
     public:
         LabelBoard(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 const char8_t * = nullptr,
 

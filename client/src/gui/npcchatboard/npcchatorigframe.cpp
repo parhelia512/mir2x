@@ -7,8 +7,8 @@ extern SDLDevice *g_sdlDevice;
 
 NPCChatOrigFrame::NPCChatOrigFrame(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         Widget *argParent,
         bool    argAutoDelete)

@@ -52,8 +52,8 @@ class ChatItemRef: public Widget
     public:
         ChatItemRef(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
                 int, // max width
 
                 bool, // force max width

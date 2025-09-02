@@ -87,7 +87,7 @@ void WidgetTreeNode::addChild(Widget *argWidget, bool argAutoDelete)
     doAddChild(argWidget, argAutoDelete);
 }
 
-void WidgetTreeNode::addChildAt(Widget *argWidget, WidgetTreeNode::VarDir argDir, WidgetTreeNode::VarOff argX, WidgetTreeNode::VarOff argY, bool argAutoDelete)
+void WidgetTreeNode::addChildAt(Widget *argWidget, WidgetTreeNode::VarDir argDir, WidgetTreeNode::VarInt argX, WidgetTreeNode::VarInt argY, bool argAutoDelete)
 {
     doAddChild(argWidget, argAutoDelete);
     argWidget->moveAt(std::move(argDir), std::move(argX), std::move(argY));
@@ -240,37 +240,37 @@ dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widgetPtr)
     }, varDir);
 }
 
-bool Widget::hasIntOff(const Widget::VarOff &varOff)
+bool Widget::hasIntOff(const Widget::VarInt &varOff)
 {
     return varOff.index() == 0;
 }
 
-bool Widget::hasFuncOff(const Widget::VarOff &varOff)
+bool Widget::hasFuncOff(const Widget::VarInt &varOff)
 {
     return varOff.index() == 1;
 }
 
-int Widget::asIntOff(const Widget::VarOff &varOff)
+int Widget::asIntOff(const Widget::VarInt &varOff)
 {
     return std::get<int>(varOff);
 }
 
-int &Widget::asIntOff(Widget::VarOff &varOff)
+int &Widget::asIntOff(Widget::VarInt &varOff)
 {
     return std::get<int>(varOff);
 }
 
-const std::function<int(const Widget *)> &Widget::asFuncOff(const Widget::VarOff &varOff)
+const std::function<int(const Widget *)> &Widget::asFuncOff(const Widget::VarInt &varOff)
 {
     return std::get<std::function<int(const Widget *)>>(varOff);
 }
 
-std::function<int(const Widget *)> &Widget::asFuncOff(Widget::VarOff &varOff)
+std::function<int(const Widget *)> &Widget::asFuncOff(Widget::VarInt &varOff)
 {
     return std::get<std::function<int(const Widget *)>>(varOff);
 }
 
-int Widget::evalOff(const Widget::VarOff &varOffset, const Widget *widgetPtr)
+int Widget::evalOff(const Widget::VarInt &varOffset, const Widget *widgetPtr)
 {
     return std::visit(VarDispatcher
     {
@@ -321,37 +321,37 @@ std::function<int(const Widget *)> &Widget::asFuncSize(Widget::VarSize &varSize)
     return std::get<std::function<int(const Widget *)>>(varSize);
 }
 
-bool Widget::hasBoolFlag(const Widget::VarFlag &varFlag)
+bool Widget::hasBoolFlag(const Widget::VarBool &varFlag)
 {
     return varFlag.index() == 0;
 }
 
-bool Widget::hasFuncFlag(const Widget::VarFlag &varFlag)
+bool Widget::hasFuncFlag(const Widget::VarBool &varFlag)
 {
     return varFlag.index() == 1;
 }
 
-bool Widget::asBoolFlag(const Widget::VarFlag &varFlag)
+bool Widget::asBoolFlag(const Widget::VarBool &varFlag)
 {
     return std::get<bool>(varFlag);
 }
 
-bool &Widget::asBoolFlag(Widget::VarFlag &varFlag)
+bool &Widget::asBoolFlag(Widget::VarBool &varFlag)
 {
     return std::get<bool>(varFlag);
 }
 
-const std::function<bool(const Widget *)> &Widget::asFuncFlag(const Widget::VarFlag &varFlag)
+const std::function<bool(const Widget *)> &Widget::asFuncFlag(const Widget::VarBool &varFlag)
 {
     return std::get<std::function<bool(const Widget *)>>(varFlag);
 }
 
-std::function<bool(const Widget *)> &Widget::asFuncFlag(Widget::VarFlag &varFlag)
+std::function<bool(const Widget *)> &Widget::asFuncFlag(Widget::VarBool &varFlag)
 {
     return std::get<std::function<bool(const Widget *)>>(varFlag);
 }
 
-bool Widget::evalFlag(const Widget::VarFlag &varFlag, const Widget *widgetPtr)
+bool Widget::evalFlag(const Widget::VarBool &varFlag, const Widget *widgetPtr)
 {
     return std::visit(VarDispatcher
     {
@@ -461,13 +461,13 @@ SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, co
 
 Widget::Widget(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         Widget::VarSize argW,
         Widget::VarSize argH,
 
-        std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool>> argChildList,
+        std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> argChildList,
 
         Widget *argParent,
         bool    argAutoDelete)
@@ -1037,7 +1037,7 @@ void Widget::flipShow()
     m_show.second = !m_show.second;
 }
 
-Widget *Widget::setShow(Widget::VarFlag argShow)
+Widget *Widget::setShow(Widget::VarBool argShow)
 {
     m_show = std::make_pair(std::move(argShow), false);
     return this;
@@ -1061,31 +1061,31 @@ void Widget::flipActive()
     m_active.second = !m_active.second;
 }
 
-Widget *Widget::setActive(Widget::VarFlag argActive)
+Widget *Widget::setActive(Widget::VarBool argActive)
 {
     m_active = std::make_pair(std::move(argActive), false);
     return this;
 }
 
-void Widget::moveXTo(Widget::VarOff arg)
+void Widget::moveXTo(Widget::VarInt arg)
 {
     m_x = std::make_pair(std::move(arg), 0);
 }
 
-void Widget::moveYTo(Widget::VarOff arg)
+void Widget::moveYTo(Widget::VarInt arg)
 {
     m_y = std::make_pair(std::move(arg), 0);
 }
 
-void Widget::moveTo(Widget::VarOff argX, Widget::VarOff argY)
+void Widget::moveTo(Widget::VarInt argX, Widget::VarInt argY)
 {
     moveXTo(std::move(argX));
     moveYTo(std::move(argY));
 }
 
-void Widget::moveBy(Widget::VarOff dx, Widget::VarOff dy)
+void Widget::moveBy(Widget::VarInt dx, Widget::VarInt dy)
 {
-    const auto fnOp = [](std::pair<Widget::VarOff, int> &offset, Widget::VarOff update)
+    const auto fnOp = [](std::pair<Widget::VarInt, int> &offset, Widget::VarInt update)
     {
         if(Widget::hasIntOff(update)){
             offset.second += Widget::asIntOff(update);
@@ -1106,7 +1106,7 @@ void Widget::moveBy(Widget::VarOff dx, Widget::VarOff dy)
     fnOp(m_y, std::move(dy));
 }
 
-void Widget::moveAt(Widget::VarDir argDir, Widget::VarOff argX, Widget::VarOff argY)
+void Widget::moveAt(Widget::VarDir argDir, Widget::VarInt argX, Widget::VarInt argY)
 {
     m_dir = std::move(argDir);
     m_x   = std::make_pair(std::move(argX), 0);

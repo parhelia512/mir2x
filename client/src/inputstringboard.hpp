@@ -21,8 +21,8 @@ class InputStringBoard: public Widget
     public:
         InputStringBoard(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 bool,
 

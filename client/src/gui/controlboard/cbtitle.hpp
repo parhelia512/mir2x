@@ -30,8 +30,8 @@ class CBTitle: public Widget
     public:
         CBTitle(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 ProcessRun *,
 

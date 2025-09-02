@@ -30,8 +30,8 @@ struct SearchPage: public Widget
 
     SearchPage(Widget::VarDir,
 
-            Widget::VarOff,
-            Widget::VarOff,
+            Widget::VarInt,
+            Widget::VarInt,
 
             Widget * = nullptr,
             bool     = false);

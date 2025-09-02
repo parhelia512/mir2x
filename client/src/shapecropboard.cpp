@@ -2,8 +2,8 @@
 #include "shapecropboard.hpp"
 
 ShapeCropBoard::ShapeCropBoard(Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         Widget::VarSize argW,
         Widget::VarSize argH,

@@ -10,8 +10,8 @@ extern ClientArgParser *g_clientArgParser;
 
 TexSlider::TexSlider(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         Widget::VarSize argW,
         Widget::VarSize argH,

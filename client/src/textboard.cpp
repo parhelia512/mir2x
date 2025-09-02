@@ -4,8 +4,8 @@
 extern FontexDB *g_fontexDB;
 TextBoard::TextBoard(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         std::function<std::string(const Widget *)> argTextFunc,
 

@@ -48,8 +48,8 @@ class CBMiddle: public Widget
     public:
         CBMiddle(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
                 Widget::VarSize,
 
                 ProcessRun *,

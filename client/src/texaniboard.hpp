@@ -23,8 +23,8 @@ class TexAniBoard: public Widget
     public:
         TexAniBoard(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 uint32_t,
                 size_t,

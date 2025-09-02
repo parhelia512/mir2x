@@ -41,8 +41,8 @@ class ImageBoard: public Widget
     public:
         ImageBoard(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 Widget::VarSize, // {} means image width , otherwise rescale the image
                 Widget::VarSize, // {} means image height, otherwise rescale the image

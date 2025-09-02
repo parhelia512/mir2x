@@ -10,19 +10,19 @@ class ItemFlex: public Widget
         const bool m_hbox;
 
     private:
-        Widget::VarOff m_itemSpace;
+        Widget::VarInt m_itemSpace;
         std::vector<Widget *> m_origChildList;
 
     public:
         ItemFlex(
                 Widget::VarDir argDir,
-                Widget::VarOff argX,
-                Widget::VarOff argY,
+                Widget::VarInt argX,
+                Widget::VarInt argY,
 
                 Widget::VarSize argVarSize,
 
                 bool argHBox,
-                Widget::VarOff argItemSpace = 0,
+                Widget::VarInt argItemSpace = 0,
 
                 std::initializer_list<std::pair<Widget *, bool>> argChildList = {},
 

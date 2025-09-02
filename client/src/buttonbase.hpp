@@ -70,8 +70,8 @@ class ButtonBase: public Widget
     public:
         ButtonBase(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 Widget::VarSize,
                 Widget::VarSize,

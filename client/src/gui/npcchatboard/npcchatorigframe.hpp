@@ -11,8 +11,8 @@ class NPCChatOrigFrame: public Widget
     public:
         NPCChatOrigFrame(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 Widget * = nullptr,
                 bool     = false);

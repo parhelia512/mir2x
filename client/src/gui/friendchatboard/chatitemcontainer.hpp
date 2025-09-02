@@ -32,8 +32,8 @@ struct ChatItemContainer: public Widget
 
     ChatItemContainer(
             Widget::VarDir,
-            Widget::VarOff,
-            Widget::VarOff,
+            Widget::VarInt,
+            Widget::VarInt,
 
             Widget::VarSize,
             Widget::VarSize,

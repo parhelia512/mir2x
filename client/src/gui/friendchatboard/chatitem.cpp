@@ -9,8 +9,8 @@ extern SDLDevice *g_sdlDevice;
 
 ChatItem::ChatItem(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         int  argMaxWidth,
         bool argPending,

@@ -11,8 +11,8 @@ class ShapeCropBoard: public Widget
     public:
         ShapeCropBoard(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 Widget::VarSize,
                 Widget::VarSize,

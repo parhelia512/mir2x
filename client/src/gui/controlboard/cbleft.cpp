@@ -15,8 +15,8 @@ extern SDLDevice *g_sdlDevice;
 
 CBLeft::CBLeft(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         ProcessRun *argProc,
         Widget *argParent,

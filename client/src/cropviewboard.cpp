@@ -3,17 +3,17 @@
 
 CropViewBoard::CropViewBoard(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         VarGfxWidget argWidgetGetter,
 
-        Widget::VarOff argGfxCropX, // crop on gfx widget
-        Widget::VarOff argGfxCropY, // ...
-        Widget::VarOff argGfxCropW, // crop width, don't use Widget::VarSize, support over-cropping
-        Widget::VarOff argGfxCropH, // ...
+        Widget::VarInt argGfxCropX, // crop on gfx widget
+        Widget::VarInt argGfxCropY, // ...
+        Widget::VarInt argGfxCropW, // crop width, don't use Widget::VarSize, support over-cropping
+        Widget::VarInt argGfxCropH, // ...
 
-        std::array<Widget::VarOff, 4> argMargin,
+        std::array<Widget::VarInt, 4> argMargin,
 
         Widget *argParent,
         bool    argAutoDelete)

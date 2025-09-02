@@ -54,8 +54,8 @@ class RadioSelector: public Widget
     public:
         RadioSelector(Widget::VarDir,
 
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 int = 5, // gap
                 int = 5, // item space
