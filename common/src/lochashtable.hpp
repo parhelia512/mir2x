@@ -8,13 +8,9 @@
 
 struct LocHashHelper
 {
-    size_t operator() (const std::tuple<int, int> &parm) const
+    size_t operator() (const std::tuple<int, int> &arg) const
     {
-        const auto [x, y] = parm;
-        if(x < 0 || y < 0){
-            throw fflerror("invalid location: x = %d, y = %d", x, y);
-        }
-        return to_uz((to_u64(y) << 32) | to_u64(x));
+        return to_uz((to_u64(std::get<1>(arg)) << 32) | to_u64(std::get<0>(arg)));
     }
 };
 
