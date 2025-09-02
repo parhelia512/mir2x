@@ -34,6 +34,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         using VarInt       = std::variant<                int, std::function<          int(const Widget *)>>;
         using VarU32       = std::variant<           uint32_t, std::function<     uint32_t(const Widget *)>>;
         using VarSize      = std::variant<std::monostate, int, std::function<          int(const Widget *)>>;
+        using VarMargin    = std::variant<                int, std::function<          int(const Widget *)>>;
         using VarBool      = std::variant<               bool, std::function<         bool(const Widget *)>>;
         using VarBlendMode = std::variant<      SDL_BlendMode, std::function<SDL_BlendMode(const Widget *)>>;
 
