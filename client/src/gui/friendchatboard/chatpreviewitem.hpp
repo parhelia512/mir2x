@@ -49,7 +49,7 @@ struct ChatPreviewItem: public Widget
             Widget::VarDir,
             Widget::VarInt,
             Widget::VarInt,
-            Widget::VarOptSize,
+            Widget::VarSizeOpt,
 
             const SDChatPeerID &,
             const char8_t *,

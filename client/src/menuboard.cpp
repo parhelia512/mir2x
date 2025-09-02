@@ -10,7 +10,7 @@ MenuBoard::MenuBoard(
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        Widget::VarOptSize argVarW,
+        Widget::VarSizeOpt argVarW,
         std::array<int, 4> argMargin,
 
         int argCorner,
@@ -48,24 +48,10 @@ MenuBoard::MenuBoard(
           0,
           0,
 
-          [argVarW = std::move(argVarW), argMargin, this]() -> Widget::VarOptSize
+          Widget::transform(std::move(argVarW), [argMargin](int w)
           {
-              fflassert(argMargin[2] >= 0, argMargin);
-              fflassert(argMargin[3] >= 0, argMargin);
-
-              if(Widget::hasIntSize(argVarW)){
-                  return std::max<int>(0, Widget::asIntSize(argVarW) - argMargin[2] - argMargin[3]);
-              }
-              else if(Widget::hasFuncSize(argVarW)){
-                  return [argVarW = std::move(argVarW), argMargin, this](const Widget *)
-                  {
-                      return std::max<int>(0, Widget::asFuncSize(argVarW)(this) - argMargin[2] - argMargin[3]);
-                  };
-              }
-              else{
-                  return {};
-              }
-          }(),
+              return std::max<int>(0, w - argMargin[2] - argMargin[3]);
+          }),
 
           false,
       }
@@ -176,9 +162,10 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
                 DIR_UPLEFT,
                 0,
                 0,
+
                 [this](const Widget *)
                 {
-                    if(Widget::hasSize(m_canvas.varw())){
+                    if(m_canvas.varw().has_value()){
                         return m_canvas.w();
                     }
 

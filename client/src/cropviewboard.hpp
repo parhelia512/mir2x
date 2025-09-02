@@ -31,7 +31,7 @@ class CropViewBoard: public Widget
 
                 Widget::VarInt, // crop on gfx widget
                 Widget::VarInt, // ...
-                Widget::VarInt, // crop width, don't use Widget::VarOptSize, support over-cropping
+                Widget::VarInt, // crop width, don't use Widget::VarSizeOpt, support over-cropping
                 Widget::VarInt, // ...
 
                 std::array<Widget::VarInt, 4> = {},

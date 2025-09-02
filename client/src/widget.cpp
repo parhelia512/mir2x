@@ -194,36 +194,6 @@ Widget::ROI Widget::ROIOpt::evalROI(const Widget::ROI &roi) const
     }
 }
 
-bool Widget::hasIntDir(const Widget::VarDir &varDir)
-{
-    return varDir.index() == 0;
-}
-
-bool Widget::hasFuncDir(const Widget::VarDir &varDir)
-{
-    return varDir.index() == 1;
-}
-
-dir8_t Widget::asIntDir(const Widget::VarDir &varDir)
-{
-    return std::get<dir8_t>(varDir);
-}
-
-dir8_t &Widget::asIntDir(Widget::VarDir &varDir)
-{
-    return std::get<dir8_t>(varDir);
-}
-
-const std::function<dir8_t(const Widget *)> &Widget::asFuncDir(const Widget::VarDir &varDir)
-{
-    return std::get<std::function<dir8_t(const Widget *)>>(varDir);
-}
-
-std::function<dir8_t(const Widget *)> &Widget::asFuncDir(Widget::VarDir &varDir)
-{
-    return std::get<std::function<dir8_t(const Widget *)>>(varDir);
-}
-
 dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widgetPtr)
 {
     return std::visit(VarDispatcher
@@ -238,36 +208,6 @@ dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widgetPtr)
             return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
         },
     }, varDir);
-}
-
-bool Widget::hasIntOff(const Widget::VarInt &varOff)
-{
-    return varOff.index() == 0;
-}
-
-bool Widget::hasFuncOff(const Widget::VarInt &varOff)
-{
-    return varOff.index() == 1;
-}
-
-int Widget::asIntOff(const Widget::VarInt &varOff)
-{
-    return std::get<int>(varOff);
-}
-
-int &Widget::asIntOff(Widget::VarInt &varOff)
-{
-    return std::get<int>(varOff);
-}
-
-const std::function<int(const Widget *)> &Widget::asFuncOff(const Widget::VarInt &varOff)
-{
-    return std::get<std::function<int(const Widget *)>>(varOff);
-}
-
-std::function<int(const Widget *)> &Widget::asFuncOff(Widget::VarInt &varOff)
-{
-    return std::get<std::function<int(const Widget *)>>(varOff);
 }
 
 int Widget::evalOff(const Widget::VarInt &varOffset, const Widget *widgetPtr)
@@ -286,117 +226,6 @@ int Widget::evalOff(const Widget::VarInt &varOffset, const Widget *widgetPtr)
     }, varOffset);
 }
 
-bool Widget::hasSize(const Widget::VarOptSize &varSize)
-{
-    return varSize.index() != 0;
-}
-
-bool Widget::hasIntSize(const Widget::VarOptSize &varSize)
-{
-    return varSize.index() == 1;
-}
-
-bool Widget::hasFuncSize(const Widget::VarOptSize &varSize)
-{
-    return varSize.index() == 2;
-}
-
-int Widget::asIntSize(const Widget::VarOptSize &varSize)
-{
-    return std::get<int>(varSize);
-}
-
-int &Widget::asIntSize(Widget::VarOptSize &varSize)
-{
-    return std::get<int>(varSize);
-}
-
-const std::function<int(const Widget *)> &Widget::asFuncSize(const Widget::VarOptSize &varSize)
-{
-    return std::get<std::function<int(const Widget *)>>(varSize);
-}
-
-std::function<int(const Widget *)> &Widget::asFuncSize(Widget::VarOptSize &varSize)
-{
-    return std::get<std::function<int(const Widget *)>>(varSize);
-}
-
-bool Widget::hasBoolFlag(const Widget::VarBool &varFlag)
-{
-    return varFlag.index() == 0;
-}
-
-bool Widget::hasFuncFlag(const Widget::VarBool &varFlag)
-{
-    return varFlag.index() == 1;
-}
-
-bool Widget::asBoolFlag(const Widget::VarBool &varFlag)
-{
-    return std::get<bool>(varFlag);
-}
-
-bool &Widget::asBoolFlag(Widget::VarBool &varFlag)
-{
-    return std::get<bool>(varFlag);
-}
-
-const std::function<bool(const Widget *)> &Widget::asFuncFlag(const Widget::VarBool &varFlag)
-{
-    return std::get<std::function<bool(const Widget *)>>(varFlag);
-}
-
-std::function<bool(const Widget *)> &Widget::asFuncFlag(Widget::VarBool &varFlag)
-{
-    return std::get<std::function<bool(const Widget *)>>(varFlag);
-}
-
-bool Widget::evalFlag(const Widget::VarBool &varFlag, const Widget *widgetPtr)
-{
-    return std::visit(VarDispatcher
-    {
-        [](const bool &arg)
-        {
-            return arg;
-        },
-
-        [widgetPtr](const auto &arg)
-        {
-            return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
-        },
-    }, varFlag);
-}
-
-bool Widget::hasU32(const Widget::VarU32 &varU32)
-{
-    return varU32.index() == 0;
-}
-
-bool Widget::hasFuncU32(const Widget::VarU32 &varU32)
-{
-    return varU32.index() == 1;
-}
-
-uint32_t Widget::asU32(const Widget::VarU32 &varU32)
-{
-    return std::get<uint32_t>(varU32);
-}
-
-uint32_t &Widget::asU32(Widget::VarU32 &varU32)
-{
-    return std::get<uint32_t>(varU32);
-}
-
-const std::function<uint32_t(const Widget *)> &Widget::asFuncU32(const Widget::VarU32 &varU32)
-{
-    return std::get<std::function<uint32_t(const Widget *)>>(varU32);
-}
-
-std::function<uint32_t(const Widget *)> &Widget::asFuncU32(Widget::VarU32 &varU32)
-{
-    return std::get<std::function<uint32_t(const Widget *)>>(varU32);
-}
-
 uint32_t Widget::evalU32(const Widget::VarU32 &varU32, const Widget *widgetPtr)
 {
     return std::visit(VarDispatcher
@@ -413,34 +242,36 @@ uint32_t Widget::evalU32(const Widget::VarU32 &varU32, const Widget *widgetPtr)
     }, varU32);
 }
 
-bool Widget::hasBlendMode(const Widget::VarBlendMode &varBlendMode)
+int Widget::evalSize(const Widget::VarSize &varSize, const Widget *widgetPtr)
 {
-    return varBlendMode.index() == 0;
+    return std::visit(VarDispatcher
+    {
+        [](const int &arg)
+        {
+            return arg;
+        },
+
+        [widgetPtr](const auto &arg)
+        {
+            return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
+        },
+    }, varSize);
 }
 
-bool Widget::hasFuncBlendMode(const Widget::VarBlendMode &varBlendMode)
+bool Widget::evalFlag(const Widget::VarBool &varFlag, const Widget *widgetPtr)
 {
-    return varBlendMode.index() == 1;
-}
+    return std::visit(VarDispatcher
+    {
+        [](const bool &arg)
+        {
+            return arg;
+        },
 
-SDL_BlendMode Widget::asBlendMode(const Widget::VarBlendMode &varBlendMode)
-{
-    return std::get<SDL_BlendMode>(varBlendMode);
-}
-
-SDL_BlendMode &Widget::asBlendMode(Widget::VarBlendMode &varBlendMode)
-{
-    return std::get<SDL_BlendMode>(varBlendMode);
-}
-
-const std::function<SDL_BlendMode(const Widget *)> &Widget::asFuncBlendMode(const Widget::VarBlendMode &varBlendMode)
-{
-    return std::get<std::function<SDL_BlendMode(const Widget *)>>(varBlendMode);
-}
-
-std::function<SDL_BlendMode(const Widget *)> &Widget::asFuncBlendMode(Widget::VarBlendMode &varBlendMode)
-{
-    return std::get<std::function<SDL_BlendMode(const Widget *)>>(varBlendMode);
+        [widgetPtr](const auto &arg)
+        {
+            return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
+        },
+    }, varFlag);
 }
 
 SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, const Widget *widget)
@@ -464,8 +295,8 @@ Widget::Widget(
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        Widget::VarOptSize argW,
-        Widget::VarOptSize argH,
+        Widget::VarSizeOpt argW,
+        Widget::VarSizeOpt argH,
 
         std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> argChildList,
 
@@ -481,15 +312,6 @@ Widget::Widget(
 {
     // don't check if w/h is a function
     // because it may refers to sub-widget which has not be initialized yet
-
-    if(Widget::hasFuncDir (m_dir      )){ fflassert(Widget::asFuncDir (m_dir      ), m_dir      ); }
-    if(Widget::hasFuncOff (m_x.first  )){ fflassert(Widget::asFuncOff (m_x.first  ), m_x.first  ); }
-    if(Widget::hasFuncOff (m_y.first  )){ fflassert(Widget::asFuncOff (m_y.first  ), m_y.first  ); }
-    if(Widget::hasFuncSize(m_w        )){ fflassert(Widget::asFuncSize(m_w        ), m_w        ); }
-    if(Widget::hasFuncSize(m_h        )){ fflassert(Widget::asFuncSize(m_h        ), m_h        ); }
-
-    if(Widget::hasIntSize(m_w)){ fflassert(Widget::asIntSize(m_w) >= 0, m_w); }
-    if(Widget::hasIntSize(m_h)){ fflassert(Widget::asIntSize(m_h) >= 0, m_h); }
 
     for(auto &[childPtr, offDir, offX, offY, autoDelete]: argChildList){
         if(childPtr){
@@ -745,66 +567,33 @@ void Widget::afterResizeDefault()
 int Widget::w() const
 {
     const RecursionDetector hDetect(m_wCalc, name(), "w()");
-    const auto width = std::visit(VarDispatcher
+    return Widget::evalSizeOpt(m_w, this, [this]()
     {
-        [](const int &arg)
+        int maxW = 0;
+        foreachChild([&maxW](const Widget *widget, bool)
         {
-            return arg;
-        },
-
-        [this](const std::function<int(const Widget *)> &arg)
-        {
-            return arg ? arg(this) : throw fflerror("invalid argument");
-        },
-
-        [this](const auto &) // auto-scaling mode
-        {
-            int maxW = 0;
-            foreachChild([&maxW](const Widget *widget, bool)
-            {
-                if(widget->localShow()){
-                    maxW = std::max<int>(maxW, widget->dx() + widget->w());
-                }
-            });
-            return maxW;
-        }
-    }, m_w);
-
-    fflassert(width >= 0, width, m_w);
-    return width;
+            if(widget->localShow()){
+                maxW = std::max<int>(maxW, widget->dx() + widget->w());
+            }
+        });
+        return maxW;
+    });
 }
 
 int Widget::h() const
 {
     const RecursionDetector hDetect(m_hCalc, name(), "h()");
-    const auto height = std::visit(VarDispatcher
+    return Widget::evalSizeOpt(m_h, this, [this]()
     {
-        [](const int &arg)
+        int maxH = 0;
+        foreachChild([&maxH](const Widget *widget, bool)
         {
-            return arg;
-        },
-
-        [this](const std::function<int(const Widget *)> &arg)
-        {
-            return arg ? arg(this) : throw fflerror("invalid argument");
-        },
-
-        [this](const auto &) // auto-scaling mode
-        {
-            int maxH = 0;
-            foreachChild([&maxH](const Widget *widget, bool)
-            {
-                if(widget->localShow()){
-                    maxH = std::max<int>(maxH, widget->dy() + widget->h());
-                }
-            });
-
-            return maxH;
-        }
-    }, m_h);
-
-    fflassert(height >= 0, m_h);
-    return height;
+            if(widget->localShow()){
+                maxH = std::max<int>(maxH, widget->dy() + widget->h());
+            }
+        });
+        return maxH;
+    });
 }
 
 int Widget::dx() const
@@ -1087,17 +876,18 @@ void Widget::moveBy(Widget::VarInt dx, Widget::VarInt dy)
 {
     const auto fnOp = [](std::pair<Widget::VarInt, int> &offset, Widget::VarInt update)
     {
-        if(Widget::hasIntOff(update)){
-            offset.second += Widget::asIntOff(update);
+        if(update.index() == 0){
+            offset.second += std::get<int>(update);
         }
-        else if(Widget::hasIntOff(offset.first)){
-            offset.second += Widget::asIntOff(offset.first);
+        else if(offset.first.index() == 0){
+            offset.second += std::get<int>(offset.first);
             offset.first   = std::move(update);
         }
         else{
             offset.first = [u = std::move(offset.first), v = std::move(update)](const Widget *widgetPtr)
             {
-                return Widget::asFuncOff(u)(widgetPtr) + Widget::asFuncOff(v)(widgetPtr);
+                return std::get<std::function<int(const Widget *)>>(u)(widgetPtr)
+                     + std::get<std::function<int(const Widget *)>>(v)(widgetPtr);
             };
         }
     };
@@ -1119,7 +909,7 @@ Widget *Widget::disableSetSize()
     return this;
 }
 
-Widget *Widget::setW(Widget::VarOptSize argSize)
+Widget *Widget::setW(Widget::VarSizeOpt argSize)
 {
     if(m_canSetSize){
         m_w = std::move(argSize);
@@ -1130,7 +920,7 @@ Widget *Widget::setW(Widget::VarOptSize argSize)
     }
 }
 
-Widget *Widget::setH(Widget::VarOptSize argSize)
+Widget *Widget::setH(Widget::VarSizeOpt argSize)
 {
     if(m_canSetSize){
         m_h = std::move(argSize);
@@ -1141,7 +931,7 @@ Widget *Widget::setH(Widget::VarOptSize argSize)
     }
 }
 
-Widget *Widget::setSize(Widget::VarOptSize argW, Widget::VarOptSize argH)
+Widget *Widget::setSize(Widget::VarSizeOpt argW, Widget::VarSizeOpt argH)
 {
     return setW(std::move(argW))->setH(std::move(argH));
 }

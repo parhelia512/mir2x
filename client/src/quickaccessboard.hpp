@@ -22,8 +22,8 @@ class QuickAccessBoard: public Widget
                     Widget::VarInt,
                     Widget::VarInt,
 
-                    Widget::VarOptSize,
-                    Widget::VarOptSize,
+                    Widget::VarSizeOpt,
+                    Widget::VarSizeOpt,
 
                     int,
                     ProcessRun *,

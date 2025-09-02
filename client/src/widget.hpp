@@ -30,13 +30,13 @@ class WidgetTreeNode // tree concept, used by class Widget only
         template<typename IN, typename OUT                  > using check_const_cond_out_ptr_t = check_const_cond_t<IN, const OUT *, OUT *>;
 
     protected:
-        using VarDir       = std::variant<             dir8_t, std::function<       dir8_t(const Widget *)>>;
-        using VarInt       = std::variant<                int, std::function<          int(const Widget *)>>;
-        using VarU32       = std::variant<           uint32_t, std::function<     uint32_t(const Widget *)>>;
-        using VarOptSize      = std::variant<std::monostate, int, std::function<          int(const Widget *)>>;
-        using VarSize    = std::variant<                int, std::function<          int(const Widget *)>>;
-        using VarBool      = std::variant<               bool, std::function<         bool(const Widget *)>>;
-        using VarBlendMode = std::variant<      SDL_BlendMode, std::function<SDL_BlendMode(const Widget *)>>;
+        using VarDir       = std::variant<       dir8_t, std::function<       dir8_t(const Widget *)>>;
+        using VarInt       = std::variant<          int, std::function<          int(const Widget *)>>;
+        using VarU32       = std::variant<     uint32_t, std::function<     uint32_t(const Widget *)>>;
+        using VarSize      = std::variant<          int, std::function<          int(const Widget *)>>;
+        using VarSizeOpt   = std::optional<VarSize>;
+        using VarBool      = std::variant<         bool, std::function<         bool(const Widget *)>>;
+        using VarBlendMode = std::variant<SDL_BlendMode, std::function<SDL_BlendMode(const Widget *)>>;
 
     private:
         friend class Widget;
@@ -153,8 +153,10 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarDir;
         using WidgetTreeNode::VarInt;
         using WidgetTreeNode::VarU32;
-        using WidgetTreeNode::VarOptSize;
+        using WidgetTreeNode::VarSize;
+        using WidgetTreeNode::VarSizeOpt;
         using WidgetTreeNode::VarBool;
+        using WidgetTreeNode::VarBlendMode;
 
     public:
         struct ROI final
@@ -204,75 +206,17 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::ChildElement;
 
     public:
-        static bool hasIntDir (const Widget::VarDir &);
-        static bool hasFuncDir(const Widget::VarDir &);
-
-        static dir8_t  asIntDir(const Widget::VarDir &);
-        static dir8_t &asIntDir(      Widget::VarDir &);
-
-        static const std::function<dir8_t(const Widget *)> &asFuncDir(const Widget::VarDir &);
-        static       std::function<dir8_t(const Widget *)> &asFuncDir(      Widget::VarDir &);
-
-        static dir8_t evalDir(const Widget::VarDir &, const Widget *);
-
-    public:
-        static bool hasIntOff (const Widget::VarInt &);
-        static bool hasFuncOff(const Widget::VarInt &);
-
-        static int  asIntOff(const Widget::VarInt &);
-        static int &asIntOff(      Widget::VarInt &);
-
-        static const std::function<int(const Widget *)> &asFuncOff(const Widget::VarInt &);
-        static       std::function<int(const Widget *)> &asFuncOff(      Widget::VarInt &);
-
-        static int evalOff(const Widget::VarInt &, const Widget *);
-
-    public:
-        static bool hasSize    (const Widget::VarOptSize &);
-        static bool hasIntSize (const Widget::VarOptSize &);
-        static bool hasFuncSize(const Widget::VarOptSize &);
-
-        static int  asIntSize(const Widget::VarOptSize &);
-        static int &asIntSize(      Widget::VarOptSize &);
-
-        static const std::function<int(const Widget *)> &asFuncSize(const Widget::VarOptSize &);
-        static       std::function<int(const Widget *)> &asFuncSize(      Widget::VarOptSize &);
-
-    public:
-        static bool hasBoolFlag(const Widget::VarBool &);
-        static bool hasFuncFlag(const Widget::VarBool &);
-
-        static bool  asBoolFlag(const Widget::VarBool &);
-        static bool &asBoolFlag(      Widget::VarBool &);
-
-        static const std::function<bool(const Widget *)> &asFuncFlag(const Widget::VarBool &);
-        static       std::function<bool(const Widget *)> &asFuncFlag(      Widget::VarBool &);
-
-        static bool evalFlag(const Widget::VarBool &, const Widget *);
-
-    public:
-        static bool hasU32    (const Widget::VarU32 &);
-        static bool hasFuncU32(const Widget::VarU32 &);
-
-        static uint32_t  asU32(const Widget::VarU32 &);
-        static uint32_t &asU32(      Widget::VarU32 &);
-
-        static const std::function<uint32_t(const Widget *)> &asFuncU32(const Widget::VarU32 &);
-        static       std::function<uint32_t(const Widget *)> &asFuncU32(      Widget::VarU32 &);
-
-        static uint32_t evalU32(const Widget::VarU32 &, const Widget *);
-
-    public:
-        static bool hasBlendMode    (const Widget::VarBlendMode &);
-        static bool hasFuncBlendMode(const Widget::VarBlendMode &);
-
-        static SDL_BlendMode  asBlendMode(const Widget::VarBlendMode &);
-        static SDL_BlendMode &asBlendMode(      Widget::VarBlendMode &);
-
-        static const std::function<SDL_BlendMode(const Widget *)> &asFuncBlendMode(const Widget::VarBlendMode &);
-        static       std::function<SDL_BlendMode(const Widget *)> &asFuncBlendMode(      Widget::VarBlendMode &);
-
+        static dir8_t        evalDir      (const Widget::VarDir       &, const Widget *);
+        static int           evalOff      (const Widget::VarInt       &, const Widget *);
+        static uint32_t      evalU32      (const Widget::VarU32       &, const Widget *);
+        static int           evalSize     (const Widget::VarSize      &, const Widget *);
+        static int           evalSizeOpt  (const Widget::VarSizeOpt   &, const Widget *, const auto &);
+        static bool          evalFlag     (const Widget::VarBool      &, const Widget *);
         static SDL_BlendMode evalBlendMode(const Widget::VarBlendMode &, const Widget *);
+
+    public:
+        template<typename Func> static VarSize    transform(VarSize   , Func &&);
+        template<typename Func> static VarSizeOpt transform(VarSizeOpt, Func &&);
 
     private:
         class RecursionDetector final
@@ -319,8 +263,8 @@ class Widget: public WidgetTreeNode
         bool m_canSetSize = true;
 
     private:
-        Widget::VarOptSize m_w;
-        Widget::VarOptSize m_h;
+        Widget::VarSizeOpt m_w;
+        Widget::VarSizeOpt m_h;
 
     private:
         mutable bool m_hCalc = false;
@@ -336,8 +280,8 @@ class Widget: public WidgetTreeNode
                 Widget::VarInt,
                 Widget::VarInt,
 
-                Widget::VarOptSize = {},
-                Widget::VarOptSize = {},
+                Widget::VarSizeOpt = {},
+                Widget::VarSizeOpt = {},
 
                 std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> = {},
 
@@ -495,9 +439,9 @@ class Widget: public WidgetTreeNode
         Widget *disableSetSize();
 
     public:
-        virtual Widget *setW(Widget::VarOptSize) final;
-        virtual Widget *setH(Widget::VarOptSize) final;
-        virtual Widget *setSize(Widget::VarOptSize, Widget::VarOptSize) final;
+        virtual Widget *setW(Widget::VarSizeOpt) final;
+        virtual Widget *setH(Widget::VarSizeOpt) final;
+        virtual Widget *setSize(Widget::VarSizeOpt, Widget::VarSizeOpt) final;
 };
 
 #include "widget.impl.hpp"

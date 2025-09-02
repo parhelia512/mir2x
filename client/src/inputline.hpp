@@ -32,8 +32,8 @@ class InputLine: public Widget
                 Widget::VarInt,
                 Widget::VarInt,
 
-                Widget::VarOptSize,
-                Widget::VarOptSize,
+                Widget::VarSizeOpt,
+                Widget::VarSizeOpt,
 
                 bool,
 

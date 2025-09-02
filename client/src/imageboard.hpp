@@ -21,8 +21,8 @@
 class ImageBoard: public Widget
 {
     private:
-        Widget::VarOptSize m_varW;
-        Widget::VarOptSize m_varH;
+        Widget::VarSizeOpt m_varW;
+        Widget::VarSizeOpt m_varH;
 
     private:
         Widget::VarU32 m_varColor;
@@ -44,8 +44,8 @@ class ImageBoard: public Widget
                 Widget::VarInt,
                 Widget::VarInt,
 
-                Widget::VarOptSize, // {} means image width , otherwise rescale the image
-                Widget::VarOptSize, // {} means image height, otherwise rescale the image
+                Widget::VarSizeOpt, // {} means image width , otherwise rescale the image
+                Widget::VarSizeOpt, // {} means image height, otherwise rescale the image
 
                 std::function<SDL_Texture *(const Widget *)>,
 

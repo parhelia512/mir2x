@@ -8,7 +8,7 @@ FriendItem::FriendItem(
         Widget::VarDir  argDir,
         Widget::VarInt  argX,
         Widget::VarInt  argY,
-        Widget::VarOptSize argW,
+        Widget::VarSizeOpt argW,
 
         const SDChatPeerID &argCPID,
 

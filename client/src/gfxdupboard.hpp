@@ -13,8 +13,8 @@ class GfxDupBoard: public Widget
                 Widget::VarInt argX,
                 Widget::VarInt argY,
 
-                Widget::VarOptSize argW,
-                Widget::VarOptSize argH,
+                Widget::VarSizeOpt argW,
+                Widget::VarSizeOpt argH,
 
                 const Widget *argWidget,
 

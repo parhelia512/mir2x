@@ -595,7 +595,7 @@ RuntimeConfigBoard::MenuPage::MenuPage(
         int argX,
         int argY,
 
-        Widget::VarOptSize argSeperatorW,
+        Widget::VarSizeOpt argSeperatorW,
         int argGap,
 
         std::initializer_list<std::tuple<const char8_t *, Widget *, bool>> argTabList,
@@ -689,7 +689,7 @@ RuntimeConfigBoard::MenuPage::MenuPage(
         }
     }
 
-    if(!Widget::hasSize(argSeperatorW)){
+    if(!argSeperatorW.has_value()){
         m_buttonMask.setW(w());
     }
     m_buttonMask.setH(h());

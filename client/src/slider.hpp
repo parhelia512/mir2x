@@ -38,8 +38,8 @@ class Slider: public Widget
                 Widget::VarInt argX,
                 Widget::VarInt argY,
 
-                Widget::VarOptSize argW,
-                Widget::VarOptSize argH,
+                Widget::VarSizeOpt argW,
+                Widget::VarSizeOpt argH,
 
                 bool argHSlider,
 

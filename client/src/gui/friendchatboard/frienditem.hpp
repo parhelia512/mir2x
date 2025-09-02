@@ -42,7 +42,7 @@ struct FriendItem: public Widget
     FriendItem(Widget::VarDir,
             Widget::VarInt,
             Widget::VarInt,
-            Widget::VarOptSize, // flexible width
+            Widget::VarSizeOpt, // flexible width
 
             const SDChatPeerID &,
 

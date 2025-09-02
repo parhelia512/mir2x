@@ -1,15 +1,3 @@
-template<typename T> Widget::ROI Widget::makeROI(const T &t)
-{
-    const auto [x, y, w, h] = t;
-    return Widget::ROI
-    {
-        .x = x,
-        .y = y,
-        .w = w,
-        .h = h,
-    };
-}
-
 auto WidgetTreeNode::parent(this auto && self, unsigned level) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
     check_const_cond_out_ptr_t<decltype(self), Widget> p = std::addressof(self);
@@ -184,6 +172,51 @@ template<std::derived_from<Widget> T> auto WidgetTreeNode::hasParent(this auto &
         }
     }
     return nullptr;
+}
+
+template<typename T> Widget::ROI Widget::makeROI(const T &t)
+{
+    const auto [x, y, w, h] = t;
+    return Widget::ROI
+    {
+        .x = x,
+        .y = y,
+        .w = w,
+        .h = h,
+    };
+}
+
+int Widget::evalSizeOpt(const Widget::VarSizeOpt &arg, const Widget *p, const auto &f)
+{
+    if(arg.has_value()){
+        return evalSize(arg.value(), p);
+    }
+    else{
+        return f();
+    }
+}
+
+template<typename Func> Widget::VarSize Widget::transform(Widget::VarSize arg, Func && func)
+{
+    if(arg.index() == 0){
+        return func(std::get<int>(arg));
+    }
+    else{
+        return [arg = std::move(arg), func = std::forward<Func>(func)](const Widget *p)
+        {
+            return func(std::get<std::function<int(const Widget *)>>(arg)(p));
+        };
+    }
+}
+
+template<typename Func> Widget::VarSizeOpt Widget::transform(Widget::VarSizeOpt arg, Func && func)
+{
+    if(arg.has_value()){
+        return transform(arg.value(), std::forward<Func>(func));
+    }
+    else{
+        return std::nullopt;
+    }
 }
 
 auto Widget::focusedChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>

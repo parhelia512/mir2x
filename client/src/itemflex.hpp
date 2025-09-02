@@ -19,7 +19,7 @@ class ItemFlex: public Widget
                 Widget::VarInt argX,
                 Widget::VarInt argY,
 
-                Widget::VarOptSize argVarOptSize,
+                Widget::VarSizeOpt argVarSizeOpt,
 
                 bool argHBox,
                 Widget::VarInt argItemSpace = 0,
@@ -35,8 +35,8 @@ class ItemFlex: public Widget
                   std::move(argX),
                   std::move(argY),
 
-                  /**/  argHBox ? Widget::VarOptSize{} : std::move(argVarOptSize),
-                  /**/ !argHBox ? Widget::VarOptSize{} : std::move(argVarOptSize),
+                  /**/  argHBox ? Widget::VarSizeOpt{} : std::move(argVarSizeOpt),
+                  /**/ !argHBox ? Widget::VarSizeOpt{} : std::move(argVarSizeOpt),
 
                   {},
 

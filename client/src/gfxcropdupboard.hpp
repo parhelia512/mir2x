@@ -22,14 +22,14 @@ class GfxCropDupBoard: public Widget
                 Widget::VarInt argX,
                 Widget::VarInt argY,
 
-                Widget::VarOptSize argW,
-                Widget::VarOptSize argH,
+                Widget::VarSizeOpt argW,
+                Widget::VarSizeOpt argH,
 
                 const Widget *argWidget,
 
                 Widget::VarInt argCropX,
                 Widget::VarInt argCropY,
-                Widget::VarInt argCropW, // don't use VarOptSize because empty VarOptSize is not well-defined
+                Widget::VarInt argCropW, // don't use VarSizeOpt because empty VarSizeOpt is not well-defined
                 Widget::VarInt argCropH, // ...
 
                 Widget *argParent     = nullptr,
@@ -55,15 +55,7 @@ class GfxCropDupBoard: public Widget
             , m_cropY(std::move(argCropY))
             , m_cropW(std::move(argCropW))
             , m_cropH(std::move(argCropH))
-        {
-            if(Widget::hasFuncOff(m_cropX)){ fflassert(Widget::asFuncOff(m_cropX), m_cropX); }
-            if(Widget::hasFuncOff(m_cropY)){ fflassert(Widget::asFuncOff(m_cropY), m_cropY); }
-            if(Widget::hasFuncOff(m_cropW)){ fflassert(Widget::asFuncOff(m_cropW), m_cropW); }
-            if(Widget::hasFuncOff(m_cropH)){ fflassert(Widget::asFuncOff(m_cropH), m_cropH); }
-
-            if(Widget::hasIntOff(m_cropW)){ fflassert(Widget::asIntOff(m_cropW) >= 0, m_cropW); }
-            if(Widget::hasIntOff(m_cropH)){ fflassert(Widget::asIntOff(m_cropH) >= 0, m_cropH); }
-        }
+        {}
 
     public:
         void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override

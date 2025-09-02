@@ -10,7 +10,7 @@ CropViewBoard::CropViewBoard(
 
         Widget::VarInt argGfxCropX, // crop on gfx widget
         Widget::VarInt argGfxCropY, // ...
-        Widget::VarInt argGfxCropW, // crop width, don't use Widget::VarOptSize, support over-cropping
+        Widget::VarInt argGfxCropW, // crop width, don't use Widget::VarSizeOpt, support over-cropping
         Widget::VarInt argGfxCropH, // ...
 
         std::array<Widget::VarInt, 4> argMargin,

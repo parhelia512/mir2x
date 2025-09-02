@@ -50,7 +50,7 @@ class CBMiddle: public Widget
                 Widget::VarDir,
                 Widget::VarInt,
                 Widget::VarInt,
-                Widget::VarOptSize,
+                Widget::VarSizeOpt,
 
                 ProcessRun *,
 
