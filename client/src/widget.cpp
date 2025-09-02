@@ -272,7 +272,7 @@ int Widget::evalSize(const Widget::VarSize &varSize, const Widget *p)
     varSize);
 }
 
-bool Widget::evalFlag(const Widget::VarBool &varFlag, const Widget *p)
+bool Widget::evalBool(const Widget::VarBool &varFlag, const Widget *p)
 {
     return std::visit(VarDispatcher
     {
@@ -847,7 +847,7 @@ bool Widget::show() const
 
 bool Widget::localShow() const
 {
-    return Widget::evalFlag(m_show.first, this) != m_show.second;
+    return Widget::evalBool(m_show.first, this) != m_show.second;
 }
 
 void Widget::flipShow()
@@ -871,7 +871,7 @@ bool Widget::active() const
 
 bool Widget::localActive() const
 {
-    return Widget::evalFlag(m_active.first, this) != m_active.second;
+    return Widget::evalBool(m_active.first, this) != m_active.second;
 }
 
 void Widget::flipActive()

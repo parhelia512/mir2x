@@ -211,7 +211,7 @@ class Widget: public WidgetTreeNode
         static uint32_t      evalU32      (const Widget::VarU32       &, const Widget *);
         static int           evalSize     (const Widget::VarSize      &, const Widget *);
         static int           evalSizeOpt  (const Widget::VarSizeOpt   &, const Widget *, const auto &);
-        static bool          evalFlag     (const Widget::VarBool      &, const Widget *);
+        static bool          evalBool     (const Widget::VarBool      &, const Widget *);
         static SDL_BlendMode evalBlendMode(const Widget::VarBlendMode &, const Widget *);
 
     public:
