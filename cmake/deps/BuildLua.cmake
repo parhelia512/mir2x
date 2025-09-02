@@ -8,7 +8,9 @@ ENDIF()
 ExternalProject_Add(
     lua
 
-    URL "http://www.lua.org/ftp/lua-5.4.7.tar.gz"
+    URL "https://www.lua.org/ftp/lua-5.4.8.tar.gz"
+    URL_HASH SHA256=4f18ddae154e793e46eeab727c59ef1c0c0c2b744e7b94219710d76f530629ae
+
     DOWNLOAD_NAME "lua"
     DOWNLOAD_EXTRACT_TIMESTAMP 0
 
