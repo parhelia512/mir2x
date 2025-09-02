@@ -1,5 +1,6 @@
 #include <atomic>
 #include "mathf.hpp"
+#include "pathf.hpp"
 #include "widget.hpp"
 
 WidgetTreeNode::WidgetTreeNode(Widget *argParent, bool argAutoDelete)
@@ -194,100 +195,128 @@ Widget::ROI Widget::ROIOpt::evalROI(const Widget::ROI &roi) const
     }
 }
 
-dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widgetPtr)
+dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *p)
 {
+    const auto fnValidDir = [](dir8_t argDir)
+    {
+        return pathf::dirValid(argDir) ? argDir : DIR_NONE;
+    };
+
     return std::visit(VarDispatcher
     {
-        [](const dir8_t &arg)
+        [&fnValidDir](dir8_t varg)
         {
-            return arg;
+            return fnValidDir(varg);
         },
 
-        [widgetPtr](const auto &arg)
+        [&fnValidDir, p](const auto &varg)
         {
-            return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
+            return varg ? fnValidDir(varg(p)) : DIR_NONE;
         },
-    }, varDir);
+    },
+
+    varDir);
 }
 
-int Widget::evalOff(const Widget::VarInt &varOffset, const Widget *widgetPtr)
+int Widget::evalOff(const Widget::VarInt &varOffset, const Widget *p)
 {
     return std::visit(VarDispatcher
     {
-        [](const int &arg)
+        [](int varg)
         {
-            return arg;
+            return varg;
         },
 
-        [widgetPtr](const auto &arg)
+        [p](const auto &varg)
         {
-            return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
+            return varg ? varg(p) : 0;
         },
-    }, varOffset);
+    },
+
+    varOffset);
 }
 
-uint32_t Widget::evalU32(const Widget::VarU32 &varU32, const Widget *widgetPtr)
+uint32_t Widget::evalU32(const Widget::VarU32 &varU32, const Widget *p)
 {
     return std::visit(VarDispatcher
     {
-        [](const uint32_t &arg)
+        [](uint32_t varg)
         {
-            return arg;
+            return varg;
         },
 
-        [widgetPtr](const auto &arg)
+        [p](const auto &varg)
         {
-            return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
+            return varg ? varg(p) : UINT32_C(0);
         },
-    }, varU32);
+    },
+
+    varU32);
 }
 
-int Widget::evalSize(const Widget::VarSize &varSize, const Widget *widgetPtr)
+int Widget::evalSize(const Widget::VarSize &varSize, const Widget *p)
 {
     return std::visit(VarDispatcher
     {
-        [](const int &arg)
+        [](int varg)
         {
-            return arg;
+            return std::max<int>(0, varg);
         },
 
-        [widgetPtr](const auto &arg)
+        [p](const auto &varg)
         {
-            return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
+            return varg ? std::max<int>(0, varg(p)) : 0;
         },
-    }, varSize);
+    },
+
+    varSize);
 }
 
-bool Widget::evalFlag(const Widget::VarBool &varFlag, const Widget *widgetPtr)
+bool Widget::evalFlag(const Widget::VarBool &varFlag, const Widget *p)
 {
     return std::visit(VarDispatcher
     {
-        [](const bool &arg)
+        [](bool varg)
         {
-            return arg;
+            return varg;
         },
 
-        [widgetPtr](const auto &arg)
+        [p](const auto &varg)
         {
-            return arg ? arg(widgetPtr) : throw fflerror("invalid argument");
+            return varg ? varg(p) : false;
         },
-    }, varFlag);
+    },
+
+    varFlag);
 }
 
-SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, const Widget *widget)
+SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, const Widget *p)
 {
+    const auto fnValidMode = [](SDL_BlendMode argMode)
+    {
+        switch(argMode){
+            case SDL_BLENDMODE_ADD:
+            case SDL_BLENDMODE_MOD:
+            case SDL_BLENDMODE_MUL:
+            case SDL_BLENDMODE_BLEND: return argMode;
+            default                 : return SDL_BLENDMODE_NONE;
+        }
+    };
+
     return std::visit(VarDispatcher
     {
-        [](SDL_BlendMode arg)
+        [&](SDL_BlendMode varg)
         {
-            return arg;
+            return fnValidMode(varg);
         },
 
-        [widget](const auto &arg)
+        [&fnValidMode, p](const auto &varg)
         {
-            return arg ? arg(widget) : throw fflerror("invalid argument");
+            return varg ? fnValidMode(varg(p)) : SDL_BLENDMODE_NONE;
         },
-    }, varBlendMode);
+    },
+
+    varBlendMode);
 }
 
 Widget::Widget(
