@@ -1,5 +1,6 @@
 #pragma once
 #include <initializer_list>
+#include "fflerror.hpp"
 #include "mathf.hpp"
 #include "widget.hpp"
 #include "gfxcropboard.hpp"
@@ -46,7 +47,7 @@ class GfxCutoutBoard: public Widget
                   argAutoDelete,
               }
 
-            , m_gfxWidget([argWidget]{ fflassert(argWidget); return argWidget; }())
+            , m_gfxWidget(fflcheck(argWidget))
 
             , m_cropX(argCropX)
             , m_cropY(argCropY)

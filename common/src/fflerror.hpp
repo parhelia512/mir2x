@@ -39,18 +39,18 @@ template<typename ... Args> constexpr size_t _fflerror_count_helper(Args && ...)
         } \
         while(0)
 
-#define argcheck(x, ...) (\
-        []<typename T, typename... F>(T && argx, F && ... f) -> decltype(auto) \
+#define fflcheck(x, ...) (\
+        []<typename T, typename ... F>(T && argx, F && ... f) -> decltype(auto) \
         { \
             if constexpr (sizeof...(F) == 0){ \
                 fflassert(argx); \
             } \
             else if constexpr (sizeof...(F) == 1){ \
-                static_assert(std::is_invocable_v<F...>, "argcheck's second argument must be an invocable"); \
+                static_assert(std::is_invocable_v<F...>, "checker is not invocable"); \
                 fflassert(std::invoke(std::forward<F>(f)...)); \
             } \
             else{ \
-                static_assert(sizeof...(F) < 2, "argcheck must have 1 or 2 arguments"); \
+                static_assert(sizeof...(F) < 2, "invalid number of arguments"); \
             } \
             return std::forward<T>(argx); \
         }) \
