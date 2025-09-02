@@ -27,6 +27,31 @@ template<typename ... Args> constexpr size_t _fflerror_count_helper(Args && ...)
     return sizeof...(Args);
 }
 
-#define fflreach() fflerror("fflreach")
+#define fflreach() fflerror("bad_reach")
 #define fflvalue(...) fflerror("%s", _fflerror_helper(0, __VA_ARGS__).c_str())
-#define fflassert(cond, ...) do{if(cond){}else{throw fflerror("assertion failed: %s%s", #cond, (_fflerror_count_helper(__VA_ARGS__) == 0) ? "" : (std::string(", ") + _fflerror_helper(0, ##__VA_ARGS__)).c_str());}}while(0)
+
+#define fflassert(cond, ...) \
+        do{ \
+            if(cond){}else{ \
+                throw fflerror("assertion failed: %s%s", #cond, \
+                        (_fflerror_count_helper(__VA_ARGS__) == 0) ? "" : (std::string(", ") + _fflerror_helper(0, ##__VA_ARGS__)).c_str()); \
+            } \
+        } \
+        while(0)
+
+#define argcheck(x, ...) (\
+        []<typename T, typename... F>(T && argx, F && ... f) -> decltype(auto) \
+        { \
+            if constexpr (sizeof...(F) == 0){ \
+                fflassert(argx); \
+            } \
+            else if constexpr (sizeof...(F) == 1){ \
+                static_assert(std::is_invocable_v<F...>, "argcheck's second argument must be an invocable"); \
+                fflassert(std::invoke(std::forward<F>(f)...)); \
+            } \
+            else{ \
+                static_assert(sizeof...(F) < 2, "argcheck must have 1 or 2 arguments"); \
+            } \
+            return std::forward<T>(argx); \
+        }) \
+        (std::forward<decltype((x))>(x) __VA_OPT__(,) __VA_ARGS__)
