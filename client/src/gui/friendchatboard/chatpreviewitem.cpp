@@ -73,7 +73,7 @@ ChatPreviewItem::ChatPreviewItem(
           1,
           14,
           0,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           this,
           false,

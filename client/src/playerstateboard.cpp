@@ -193,15 +193,15 @@ void PlayerStateBoard::drawEx(int startDstX, int startDstY, const Widget::ROIOpt
     fnDrawLabel(279, 97 + 24 * 7, str_printf(u8"%d", combatNode.dcHit));
     fnDrawLabel(279, 97 + 24 * 8, str_printf(u8"%d", combatNode.dcDodge));
 
-    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"攻击 %d - %d", combatNode. dc[0], combatNode. dc[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX +  21, startDstY + 317);
-    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"防御 %d - %d", combatNode. ac[0], combatNode. ac[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 130, startDstY + 317);
-    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"魔法 %d - %d", combatNode. mc[0], combatNode. mc[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX +  21, startDstY + 345);
-    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"魔防 %d - %d", combatNode.mac[0], combatNode.mac[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 130, startDstY + 345);
-    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"道术 %d - %d", combatNode. sc[0], combatNode. sc[1]).c_str(), 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 233, startDstY + 345);
+    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"攻击 %d - %d", combatNode. dc[0], combatNode. dc[1]).c_str(), 1, 12, 0, colorf::WHITE_A255).drawAt(DIR_UPLEFT, startDstX +  21, startDstY + 317);
+    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"防御 %d - %d", combatNode. ac[0], combatNode. ac[1]).c_str(), 1, 12, 0, colorf::WHITE_A255).drawAt(DIR_UPLEFT, startDstX + 130, startDstY + 317);
+    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"魔法 %d - %d", combatNode. mc[0], combatNode. mc[1]).c_str(), 1, 12, 0, colorf::WHITE_A255).drawAt(DIR_UPLEFT, startDstX +  21, startDstY + 345);
+    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"魔防 %d - %d", combatNode.mac[0], combatNode.mac[1]).c_str(), 1, 12, 0, colorf::WHITE_A255).drawAt(DIR_UPLEFT, startDstX + 130, startDstY + 345);
+    LabelBoard(DIR_UPLEFT, 0, 0, str_printf(u8"道术 %d - %d", combatNode. sc[0], combatNode. sc[1]).c_str(), 1, 12, 0, colorf::WHITE_A255).drawAt(DIR_UPLEFT, startDstX + 233, startDstY + 345);
 
-    LabelBoard(DIR_UPLEFT, 0, 0, u8"攻击元素", 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 10, startDstY + 376);
-    LabelBoard(DIR_UPLEFT, 0, 0, u8"防御元素", 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 10, startDstY + 406);
-    LabelBoard(DIR_UPLEFT, 0, 0, u8"弱点元素", 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)).drawAt(DIR_UPLEFT, startDstX + 10, startDstY + 436);
+    LabelBoard(DIR_UPLEFT, 0, 0, u8"攻击元素", 1, 12, 0, colorf::WHITE_A255).drawAt(DIR_UPLEFT, startDstX + 10, startDstY + 376);
+    LabelBoard(DIR_UPLEFT, 0, 0, u8"防御元素", 1, 12, 0, colorf::WHITE_A255).drawAt(DIR_UPLEFT, startDstX + 10, startDstY + 406);
+    LabelBoard(DIR_UPLEFT, 0, 0, u8"弱点元素", 1, 12, 0, colorf::WHITE_A255).drawAt(DIR_UPLEFT, startDstX + 10, startDstY + 436);
 
     for(int i = MET_BEGIN; i < MET_END; ++i){
         const auto [dcElem, acElem] = [i, &combatNode]() -> std::array<int, 2>
@@ -335,7 +335,7 @@ void PlayerStateBoard::drawEx(int startDstX, int startDstY, const Widget::ROIOpt
     for(int i = 0; i < 9; ++i){
         if(mathf::pointInRectangle(mouseX, mouseY, startDstX + labelGridX, startDstY + labelGridY + labelGridD * i, labelGridW, labelGridH)){
             g_sdlDevice->fillRectangle(colorf::RGBA(0, 100, 0, 100), startDstX + labelGridX, startDstY + labelGridY + labelGridD * i, labelGridW, labelGridH);
-            const LabelBoard labelNameBoard(DIR_UPLEFT, 0, 0, labelName[i], 1, 12, 0, colorf::WHITE + colorf::A_SHF(255));
+            const LabelBoard labelNameBoard(DIR_UPLEFT, 0, 0, labelName[i], 1, 12, 0, colorf::WHITE_A255);
             g_sdlDevice->fillRectangle(colorf::RGBA(0, 100, 0, 200), mouseX - labelNameBoard.w(), mouseY - labelNameBoard.h(), labelNameBoard.w(), labelNameBoard.h());
             labelNameBoard.drawAt(DIR_DOWNRIGHT, mouseX, mouseY);
         }

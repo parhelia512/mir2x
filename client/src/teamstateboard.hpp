@@ -53,7 +53,7 @@ class TeamStateBoard: public Widget
         const uint8_t  m_fontSize  = 12;
         const uint8_t  m_fontStyle = 0;
 
-        const uint32_t m_fontColor       = colorf::WHITE + colorf::A_SHF(255);
+        const uint32_t m_fontColor       = colorf::WHITE_A255;
         const uint32_t m_hoveredColor    = colorf::BLUE  + colorf::A_SHF(100);
         const uint32_t m_selectedBGColor = colorf::RED   + colorf::A_SHF(100);
 

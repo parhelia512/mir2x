@@ -64,7 +64,7 @@ ChatItemRef::ChatItemRef(
           ChatItemRef::CROSS_FONT_SIZES[0],
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
       }
 
     , m_crossBg
@@ -181,7 +181,7 @@ ChatItemRef::ChatItemRef(
           10,
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
           0U,
 
           LALIGN_LEFT,
@@ -189,7 +189,7 @@ ChatItemRef::ChatItemRef(
           0,
 
           2,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           nullptr,
           nullptr,

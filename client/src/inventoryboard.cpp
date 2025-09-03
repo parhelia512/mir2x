@@ -509,7 +509,7 @@ void InventoryBoard::drawInvOpTitle() const
         12,
         0,
 
-        colorf::WHITE + colorf::A_SHF(255),
+        colorf::WHITE_A255,
     };
     // title.drawAt(DIR_NONE, startDstX + 238, startDstY + 25);
     title.drawAt(DIR_NONE, 238, 25);
@@ -596,7 +596,7 @@ void InventoryBoard::drawItemHoverText(const PackBin &bin) const
         12,
         0,
 
-        colorf::WHITE + colorf::A_SHF(255),
+        colorf::WHITE_A255,
         0U,
 
         LALIGN_JUSTIFY,

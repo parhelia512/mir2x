@@ -24,7 +24,7 @@ class TextShadowBoard: public Widget
                 uint8_t argFontSize  = 8,
                 uint8_t argFontStyle = 0,
 
-                Widget::VarU32 argFontColor       = colorf::WHITE + colorf::A_SHF(255),
+                Widget::VarU32 argFontColor       = colorf::WHITE_A255,
                 Widget::VarU32 argFontShadowColor = colorf::BLACK + colorf::A_SHF(128),
 
                 Widget *argParent     = nullptr,

@@ -136,7 +136,7 @@ NPCChatBoard::NPCChatBoard(
           0,
 
           2,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           nullptr,
           nullptr,

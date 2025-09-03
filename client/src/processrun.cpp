@@ -350,7 +350,7 @@ void ProcessRun::draw() const
         for(int x = x0; x <= x1; ++x){
             if(auto p = fireWallList.find({x, y}); p != fireWallList.end()){
                 for(auto magicPtr: p->second){
-                    magicPtr->drawViewOff(m_viewX, m_viewY, colorf::WHITE + colorf::A_SHF(255));
+                    magicPtr->drawViewOff(m_viewX, m_viewY, colorf::WHITE_A255);
                 }
             }
 
@@ -426,13 +426,13 @@ void ProcessRun::draw() const
     // draw magics
     for(auto &p: m_fixedLocMagicList){
         if(!p->getGfxEntry()->onGround){
-            p->drawViewOff(m_viewX, m_viewY, colorf::WHITE + colorf::A_SHF(255));
+            p->drawViewOff(m_viewX, m_viewY, colorf::WHITE_A255);
         }
     }
 
     for(auto &p: m_followUIDMagicList){
         if(!p->done()){
-            p->drawViewOff(m_viewX, m_viewY, colorf::WHITE + colorf::A_SHF(255));
+            p->drawViewOff(m_viewX, m_viewY, colorf::WHITE_A255);
         }
     }
 

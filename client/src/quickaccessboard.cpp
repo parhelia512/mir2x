@@ -85,7 +85,7 @@ QuickAccessBoard::Grid::Grid(
           false,
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
           SDL_BLENDMODE_NONE,
 
           this,
@@ -110,7 +110,7 @@ QuickAccessBoard::Grid::Grid(
           10,
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
           SDL_BLENDMODE_NONE,
 
           this,
@@ -161,7 +161,7 @@ QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
           false,
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
           SDL_BLENDMODE_NONE,
 
           this,

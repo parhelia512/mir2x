@@ -166,7 +166,7 @@ class FireWall_RUN: public FixedLocMagic
                 return colorf::WHITE + colorf::A_SHF(colorf::round255(255.0f * (1.0f - std::min<float>((m_accuTime - m_fadeStartTime) / to_f(m_fadeDuration), 1.0f))));
             }
             else{
-                return colorf::WHITE + colorf::A_SHF(255);
+                return colorf::WHITE_A255;
             }
         }
 };

@@ -142,7 +142,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                   u8"好友名称",
                   1,
                   14,
-                  0,colorf::WHITE + colorf::A_SHF(255),
+                  0,colorf::WHITE_A255,
 
                   this,
                   true,
@@ -320,7 +320,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                   u8"【聊天记录】",
                   1,
                   14,
-                  0,colorf::WHITE + colorf::A_SHF(255),
+                  0,colorf::WHITE_A255,
 
                   this,
                   true,
@@ -406,7 +406,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                   u8"【好友列表】",
                   1,
                   14,
-                  0,colorf::WHITE + colorf::A_SHF(255),
+                  0,colorf::WHITE_A255,
 
                   this,
                   true,
@@ -544,7 +544,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                   u8"【查找用户】",
                   1,
                   14,
-                  0,colorf::WHITE + colorf::A_SHF(255),
+                  0,colorf::WHITE_A255,
 
                   this,
                   true,
@@ -627,7 +627,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                   u8"【创建群聊】",
                   1,
                   14,
-                  0,colorf::WHITE + colorf::A_SHF(255),
+                  0,colorf::WHITE_A255,
 
                   this,
                   true,

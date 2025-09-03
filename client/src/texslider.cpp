@@ -108,16 +108,16 @@ TexSlider::TexSlider(
                   case BEVENT_ON:
                       {
                           if(active()){ return colorf::BLUE  + colorf::A_SHF(200); }
-                          else        { return colorf::WHITE + colorf::A_SHF(255); }
+                          else        { return colorf::WHITE_A255; }
                       }
                   case BEVENT_DOWN:
                       {
                           if(active()){ return colorf::RED   + colorf::A_SHF(200); }
-                          else        { return colorf::WHITE + colorf::A_SHF(255); }
+                          else        { return colorf::WHITE_A255; }
                       }
                   default:
                       {
-                          return colorf::WHITE + colorf::A_SHF(255);
+                          return colorf::WHITE_A255;
                       }
               }
           },

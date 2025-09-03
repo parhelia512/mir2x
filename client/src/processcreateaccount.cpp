@@ -15,9 +15,9 @@ extern SDLDevice *g_sdlDevice;
 
 ProcessCreateAccount::ProcessCreateAccount()
     : Process()
-    , m_LBID        (DIR_UPLEFT, 0, 0, u8"账号"    , 1, 15, 0, colorf::WHITE + colorf::A_SHF(255))
-    , m_LBPwd       (DIR_UPLEFT, 0, 0, u8"密码"    , 1, 15, 0, colorf::WHITE + colorf::A_SHF(255))
-    , m_LBPwdConfirm(DIR_UPLEFT, 0, 0, u8"确认密码", 1, 15, 0, colorf::WHITE + colorf::A_SHF(255))
+    , m_LBID        (DIR_UPLEFT, 0, 0, u8"账号"    , 1, 15, 0, colorf::WHITE_A255)
+    , m_LBPwd       (DIR_UPLEFT, 0, 0, u8"密码"    , 1, 15, 0, colorf::WHITE_A255)
+    , m_LBPwdConfirm(DIR_UPLEFT, 0, 0, u8"确认密码", 1, 15, 0, colorf::WHITE_A255)
     , m_boxID
       {
           DIR_LEFT,
@@ -31,10 +31,10 @@ ProcessCreateAccount::ProcessCreateAccount()
           2,
           15,
           0,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           2,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           [this]()
           {
@@ -59,10 +59,10 @@ ProcessCreateAccount::ProcessCreateAccount()
           2,
           15,
           0,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           2,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           [this]()
           {
@@ -87,10 +87,10 @@ ProcessCreateAccount::ProcessCreateAccount()
           2,
           15,
           0,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           2,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           [this]()
           {

@@ -57,7 +57,7 @@ CBFace::CBFace(
           false,
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
           SDL_BLENDMODE_NONE,
 
           this,
@@ -86,7 +86,7 @@ CBFace::CBFace(
           false,
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
           SDL_BLENDMODE_NONE,
 
           this,

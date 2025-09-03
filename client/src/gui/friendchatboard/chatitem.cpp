@@ -96,7 +96,7 @@ ChatItem::ChatItem(
           12,
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
           0U,
 
           LALIGN_LEFT,
@@ -104,7 +104,7 @@ ChatItem::ChatItem(
           0,
 
           2,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           nullptr,
           nullptr,
@@ -311,8 +311,8 @@ bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, int start
                 6,
 
                 {
-                    {(new LabelBoard(DIR_UPLEFT, 0, 0, u8"引用" , 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)))->setData(std::make_any<std::string>("引用")), false, true},
-                    {(new LabelBoard(DIR_UPLEFT, 0, 0, u8"复制" , 1, 12, 0, colorf::WHITE + colorf::A_SHF(255)))->setData(std::make_any<std::string>("复制")), false, true},
+                    {(new LabelBoard(DIR_UPLEFT, 0, 0, u8"引用" , 1, 12, 0, colorf::WHITE_A255))->setData(std::make_any<std::string>("引用")), false, true},
+                    {(new LabelBoard(DIR_UPLEFT, 0, 0, u8"复制" , 1, 12, 0, colorf::WHITE_A255))->setData(std::make_any<std::string>("复制")), false, true},
                 },
 
                 [this](Widget *item) // create new menu board whenever click a new chat item

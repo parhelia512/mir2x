@@ -26,7 +26,7 @@ class LabelBoard: public Widget
                 uint8_t = 10,
                 uint8_t =  0,
 
-                uint32_t = colorf::WHITE + colorf::A_SHF(255),
+                uint32_t = colorf::WHITE_A255,
 
                 Widget * = nullptr,
                 bool     = false);
