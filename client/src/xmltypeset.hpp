@@ -9,6 +9,7 @@
 #include "colorf.hpp"
 #include "bevent.hpp"
 #include "xmlparagraph.hpp"
+#include "widget.hpp" // Widget::VarXXX
 
 class XMLTypeset // means XMLParagraph typeset
 {
@@ -33,12 +34,13 @@ class XMLTypeset // means XMLParagraph typeset
         int m_lineSpace;
 
     private:
-        uint8_t  m_font;
-        uint8_t  m_fontSize;
-        uint8_t  m_fontStyle;
-        uint32_t m_fontColor;
-        uint32_t m_fontBGColor;
-        uint32_t m_imageMaskColor;
+        uint8_t m_font;
+        uint8_t m_fontSize;
+        uint8_t m_fontStyle;
+
+        Widget::VarU32 m_fontColor;
+        Widget::VarU32 m_fontBGColor;
+        Widget::VarU32 m_imageMaskColor;
 
     private:
         int m_px = 0;
@@ -57,28 +59,35 @@ class XMLTypeset // means XMLParagraph typeset
 
     public:
         XMLTypeset(
-                int      maxLineWidth,
-                int      lineAlign             = LALIGN_LEFT,
-                bool     canThrough            = true,
-                uint8_t  defaultFont           = 0,
-                uint8_t  defaultFontSize       = 8,
-                uint8_t  defaultFontStyle      = 0,
-                uint32_t defaultFontColor      = colorf::WHITE + colorf::A_SHF(255),
-                uint32_t defaultFontBGColor    = 0,
-                uint32_t defaultImageMaskColor = colorf::RGBA(0XFF, 0XFF, 0XFF, 0XFF),
-                int      lineSpace             = 0,
-                int      wordSpace             = 0)
+                int maxLineWidth,
+
+                int  lineAlign  = LALIGN_LEFT,
+                bool canThrough = true,
+
+                uint8_t defaultFont      = 0,
+                uint8_t defaultFontSize  = 8,
+                uint8_t defaultFontStyle = 0,
+
+                Widget::VarU32 defaultFontColor      = colorf::WHITE_A255,
+                Widget::VarU32 defaultFontBGColor    = 0U,
+                Widget::VarU32 defaultImageMaskColor = colorf::WHITE_A255,
+
+                int lineSpace = 0,
+                int wordSpace = 0)
+
             : m_lineWidth(maxLineWidth)
             , m_lineAlign(lineAlign)
             , m_canThrough(canThrough)
             , m_wordSpace(wordSpace)
             , m_lineSpace(lineSpace)
+
             , m_font(defaultFont)
             , m_fontSize(defaultFontSize)
             , m_fontStyle(defaultFontStyle)
-            , m_fontColor(defaultFontColor)
-            , m_fontBGColor(defaultFontBGColor)
-            , m_imageMaskColor(defaultImageMaskColor)
+
+            , m_fontColor(std::move(defaultFontColor))
+            , m_fontBGColor(std::move(defaultFontBGColor))
+            , m_imageMaskColor(std::move(defaultImageMaskColor))
             , m_paragraph(std::make_unique<XMLParagraph>())
         {
             checkDefaultFontEx();
@@ -299,19 +308,19 @@ class XMLTypeset // means XMLParagraph typeset
             m_fontStyle = fontStyle;
         }
 
-        void setFontColor(uint32_t fontColor)
+        void setFontColor(Widget::VarU32 fontColor)
         {
-            m_fontColor = fontColor;
+            m_fontColor = std::move(fontColor);
         }
 
-        void setFontBGColor(uint32_t fontBGColor)
+        void setFontBGColor(Widget::VarU32 fontBGColor)
         {
-            m_fontBGColor = fontBGColor;
+            m_fontBGColor = std::move(fontBGColor);
         }
 
-        void setImageMaskColor(uint32_t imageMaskColor)
+        void setImageMaskColor(Widget::VarU32 imageMaskColor)
         {
-            m_imageMaskColor = imageMaskColor;
+            m_imageMaskColor = std::move(imageMaskColor);
         }
 
     public:
@@ -471,12 +480,12 @@ class XMLTypeset // means XMLParagraph typeset
     public:
         uint32_t color() const
         {
-            return m_fontColor;
+            return Widget::evalU32(m_fontColor, nullptr, this);
         }
 
         uint32_t bgColor() const
         {
-            return m_fontBGColor;
+            return Widget::evalU32(m_fontBGColor, nullptr, this);
         }
 
     public:

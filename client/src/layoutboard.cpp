@@ -36,18 +36,19 @@ LayoutBoard::LayoutBoard(
         bool argIMEEnabled,
         bool argCanThrough,
 
-        uint8_t  argFont,
-        uint8_t  argFontSize,
-        uint8_t  argFontStyle,
-        uint32_t argFontColor,
-        uint32_t argFontBGColor,
+        uint8_t argFont,
+        uint8_t argFontSize,
+        uint8_t argFontStyle,
+
+        Widget::VarU32 argFontColor,
+        Widget::VarU32 argFontBGColor,
 
         int argLineAlign,
         int argLineSpace,
         int argWordSpace,
 
-        int      argCursorWidth,
-        uint32_t argCursorColor,
+        int            argCursorWidth,
+        Widget::VarU32 argCursorColor,
 
         std::function<void()> argOnTab,
         std::function<void()> argOnCR,
@@ -62,7 +63,7 @@ LayoutBoard::LayoutBoard(
           std::move(argX),
           std::move(argY),
 
-          [this](const Widget *)
+          [this]
           {
               int maxW = 0;
               for(const auto &node: m_parNodeList){
@@ -72,11 +73,10 @@ LayoutBoard::LayoutBoard(
               if(m_canEdit){
                   maxW = std::max<int>(maxW, m_cursorWidth);
               }
-
               return maxW;
           },
 
-          [this](const Widget *)
+          [this]
           {
               if(empty()){
                   if(m_canEdit){
@@ -86,7 +86,12 @@ LayoutBoard::LayoutBoard(
               }
 
               const auto &backNode = m_parNodeList.back();
-              return backNode.startY + std::max<int>(backNode.tpset->ph(), m_canEdit ? backNode.tpset->getDefaultFontHeight() : 0) + backNode.margin[1];
+              /* */ auto lastPerHeight = backNode.tpset->ph();
+
+              if(m_canEdit){
+                    lastPerHeight = std::max<int>(lastPerHeight, backNode.tpset->getDefaultFontHeight());
+              }
+              return backNode.startY + lastPerHeight + backNode.margin[1];
           },
 
           {},
@@ -103,8 +108,8 @@ LayoutBoard::LayoutBoard(
           argFont,
           argFontSize,
           argFontStyle,
-          argFontColor,
-          argFontBGColor,
+          std::move(argFontColor),
+          std::move(argFontBGColor),
           argLineAlign,
           argLineSpace,
           argWordSpace,
@@ -116,8 +121,8 @@ LayoutBoard::LayoutBoard(
           0,
           0,
 
-          [this](const Widget *){ return this->w(); },
-          [this](const Widget *){ return this->h(); },
+          [this]{ return w(); },
+          [this]{ return h(); },
 
           [this](const Widget *, int drawDstX, int drawDstY)
           {
@@ -133,10 +138,10 @@ LayoutBoard::LayoutBoard(
     , m_imeEnabled(argIMEEnabled)
 
     , m_cursorWidth(argCursorWidth)
-    , m_cursorColor(argCursorColor)
+    , m_cursorColor(std::move(argCursorColor))
 
-    , m_onTab(std::move(argOnTab))
-    , m_onCR(std::move(argOnCR))
+    , m_onTab  (std::move(argOnTab))
+    , m_onCR   (std::move(argOnCR))
     , m_eventCB(std::move(argEventCB))
 {
     disableSetSize();
@@ -324,7 +329,7 @@ void LayoutBoard::addPar(int loc, const std::array<int, 4> &parMargin, const tin
         return fontSize;
     }();
 
-    const uint32_t fontColor = [elemNode, this]()
+    auto fontColor = [elemNode, this]() -> Widget::VarU32
     {
         if(const char *val = elemNode->Attribute("color")){
             return colorf::string2RGBA(val);
@@ -332,7 +337,7 @@ void LayoutBoard::addPar(int loc, const std::array<int, 4> &parMargin, const tin
         return m_parNodeConfig.fontColor;
     }();
 
-    const uint32_t fontBGColor = [elemNode, this]()
+    auto fontBGColor = [elemNode, this]() -> Widget::VarU32
     {
         if(const char *val = elemNode->Attribute("bgcolor")){
             return colorf::string2RGBA(val);
@@ -364,9 +369,9 @@ void LayoutBoard::addPar(int loc, const std::array<int, 4> &parMargin, const tin
         font,
         fontSize,
         fontStyle,
-        fontColor,
-        fontBGColor,
-        colorf::RGBA(0XFF, 0XFF, 0XFF, 0XFF),
+        std::move(fontColor),
+        std::move(fontBGColor),
+        colorf::WHITE_A255,
         lineSpace,
         wordSpace
     );
@@ -474,15 +479,15 @@ void LayoutBoard::setFontStyle(uint8_t argFontStyle)
     updateGfx();
 }
 
-void LayoutBoard::setFontColor(uint32_t argFontColor)
+void LayoutBoard::setFontColor(Widget::VarU32 argFontColor)
 {
-    m_parNodeConfig.fontColor = argFontColor;
+    m_parNodeConfig.fontColor = std::move(argFontColor);
     updateGfx();
 }
 
-void LayoutBoard::setFontBGColor(uint32_t argFontBGColor)
+void LayoutBoard::setFontBGColor(Widget::VarU32 argFontBGColor)
 {
-    m_parNodeConfig.fontBGColor = argFontBGColor;
+    m_parNodeConfig.fontBGColor = std::move(argFontBGColor);
     updateGfx();
 }
 

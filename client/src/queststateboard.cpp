@@ -72,6 +72,7 @@ QuestStateBoard::QuestStateBoard(
           0,
 
           {0, 5, 0, 0},
+
           false,
           false,
           false,
@@ -81,15 +82,15 @@ QuestStateBoard::QuestStateBoard(
           12,
           0,
 
-          colorf::WHITE + colorf::A_SHF(255),
-          0,
+          colorf::WHITE_A255,
+          0U,
 
           LALIGN_JUSTIFY,
           0,
           0,
 
           2,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           nullptr,
           nullptr,

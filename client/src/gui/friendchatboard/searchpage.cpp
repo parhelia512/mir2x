@@ -65,17 +65,17 @@ SearchPage::SearchPage(Widget::VarDir argDir,
 
           1,
           15,
+          0,
 
-          0,
-          colorf::WHITE + colorf::A_SHF(255),
-          0,
+          colorf::WHITE_A255,
+          0U,
 
           LALIGN_LEFT,
           0,
           0,
 
           0,
-          0,
+          0U,
 
           nullptr,
           nullptr,
@@ -171,15 +171,16 @@ void SearchPage::appendFriendItem(const SDChatPeer &candidate)
                 1,
                 12,
                 0,
-                colorf::WHITE + colorf::A_SHF(255),
-                0,
+
+                colorf::WHITE_A255,
+                0U,
 
                 LALIGN_LEFT,
                 0,
                 0,
 
                 0,
-                0,
+                0U,
 
                 nullptr,
                 nullptr,

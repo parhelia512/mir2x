@@ -586,6 +586,7 @@ void InventoryBoard::drawItemHoverText(const PackBin &bin) const
         0,
 
         {},
+
         false,
         false,
         false,
@@ -594,8 +595,9 @@ void InventoryBoard::drawItemHoverText(const PackBin &bin) const
         1,
         12,
         0,
+
         colorf::WHITE + colorf::A_SHF(255),
-        0,
+        0U,
 
         LALIGN_JUSTIFY,
     };

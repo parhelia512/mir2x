@@ -180,8 +180,9 @@ ChatItemRef::ChatItemRef(
           1,
           10,
           0,
+
           colorf::WHITE + colorf::A_SHF(255),
-          0,
+          0U,
 
           LALIGN_LEFT,
           0,

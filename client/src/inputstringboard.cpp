@@ -168,6 +168,7 @@ void InputStringBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) con
         0,
 
         {},
+
         false,
         false,
         false,
@@ -176,8 +177,9 @@ void InputStringBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) con
         1,
         12,
         0,
-        colorf::WHITE + colorf::A_SHF(255),
-        0,
+
+        colorf::WHITE_A255,
+        0U,
 
         LALIGN_JUSTIFY,
     };

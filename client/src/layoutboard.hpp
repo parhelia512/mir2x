@@ -25,9 +25,9 @@ class LayoutBoard: public Widget
             // | +-----+ |
             // +---------+
 
-            int startY = -1;
-            std::array<int, 4> margin {0, 0, 0, 0};
-            std::unique_ptr<XMLTypeset> tpset; // no copy support for XMLTypeset
+            int startY {};
+            std::array<int, 4> margin {};
+            std::unique_ptr<XMLTypeset> tpset {}; // no copy support for XMLTypeset
         };
 
     private:
@@ -44,11 +44,12 @@ class LayoutBoard: public Widget
 
             bool canThrough;
 
-            uint8_t  font;
-            uint8_t  fontSize;
-            uint8_t  fontStyle;
-            uint32_t fontColor;
-            uint32_t fontBGColor;
+            uint8_t font;
+            uint8_t fontSize;
+            uint8_t fontStyle;
+
+            Widget::VarU32 fontColor;
+            Widget::VarU32 fontBGColor;
 
             int align;
             int lineSpace;
@@ -74,7 +75,7 @@ class LayoutBoard: public Widget
 
     private:
         int m_cursorWidth;
-        uint32_t m_cursorColor;
+        Widget::VarU32 m_cursorColor;
 
     private:
         const std::function<void()> m_onTab;
@@ -92,25 +93,28 @@ class LayoutBoard: public Widget
                 const char * = nullptr,
                 size_t = 0,
 
-                std::array<int, 4> = {0, 0, 0, 0},
+                // margin for par-node, not for the whole board
+                // dynamic margin is not supported since which requires gfx-update
+                std::array<int, 4> = {},
 
                 bool = false,
                 bool = false,
                 bool = false,
                 bool = false,
 
-                uint8_t  =  0,
-                uint8_t  = 10,
-                uint8_t  =  0,
-                uint32_t =  colorf::WHITE + colorf::A_SHF(255),
-                uint32_t =  0,
+                uint8_t =  0,
+                uint8_t = 10,
+                uint8_t =  0,
+
+                Widget::VarU32 = colorf::WHITE_A255,
+                Widget::VarU32 = 0U,
 
                 int = LALIGN_LEFT,
                 int = 0,
                 int = 0,
 
-                int      = 2,
-                uint32_t = colorf::WHITE + colorf::A_SHF(255),
+                int            = 2,
+                Widget::VarU32 = colorf::WHITE_A255,
 
                 std::function<void()> = nullptr,
                 std::function<void()> = nullptr,
@@ -199,8 +203,8 @@ class LayoutBoard: public Widget
         void setFont(uint8_t);
         void setFontSize(uint8_t);
         void setFontStyle(uint8_t);
-        void setFontColor(uint32_t);
-        void setFontBGColor(uint32_t);
+        void setFontColor(Widget::VarU32);
+        void setFontBGColor(Widget::VarU32);
 
     public:
         void setLineWidth(int);

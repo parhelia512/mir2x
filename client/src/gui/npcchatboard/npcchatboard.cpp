@@ -117,7 +117,7 @@ NPCChatBoard::NPCChatBoard(
           nullptr,
           0,
 
-          {0, 0, 0, 0},
+          {},
 
           false,
           false,
@@ -129,7 +129,7 @@ NPCChatBoard::NPCChatBoard(
           0,
 
           colorf::WHITE_A255,
-          0,
+          0U,
 
           LALIGN_JUSTIFY,
           0,

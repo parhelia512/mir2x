@@ -739,6 +739,7 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
           0,
 
           {},
+
           false,
           false,
           false,
@@ -747,15 +748,16 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
           1,
           14,
           0,
-          colorf::WHITE + colorf::A_SHF(255),
-          0,
+
+          colorf::WHITE_A255,
+          0U,
 
           LALIGN_LEFT,
           0,
           0,
 
           2,
-          colorf::WHITE + colorf::A_SHF(255),
+          colorf::WHITE_A255,
 
           nullptr,
           nullptr,

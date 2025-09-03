@@ -636,6 +636,7 @@ void PurchaseBoard::drawExt1GridHoverText(int itemIndex) const
         0,
 
         {},
+
         false,
         false,
         false,
@@ -644,8 +645,9 @@ void PurchaseBoard::drawExt1GridHoverText(int itemIndex) const
         1,
         12,
         0,
-        colorf::WHITE + colorf::A_SHF(255),
-        0,
+
+        colorf::WHITE_A255,
+        0U,
 
         LALIGN_JUSTIFY,
     };

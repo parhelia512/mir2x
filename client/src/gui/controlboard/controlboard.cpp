@@ -59,7 +59,7 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           0,
 
           colorf::WHITE_A255,
-          0,
+          0U,
 
           LALIGN_JUSTIFY,
           0,
@@ -95,7 +95,7 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           0,
 
           colorf::WHITE_A255,
-          0,
+          0U,
 
           LALIGN_JUSTIFY,
           0,

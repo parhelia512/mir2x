@@ -1181,7 +1181,7 @@ void XMLTypeset::drawEx(int dstX, int dstY, int srcX, int srcY, int srcW, int sr
                         int yOnTex = 0;
 
                         if(auto texPtr = g_emojiDB->retrieve(emojiKey, &xOnTex, &yOnTex, 0, 0, 0, 0, 0)){
-                            SDLDeviceHelper::EnableTextureModColor enableMod(texPtr, m_imageMaskColor);
+                            SDLDeviceHelper::EnableTextureModColor enableMod(texPtr, Widget::evalU32(m_imageMaskColor, nullptr, this));
                             g_sdlDevice->drawTexture(texPtr, drawDstX, drawDstY, xOnTex + dx, yOnTex + dy, boxW, boxH);
                         }
                         else{
