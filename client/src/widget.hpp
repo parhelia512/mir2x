@@ -29,14 +29,23 @@ class WidgetTreeNode // tree concept, used by class Widget only
         template<typename IN, typename OUT_1, typename OUT_2> using check_const_cond_t         = std::conditional_t<std::is_const_v<std::remove_reference_t<IN>>, OUT_1, OUT_2>;
         template<typename IN, typename OUT                  > using check_const_cond_out_ptr_t = check_const_cond_t<IN, const OUT *, OUT *>;
 
+    private:
+        template<typename T> using VarTypeHelper = std::variant<
+            T,
+            std::function<T()>,
+            std::function<T(const Widget *)>,
+            std::function<T(const Widget *, const void *)>>;
+
     protected:
-        using VarDir       = std::variant<       dir8_t, std::function<       dir8_t(const Widget *)>>;
-        using VarInt       = std::variant<          int, std::function<          int(const Widget *)>>;
-        using VarU32       = std::variant<     uint32_t, std::function<     uint32_t(const Widget *)>>;
-        using VarSize      = std::variant<          int, std::function<          int(const Widget *)>>;
+        using VarDir       = VarTypeHelper<       dir8_t>;
+        using VarInt       = VarTypeHelper<          int>;
+        using VarU32       = VarTypeHelper<     uint32_t>;
+        using VarSize      = VarTypeHelper<          int>;
+        using VarBool      = VarTypeHelper<         bool>;
+        using VarBlendMode = VarTypeHelper<SDL_BlendMode>;
+
+    protected:
         using VarSizeOpt   = std::optional<VarSize>;
-        using VarBool      = std::variant<         bool, std::function<         bool(const Widget *)>>;
-        using VarBlendMode = std::variant<SDL_BlendMode, std::function<SDL_BlendMode(const Widget *)>>;
 
     private:
         friend class Widget;
@@ -206,13 +215,17 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::ChildElement;
 
     public:
-        static dir8_t        evalDir      (const Widget::VarDir       &, const Widget *);
-        static int           evalInt      (const Widget::VarInt       &, const Widget *);
-        static uint32_t      evalU32      (const Widget::VarU32       &, const Widget *);
-        static int           evalSize     (const Widget::VarSize      &, const Widget *);
-        static int           evalSizeOpt  (const Widget::VarSizeOpt   &, const Widget *, const auto &);
-        static bool          evalBool     (const Widget::VarBool      &, const Widget *);
-        static SDL_BlendMode evalBlendMode(const Widget::VarBlendMode &, const Widget *);
+        static dir8_t        evalDir      (const Widget::VarDir       &, const Widget *, const void * = nullptr);
+        static int           evalInt      (const Widget::VarInt       &, const Widget *, const void * = nullptr);
+        static uint32_t      evalU32      (const Widget::VarU32       &, const Widget *, const void * = nullptr);
+        static int           evalSize     (const Widget::VarSize      &, const Widget *, const void * = nullptr);
+        static bool          evalBool     (const Widget::VarBool      &, const Widget *, const void * = nullptr);
+        static SDL_BlendMode evalBlendMode(const Widget::VarBlendMode &, const Widget *, const void * = nullptr);
+
+
+    public:
+        static int evalSizeOpt(const Widget::VarSizeOpt &, const Widget *,               const auto &);
+        static int evalSizeOpt(const Widget::VarSizeOpt &, const Widget *, const void *, const auto &);
 
     public:
         template<typename Func> static VarSize    transform(VarSize   , Func &&);

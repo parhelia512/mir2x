@@ -195,7 +195,7 @@ Widget::ROI Widget::ROIOpt::evalROI(const Widget::ROI &roi) const
     }
 }
 
-dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *p)
+dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widget, const void *arg)
 {
     const auto fnValidDir = [](dir8_t argDir)
     {
@@ -209,16 +209,26 @@ dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *p)
             return fnValidDir(varg);
         },
 
-        [&fnValidDir, p](const auto &varg)
+        [&fnValidDir](const std::function<dir8_t()> &varg)
         {
-            return varg ? fnValidDir(varg(p)) : DIR_NONE;
+            return varg ? fnValidDir(varg()) : DIR_NONE;
+        },
+
+        [&fnValidDir, widget](const std::function<dir8_t(const Widget *)> &varg)
+        {
+            return varg ? fnValidDir(varg(widget)) : DIR_NONE;
+        },
+
+        [&fnValidDir, widget, arg](const std::function<dir8_t(const Widget *, const void *)> &varg)
+        {
+            return varg ? fnValidDir(varg(widget, arg)) : DIR_NONE;
         },
     },
 
     varDir);
 }
 
-int Widget::evalInt(const Widget::VarInt &varOffset, const Widget *p)
+int Widget::evalInt(const Widget::VarInt &varOffset, const Widget *widget, const void *arg)
 {
     return std::visit(VarDispatcher
     {
@@ -227,16 +237,26 @@ int Widget::evalInt(const Widget::VarInt &varOffset, const Widget *p)
             return varg;
         },
 
-        [p](const auto &varg)
+        [](const std::function<int()> &varg)
         {
-            return varg ? varg(p) : 0;
+            return varg ? varg() : 0;
+        },
+
+        [widget](const std::function<int(const Widget *)> &varg)
+        {
+            return varg ? varg(widget) : 0;
+        },
+
+        [widget, arg](const std::function<int(const Widget *, const void *)> &varg)
+        {
+            return varg ? varg(widget, arg) : 0;
         },
     },
 
     varOffset);
 }
 
-uint32_t Widget::evalU32(const Widget::VarU32 &varU32, const Widget *p)
+uint32_t Widget::evalU32(const Widget::VarU32 &varU32, const Widget *widget, const void *arg)
 {
     return std::visit(VarDispatcher
     {
@@ -245,16 +265,26 @@ uint32_t Widget::evalU32(const Widget::VarU32 &varU32, const Widget *p)
             return varg;
         },
 
-        [p](const auto &varg)
+        [](const std::function<uint32_t()> &varg)
         {
-            return varg ? varg(p) : UINT32_C(0);
+            return varg ? varg() : 0;
+        },
+
+        [widget](const std::function<uint32_t(const Widget *)> &varg)
+        {
+            return varg ? varg(widget) : 0;
+        },
+
+        [widget, arg](const std::function<uint32_t(const Widget *, const void *)> &varg)
+        {
+            return varg ? varg(widget, arg) : 0;
         },
     },
 
     varU32);
 }
 
-int Widget::evalSize(const Widget::VarSize &varSize, const Widget *p)
+int Widget::evalSize(const Widget::VarSize &varSize, const Widget *widget, const void *arg)
 {
     return std::visit(VarDispatcher
     {
@@ -263,16 +293,26 @@ int Widget::evalSize(const Widget::VarSize &varSize, const Widget *p)
             return std::max<int>(0, varg);
         },
 
-        [p](const auto &varg)
+        [](const std::function<int()> &varg)
         {
-            return varg ? std::max<int>(0, varg(p)) : 0;
+            return varg ? std::max<int>(0, varg()) : 0;
+        },
+
+        [widget](const std::function<int(const Widget *)> &varg)
+        {
+            return varg ? std::max<int>(0, varg(widget)) : 0;
+        },
+
+        [widget, arg](const std::function<int(const Widget *, const void *)> &varg)
+        {
+            return varg ? std::max<int>(0, varg(widget, arg)) : 0;
         },
     },
 
     varSize);
 }
 
-bool Widget::evalBool(const Widget::VarBool &varFlag, const Widget *p)
+bool Widget::evalBool(const Widget::VarBool &varFlag, const Widget *widget, const void *arg)
 {
     return std::visit(VarDispatcher
     {
@@ -281,16 +321,26 @@ bool Widget::evalBool(const Widget::VarBool &varFlag, const Widget *p)
             return varg;
         },
 
-        [p](const auto &varg)
+        [](const std::function<bool()> &varg)
         {
-            return varg ? varg(p) : false;
+            return varg ? varg() : false;
+        },
+
+        [widget](const std::function<bool(const Widget *)> &varg)
+        {
+            return varg ? varg(widget) : false;
+        },
+
+        [widget, arg](const std::function<bool(const Widget *, const void *)> &varg)
+        {
+            return varg ? varg(widget, arg) : false;
         },
     },
 
     varFlag);
 }
 
-SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, const Widget *p)
+SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, const Widget *widget, const void *arg)
 {
     const auto fnValidMode = [](SDL_BlendMode argMode)
     {
@@ -305,14 +355,24 @@ SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, co
 
     return std::visit(VarDispatcher
     {
-        [&](SDL_BlendMode varg)
+        [&fnValidMode](SDL_BlendMode varg)
         {
             return fnValidMode(varg);
         },
 
-        [&fnValidMode, p](const auto &varg)
+        [&fnValidMode](const std::function<SDL_BlendMode()> &varg)
         {
-            return varg ? fnValidMode(varg(p)) : SDL_BLENDMODE_NONE;
+            return varg ? fnValidMode(varg()) : SDL_BLENDMODE_NONE;
+        },
+
+        [&fnValidMode, widget](const std::function<SDL_BlendMode(const Widget *)> &varg)
+        {
+            return varg ? fnValidMode(varg(widget)) : SDL_BLENDMODE_NONE;
+        },
+
+        [&fnValidMode, widget, arg](const std::function<SDL_BlendMode(const Widget *, const void *)> &varg)
+        {
+            return varg ? fnValidMode(varg(widget, arg)) : SDL_BLENDMODE_NONE;
         },
     },
 

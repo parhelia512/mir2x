@@ -186,33 +186,43 @@ template<typename T> Widget::ROI Widget::makeROI(const T &t)
     };
 }
 
-int Widget::evalSizeOpt(const Widget::VarSizeOpt &arg, const Widget *p, const auto &f)
+int Widget::evalSizeOpt(const Widget::VarSizeOpt &varSizeOpt, const Widget *widget, const auto &f)
 {
-    if(arg.has_value()){
-        return evalSize(arg.value(), p);
+    if(varSizeOpt.has_value()){
+        return evalSize(varSizeOpt.value(), widget, nullptr);
     }
     else{
         return f();
     }
 }
 
-template<typename Func> Widget::VarSize Widget::transform(Widget::VarSize arg, Func && func)
+int Widget::evalSizeOpt(const Widget::VarSizeOpt &varSizeOpt, const Widget *widget, const void *arg, const auto &f)
 {
-    if(arg.index() == 0){
-        return func(std::get<int>(arg));
+    if(varSizeOpt.has_value()){
+        return evalSize(varSizeOpt.value(), widget, arg);
     }
     else{
-        return [arg = std::move(arg), func = std::forward<Func>(func)](const Widget *p)
+        return f();
+    }
+}
+
+template<typename Func> Widget::VarSize Widget::transform(Widget::VarSize varSize, Func && func)
+{
+    if(varSize.index() == 0){
+        return func(std::get<int>(varSize));
+    }
+    else{
+        return [varSize = std::move(varSize), func = std::forward<Func>(func)](const Widget *widget)
         {
-            return func(std::get<std::function<int(const Widget *)>>(arg)(p));
+            return func(std::get<std::function<int(const Widget *)>>(varSize)(widget));
         };
     }
 }
 
-template<typename Func> Widget::VarSizeOpt Widget::transform(Widget::VarSizeOpt arg, Func && func)
+template<typename Func> Widget::VarSizeOpt Widget::transform(Widget::VarSizeOpt varSize, Func && func)
 {
-    if(arg.has_value()){
-        return transform(arg.value(), std::forward<Func>(func));
+    if(varSize.has_value()){
+        return transform(varSize.value(), std::forward<Func>(func));
     }
     else{
         return std::nullopt;
