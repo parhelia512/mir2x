@@ -45,7 +45,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         using VarBlendMode = VarTypeHelper<SDL_BlendMode>;
 
     protected:
-        using VarSizeOpt   = std::optional<VarSize>;
+        using VarSizeOpt = std::optional<VarSize>;
 
     private:
         friend class Widget;
