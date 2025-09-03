@@ -45,6 +45,8 @@ class WidgetTreeNode // tree concept, used by class Widget only
         using alias_VarBlendMode = VarTypeHelper<SDL_BlendMode>;
 
     protected:
+        // make all var types distinct
+        // this is necessary for Widget::transform
         struct VarDir      : public alias_VarDir       { using alias_VarDir      ::alias_VarDir      ; };
         struct VarInt      : public alias_VarInt       { using alias_VarInt      ::alias_VarInt      ; };
         struct VarU32      : public alias_VarU32       { using alias_VarU32      ::alias_VarU32      ; };
