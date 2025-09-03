@@ -36,13 +36,21 @@ class WidgetTreeNode // tree concept, used by class Widget only
             std::function<T(const Widget *)>,
             std::function<T(const Widget *, const void *)>>;
 
+    private:
+        using alias_VarDir       = VarTypeHelper<       dir8_t>;
+        using alias_VarInt       = VarTypeHelper<          int>;
+        using alias_VarU32       = VarTypeHelper<     uint32_t>;
+        using alias_VarSize      = VarTypeHelper<          int>;
+        using alias_VarBool      = VarTypeHelper<         bool>;
+        using alias_VarBlendMode = VarTypeHelper<SDL_BlendMode>;
+
     protected:
-        using VarDir       = VarTypeHelper<       dir8_t>;
-        using VarInt       = VarTypeHelper<          int>;
-        using VarU32       = VarTypeHelper<     uint32_t>;
-        using VarSize      = VarTypeHelper<          int>;
-        using VarBool      = VarTypeHelper<         bool>;
-        using VarBlendMode = VarTypeHelper<SDL_BlendMode>;
+        struct VarDir      : public alias_VarDir       { using alias_VarDir      ::alias_VarDir      ; };
+        struct VarInt      : public alias_VarInt       { using alias_VarInt      ::alias_VarInt      ; };
+        struct VarU32      : public alias_VarU32       { using alias_VarU32      ::alias_VarU32      ; };
+        struct VarSize     : public alias_VarSize      { using alias_VarSize     ::alias_VarSize     ; };
+        struct VarBool     : public alias_VarBool      { using alias_VarBool     ::alias_VarBool     ; };
+        struct VarBlendMode: public alias_VarBlendMode { using alias_VarBlendMode::alias_VarBlendMode; };
 
     protected:
         using VarSizeOpt = std::optional<VarSize>;
