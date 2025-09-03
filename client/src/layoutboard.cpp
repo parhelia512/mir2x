@@ -107,14 +107,17 @@ LayoutBoard::LayoutBoard(
           fflcheck(argMargin, std::ranges::all_of(argMargin, [](int x){ return x >= 0; })),
 
           argCanThrough,
+
           argFont,
           argFontSize,
           argFontStyle,
+
           std::move(argFontColor),
           std::move(argFontBGColor),
-          argLineAlign,
-          argLineSpace,
-          argWordSpace,
+
+          fflcheck(argLineAlign, argLineAlign >= LALIGN_NONE && argLineAlign < LALIGN_END),
+          fflcheck(argLineSpace, argLineSpace >= 0),
+          fflcheck(argWordSpace, argWordSpace >= 0),
       }
 
     , m_cursorClip
@@ -234,6 +237,10 @@ void LayoutBoard::addPar(int loc, const std::array<int, 4> &parMargin, const tin
         throw fflerror("invalid location: %d", loc);
     }
 
+    if(!std::ranges::all_of(parMargin, [](int x){ return x >= 0; })){
+        throw fflerror("invalid margin: %d %d %d %d", parMargin[0], parMargin[1], parMargin[2], parMargin[3]);
+    }
+
     if(!node){
         throw fflerror("null xml node");
     }
@@ -257,24 +264,17 @@ void LayoutBoard::addPar(int loc, const std::array<int, 4> &parMargin, const tin
 
     const int lineWidth = [elemNode, this]()
     {
-        if(m_parNodeConfig.lineWidth <= 0){
-            return -1;
-        }
-
         // even we use default size
         // we won't let it create one-line mode by default
         // user should explicitly note that they want this special mode
 
-        if(int lineWidth = m_parNodeConfig.lineWidth - m_parNodeConfig.margin[2] - m_parNodeConfig.margin[3]; lineWidth <= 0){
-            throw fflerror("invalid default paragraph parameters");
-        }
-        else{
-            elemNode->QueryIntAttribute("lineWidth", &lineWidth);
-            if(lineWidth < -1){
-                throw fflerror("invalid line width: %d", lineWidth);
-            }
+        int lineWidth = m_parNodeConfig.lineWidth;
+        elemNode->QueryIntAttribute("lineWidth", &lineWidth);
+
+        if(lineWidth >= 0){
             return lineWidth;
         }
+        throw fflerror("invalid line width: %d", lineWidth);
     }();
 
     const int lineAlign = [elemNode, this]()
@@ -318,8 +318,14 @@ void LayoutBoard::addPar(int loc, const std::array<int, 4> &parMargin, const tin
     {
         int fontSize = m_parNodeConfig.fontSize;
         elemNode->QueryIntAttribute("size", &fontSize);
-        return fontSize;
+
+        if(fontSize >= 0 && fontSize < 255){
+            return fontSize;
+        }
+        throw fflerror("invalid font size: %d", fontSize);
     }();
+
+    const uint8_t fontStyle = m_parNodeConfig.fontStyle; // TODO
 
     auto fontColor = [elemNode, this]() -> Widget::VarU32
     {
@@ -337,20 +343,26 @@ void LayoutBoard::addPar(int loc, const std::array<int, 4> &parMargin, const tin
         return m_parNodeConfig.fontBGColor;
     }();
 
-    const uint8_t fontStyle = m_parNodeConfig.fontStyle;
-
     const int lineSpace = [elemNode, this]()
     {
         int lineSpace = m_parNodeConfig.lineSpace;
         elemNode->QueryIntAttribute("lineSpace", &lineSpace);
-        return lineSpace;
+
+        if(lineSpace >= 0){
+            return lineSpace;
+        }
+        throw fflerror("invalid line space: %d", lineSpace);
     }();
 
     const int wordSpace = [elemNode, this]()
     {
         int wordSpace = m_parNodeConfig.lineSpace;
         elemNode->QueryIntAttribute("wordSpace", &wordSpace);
-        return wordSpace;
+
+        if(wordSpace >= 0){
+            return wordSpace;
+        }
+        throw fflerror("invalid word space: %d", wordSpace);
     }();
 
     auto parNodePtr = std::make_unique<XMLTypeset>
