@@ -277,7 +277,7 @@ void LayoutBoard::addPar(int loc, const std::array<int, 4> &parMargin, const tin
         throw fflerror("invalid line width: %d", lineWidth);
     }();
 
-    const int lineAlign = [elemNode, this]()
+    const auto lineAlign = [elemNode, this]() -> int
     {
         if(const auto val = elemNode->Attribute("align")){
             if(to_sv(val) == "left"       ) return LALIGN_LEFT;
