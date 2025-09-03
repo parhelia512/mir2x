@@ -1,4 +1,5 @@
 #include <cmath>
+#include <algorithm>
 #include <utf8.h>
 #include "colorf.hpp"
 #include "fflerror.hpp"
@@ -102,8 +103,9 @@ LayoutBoard::LayoutBoard(
 
     , m_parNodeConfig
       {
-          argLineWidth,
-          argMargin,
+          fflcheck(argLineWidth, argLineWidth >= 0),
+          fflcheck(argMargin, std::ranges::all_of(argMargin, [](int x){ return x >= 0; })),
+
           argCanThrough,
           argFont,
           argFontSize,
@@ -145,16 +147,6 @@ LayoutBoard::LayoutBoard(
     , m_eventCB(std::move(argEventCB))
 {
     disableSetSize();
-
-    for(size_t i = 0; i < m_parNodeConfig.margin.size(); ++i){
-        if(m_parNodeConfig.margin[i] < 0){
-            throw fflerror("invalid parNodeConfig::margin[%zu]: %d", i, m_parNodeConfig.margin[i]);
-        }
-    }
-
-    if((m_parNodeConfig.lineWidth > 0) && (m_parNodeConfig.lineWidth <= m_parNodeConfig.margin[2] + m_parNodeConfig.margin[3])){
-        throw fflerror("invalid default paragraph parameters");
-    }
 
     if(str_haschar(argInitXML)){
         loadXML(argInitXML, argParLimit);
