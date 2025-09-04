@@ -78,17 +78,17 @@ void ProcessSelectChar::draw() const
         g_sdlDevice->drawTexture(texPtr, 0, 0);
     }
 
-    m_start .drawRoot(0, 0);
-    m_create.drawRoot(0, 0);
-    m_delete.drawRoot(0, 0);
-    m_exit  .drawRoot(0, 0);
+    m_start .drawRoot();
+    m_create.drawRoot();
+    m_delete.drawRoot();
+    m_exit  .drawRoot();
 
     if(hasChar()){
         drawChar();
         drawCharName();
     }
 
-    m_deleteInput.drawRoot(0, 0);
+    m_deleteInput.drawRoot();
 
     const int notifX = (800 - m_notifyBoard.pw()) / 2;
     const int notifY = (600 - m_notifyBoard. h()) / 2;

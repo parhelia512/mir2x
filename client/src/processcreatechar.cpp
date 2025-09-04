@@ -111,22 +111,22 @@ void ProcessCreateChar::draw() const
     }
 
     g_sdlDevice->fillRectangle(colorf::RGBA(  0,   0,   0, 255), 355, 520, 90, 15);
-    m_nameBox.drawRoot(0, 0);
+    m_nameBox.drawRoot();
     g_sdlDevice->drawRectangle(colorf::RGBA(231, 231, 189, 100), 355, 520, 90, 15);
 
     if(auto texPtr = g_progUseDB->retrieve(0X0D000001)){
         g_sdlDevice->drawTexture(texPtr, 320, 500);
     }
 
-    m_warrior.drawRoot(0, 0);
-    m_wizard .drawRoot(0, 0);
-    m_taoist .drawRoot(0, 0);
+    m_warrior.drawRoot();
+    m_wizard .drawRoot();
+    m_taoist .drawRoot();
 
-    m_submit.drawRoot(0, 0);
-    m_exit  .drawRoot(0, 0);
+    m_submit.drawRoot();
+    m_exit  .drawRoot();
 
     if(!g_clientArgParser->disableIME){
-        g_imeBoard->drawRoot(0, 0);
+        g_imeBoard->drawRoot();
     }
 
     const int notifX = (800 - m_notifyBoard.pw()) / 2;

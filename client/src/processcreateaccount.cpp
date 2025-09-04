@@ -202,9 +202,9 @@ void ProcessCreateAccount::draw() const
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000003), 0, 75);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000004), 0, 75, 0, 0, 800, 450);
 
-    m_boxID.drawRoot(0, 0);
-    m_boxPwd.drawRoot(0, 0);
-    m_boxPwdConfirm.drawRoot(0, 0);
+    m_boxID.drawRoot();
+    m_boxPwd.drawRoot();
+    m_boxPwdConfirm.drawRoot();
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X0A000000), m_x, m_y);
 
     const auto fnDrawInput = [](int x, int y, int dx, auto &title, auto &check)
@@ -226,12 +226,12 @@ void ProcessCreateAccount::draw() const
     fnDrawInput(m_x + 129, m_y + 143, 10, m_LBPwd       , m_LBCheckPwd       );
     fnDrawInput(m_x + 129, m_y + 198, 10, m_LBPwdConfirm, m_LBCheckPwdConfirm);
 
-    m_submit.drawRoot(0, 0);
-    m_quit.drawRoot(0, 0);
+    m_submit.drawRoot();
+    m_quit.drawRoot();
 
     if(hasInfo()){
         g_sdlDevice->fillRectangle(colorf::BLUE + colorf::A_SHF(32), 0, 75, 800, 450);
-        m_infoStr.drawRoot(0, 0);
+        m_infoStr.drawRoot();
     }
 }
 

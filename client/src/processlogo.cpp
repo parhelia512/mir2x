@@ -42,13 +42,13 @@ void ProcessLogo::update(double fDTime)
 void ProcessLogo::draw() const
 {
     SDLDeviceHelper::RenderNewFrame newFrame;
-    if(auto pTexture = g_progUseDB->retrieve(0X00000000)){
-        auto bColor = (Uint8)(std::lround(255 * colorRatio()));
-        SDL_SetTextureColorMod(pTexture, bColor, bColor, bColor);
+    if(auto texPtr = g_progUseDB->retrieve(0X00000000)){
+        const auto c = to_u8(to_dround(255 * colorRatio()));
+        const SDLDeviceHelper::EnableTextureModColor modColor(texPtr, colorf::RGBA(c, c, c, 0XFF));
 
-        const auto nWindowW = g_sdlDevice->getRendererWidth();
-        const auto nWindowH = g_sdlDevice->getRendererHeight();
-        g_sdlDevice->drawTexture(pTexture, 0, 0, 0, 0, nWindowW, nWindowH);
+        const auto winW = g_sdlDevice->getRendererWidth();
+        const auto winH = g_sdlDevice->getRendererHeight();
+        g_sdlDevice->drawTexture(texPtr, 0, 0, 0, 0, winW, winH);
     }
 }
 

@@ -325,7 +325,7 @@ class Widget: public WidgetTreeNode
         virtual bool processEvent      (const SDL_Event &, bool,           int, int, const Widget::ROIOpt &) final;
         virtual bool processParentEvent(const SDL_Event &, bool, int, int, int, int, const Widget::ROIOpt &) final;
 
-        bool applyRootEvent(const SDL_Event &, bool, int, int);
+        virtual bool applyRootEvent(const SDL_Event &, bool, int = 0, int = 0) final;
 
     protected:
         // @param
@@ -381,7 +381,7 @@ class Widget: public WidgetTreeNode
                 int,
                 const Widget::ROIOpt &) const final;
 
-        void drawRoot(int, int) const;
+        virtual void drawRoot(int = 0, int = 0) const final;
 
     public:
         Widget *setAfterResize(std::function<void(Widget *)>);

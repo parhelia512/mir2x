@@ -130,15 +130,15 @@ void ProcessLogin::draw() const
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000004),   0, 465);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000011), 103, 536);
 
-    m_button1.drawRoot(0, 0);
-    m_button2.drawRoot(0, 0);
-    m_button3.drawRoot(0, 0);
-    m_button4.drawRoot(0, 0);
+    m_button1.drawRoot();
+    m_button2.drawRoot();
+    m_button3.drawRoot();
+    m_button4.drawRoot();
 
-    m_idBox      .drawRoot(0, 0);
-    m_passwordBox.drawRoot(0, 0);
+    m_idBox      .drawRoot();
+    m_passwordBox.drawRoot();
 
-    m_buildSignature.drawRoot(0, 0);
+    m_buildSignature.drawRoot();
 
     const int notifX = (800 - m_notifyBoard.pw()) / 2;
     const int notifY = (600 - m_notifyBoard. h()) / 2;

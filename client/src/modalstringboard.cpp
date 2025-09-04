@@ -205,6 +205,6 @@ void ModalStringBoard::drawScreen(bool drainEvents) const
     }
 
     g_sdlDevice->clearScreen();
-    m_boardImpl->drawRoot(0, 0);
+    m_boardImpl->drawRoot();
     g_sdlDevice->present();
 }
