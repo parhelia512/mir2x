@@ -427,8 +427,8 @@ class Widget: public WidgetTreeNode
         Widget *setData(std::any);
 
     public:
-        virtual bool       in(int, int,           int, int, const Widget::ROIOpt &) const;
-        virtual bool parentIn(int, int, int, int, int, int, const Widget::ROIOpt &) const final;
+        virtual bool       in(int, int, int, int, const Widget::ROIOpt &) const;
+        virtual bool parentIn(int, int, int, int, const Widget::ROIOpt &) const final;
 
     public:
         virtual bool focus() const;

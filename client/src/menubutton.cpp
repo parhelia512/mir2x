@@ -146,7 +146,7 @@ bool MenuButton::processEventDefault(const SDL_Event &event, bool valid, int sta
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(m_menuBoard->parentIn(event.button.x, event.button.y, w(), h(), startDstX, startDstY, roiOpt.value())){
+                if(m_menuBoard->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     m_menuBoard->setShow(false);
                 }
                 return consumeFocus(false);

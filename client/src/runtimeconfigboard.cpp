@@ -503,7 +503,7 @@ bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, b
             {
                 if(m_menuList.show()){
                     const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                    if(!m_menuList.parentIn(eventX, eventY, w(), h(), startDstX, startDstY, roiOpt.value())){
+                    if(!m_menuList.parentIn(eventX, eventY, startDstX, startDstY, roiOpt.value())){
                         m_menuList.setShow(false);
                     }
                 }

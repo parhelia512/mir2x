@@ -254,7 +254,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
                 if(event.button.button == SDL_BUTTON_LEFT){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
                         m_labelBoardList[i]->setFontColor(m_fontColor);
-                        if(m_labelBoardList[i]->parentIn(event.button.x, event.button.y, w(), h(), startDstX, startDstY, roiOpt.value())){
+                        if(m_labelBoardList[i]->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                             m_ime.select(i);
                         }
                     }
@@ -269,7 +269,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
                 }
 
                 for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                    if(m_labelBoardList.at(i)->parentIn(event.button.x, event.button.y, w(), h(), startDstX, startDstY, roiOpt.value())){
+                    if(m_labelBoardList.at(i)->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                         m_labelBoardList.at(i)->setFontColor(m_fontColorPressed);
                     }
                     else{
@@ -295,7 +295,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
                 }
                 else if(in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value())){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                        if(m_labelBoardList.at(i)->parentIn(event.motion.x, event.motion.y, w(), h(), startDstX, startDstY, roiOpt.value())){
+                        if(m_labelBoardList.at(i)->parentIn(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value())){
                             m_labelBoardList.at(i)->setFontColor(m_fontColorHover);
                         }
                         else{

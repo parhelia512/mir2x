@@ -245,7 +245,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
             case SDL_MOUSEBUTTONDOWN:
                 {
                     const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                    if(background->parentIn(eventX, eventY, w(), h(), startDstX, startDstY, roiOpt.value())){
+                    if(background->parentIn(eventX, eventY, startDstX, startDstY, roiOpt.value())){
                         if(event.type == SDL_MOUSEMOTION){
                             return self->consumeFocus(true);
                         }

@@ -765,12 +765,15 @@ bool Widget::in(int pixelX, int pixelY, int startDstX, int startDstY, const Widg
     return false;
 }
 
-bool Widget::parentIn(int pixelX, int pixelY, int parentW, int parentH, int startDstX, int startDstY, const Widget::ROIOpt &roi) const
+bool Widget::parentIn(int pixelX, int pixelY, int startDstX, int startDstY, const Widget::ROIOpt &roi) const
 {
     // helper function used in parents' drawEx()/processEventDefault()
     // check if {pixelX, pixelY} is in current child, when its parent only viewed by: {startDstX, startDstY, roi}
 
-    auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    const auto par = parent();
+    fflassert(par);
+
+    auto roiOpt = par->cropDrawROI(startDstX, startDstY, roi);
     if(!roiOpt.has_value()){
         return false;
     }
@@ -782,13 +785,13 @@ bool Widget::parentIn(int pixelX, int pixelY, int parentW, int parentH, int star
                 &startDstX,
                 &startDstY,
 
-                parentW,
-                parentH,
+                par->w(),
+                par->h(),
 
                 dx(),
                 dy(),
-                w (),
-                h ())){
+                w(),
+                h())){
         return false;
     }
 

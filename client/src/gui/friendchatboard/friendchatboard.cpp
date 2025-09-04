@@ -957,7 +957,7 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(m_uiPageList[m_uiPage].page->parentIn(event.button.x, event.button.y, w(), h(), startDstX, startDstY, roiOpt.value())){
+                if(m_uiPageList[m_uiPage].page->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     if(m_uiPageList[m_uiPage].page->processParentEvent(event, true, startDstX, startDstY, roiOpt.value())){
                         return consumeFocus(true, m_uiPageList[m_uiPage].page);
                     }
