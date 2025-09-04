@@ -16,9 +16,8 @@ ProcessSync::ProcessSync()
           DIR_UPLEFT,
           0,
           0,
-
-          0, // need to reset
-          0, //
+          800,
+          600,
       }
 
     , m_barFull
@@ -90,11 +89,7 @@ ProcessSync::ProcessSync()
           &m_canvas,
           false,
       }
-{
-    m_canvas.setSize(
-            [this]{ return m_bgImg.w(); },
-            [this]{ return m_bgImg.h(); });
-}
+{}
 
 void ProcessSync::processEvent(const SDL_Event &event)
 {
