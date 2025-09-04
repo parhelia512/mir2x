@@ -63,7 +63,8 @@ class LayoutBoard: public Widget
             int par = -1;
             int x   = -1;
             int y   = -1;
-        } m_cursorLoc;
+        }
+        m_cursorLoc;
 
         int m_cursorBlink = 0;
         ShapeCropBoard m_cursorClip;
@@ -166,8 +167,10 @@ class LayoutBoard: public Widget
         }
 
     public:
-        int parCount() const { return to_d(m_parNodeList.size()); }
-        int parCount()       { return to_d(m_parNodeList.size()); }
+        int parCount() const
+        {
+            return to_d(m_parNodeList.size());
+        }
 
     public:
         bool empty() const
