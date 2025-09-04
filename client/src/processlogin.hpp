@@ -25,7 +25,7 @@ class ProcessLogin: public Process
         PasswordBox m_passwordBox;
 
     private:
-        TextBoard m_buildSignature;
+        LabelBoard m_buildSignature;
 
     private:
         NotifyBoard m_notifyBoard;
