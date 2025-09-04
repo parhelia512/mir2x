@@ -20,24 +20,56 @@ extern PNGTexOffDB *g_selectCharDB;
 
 ProcessSelectChar::ProcessSelectChar()
     : Process()
-
-    , m_start (DIR_UPLEFT, 335,  75, {0X0C000030, 0X0C000030, 0X0C000031}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onStart (); })
-    , m_create(DIR_UPLEFT, 565, 130, {0X0C000010, 0X0C000010, 0X0C000011}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onCreate(); })
-    , m_delete(DIR_UPLEFT, 110, 305, {0X0C000020, 0X0C000020, 0X0C000021}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onDelete(); })
-    , m_exit  (DIR_UPLEFT,  45, 544, {0X0C000040, 0X0C000040, 0X0C000041}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onExit  (); })
-
-    , m_notifyBoard
+    , m_canvas
       {
           DIR_UPLEFT,
           0,
           0,
-          0, // automatically resize
+          800,
+          600,
+      }
+
+    , m_start (DIR_UPLEFT, 335,  75, {0X0C000030, 0X0C000030, 0X0C000031}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onStart (); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
+    , m_create(DIR_UPLEFT, 565, 130, {0X0C000010, 0X0C000010, 0X0C000011}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onCreate(); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
+    , m_delete(DIR_UPLEFT, 110, 305, {0X0C000020, 0X0C000020, 0X0C000021}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onDelete(); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
+    , m_exit  (DIR_UPLEFT,  45, 544, {0X0C000040, 0X0C000040, 0X0C000041}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onExit  (); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
+
+    , m_notifyBoardBg
+      {
+          DIR_UPLEFT,
+          0, // need reset
+          0, //
+          0, //
+          0, //
+
+          [](const Widget *self, int drawDstX, int drawDstY)
+          {
+              g_sdlDevice->fillRectangle(colorf::RGBA(0, 0,   0, 128), drawDstX, drawDstY, self->w(), self->h(), 8);
+              g_sdlDevice->drawRectangle(colorf::RGBA(0, 0, 255, 128), drawDstX, drawDstY, self->w(), self->h(), 8);
+          },
+
+          &m_canvas,
+          false,
+      }
+
+    , m_notifyBoard
+      {
+          DIR_NONE,
+          [this]{ return m_canvas.w() / 2; },
+          [this]{ return m_canvas.h() / 2; },
+          0, // single line
+
           1,
           15,
           0,
-          colorf::YELLOW + colorf::A_SHF(255),
+
+          colorf::YELLOW_A255,
+
           5000,
           1,
+
+          &m_canvas,
+          false,
       }
 
     , m_deleteInput
@@ -45,13 +77,16 @@ ProcessSelectChar::ProcessSelectChar()
           DIR_NONE,
           400,
           300,
+
           true,
       }
 {
-    m_start .setActive(false);
-    m_create.setActive(false);
-    m_delete.setActive(false);
+    m_start .setShow([this]{ return hasChar(); });
+    m_create.setShow([this]{ return hasChar(); });
+    m_delete.setShow([this]{ return hasChar(); });
+
     m_notifyBoard.addLog(u8"正在下载游戏角色");
+
     g_client->send(CM_QUERYCHAR);
     g_sdlDevice->playBGM(g_bgmDB->retrieve(0X00040002));
 }
@@ -65,7 +100,7 @@ ProcessSelectChar::~ProcessSelectChar()
 void ProcessSelectChar::update(double fUpdateTime)
 {
     m_charAniTime += fUpdateTime;
-    m_notifyBoard.update(fUpdateTime);
+    m_canvas.update(fUpdateTime);
 
     if(hasChar()){
         switchCharGfx();
@@ -79,37 +114,24 @@ void ProcessSelectChar::draw() const
         g_sdlDevice->drawTexture(texPtr, 0, 0);
     }
 
-    m_start .drawRoot();
-    m_create.drawRoot();
-    m_delete.drawRoot();
-    m_exit  .drawRoot();
+    m_canvas.drawRoot();
 
     if(hasChar()){
         drawChar();
         drawCharName();
     }
 
-    m_deleteInput.drawRoot();
-
-    const int notifX = (800 - m_notifyBoard.pw()) / 2;
-    const int notifY = (600 - m_notifyBoard. h()) / 2;
-    const int margin = 15;
-
-    if(!m_notifyBoard.empty()){
-        g_sdlDevice->fillRectangle(colorf::RGBA(0, 0,   0, 128), notifX - margin, notifY - margin, m_notifyBoard.pw() + margin * 2, m_notifyBoard.h() + margin * 2, 8);
-        g_sdlDevice->drawRectangle(colorf::RGBA(0, 0, 255, 128), notifX - margin, notifY - margin, m_notifyBoard.pw() + margin * 2, m_notifyBoard.h() + margin * 2, 8);
+    if(m_deleteInput.show()){
+        m_deleteInput.drawRoot();
     }
-    m_notifyBoard.drawAt(DIR_UPLEFT, notifX, notifY);
 }
 
 void ProcessSelectChar::processEvent(const SDL_Event &event)
 {
     bool tookEvent = false;
-    tookEvent |= m_start      .processRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_create     .processRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_delete     .processRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_exit       .processRootEvent(event, !tookEvent, 0, 0);
+
     tookEvent |= m_deleteInput.processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_canvas     .processRootEvent(event, !tookEvent, 0, 0);
 
     if(!tookEvent){
     }
@@ -386,11 +408,4 @@ void ProcessSelectChar::switchCharGfx()
             | (to_u32(1        ) << 0);              // 0 for create, 1 for select
         g_sdlDevice->playSoundEffect(g_seffDB->retrieve(seffID));
     }
-}
-
-void ProcessSelectChar::updateGUIActive()
-{
-    m_start .setActive( hasChar());
-    m_create.setActive(!hasChar());
-    m_delete.setActive( hasChar());
 }

@@ -8,6 +8,7 @@
 #include "notifyboard.hpp"
 #include "passwordbox.hpp"
 #include "tritexbutton.hpp"
+#include "shapecropboard.hpp"
 #include "inputstringboard.hpp"
 
 class ProcessSelectChar: public Process
@@ -21,13 +22,19 @@ class ProcessSelectChar: public Process
         uint32_t m_charAniSwitchFrame = 0;
 
     private:
+        Widget m_canvas;
+
+    private:
         TritexButton m_start;
         TritexButton m_create;
         TritexButton m_delete;
         TritexButton m_exit;
 
     private:
-        NotifyBoard m_notifyBoard;
+        ShapeCropBoard m_notifyBoardBg;
+        NotifyBoard    m_notifyBoard;
+
+    private:
         InputStringBoard m_deleteInput;
 
     public:
@@ -75,9 +82,6 @@ class ProcessSelectChar: public Process
         void onCreate();
         void onDelete();
         void onExit();
-
-    private:
-        void updateGUIActive();
 
     public:
         void on_SM_QUERYCHAROK    (const uint8_t *, size_t);

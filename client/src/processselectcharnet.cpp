@@ -20,8 +20,6 @@ void ProcessSelectChar::on_SM_QUERYCHAROK(const uint8_t *buf, size_t)
     else if(g_clientArgParser->autoLogin){
         onStart();
     }
-
-    updateGUIActive();
 }
 
 void ProcessSelectChar::on_SM_QUERYCHARERROR(const uint8_t *buf, size_t)
@@ -33,14 +31,13 @@ void ProcessSelectChar::on_SM_QUERYCHARERROR(const uint8_t *buf, size_t)
                 m_smChar.emplace();
                 m_smChar.value().name.clear();
 
-                updateGUIActive();
                 m_notifyBoard.addLog(u8"请先创建游戏角色");
                 break;
             }
         case QUERYCHARERR_NOLOGIN:
         default:
             {
-                throw fflreach();
+                throw fflvalue(smQCE.error);
             }
     }
 }
@@ -49,8 +46,6 @@ void ProcessSelectChar::on_SM_DELETECHAROK(const uint8_t *, size_t)
 {
     m_smChar.emplace();
     m_smChar.value().name.clear();
-
-    updateGUIActive();
     m_notifyBoard.addLog(u8"删除角色成功");
 }
 
