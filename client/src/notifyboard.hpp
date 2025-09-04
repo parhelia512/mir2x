@@ -71,9 +71,9 @@ class NotifyBoard: public Widget
             m_fontStyle = argFontStyle;
         }
 
-        void setFontColor(uint32_t argFontColor)
+        void setFontColor(Widget::VarU32 argFontColor)
         {
-            m_fontColor = argFontColor;
+            m_fontColor = std::move(argFontColor);
         }
 
     public:
