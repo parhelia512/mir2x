@@ -79,13 +79,16 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int star
         return false;
     }
 
-    if(!valid){
-        return consumeFocus(false);
-    }
-
     switch(event.type){
         case SDL_KEYDOWN:
             {
+                // another widget can consume the event
+                // and pass the focus to this widget, don't drop focus for keyboard events
+
+                if(!valid){
+                    return false;
+                }
+
                 if(!focus()){
                     return false;
                 }
@@ -168,6 +171,10 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int star
         case SDL_MOUSEBUTTONUP:
         case SDL_MOUSEBUTTONDOWN:
             {
+                if(!valid){
+                    return consumeFocus(false);
+                }
+
                 if(!in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
                     return consumeFocus(false);
                 }
