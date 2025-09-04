@@ -144,15 +144,15 @@ void ProcessCreateChar::processEvent(const SDL_Event &event)
 {
     bool tookEvent = false;
     if(!g_clientArgParser->disableIME){
-        tookEvent |= g_imeBoard->applyRootEvent(event, !tookEvent, 0, 0);
+        tookEvent |= g_imeBoard->processRootEvent(event, !tookEvent, 0, 0);
     }
 
-    tookEvent |= m_warrior.applyRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_wizard .applyRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_taoist .applyRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_submit .applyRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_exit   .applyRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_nameBox.applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_warrior.processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_wizard .processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_taoist .processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_submit .processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_exit   .processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_nameBox.processRootEvent(event, !tookEvent, 0, 0);
 
     if(!tookEvent){
         switch(event.type){

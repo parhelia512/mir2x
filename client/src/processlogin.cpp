@@ -182,12 +182,12 @@ void ProcessLogin::processEvent(const SDL_Event &event)
 
     bool takeEvent = false;
 
-    takeEvent |= m_button1    .applyRootEvent(event, !takeEvent, 0, 0);
-    takeEvent |= m_button2    .applyRootEvent(event, !takeEvent, 0, 0);
-    takeEvent |= m_button3    .applyRootEvent(event, !takeEvent, 0, 0);
-    takeEvent |= m_button4    .applyRootEvent(event, !takeEvent, 0, 0);
-    takeEvent |= m_idBox      .applyRootEvent(event, !takeEvent, 0, 0);
-    takeEvent |= m_passwordBox.applyRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_button1    .processRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_button2    .processRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_button3    .processRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_button4    .processRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_idBox      .processRootEvent(event, !takeEvent, 0, 0);
+    takeEvent |= m_passwordBox.processRootEvent(event, !takeEvent, 0, 0);
 }
 
 void ProcessLogin::doLogin()

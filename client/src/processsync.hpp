@@ -11,7 +11,7 @@ class ProcessSync: public Process
         int m_ratio = 0;
 
     private:
-        Widget m_mainDraw;
+        Widget m_canvas;
 
     private:
         ImageBoard m_barFull;

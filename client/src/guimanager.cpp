@@ -216,7 +216,7 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int sta
 
     bool tookEvent = false;
     if(!g_clientArgParser->disableIME){
-        tookEvent |= g_imeBoard->applyRootEvent(event, valid && !tookEvent, 0, 0);
+        tookEvent |= g_imeBoard->processRootEvent(event, valid && !tookEvent, 0, 0);
     }
 
     tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent,           startDstX, startDstY, roiOpt.value());

@@ -104,11 +104,11 @@ void ProcessSelectChar::draw() const
 void ProcessSelectChar::processEvent(const SDL_Event &event)
 {
     bool tookEvent = false;
-    tookEvent |= m_start      .applyRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_create     .applyRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_delete     .applyRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_exit       .applyRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_deleteInput.applyRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_start      .processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_create     .processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_delete     .processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_exit       .processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_deleteInput.processRootEvent(event, !tookEvent, 0, 0);
 
     if(!tookEvent){
     }

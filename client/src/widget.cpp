@@ -573,7 +573,7 @@ bool Widget::processParentEvent(const SDL_Event &event, bool valid, int parentW,
     return processEvent(event, valid, startDstX, startDstY, roiOpt.value());
 }
 
-bool Widget::applyRootEvent(const SDL_Event &event, bool valid, int rootDstX, int rootDstY)
+bool Widget::processRootEvent(const SDL_Event &event, bool valid, int rootDstX, int rootDstY)
 {
     fflassert(!parent());
     return processEvent(event, valid, dx() + rootDstX, dy() + rootDstY, std::nullopt);

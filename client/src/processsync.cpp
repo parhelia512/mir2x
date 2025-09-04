@@ -11,7 +11,7 @@ extern SDLDevice *g_sdlDevice;
 
 ProcessSync::ProcessSync()
     : Process()
-    , m_mainDraw
+    , m_canvas
       {
           DIR_UPLEFT,
           0,
@@ -47,7 +47,7 @@ ProcessSync::ProcessSync()
 
           {},
 
-          this,
+          &m_canvas,
           false,
       }
 
@@ -68,7 +68,7 @@ ProcessSync::ProcessSync()
           colorf::WHITE_A255,
           SDL_BLENDMODE_BLEND,
 
-          this,
+          &m_canvas,
           false,
       }
 
@@ -87,11 +87,11 @@ ProcessSync::ProcessSync()
           colorf::WHITE_A255,
           SDL_BLENDMODE_BLEND,
 
-          this,
+          &m_canvas,
           false,
       }
 {
-    m_mainDraw.setSize(
+    m_canvas.setSize(
             [this]{ return m_bgImg.w(); },
             [this]{ return m_bgImg.h(); });
 }
@@ -126,5 +126,5 @@ void ProcessSync::update(double fUpdateTime)
 void ProcessSync::draw() const
 {
     const SDLDeviceHelper::RenderNewFrame newFrame;
-    m_mainDraw.drawRoot();
+    m_canvas.drawRoot();
 }

@@ -325,7 +325,7 @@ class Widget: public WidgetTreeNode
         virtual bool processEvent      (const SDL_Event &, bool,           int, int, const Widget::ROIOpt &) final;
         virtual bool processParentEvent(const SDL_Event &, bool, int, int, int, int, const Widget::ROIOpt &) final;
 
-        virtual bool applyRootEvent(const SDL_Event &, bool, int = 0, int = 0) final;
+        virtual bool processRootEvent(const SDL_Event &, bool, int = 0, int = 0) final;
 
     protected:
         // @param
