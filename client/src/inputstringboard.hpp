@@ -38,9 +38,6 @@ class InputStringBoard: public Widget
                 Widget * = nullptr,
                 bool     = false);
 
-    public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
-
     private:
         void inputLineDone();
 

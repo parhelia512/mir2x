@@ -60,11 +60,10 @@ InputStringBoard::InputStringBoard(
 
     , m_textInfo
       {
-          DIR_UPLEFT,
+          DIR_NONE,
           [this](){ return w() / 2; },
           120,
-
-          250,
+          250, // line width
 
           nullptr,
           0,
@@ -218,8 +217,13 @@ InputStringBoard::InputStringBoard(
       }
 {
     setShow(false);
-    setSize([this](){ return m_bg.w(); },
-            [this](){ return m_bg.h(); });
+    setSize([this]{ return m_bg.w(); },
+            [this]{ return m_bg.h(); });
+
+    m_inputBg.setShow([this]
+    {
+        return m_input.focus();
+    });
 }
 
 void InputStringBoard::inputLineDone()

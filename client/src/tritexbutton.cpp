@@ -60,12 +60,14 @@ TritexButton::TritexButton(
           argParent,
           argAutoDelete,
       }
+
     , m_texIDList
       {
           argTexIDList[0],
           argTexIDList[1],
           argTexIDList[2],
       }
+
     , m_alterColor(argAlterColor)
 {
     const auto fnGetEdgeSize = [this](auto fn)
@@ -93,10 +95,6 @@ TritexButton::TritexButton(
 
 void TritexButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(!show()){
-        return;
-    }
-
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
         return;
@@ -118,8 +116,8 @@ void TritexButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
             }
         }();
 
-        SDLDeviceHelper::EnableTextureModColor enableColor(texPtr, modColor);
-        SDLDeviceHelper::EnableTextureBlendMode enableBlendMode(texPtr, [this]()
+        const SDLDeviceHelper::EnableTextureModColor enableColor(texPtr, modColor);
+        const SDLDeviceHelper::EnableTextureBlendMode enableBlendMode(texPtr, [this]()
         {
             if(m_blinkTime.has_value()){
                 const auto offTime = std::get<0>(m_blinkTime.value());
