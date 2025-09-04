@@ -67,7 +67,7 @@ ProcessSync::ProcessSync()
 
           1,
           10,
-          FONTSTYLE_BLEND,
+          FONTSTYLE_BLENDED,
 
           colorf::WHITE_A255,
           SDL_BLENDMODE_BLEND,
