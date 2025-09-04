@@ -13,6 +13,14 @@
 class ProcessSelectChar: public Process
 {
     private:
+        std::optional<SMQueryCharOK> m_smChar;
+
+    private:
+        int m_charAni = 0;
+        double m_charAniTime = 0.0;
+        uint32_t m_charAniSwitchFrame = 0;
+
+    private:
         TritexButton m_start;
         TritexButton m_create;
         TritexButton m_delete;
@@ -21,14 +29,6 @@ class ProcessSelectChar: public Process
     private:
         NotifyBoard m_notifyBoard;
         InputStringBoard m_deleteInput;
-
-    private:
-        std::optional<SMQueryCharOK> m_smChar;
-
-    private:
-        int m_charAni = 0;
-        double m_charAniTime = 0.0;
-        uint32_t m_charAniSwitchFrame = 0;
 
     public:
         ProcessSelectChar();
