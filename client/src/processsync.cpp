@@ -67,10 +67,7 @@ ProcessSync::ProcessSync()
 
           1,
           10,
-          FONTSTYLE_BLENDED,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_BLEND,
+          0,
       }
 {
     m_mainDraw.setSize(
@@ -79,17 +76,7 @@ ProcessSync::ProcessSync()
 
     m_mainDraw.addChildAt(&m_bar    , DIR_UPLEFT, 112, 528, false);
     m_mainDraw.addChildAt(&m_bgImg  , DIR_UPLEFT,   0,   0, false);
-    m_mainDraw.addChildAt(&m_barText, DIR_NONE, [this]
-    {
-        return m_bar.dx() + m_barFull.w() / 2;
-    },
-
-    [this]
-    {
-        return m_bar.dy() + m_bar.h() / 2;
-    },
-
-    false);
+    m_mainDraw.addChildAt(&m_barText, DIR_NONE  , 400, 536, false);
 }
 
 void ProcessSync::processEvent(const SDL_Event &event)
@@ -112,7 +99,7 @@ void ProcessSync::processEvent(const SDL_Event &event)
 void ProcessSync::update(double fUpdateTime)
 {
     if(m_ratio >= 100){
-        g_client->requestProcess(PROCESSID_LOGIN);
+        // g_client->requestProcess(PROCESSID_LOGIN);
         return;
     }
 

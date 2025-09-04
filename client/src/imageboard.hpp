@@ -53,8 +53,8 @@ class ImageBoard: public Widget
                 bool = false,
                 int  = 0,
 
-                Widget::VarU32       = colorf::WHITE + colorf::A_SHF(0XFF),
-                Widget::VarBlendMode = SDL_BLENDMODE_NONE,
+                Widget::VarU32       = colorf::WHITE_A255,
+                Widget::VarBlendMode = SDL_BLENDMODE_BLEND,
 
                 Widget * = nullptr,
                 bool     = false);
