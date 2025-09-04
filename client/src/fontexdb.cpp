@@ -1,3 +1,4 @@
+#include "colorf.hpp"
 #include "fontexdb.hpp"
 #include "sdldevice.hpp"
 
@@ -73,13 +74,13 @@ std::optional<std::tuple<FontexElement, size_t>> FontexDB::loadResource(uint64_t
 
     SDL_Surface *surfPtr = nullptr;
     if(fontStyle & FONTSTYLE_SOLID){
-        surfPtr = TTF_RenderUTF8_Solid(ttfPtr, utf8String, {0XFF, 0XFF, 0XFF, 0XFF});
+        surfPtr = TTF_RenderUTF8_Solid(ttfPtr, utf8String, colorf::RGBA2SDLColor(0XFF, 0XFF, 0XFF, 0XFF));
     }
     else if(fontStyle & FONTSTYLE_SHADED){
-        surfPtr = TTF_RenderUTF8_Shaded(ttfPtr, utf8String, {0XFF, 0XFF, 0XFF, 0XFF}, {0X00, 0X00, 0X00, 0X00});
+        surfPtr = TTF_RenderUTF8_Shaded(ttfPtr, utf8String, colorf::RGBA2SDLColor(0XFF, 0XFF, 0XFF, 0XFF), colorf::RGBA2SDLColor(0X00, 0X00, 0X00, 0X00));
     }
     else{
-        surfPtr = TTF_RenderUTF8_Blended(ttfPtr, utf8String, {0XFF, 0XFF, 0XFF, 0XFF});
+        surfPtr = TTF_RenderUTF8_Blended(ttfPtr, utf8String, colorf::RGBA2SDLColor(0XFF, 0XFF, 0XFF, 0XFF));
     }
 
     if(!surfPtr){

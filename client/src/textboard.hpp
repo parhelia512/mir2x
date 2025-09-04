@@ -32,7 +32,7 @@ class TextBoard: public Widget
                 uint8_t = 10,
                 uint8_t =  0,
 
-                Widget::VarU32       = colorf::WHITE + colorf::A_SHF(0XFF),
+                Widget::VarU32       = colorf::WHITE_A255,
                 Widget::VarBlendMode = SDL_BLENDMODE_NONE,
 
                 Widget * = nullptr,
