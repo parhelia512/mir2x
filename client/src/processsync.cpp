@@ -2,6 +2,7 @@
 #include "client.hpp"
 #include "pngtexdb.hpp"
 #include "sdldevice.hpp"
+#include "fontstyle.hpp"
 #include "processsync.hpp"
 
 extern Client *g_client;
@@ -66,7 +67,7 @@ ProcessSync::ProcessSync()
 
           1,
           10,
-          0,
+          FONTSTYLE_SOLID,
       }
 {
     m_mainDraw.setSize(
