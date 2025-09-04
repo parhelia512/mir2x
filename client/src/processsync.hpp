@@ -14,11 +14,11 @@ class ProcessSync: public Process
         Widget m_mainDraw;
 
     private:
-        ImageBoard m_bgImg;
-
-    private:
         ImageBoard m_barFull;
         GfxCropBoard m_bar;
+
+    private:
+        ImageBoard m_bgImg;
 
     private:
         TextBoard m_barText;
