@@ -21,17 +21,6 @@ ProcessSync::ProcessSync()
           0, //
       }
 
-    , m_bgImg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000001); },
-      }
-
     , m_barFull
       {
           DIR_UPLEFT,
@@ -46,8 +35,8 @@ ProcessSync::ProcessSync()
     , m_bar
       {
           DIR_UPLEFT,
-          0,
-          0,
+          112,
+          528,
 
           &m_barFull,
 
@@ -55,28 +44,56 @@ ProcessSync::ProcessSync()
           0,
           [this]{ return m_barFull.w() * m_ratio / 100; },
           [this]{ return m_barFull.h()                ; },
+
+          {},
+
+          this,
+          false,
       }
 
-    , m_barText
+    , m_bgImg
       {
           DIR_UPLEFT,
           0,
           0,
+
+          {},
+          {},
+          [](const Widget *){ return g_progUseDB->retrieve(0X00000001); },
+
+          false,
+          false,
+          0,
+
+          colorf::WHITE_A255,
+          SDL_BLENDMODE_BLEND,
+
+          this,
+          false,
+      }
+
+    , m_barText
+      {
+          DIR_NONE,
+          400,
+          536,
 
           [](const Widget *){ return "Connecting..."; },
 
           1,
           10,
           0,
+
+          colorf::WHITE_A255,
+          SDL_BLENDMODE_BLEND,
+
+          this,
+          false,
       }
 {
     m_mainDraw.setSize(
             [this]{ return m_bgImg.w(); },
             [this]{ return m_bgImg.h(); });
-
-    m_mainDraw.addChildAt(&m_bar    , DIR_UPLEFT, 112, 528, false);
-    m_mainDraw.addChildAt(&m_bgImg  , DIR_UPLEFT,   0,   0, false);
-    m_mainDraw.addChildAt(&m_barText, DIR_NONE  , 400, 536, false);
 }
 
 void ProcessSync::processEvent(const SDL_Event &event)

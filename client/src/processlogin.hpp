@@ -15,17 +15,17 @@
 class ProcessLogin: public Process
 {
     private:
-        TritexButton    m_button1;
-        TritexButton    m_button2;
-        TritexButton    m_button3;
-        TritexButton    m_button4;
+        TritexButton m_button1;
+        TritexButton m_button2;
+        TritexButton m_button3;
+        TritexButton m_button4;
 
     private:
-        InputLine       m_idBox;
-        PasswordBox     m_passwordBox;
+        InputLine   m_idBox;
+        PasswordBox m_passwordBox;
 
     private:
-        LabelBoard m_buildSignature;
+        TextBoard m_buildSignature;
 
     private:
         NotifyBoard m_notifyBoard;
