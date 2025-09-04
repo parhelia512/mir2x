@@ -9,10 +9,85 @@ extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
 ProcessSync::ProcessSync()
-	: Process()
-    , m_ratio(0)
-    , m_processBarInfo(DIR_UPLEFT, 0, 0, u8"Connecting...", 1, 10, 0)
-{}
+    : Process()
+    , m_mainDraw
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          0, // need to reset
+          0, //
+      }
+
+    , m_bgImg
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          {},
+          {},
+          [](const Widget *){ return g_progUseDB->retrieve(0X00000001); },
+      }
+
+    , m_barFull
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          {},
+          {},
+          [](const Widget *){ return g_progUseDB->retrieve(0X00000002); },
+      }
+
+    , m_bar
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          &m_barFull,
+
+          0,
+          0,
+          [this]{ return m_barFull.w() * m_ratio / 100; },
+          [this]{ return m_barFull.h()                ; },
+      }
+
+    , m_barText
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          [](const Widget *){ return "Connecting..."; },
+
+          1,
+          10,
+          0,
+      }
+{
+    m_mainDraw.setSize(
+            [this]{ return m_bgImg.w(); },
+            [this]{ return m_bgImg.h(); });
+
+    m_mainDraw.addChildAt(&m_bar    , DIR_UPLEFT, 112, 528, false);
+    m_mainDraw.addChildAt(&m_bgImg  , DIR_UPLEFT,   0,   0, false);
+    m_mainDraw.addChildAt(&m_barText, DIR_NONE, [this]
+    {
+        return m_bar.dx() + m_barFull.w() / 2;
+    },
+
+    [this]
+    {
+        return m_bar.dy() + m_bar.h() / 2;
+    },
+
+    false);
+}
+
 void ProcessSync::processEvent(const SDL_Event &event)
 {
     switch(event.type){
@@ -42,20 +117,6 @@ void ProcessSync::update(double fUpdateTime)
 
 void ProcessSync::draw() const
 {
-    SDLDeviceHelper::RenderNewFrame newFrame;
-    auto texPtr = g_progUseDB->retrieve(0X00000002);
-    const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
-
-    g_sdlDevice->drawTexture(texPtr,
-            112,  // dst x
-            528,  // dst y
-            0,    // src x
-            0,    // src y
-            std::lround(texW * (m_ratio / 100.0)), // src w
-            texH);  // src h
-    g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000001), 0, 0);
-
-    const int infoX = (800 - m_processBarInfo.w()) / 2;
-    const int infoY = 528 + (texH - m_processBarInfo.h()) / 2;
-    m_processBarInfo.drawEx(infoX, infoY, {0, 0, m_processBarInfo.w(), m_processBarInfo.h()});
+    const SDLDeviceHelper::RenderNewFrame newFrame;
+    m_mainDraw.drawRoot();
 }

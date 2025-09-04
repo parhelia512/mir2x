@@ -399,9 +399,6 @@ Widget::Widget(
     , m_w  (std::move(argW))
     , m_h  (std::move(argH))
 {
-    // don't check if w/h is a function
-    // because it may refers to sub-widget which has not be initialized yet
-
     for(auto &[childPtr, offDir, offX, offY, autoDelete]: argChildList){
         if(childPtr){
             addChildAt(childPtr, std::move(offDir), std::move(offX), std::move(offY), autoDelete);
