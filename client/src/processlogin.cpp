@@ -171,8 +171,8 @@ ProcessLogin::ProcessLogin()
     m_notifyBoard  .setShow([this]{ return !m_notifyBoard.empty(); });
     m_notifyBoardBg.setShow([this]{ return !m_notifyBoard.empty(); });
 
-    m_notifyBoardBg.moveAt(DIR_UPLEFT, [this]{ return m_notifyBoard.dx() - 15; }, [this]{ return m_notifyBoard.dy() - 15; });
-    m_notifyBoardBg.setSize(           [this]{ return m_notifyBoard. w() + 30; }, [this]{ return m_notifyBoard. h() + 30; });
+    m_notifyBoardBg.moveAt(DIR_UPLEFT, [this]{ return m_notifyBoard.dx() - 10; }, [this]{ return m_notifyBoard.dy() - 10; });
+    m_notifyBoardBg.setSize(           [this]{ return m_notifyBoard. w() + 20; }, [this]{ return m_notifyBoard. h() + 20; });
 
     g_sdlDevice->playBGM(g_bgmDB->retrieve(0X00040007));
     if(g_clientArgParser->autoLogin.has_value()){
