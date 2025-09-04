@@ -21,16 +21,18 @@ class PasswordBox: public InputLine
                 uint8_t  font      =  0,
                 uint8_t  fontSize  = 10,
                 uint8_t  fontStyle =  0,
-                uint32_t fontColor =  colorf::WHITE_A255,
 
-                int      cursorWidth = 2,
-                uint32_t cursorColor = colorf::WHITE_A255,
+                Widget::VarU32 fontColor = colorf::WHITE_A255,
+
+                int            cursorWidth = 2,
+                Widget::VarU32 cursorColor = colorf::WHITE_A255,
 
                 std::function<void()> fnOnTab    = nullptr,
                 std::function<void()> fnOnReturn = nullptr,
 
                 Widget *parent     = nullptr,
                 bool    autoDelete = false)
+
             : InputLine
               {
                   dir,
@@ -44,10 +46,11 @@ class PasswordBox: public InputLine
                   font,
                   fontSize,
                   fontStyle,
-                  fontColor,
+
+                  std::move(fontColor),
 
                   cursorWidth,
-                  cursorColor,
+                  std::move(cursorColor),
 
                   fnOnTab,
                   fnOnReturn,

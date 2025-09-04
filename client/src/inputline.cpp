@@ -22,13 +22,14 @@ InputLine::InputLine(
 
         bool argIMEEnabled,
 
-        uint8_t  argFont,
-        uint8_t  argFontSize,
-        uint8_t  argFontStyle,
-        uint32_t argFontColor,
+        uint8_t argFont,
+        uint8_t argFontSize,
+        uint8_t argFontStyle,
 
-        int      argCursorWidth,
-        uint32_t argCursorColor,
+        Widget::VarU32 argFontColor,
+
+        int            argCursorWidth,
+        Widget::VarU32 argCursorColor,
 
         std::function<void()>            argOnTab,
         std::function<void()>            argOnCR,
@@ -61,10 +62,10 @@ InputLine::InputLine(
           argFont,
           argFontSize,
           argFontStyle,
-          argFontColor,
+          std::move(argFontColor),
       }
     , m_cursorWidth(argCursorWidth)
-    , m_cursorColor(argCursorColor)
+    , m_cursorColor(std::move(argCursorColor))
 
     , m_onTab   (std::move(argOnTab))
     , m_onCR    (std::move(argOnCR))
@@ -251,7 +252,7 @@ void InputLine::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
     int cursorH = std::max<int>(m_tpset.ph(), h());
 
     if(mathf::rectangleOverlapRegion(dstX, dstY, roiOpt->w, roiOpt->h, cursorX, cursorY, cursorW, cursorH)){
-        g_sdlDevice->fillRectangle(m_cursorColor, cursorX, cursorY, cursorW, cursorH);
+        g_sdlDevice->fillRectangle(Widget::evalU32(m_cursorColor, this), cursorX, cursorY, cursorW, cursorH);
     }
 
     if(g_clientArgParser->debugDrawInputLine){

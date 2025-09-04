@@ -23,7 +23,7 @@ class NotifyBoard: public Widget
         uint8_t m_fontStyle;
 
     private:
-        uint32_t m_fontColor;
+        Widget::VarU32 m_fontColor;
 
     private:
         uint64_t m_showTime;
@@ -44,7 +44,7 @@ class NotifyBoard: public Widget
                 uint8_t = 10,
                 uint8_t =  0,
 
-                uint32_t = colorf::WHITE_A255,
+                Widget::VarU32 = colorf::WHITE_A255,
 
                 uint64_t = 0,
                 size_t   = 0,

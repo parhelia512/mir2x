@@ -17,9 +17,9 @@ class InputLine: public Widget
         int m_cursor = 0;
 
     protected:
-        int      m_cursorWidth;
-        uint32_t m_cursorColor;
-        double   m_cursorBlink = 0.0;
+        int            m_cursorWidth;
+        Widget::VarU32 m_cursorColor;
+        double         m_cursorBlink = 0.0;
 
     protected:
         std::function<void()>            m_onTab;
@@ -37,13 +37,14 @@ class InputLine: public Widget
 
                 bool,
 
-                uint8_t  = 0,
-                uint8_t  = 10,
-                uint8_t  = 0,
-                uint32_t = colorf::WHITE_A255,
+                uint8_t = 0,
+                uint8_t = 10,
+                uint8_t = 0,
 
-                int      = 2,
-                uint32_t = colorf::WHITE_A255,
+                Widget::VarU32 = colorf::WHITE_A255,
+
+                int            = 2,
+                Widget::VarU32 = colorf::WHITE_A255,
 
                 std::function<void()>            = nullptr,
                 std::function<void()>            = nullptr,

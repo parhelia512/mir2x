@@ -22,95 +22,156 @@ extern ClientArgParser *g_clientArgParser;
 
 ProcessLogin::ProcessLogin()
 	: Process()
-	, m_button1(DIR_UPLEFT, 150, 482, {0X00000005, 0X00000006, 0X00000007}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doCreateAccount();  })
-	, m_button2(DIR_UPLEFT, 352, 482, {0X00000008, 0X00000009, 0X0000000A}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doChangePassword(); })
-	, m_button3(DIR_UPLEFT, 554, 482, {0X0000000B, 0X0000000C, 0X0000000D}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doExit();           })
-        , m_button4(DIR_UPLEFT, 600, 536, {0X0000000E, 0X0000000F, 0X00000010}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doLogin();          })
-	, m_idBox
-      {
-          DIR_UPLEFT,
-          159,
-          540,
-          146,
-          18,
-
-          false,
-
-          2,
-          18,
-          0,
-          colorf::WHITE_A255,
-
-          2,
-          colorf::WHITE_A255,
-
-          [this]()
+        , m_canvas
           {
-              m_idBox      .setFocus(false);
-              m_passwordBox.setFocus(true);
-          },
-          [this]()
-          {
-              doLogin();
+              DIR_UPLEFT,
+              0,
+              0,
+              800,
+              600,
           }
-      }
+
+	, m_button1(DIR_UPLEFT, 150, 482, {0X00000005, 0X00000006, 0X00000007}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doCreateAccount();  }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
+	, m_button2(DIR_UPLEFT, 352, 482, {0X00000008, 0X00000009, 0X0000000A}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doChangePassword(); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
+	, m_button3(DIR_UPLEFT, 554, 482, {0X0000000B, 0X0000000C, 0X0000000D}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doExit();           }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
+        , m_button4(DIR_UPLEFT, 600, 536, {0X0000000E, 0X0000000F, 0X00000010}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doLogin();          }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
+
+	, m_idBox
+          {
+              DIR_UPLEFT,
+              159,
+              540,
+
+              146,
+              18,
+
+              false,
+
+              2,
+              18,
+              0,
+
+              colorf::WHITE_A255,
+
+              2,
+              colorf::WHITE_A255,
+
+              [this]()
+              {
+                  m_idBox      .setFocus(false);
+                  m_passwordBox.setFocus(true);
+              },
+
+              [this]()
+              {
+                  doLogin();
+              },
+
+              nullptr,
+
+              &m_canvas,
+              false,
+          }
+
 	, m_passwordBox
-      {
-          DIR_UPLEFT,
-          409,
-          540,
-          146,
-          18,
-          true,
-
-          2,
-          18,
-          0,
-          colorf::WHITE_A255,
-
-          2,
-          colorf::WHITE_A255,
-
-          [this]()
           {
-              m_idBox      .setFocus(true);
-              m_passwordBox.setFocus(false);
-          },
-          [this]()
-          {
-              doLogin();
-          },
-      }
+              DIR_UPLEFT,
+              409,
+              540,
+
+              146,
+              18,
+
+              true,
+
+              2,
+              18,
+              0,
+
+              colorf::WHITE_A255,
+
+              2,
+              colorf::WHITE_A255,
+
+              [this]()
+              {
+                  m_idBox      .setFocus(true);
+                  m_passwordBox.setFocus(false);
+              },
+
+              [this]()
+              {
+                  doLogin();
+              },
+
+              &m_canvas,
+              false,
+          }
 
     , m_buildSignature
       {
           DIR_UPLEFT,
           0,
           0,
-          u8"build",
+
+          [](const Widget *)
+          {
+              return str_printf("编译版本号:%s", getBuildSignature());
+          },
+
           1,
           14,
           0,
-          colorf::YELLOW + colorf::A_SHF(255),
+
+          colorf::YELLOW_A255,
+          SDL_BLENDMODE_BLEND,
+
+          &m_canvas,
+          false,
+      }
+
+    , m_notifyBoardBg
+      {
+          DIR_UPLEFT,
+          0, // need reset
+          0, //
+          0, //
+          0, //
+
+          [](const Widget *self, int drawDstX, int drawDstY)
+          {
+              g_sdlDevice->fillRectangle(colorf::RGBA(0, 0,   0, 128), drawDstX, drawDstY, self->w(), self->h(), 8);
+              g_sdlDevice->drawRectangle(colorf::RGBA(0, 0, 255, 128), drawDstX, drawDstY, self->w(), self->h(), 8);
+          },
+
+          &m_canvas,
+          false,
       }
 
     , m_notifyBoard
       {
-          DIR_UPLEFT,
-          0,
-          0,
-          0,
+          DIR_NONE,
+          [this]{ return m_canvas.w() / 2; },
+          [this]{ return m_canvas.h() / 2; },
+          0, // single line
+
           1,
           15,
           0,
-          colorf::YELLOW + colorf::A_SHF(255),
+
+          colorf::YELLOW_A255,
+
           5000,
           10,
+
+          &m_canvas,
+          false,
       }
 {
-    m_buildSignature.setText(u8"编译版本号:%s", getBuildSignature());
-    g_sdlDevice->playBGM(g_bgmDB->retrieve(0X00040007));
+    m_notifyBoardBg.moveAt(DIR_UPLEFT, [this]{ return m_notifyBoard.dx() - 15; }, [this]{ return m_notifyBoard.dy() - 15; });
+    m_notifyBoardBg.setSize(           [this]{ return m_notifyBoard. w() + 30; }, [this]{ return m_notifyBoard. h() + 30; });
 
+    g_sdlDevice->playBGM(g_bgmDB->retrieve(0X00040007));
     if(g_clientArgParser->autoLogin.has_value()){
         sendLogin(g_clientArgParser->autoLogin.value().first, g_clientArgParser->autoLogin.value().second);
     }
@@ -118,9 +179,7 @@ ProcessLogin::ProcessLogin()
 
 void ProcessLogin::update(double fUpdateTime)
 {
-    m_idBox.update(fUpdateTime);
-    m_passwordBox.update(fUpdateTime);
-    m_notifyBoard.update(fUpdateTime);
+    m_canvas.update(fUpdateTime);
 }
 
 void ProcessLogin::draw() const
@@ -130,25 +189,7 @@ void ProcessLogin::draw() const
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000004),   0, 465);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000011), 103, 536);
 
-    m_button1.drawRoot();
-    m_button2.drawRoot();
-    m_button3.drawRoot();
-    m_button4.drawRoot();
-
-    m_idBox      .drawRoot();
-    m_passwordBox.drawRoot();
-
-    m_buildSignature.drawRoot();
-
-    const int notifX = (800 - m_notifyBoard.pw()) / 2;
-    const int notifY = (600 - m_notifyBoard. h()) / 2;
-    const int margin = 15;
-
-    if(!m_notifyBoard.empty()){
-        g_sdlDevice->fillRectangle(colorf::RGBA(0, 0,   0, 128), notifX - margin, notifY - margin, m_notifyBoard.pw() + margin * 2, m_notifyBoard.h() + margin * 2, 8);
-        g_sdlDevice->drawRectangle(colorf::RGBA(0, 0, 255, 128), notifX - margin, notifY - margin, m_notifyBoard.pw() + margin * 2, m_notifyBoard.h() + margin * 2, 8);
-    }
-    m_notifyBoard.drawAt(DIR_UPLEFT, notifX, notifY);
+    m_canvas.drawRoot();
 }
 
 void ProcessLogin::processEvent(const SDL_Event &event)
@@ -180,14 +221,7 @@ void ProcessLogin::processEvent(const SDL_Event &event)
             }
     }
 
-    bool takeEvent = false;
-
-    takeEvent |= m_button1    .processRootEvent(event, !takeEvent, 0, 0);
-    takeEvent |= m_button2    .processRootEvent(event, !takeEvent, 0, 0);
-    takeEvent |= m_button3    .processRootEvent(event, !takeEvent, 0, 0);
-    takeEvent |= m_button4    .processRootEvent(event, !takeEvent, 0, 0);
-    takeEvent |= m_idBox      .processRootEvent(event, !takeEvent, 0, 0);
-    takeEvent |= m_passwordBox.processRootEvent(event, !takeEvent, 0, 0);
+    m_canvas.processRootEvent(event, true);
 }
 
 void ProcessLogin::doLogin()

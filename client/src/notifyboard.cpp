@@ -11,10 +11,11 @@ NotifyBoard::NotifyBoard(
 
         int argLineW,
 
-        uint8_t  argDefaultFont,
-        uint8_t  argDefaultFontSize,
-        uint8_t  argDefaultFontStyle,
-        uint32_t argDefaultFontColor,
+        uint8_t argDefaultFont,
+        uint8_t argDefaultFontSize,
+        uint8_t argDefaultFontStyle,
+
+        Widget::VarU32 argDefaultFontColor,
 
         uint64_t argShowTime,
         size_t   argMaxEntryCount,
@@ -60,7 +61,7 @@ NotifyBoard::NotifyBoard(
     , m_font(argDefaultFont)
     , m_fontSize(argDefaultFontSize)
     , m_fontStyle(argDefaultFontStyle)
-    , m_fontColor(argDefaultFontColor)
+    , m_fontColor(std::move(argDefaultFontColor))
     , m_showTime(argShowTime)
     , m_maxEntryCount(argMaxEntryCount)
 {}

@@ -7,13 +7,17 @@
 #include "process.hpp"
 #include "message.hpp"
 #include "inputline.hpp"
-#include "labelboard.hpp"
+#include "textboard.hpp"
 #include "passwordbox.hpp"
 #include "notifyboard.hpp"
 #include "tritexbutton.hpp"
+#include "shapecropboard.hpp"
 
 class ProcessLogin: public Process
 {
+    private:
+        Widget m_canvas;
+
     private:
         TritexButton m_button1;
         TritexButton m_button2;
@@ -25,10 +29,11 @@ class ProcessLogin: public Process
         PasswordBox m_passwordBox;
 
     private:
-        LabelBoard m_buildSignature;
+        TextBoard m_buildSignature;
 
     private:
-        NotifyBoard m_notifyBoard;
+        ShapeCropBoard m_notifyBoardBg;
+        NotifyBoard    m_notifyBoard;
 
     public:
         ProcessLogin();
