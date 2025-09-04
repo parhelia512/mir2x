@@ -410,7 +410,7 @@ void Widget::drawChildEx(const Widget *child, int dstX, int dstY, const Widget::
 {
     fflassert(child);
     fflassert(hasChild(child->id()));
-    drawAsChildEx(child, child->dir(), child->dx(), child->dy(), dstX, dstY, roi);
+    drawAsChildEx(child, DIR_UPLEFT, child->dx(), child->dy(), dstX, dstY, roi);
 }
 
 void Widget::drawAt(dir8_t dstDir, int dstX, int dstY, const Widget::ROIOpt &roi) const
