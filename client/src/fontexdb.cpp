@@ -74,12 +74,18 @@ std::optional<std::tuple<FontexElement, size_t>> FontexDB::loadResource(uint64_t
 
     SDL_Surface *surfPtr = nullptr;
     if(fontStyle & FONTSTYLE_SOLID){
+        // create an texture that only has two colors: RGBA: (0, 0, 0, 0) and (255, 255, 255, 0)
+        // cannot be used for SDL_BLENDMODE_BLEND because alpha channel is always 0
         surfPtr = TTF_RenderUTF8_Solid(ttfPtr, utf8String, colorf::RGBA2SDLColor(0XFF, 0XFF, 0XFF, 0XFF));
     }
     else if(fontStyle & FONTSTYLE_SHADED){
+        // create an texture that has color: (x, x, x, 0), x = 0~255
+        // cannot be used for SDL_BLENDMODE_BLEND because alpha channel is always 0
         surfPtr = TTF_RenderUTF8_Shaded(ttfPtr, utf8String, colorf::RGBA2SDLColor(0XFF, 0XFF, 0XFF, 0XFF), colorf::RGBA2SDLColor(0X00, 0X00, 0X00, 0X00));
     }
     else{
+        // create an texture that has color: (255, 255, 255, x), x = 0~255
+        // cannot be used for SDL_BLENDMODE_NONE, otherwise will get a white opaque block
         surfPtr = TTF_RenderUTF8_Blended(ttfPtr, utf8String, colorf::RGBA2SDLColor(0XFF, 0XFF, 0XFF, 0XFF));
     }
 

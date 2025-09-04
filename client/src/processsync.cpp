@@ -67,7 +67,10 @@ ProcessSync::ProcessSync()
 
           1,
           10,
-          FONTSTYLE_SOLID,
+          FONTSTYLE_BLEND,
+
+          colorf::WHITE_A255,
+          SDL_BLENDMODE_BLEND,
       }
 {
     m_mainDraw.setSize(
