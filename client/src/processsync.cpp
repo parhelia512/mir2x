@@ -99,7 +99,7 @@ void ProcessSync::processEvent(const SDL_Event &event)
 void ProcessSync::update(double fUpdateTime)
 {
     if(m_ratio >= 100){
-        // g_client->requestProcess(PROCESSID_LOGIN);
+        g_client->requestProcess(PROCESSID_LOGIN);
         return;
     }
 
