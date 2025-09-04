@@ -11,55 +11,58 @@ class PasswordBox: public InputLine
 
     public:
         PasswordBox(
-                dir8_t dir,
-                int  x,
-                int  y,
-                int  w,
-                int  h,
-                bool security = true,
+                Widget::VarDir argDir,
+                Widget::VarInt argX,
+                Widget::VarInt argY,
 
-                uint8_t  font      =  0,
-                uint8_t  fontSize  = 10,
-                uint8_t  fontStyle =  0,
+                Widget::VarSizeOpt argW,
+                Widget::VarSizeOpt argH,
 
-                Widget::VarU32 fontColor = colorf::WHITE_A255,
+                bool argSecurity = true,
 
-                int            cursorWidth = 2,
-                Widget::VarU32 cursorColor = colorf::WHITE_A255,
+                uint8_t argFont      =  0,
+                uint8_t argFontSize  = 10,
+                uint8_t argFontStyle =  0,
 
-                std::function<void()> fnOnTab    = nullptr,
-                std::function<void()> fnOnReturn = nullptr,
+                Widget::VarU32 argFontColor = colorf::WHITE_A255,
 
-                Widget *parent     = nullptr,
-                bool    autoDelete = false)
+                int            argCursorWidth = 2,
+                Widget::VarU32 argCursorColor = colorf::WHITE_A255,
+
+                std::function<void()> argOnTab    = nullptr,
+                std::function<void()> argOnReturn = nullptr,
+
+                Widget *argParent     = nullptr,
+                bool    argAutoDelete = false)
 
             : InputLine
               {
-                  dir,
-                  x,
-                  y,
-                  w,
-                  h,
+                  std::move(argDir),
+                  std::move(argX),
+                  std::move(argY),
+                  std::move(argW),
+                  std::move(argH),
 
                   false,
 
-                  font,
-                  fontSize,
-                  fontStyle,
+                  argFont,
+                  argFontSize,
+                  argFontStyle,
 
-                  std::move(fontColor),
+                  std::move(argFontColor),
 
-                  cursorWidth,
-                  std::move(cursorColor),
+                  argCursorWidth,
+                  std::move(argCursorColor),
 
-                  fnOnTab,
-                  fnOnReturn,
+                  std::move(argOnTab),
+                  std::move(argOnReturn),
                   nullptr,
 
-                  parent,
-                  autoDelete,
+                  argParent,
+                  argAutoDelete,
               }
-            , m_security(security)
+
+            , m_security(argSecurity)
         {}
 
     public:

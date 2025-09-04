@@ -2,21 +2,30 @@
 #include <vector>
 #include <cstdint>
 #include "widget.hpp"
+#include "imageboard.hpp"
 #include "passwordbox.hpp"
+#include "layoutboard.hpp"
 #include "tritexbutton.hpp"
+#include "shapecropboard.hpp"
 
 class InputStringBoard: public Widget
 {
     private:
-        PasswordBox m_input;
+        std::function<void(std::u8string)> m_onDone;
+
+    private:
+        ImageBoard m_bg;
+
+    private:
+        LayoutBoard m_textInfo;
+
+    private:
+        ShapeCropBoard m_inputBg;
+        PasswordBox    m_input;
 
     private:
         TritexButton m_yesButton;
         TritexButton m_nopButton;
-
-    private:
-        std::u8string m_parXMLString;
-        std::function<void(std::u8string)> m_onDone;
 
     public:
         InputStringBoard(
@@ -28,9 +37,6 @@ class InputStringBoard: public Widget
 
                 Widget * = nullptr,
                 bool     = false);
-
-    public:
-        void update(double) override;
 
     public:
         void drawEx(int, int, const Widget::ROIOpt &) const override;
