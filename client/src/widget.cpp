@@ -547,9 +547,12 @@ bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int
 
 // {startDstX, startDstY, roi} is based on parent widget
 // calculate sub-roi for current child widget
-bool Widget::processParentEvent(const SDL_Event &event, bool valid, int parentW, int parentH, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
-    auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    const auto par = parent();
+    fflassert(par);
+
+    auto roiOpt = par->cropDrawROI(startDstX, startDstY, roi);
     if(!roiOpt.has_value()){
         return false;
     }
@@ -561,8 +564,8 @@ bool Widget::processParentEvent(const SDL_Event &event, bool valid, int parentW,
                 &startDstX,
                 &startDstY,
 
-                parentW,
-                parentH,
+                par->w(),
+                par->h(),
 
                 dx(),
                 dy(),
@@ -588,7 +591,7 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDs
     {
         if(widget->show()){
             const bool validEvent = valid && !took;
-            const bool takenEvent = widget->processParentEvent(event, validEvent, w(), h(), startDstX, startDstY, roi);
+            const bool takenEvent = widget->processParentEvent(event, validEvent, startDstX, startDstY, roi);
 
             if(!validEvent && takenEvent){
                 throw fflerror("widget %s takes invalid event", widget->name());

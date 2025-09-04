@@ -185,7 +185,7 @@ bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, int start
     }
 
     if(showref()){
-        if(chatref->processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+        if(chatref->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
             return true;
         }
     }
@@ -223,7 +223,7 @@ bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, int start
                     return input.consumeFocus(true, std::addressof(input.layout));
                 }
 
-                if(chat.processParentEvent(event, true, w(), h(), startDstX, startDstY, roiOpt.value())){
+                if(chat.processParentEvent(event, true, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 

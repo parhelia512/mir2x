@@ -168,7 +168,7 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
     }
 
-    if(m_checkBox.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+    if(m_checkBox.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 

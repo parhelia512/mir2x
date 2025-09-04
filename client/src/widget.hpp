@@ -322,8 +322,8 @@ class Widget: public WidgetTreeNode
     public:
         Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, int, int, const Widget::ROIOpt &)>);
 
-        virtual bool processEvent      (const SDL_Event &, bool,           int, int, const Widget::ROIOpt &) final;
-        virtual bool processParentEvent(const SDL_Event &, bool, int, int, int, int, const Widget::ROIOpt &) final;
+        virtual bool processEvent      (const SDL_Event &, bool, int, int, const Widget::ROIOpt &) final;
+        virtual bool processParentEvent(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) final;
 
         virtual bool processRootEvent(const SDL_Event &, bool, int = 0, int = 0) final;
 

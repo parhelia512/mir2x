@@ -178,10 +178,10 @@ bool ItemListBoard::processEventDefault(const SDL_Event &event, bool valid, int 
         return consumeFocus(false);
     }
 
-    if(m_leftButton  .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){ return true; }
-    if(m_selectButton.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){ return true; }
-    if(m_rightButton .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){ return true; }
-    if(m_closeButton .processParentEvent(event, valid, w(), h(), startDstX, startDstY, roi)){ return true; }
+    if(m_leftButton  .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_selectButton.processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_rightButton .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_closeButton .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:

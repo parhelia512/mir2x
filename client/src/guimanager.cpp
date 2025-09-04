@@ -219,10 +219,10 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int sta
         tookEvent |= g_imeBoard->processRootEvent(event, valid && !tookEvent, 0, 0);
     }
 
-    tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent,           startDstX, startDstY, roiOpt.value());
-    tookEvent |= m_controlBoard.processParentEvent (event, valid && !tookEvent, w(), h(), startDstX, startDstY, roiOpt.value());
-    tookEvent |= m_NPCChatBoard.processParentEvent (event, valid && !tookEvent, w(), h(), startDstX, startDstY, roiOpt.value());
-    tookEvent |= m_miniMapBoard.processParentEvent (event, valid && !tookEvent, w(), h(), startDstX, startDstY, roiOpt.value());
+    tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
+    tookEvent |= m_controlBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
+    tookEvent |= m_NPCChatBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
+    tookEvent |= m_miniMapBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
 
     return tookEvent;
 }

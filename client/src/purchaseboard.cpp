@@ -416,45 +416,45 @@ bool PurchaseBoard::processEventDefault(const SDL_Event &event, bool valid, int 
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_selectButton.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+    if(m_selectButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_slider.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+    if(m_slider.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
     switch(extendedBoardGfxID()){
         case 1:
             {
-                if(m_closeExt1Button.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+                if(m_closeExt1Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_leftExt1Button.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+                if(m_leftExt1Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_selectExt1Button.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+                if(m_selectExt1Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_rightExt1Button.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+                if(m_rightExt1Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
                 break;
             }
         case 2:
             {
-                if(m_closeExt2Button.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+                if(m_closeExt2Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_selectExt2Button.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+                if(m_selectExt2Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
                     if(m_processRun->getWidget("InputStringBoard")->focus()){
                         setFocus(false);
                     }

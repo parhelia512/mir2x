@@ -361,7 +361,7 @@ bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, i
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processParentEvent(event, valid, w(), h(), startDstX, startDstY, roiOpt.value())){
+    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
