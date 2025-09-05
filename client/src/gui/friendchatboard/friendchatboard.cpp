@@ -57,8 +57,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .title = new LabelBoard
               {
                   DIR_NONE,
-                  [this](const Widget *){ return 45 + (m_frameCropDup.w() - 45 - 190) / 2; },
-                  [    ](const Widget *){ return 29; },
+                  [this]{ return 45 + (w() - 45 - 190) / 2; },
+                  [    ]{ return 29; },
 
                   u8"好友名称",
                   1,
@@ -72,8 +72,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .control = new PageControl
               {
                   DIR_RIGHT,
-                  [this](const Widget *){ return m_frameCropDup.w() - 42; },
-                  [    ](const Widget *){ return 29; },
+                  [this]{ return w() - 42; },
+                  29,
                   2,
 
                   {
@@ -187,10 +187,10 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .slider = new TexSlider
               {
                   DIR_UPLEFT,
-                  [this](const Widget *){ return m_frameCropDup.w() -  30; },
-                  [    ](const Widget *){ return                       70; },
-                  [    ](const Widget *){ return                        9; },
-                  [this](const Widget *){ return m_frameCropDup.h() - 140; },
+                  [this]{ return w() - 30; },
+                  70,
+                  9,
+                  [this]{ return h() - 140; },
 
                   false,
                   3,
@@ -206,8 +206,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                   UIPage_BORDER[2],
                   UIPage_BORDER[0],
 
-                  [this](const Widget *){ return m_frameCropDup.w() - UIPage_BORDER[2] - UIPage_BORDER[3]; }, // UIPage_MARGIN included
-                  [this](const Widget *){ return m_frameCropDup.h() - UIPage_BORDER[0] - UIPage_BORDER[1]; },
+                  [this]{ return w() - UIPage_BORDER[2] - UIPage_BORDER[3]; }, // UIPage_MARGIN included
+                  [this]{ return h() - UIPage_BORDER[0] - UIPage_BORDER[1]; },
 
                   this,
                   true,
@@ -235,8 +235,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .title = new LabelBoard
               {
                   DIR_NONE,
-                  [this](const Widget *){ return 45 + (m_frameCropDup.w() - 45 - 190) / 2; },
-                  [    ](const Widget *){ return 29; },
+                  [this]{ return 45 + (w() - 45 - 190) / 2; },
+                  29,
 
                   u8"【聊天记录】",
                   1,
@@ -250,8 +250,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .control = new PageControl
               {
                   DIR_RIGHT,
-                  [this](const Widget *){ return m_frameCropDup.w() - 42; },
-                  [    ](const Widget *){ return 29; },
+                  [this]{ return w() - 42; },
+                  29,
                   2,
 
                   {
@@ -289,10 +289,10 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .slider = new TexSlider
               {
                   DIR_UPLEFT,
-                  [this](const Widget *){ return m_frameCropDup.w() -  30; },
-                  [    ](const Widget *){ return                       70; },
-                  [    ](const Widget *){ return                        9; },
-                  [this](const Widget *){ return m_frameCropDup.h() - 140; },
+                  [this]{ return w() - 30; },
+                  70,
+                  9,
+                  [this]{ return h() - 140; },
 
                   false,
                   3,
@@ -308,8 +308,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                   UIPage_BORDER[2] + UIPage_MARGIN,
                   UIPage_BORDER[0] + UIPage_MARGIN,
 
-                  [this](const Widget *){ return m_frameCropDup.w() - UIPage_BORDER[2] - UIPage_BORDER[3] - 2 * UIPage_MARGIN; },
-                  [this](const Widget *){ return m_frameCropDup.h() - UIPage_BORDER[0] - UIPage_BORDER[1] - 2 * UIPage_MARGIN; },
+                  [this]{ return w() - UIPage_BORDER[2] - UIPage_BORDER[3] - 2 * UIPage_MARGIN; },
+                  [this]{ return h() - UIPage_BORDER[0] - UIPage_BORDER[1] - 2 * UIPage_MARGIN; },
 
                   this,
                   true,
@@ -321,8 +321,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .title = new LabelBoard
               {
                   DIR_NONE,
-                  [this](const Widget *){ return 45 + (m_frameCropDup.w() - 45 - 190) / 2; },
-                  [    ](const Widget *){ return 29; },
+                  [this]{ return 45 + (w() - 45 - 190) / 2; },
+                  29,
 
                   u8"【好友列表】",
                   1,
@@ -336,8 +336,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .control = new PageControl
               {
                   DIR_RIGHT,
-                  [this](const Widget *){ return m_frameCropDup.w() - 42; },
-                  [    ](const Widget *){ return 29; },
+                  [this]{ return w() - 42; },
+                  29,
                   2,
 
                   {
@@ -427,10 +427,10 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .slider = new TexSlider
               {
                   DIR_UPLEFT,
-                  [this](const Widget *){ return m_frameCropDup.w() -  30; },
-                  [    ](const Widget *){ return                       70; },
-                  [    ](const Widget *){ return                        9; },
-                  [this](const Widget *){ return m_frameCropDup.h() - 140; },
+                  [this]{ return w() - 30; },
+                  70,
+                  9,
+                  [this]{ return h() - 140; },
 
                   false,
                   3,
@@ -446,8 +446,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                   UIPage_BORDER[2] + UIPage_MARGIN,
                   UIPage_BORDER[0] + UIPage_MARGIN,
 
-                  [this](const Widget *){ return m_frameCropDup.w() - UIPage_BORDER[2] - UIPage_BORDER[3] - 2 * UIPage_MARGIN; },
-                  [this](const Widget *){ return m_frameCropDup.h() - UIPage_BORDER[0] - UIPage_BORDER[1] - 2 * UIPage_MARGIN; },
+                  [this]{ return w() - UIPage_BORDER[2] - UIPage_BORDER[3] - 2 * UIPage_MARGIN; },
+                  [this]{ return h() - UIPage_BORDER[0] - UIPage_BORDER[1] - 2 * UIPage_MARGIN; },
 
                   this,
                   true,
@@ -459,8 +459,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .title = new LabelBoard
               {
                   DIR_NONE,
-                  [this](const Widget *){ return 45 + (m_frameCropDup.w() - 45 - 190) / 2; },
-                  [    ](const Widget *){ return 29; },
+                  [this]{ return 45 + (w() - 45 - 190) / 2; },
+                  29,
 
                   u8"【查找用户】",
                   1,
@@ -474,8 +474,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .control = new PageControl
               {
                   DIR_RIGHT,
-                  [this](const Widget *){ return m_frameCropDup.w() - 42; },
-                  [    ](const Widget *){ return 29; },
+                  [this]{ return w() - 42; },
+                  29,
                   2,
 
                   {
@@ -513,10 +513,10 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .slider = new TexSlider
               {
                   DIR_UPLEFT,
-                  [this](const Widget *){ return m_frameCropDup.w() -  30; },
-                  [    ](const Widget *){ return                       70; },
-                  [    ](const Widget *){ return                        9; },
-                  [this](const Widget *){ return m_frameCropDup.h() - 140; },
+                  [this]{ return w() - 30; },
+                  70,
+                  9,
+                  [this]{ return h() - 140; },
 
                   false,
                   3,
@@ -542,8 +542,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .title = new LabelBoard
               {
                   DIR_NONE,
-                  [this](const Widget *){ return 45 + (m_frameCropDup.w() - 45 - 190) / 2; },
-                  [    ](const Widget *){ return 29; },
+                  [this]{ return 45 + (w() - 45 - 190) / 2; },
+                  29,
 
                   u8"【创建群聊】",
                   1,
@@ -557,8 +557,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .control = new PageControl
               {
                   DIR_RIGHT,
-                  [this](const Widget *){ return m_frameCropDup.w() - 42; },
-                  [    ](const Widget *){ return 29; },
+                  [this]{ return w() - 42; },
+                  29,
                   2,
 
                   {
@@ -703,10 +703,10 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               .slider = new TexSlider
               {
                   DIR_UPLEFT,
-                  [this](const Widget *){ return m_frameCropDup.w() -  30; },
-                  [    ](const Widget *){ return                       70; },
-                  [    ](const Widget *){ return                        9; },
-                  [this](const Widget *){ return m_frameCropDup.h() - 140; },
+                  [this]{ return w() -  30; },
+                  70,
+                  9,
+                  [this]{ return h() - 140; },
 
                   false,
                   3,
@@ -721,8 +721,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                   DIR_UPLEFT,
                   UIPage_BORDER[2] + UIPage_MARGIN,
                   UIPage_BORDER[0] + UIPage_MARGIN,
-                  [this](const Widget *){ return m_frameCropDup.w() - UIPage_BORDER[2] - UIPage_BORDER[3] - 2 * UIPage_MARGIN; },
-                  [this](const Widget *){ return m_frameCropDup.h() - UIPage_BORDER[0] - UIPage_BORDER[1] - 2 * UIPage_MARGIN; },
+                  [this]{ return w() - UIPage_BORDER[2] - UIPage_BORDER[3] - 2 * UIPage_MARGIN; },
+                  [this]{ return h() - UIPage_BORDER[0] - UIPage_BORDER[1] - 2 * UIPage_MARGIN; },
 
                   this,
                   true,
@@ -794,8 +794,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
           DIR_UPLEFT,
           0,
           0,
-          [this](const Widget *){ return this->w(); },
-          [this](const Widget *){ return this->h(); },
+          [this]{ return w(); },
+          [this]{ return h(); },
 
           &m_frame,
 
@@ -828,8 +828,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
           DIR_UPLEFT,
           0,
           0,
-          [this](const Widget *){ return m_frameCropDup.w(); },
-          [this](const Widget *){ return m_frameCropDup.h(); },
+          [this](){ return w(); },
+          [this](){ return h(); },
 
           &m_background,
 
@@ -845,8 +845,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
     , m_close
       {
           DIR_UPLEFT,
-          [this](const Widget *){ return m_frameCropDup.w() - 38; },
-          [this](const Widget *){ return m_frameCropDup.h() - 40; },
+          [this]{ return w() - 38; },
+          [this]{ return h() - 40; },
 
           {SYS_U32NIL, 0X0000001C, 0X0000001D},
           {
