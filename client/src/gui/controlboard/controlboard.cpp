@@ -10,9 +10,9 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           DIR_DOWNLEFT,
 
           0,
-          [this](const Widget *){ return g_sdlDevice->getRendererHeight() - 1; },
-          [this](const Widget *){ return g_sdlDevice->getRendererWidth ()    ; },
-          [this](const Widget *)
+          [this]{ return g_sdlDevice->getRendererHeight() - 1; },
+          [this]{ return g_sdlDevice->getRendererWidth ()    ; },
+          [this]
           {
               switch(m_mode){
                   case CBM_HIDE:

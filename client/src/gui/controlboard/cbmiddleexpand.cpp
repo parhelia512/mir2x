@@ -42,8 +42,8 @@ CBMiddleExpand::CBMiddleExpand(
           DIR_UPLEFT,
           0,
           0,
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
+          [this]{ return w(); },
+          [this]{ return h(); },
 
           [this](const Widget *self, int drawDstX, int drawDstY)
           {
@@ -63,8 +63,8 @@ CBMiddleExpand::CBMiddleExpand(
           std::addressof(m_logBoard),
 
           0,
-          [this](const Widget *) { return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
-          [this](const Widget *) { return m_logBoard.w(); },
+          [this]{ return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
+          [this]{ return m_logBoard.w(); },
           83,
 
           {},
@@ -82,10 +82,7 @@ CBMiddleExpand::CBMiddleExpand(
           {},
           {},
 
-          [](const Widget *)
-          {
-              return g_progUseDB->retrieve(0X00000027);
-          },
+          [](const Widget *){ return g_progUseDB->retrieve(0X00000027); },
       }
 
     , m_bgImg
@@ -94,8 +91,8 @@ CBMiddleExpand::CBMiddleExpand(
           0,
           0,
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
+          [this]{ return w(); },
+          [this]{ return h(); },
 
           &m_bgImgFull,
 
@@ -111,8 +108,9 @@ CBMiddleExpand::CBMiddleExpand(
     , m_buttonSwitchMode
       {
           DIR_UPLEFT,
-          [this](const Widget *){ return w() - 178; },
+          [this]{ return w() - 178; },
           3,
+
           {SYS_U32NIL, 0X00000028, 0X00000029},
           {
               SYS_U32NIL,
@@ -144,8 +142,9 @@ CBMiddleExpand::CBMiddleExpand(
     , m_buttonEmoji
       {
           DIR_UPLEFT,
-          [this](const Widget *){ return w() - 178; },
+          [this]{ return w() - 178; },
           87,
+
           {SYS_U32NIL, 0X00000023, 0X00000024},
           {
               SYS_U32NIL,
@@ -174,8 +173,9 @@ CBMiddleExpand::CBMiddleExpand(
     , m_buttonMute
       {
           DIR_UPLEFT,
-          [this](const Widget *){ return w() - 220; },
+          [this]{ return w() - 220; },
           87,
+
           {SYS_U32NIL, 0X00000025, 0X00000026},
           {
               SYS_U32NIL,
@@ -204,7 +204,7 @@ CBMiddleExpand::CBMiddleExpand(
     , m_slider
       {
           DIR_UPLEFT,
-          [this](const Widget *){ return w() - 176; },
+          [this]{ return w() - 176; },
           40,
           5,
           60,
