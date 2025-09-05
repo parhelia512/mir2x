@@ -143,7 +143,7 @@ class ProcessRun: public Process
         int m_cursorState = CURSOR_DEFAULT;
 
     private:
-        GUIManager m_guiManager;
+        std::unique_ptr<GUIManager> m_guiManager;
 
     private:
         void scrollMap();
@@ -390,7 +390,7 @@ class ProcessRun: public Process
     public:
         auto getWidget(this auto && self, const std::string_view &widgetName)
         {
-            return self.getGUIManager()->getWidget(widgetName);
+            return self.getGUIManager() ? self.getGUIManager()->getWidget(widgetName) : nullptr;
         }
 
     public:
@@ -417,7 +417,7 @@ class ProcessRun: public Process
     public:
         auto getGUIManager(this auto && self)
         {
-            return std::addressof(self.m_guiManager);
+            return self.m_guiManager.get();
         }
 
     public:
