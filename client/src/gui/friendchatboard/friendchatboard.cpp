@@ -50,6 +50,102 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
           m_processRun->getMyHeroChatPeer(),
       }
 
+    , m_frame
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+          {},
+          {},
+          [](const Widget *){ return g_progUseDB->retrieve(0X00000800); },
+      }
+
+    , m_frameCropDup
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+          [this]{ return w(); },
+          [this]{ return h(); },
+
+          &m_frame,
+
+          55,
+          95,
+          285 - 55,
+          345 - 95,
+
+          this,
+          false,
+      }
+
+    , m_background
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+          {},
+          {},
+          [](const Widget *){ return g_progUseDB->retrieve(0X00000810); },
+
+          false,
+          false,
+          0,
+          colorf::RGBA(160, 160, 160, 255),
+      }
+
+    , m_backgroundCropDup
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+          [this](){ return w(); },
+          [this](){ return h(); },
+
+          &m_background,
+
+          0,
+          0,
+          510,
+          187,
+
+          this,
+          false,
+      }
+
+    , m_close
+      {
+          DIR_UPLEFT,
+          [this]{ return w() - 38; },
+          [this]{ return h() - 40; },
+
+          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+          {
+              SYS_U32NIL,
+              SYS_U32NIL,
+              0X01020000 + 105,
+          },
+
+          nullptr,
+          nullptr,
+          nullptr,
+          [this](Widget *, int)
+          {
+              setShow(false);
+          },
+
+          0,
+          0,
+          0,
+          0,
+
+          true,
+          false,
+          true,
+
+          this,
+      }
+
     , m_uiPageList
       {
           UIPage // UIPage_CHAT
@@ -778,103 +874,6 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
               },
           },
       }
-
-    , m_frame
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000800); },
-      }
-
-    , m_frameCropDup
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          [this]{ return w(); },
-          [this]{ return h(); },
-
-          &m_frame,
-
-          55,
-          95,
-          285 - 55,
-          345 - 95,
-
-          this,
-          false,
-      }
-
-    , m_background
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000810); },
-
-          false,
-          false,
-          0,
-          colorf::RGBA(160, 160, 160, 255),
-      }
-
-    , m_backgroundCropDup
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          [this](){ return w(); },
-          [this](){ return h(); },
-
-          &m_background,
-
-          0,
-          0,
-          510,
-          187,
-
-          this,
-          false,
-      }
-
-    , m_close
-      {
-          DIR_UPLEFT,
-          [this]{ return w() - 38; },
-          [this]{ return h() - 40; },
-
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
-          {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
-          },
-
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
-          {
-              setShow(false);
-          },
-
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
-
 {
     setShow(false);
 }

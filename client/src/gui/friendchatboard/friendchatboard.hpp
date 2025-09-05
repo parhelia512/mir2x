@@ -60,11 +60,6 @@ class FriendChatBoard: public Widget
         std::list<FriendMessage> m_friendMessageList;
 
     private:
-        int m_uiLastPage = UIPage_CHATPREVIEW;
-        int m_uiPage     = UIPage_CHATPREVIEW;
-        std::array<FriendChatBoard::UIPage, UIPage_END> m_uiPageList; // {buttons, page}
-
-    private:
         ImageBoard m_frame;
         GfxCropDupBoard m_frameCropDup;
 
@@ -74,6 +69,11 @@ class FriendChatBoard: public Widget
 
     private:
         TritexButton m_close;
+
+    private:
+        int m_uiLastPage = UIPage_CHATPREVIEW;
+        int m_uiPage     = UIPage_CHATPREVIEW;
+        std::array<FriendChatBoard::UIPage, UIPage_END> m_uiPageList; // {buttons, page}
 
     public:
         FriendChatBoard(
