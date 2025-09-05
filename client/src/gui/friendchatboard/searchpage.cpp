@@ -51,7 +51,7 @@ SearchPage::SearchPage(Widget::VarDir argDir,
           input.dx() + input.w() + SearchPage::CLEAR_GAP,
           input.dy() + input.h() / 2,
 
-          -1,
+          0,
 
           R"###(<layout><par><event id="clear">清空</event></par></layout>)###",
           0,
