@@ -20,8 +20,8 @@ CBTitle::CBTitle(
           std::move(argX),
           std::move(argY),
 
-          {},
-          {},
+          0, // need reset
+          0,
           {},
 
           argParent,
@@ -38,17 +38,14 @@ CBTitle::CBTitle(
           {},
           {},
 
-          [](const Widget *)
-          {
-              return g_progUseDB->retrieve(0X00000022);
-          },
+          [](const Widget *){ return g_progUseDB->retrieve(0X00000022); },
 
           false,
           false,
           0,
 
           colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
+          SDL_BLENDMODE_BLEND,
 
           this,
           false,
@@ -86,4 +83,7 @@ CBTitle::CBTitle(
           this,
           false,
       }
-{}
+{
+    setSize([this]{ return m_bg.w(); },
+            [this]{ return m_bg.h(); });
+}
