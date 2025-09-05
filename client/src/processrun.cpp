@@ -66,14 +66,7 @@ ProcessRun::ProcessRun(const SMOnlineOK &smOOK)
 
           // preload mapBin
           // because MyHero::ctor() checks processRun->mapBin
-
-          if(auto mapBinPtr = g_mapBinDB->retrieve(uidf::getMapID(smOOK.mapUID))){
-              m_mapUID = smOOK.mapUID;
-              m_mir2xMapData = *mapBinPtr;
-          }
-          else{
-              throw fflerror("failed to preload mapBin for mapUID: %llu", to_llu(smOOK.mapUID));
-          }
+          preloadMapBin(smOOK.mapUID);
 
           // cannot initialize m_coList using initializer_list
           // because mapped type is std::unique_ptr<ClientCreature>, which is non-copyable
@@ -763,10 +756,20 @@ void ProcessRun::processEvent(const SDL_Event &event)
     }
 }
 
+void ProcessRun::preloadMapBin(uint64_t newMapUID)
+{
+    if(auto mapBinPtr = g_mapBinDB->retrieve(uidf::getMapID(newMapUID))){
+        m_mapUID = newMapUID;
+        m_mir2xMapData = *mapBinPtr;
+    }
+    else{
+        throw fflerror("failed to preload mapBin for mapUID: %llu", to_llu(newMapUID));
+    }
+}
+
 void ProcessRun::loadMap(uint64_t newMapUID, int centerGX, int centerGY)
 {
     fflassert(uidf::isMap(newMapUID));
-    fflassert(mapUID() != newMapUID, mapUID(), newMapUID);
 
     const auto lastMapUID = mapUID();
     ModalStringBoard loadStringBoard;
@@ -790,12 +793,13 @@ void ProcessRun::loadMap(uint64_t newMapUID, int centerGX, int centerGY)
     g_sdlDevice->stopSoundEffect();
     fnUpdateLoadRatio(0);
     {
-        const auto mapBinPtr = g_mapBinDB->retrieve(uidf::getMapID(newMapUID));
-        fflassert(mapBinPtr);
-        fnUpdateLoadRatio(30);
+        if(uidf::getMapID(lastMapUID) == uidf::getMapID(newMapUID)){
+            m_mapUID = newMapUID;
+        }
+        else{
+            preloadMapBin(newMapUID);
+        }
 
-        m_mapUID = newMapUID;
-        m_mir2xMapData = *mapBinPtr;
         m_groundItemIDList.clear();
         fnUpdateLoadRatio(40);
 

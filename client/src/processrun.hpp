@@ -152,6 +152,9 @@ class ProcessRun: public Process
         void scrollMap();
 
     private:
+        void preloadMapBin(uint64_t);
+
+    private:
         void loadMap(uint64_t, int, int);
 
     public:
