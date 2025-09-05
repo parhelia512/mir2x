@@ -125,10 +125,7 @@ double CBFace::getHPRatio() const
         }
     }
 
-    if(auto myHero = m_processRun->getMyHero(true)){
-        return myHero->getHealthRatio().at(0);
-    }
-    return 1.0;
+    return m_processRun->getMyHero()->getHealthRatio().at(0);
 }
 
 uint32_t CBFace::getFaceTexID() const
@@ -152,14 +149,9 @@ uint32_t CBFace::getFaceTexID() const
                 }
         }
     }
-
-    if(auto myHero = m_processRun->getMyHero(true)){
-        return myHero->faceGfxID();
-    }
-    return SYS_U32NIL;
+    return m_processRun->getMyHero()->faceGfxID();
 }
 
-const std::optional<SDBuffIDList> on_empty_getSDBuffIDListOpt{};
 const std::optional<SDBuffIDList> &CBFace::getSDBuffIDListOpt() const
 {
     if(const auto coPtr = m_processRun->findUID(m_processRun->getFocusUID(FOCUS_MOUSE))){
@@ -175,11 +167,7 @@ const std::optional<SDBuffIDList> &CBFace::getSDBuffIDListOpt() const
                 }
         }
     }
-
-    if(auto myHero = m_processRun->getMyHero(true)){
-        return myHero->getSDBuffIDListOpt();
-    }
-    return on_empty_getSDBuffIDListOpt;
+    return m_processRun->getMyHero()->getSDBuffIDListOpt();
 }
 
 void CBFace::drawBuffIDList(int drawDstX, int drawDstY, int, int) const

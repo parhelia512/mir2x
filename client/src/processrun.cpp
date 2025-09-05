@@ -58,27 +58,39 @@ ProcessRun::ProcessRun(const SMOnlineOK &smOOK)
               .job = smOOK.job,
           },
       }
+
+    , m_coList([&smOOK, this]
+      {
+          // prepare MyHero in m_coList
+          // make sure getMyHero() always possible
+
+          // cannot initialize m_coList using initializer_list
+          // because mapped type is std::unique_ptr<ClientCreature>, which is non-copyable
+
+          std::remove_cvref_t<decltype(this->m_coList)> coList;
+          coList.insert_or_assign(smOOK.uid, std::unique_ptr<ClientCreature>(new MyHero
+          {
+              smOOK.uid,
+              to_bool(smOOK.gender),
+              smOOK.job,
+              this,
+              ActionStand
+              {
+                  .direction = DIR_DOWN,
+                  .x = smOOK.action.x,
+                  .y = smOOK.action.y,
+              },
+          }));
+          return coList;
+      }())
+
     , m_mousePixlLoc(DIR_UPLEFT, 0, 0, u8"", 0, 15, 0, colorf::RGBA(0XFF, 0X00, 0X00, 0X00))
     , m_mouseGridLoc(DIR_UPLEFT, 0, 0, u8"", 0, 15, 0, colorf::RGBA(0XFF, 0X00, 0X00, 0X00))
     , m_teamFlag(5)
+    , m_guiManager(this)
 {
     loadMap(smOOK.mapUID, smOOK.action.x, smOOK.action.y);
-    m_coList.insert_or_assign(m_myHeroUID, std::unique_ptr<ClientCreature>(new MyHero
-    {
-        m_myHeroUID,
-        to_bool(smOOK.gender),
-        smOOK.job,
-        this,
-        ActionStand
-        {
-            .direction = DIR_DOWN,
-            .x = smOOK.action.x,
-            .y = smOOK.action.y,
-        },
-    }));
-
     RegisterUserCommand();
-    m_guiManager = std::make_unique<GUIManager>(this);
 }
 
 void ProcessRun::scrollMap()
@@ -121,7 +133,7 @@ void ProcessRun::update(double fUpdateTime)
     m_aniTimer.update(std::lround(fUpdateTime));
 
     scrollMap();
-    m_guiManager->update(fUpdateTime);
+    m_guiManager.update(fUpdateTime);
     m_delayCmdQ.exec();
 
     for(auto p = m_strikeGridList.begin(); p != m_strikeGridList.end();){
@@ -499,7 +511,7 @@ void ProcessRun::draw() const
         g_sdlDevice->fillRectangle(colorf::RGBA(128, 0, 0, 64), 0, 0, winW, winH);
     }
 
-    m_guiManager->drawRoot();
+    m_guiManager.drawRoot();
     if(const auto selectedItemID = getMyHero()->getInvPack().getGrabbedItem().itemID){
         if(const auto &ir = DBCOM_ITEMRECORD(selectedItemID)){
             if(auto texPtr = g_itemDB->retrieve(ir.pkgGfxID | 0X01000000)){
@@ -549,8 +561,8 @@ void ProcessRun::draw() const
 
 void ProcessRun::processEvent(const SDL_Event &event)
 {
-    const bool tookEvent = m_guiManager->processRootEvent(event, true, 0, 0);
-    m_guiManager->purge();
+    const bool tookEvent = m_guiManager.processRootEvent(event, true, 0, 0);
+    m_guiManager.purge();
 
     if(tookEvent){
         return;
@@ -1487,14 +1499,14 @@ void ProcessRun::addCBLog(int logType, const char8_t *format, ...)
 {
     std::u8string logStr;
     str_format(format, logStr);
-    dynamic_cast<ControlBoard *>(getGUIManager()->getWidget("ControlBoard"))->addLog(logType, to_cstr(logStr));
+    dynamic_cast<ControlBoard *>(getWidget("ControlBoard"))->addLog(logType, to_cstr(logStr));
 }
 
 void ProcessRun::addCBParLog(const char8_t *format, ...)
 {
     std::u8string logStr;
     str_format(format, logStr);
-    dynamic_cast<ControlBoard *>(getGUIManager()->getWidget("ControlBoard"))->addParLog(to_cstr(logStr));
+    dynamic_cast<ControlBoard *>(getWidget("ControlBoard"))->addParLog(to_cstr(logStr));
 }
 
 ClientCreature *ProcessRun::findUID(uint64_t uid, bool checkVisible) const
@@ -1586,7 +1598,7 @@ void ProcessRun::centerMyHero()
     const auto fnSetOff = [this, nX, nY, nDirection, currFrame, frameCount](int stepLen)
     {
         const auto [rendererWidth, rendererHeight] = g_sdlDevice->getRendererSize();
-        const auto controlBoardPtr = dynamic_cast<ControlBoard *>(getGUIManager()->getWidget("ControlBoard"));
+        const auto controlBoardPtr = dynamic_cast<ControlBoard *>(getWidget("ControlBoard"));
         const auto showWindowW = rendererWidth;
         const auto showWindowH = rendererHeight - controlBoardPtr->h();
 
@@ -2140,7 +2152,7 @@ void ProcessRun::checkMagicSpell(const SDL_Event &event)
         return;
     }
 
-    const auto magicID = dynamic_cast<SkillBoard *>(m_guiManager->getWidget("SkillBoard"))->getConfig().key2MagicID(key);
+    const auto magicID = dynamic_cast<SkillBoard *>(getWidget("SkillBoard"))->getConfig().key2MagicID(key);
     if(!magicID){
         return;
     }

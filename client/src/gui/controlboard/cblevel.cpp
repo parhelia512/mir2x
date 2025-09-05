@@ -87,12 +87,7 @@ CBLevel::CBLevel(
 
           [this](const Widget *) -> std::string
           {
-              if(auto myHero = m_processRun->getMyHero(true)){
-                  return std::to_string(myHero->getLevel());
-              }
-              else{
-                  return "?";
-              }
+              return std::to_string(m_processRun->getMyHero()->getLevel());
           },
 
           0,

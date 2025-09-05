@@ -143,17 +143,16 @@ class ProcessRun: public Process
         int m_cursorState = CURSOR_DEFAULT;
 
     private:
-        std::unique_ptr<GUIManager> m_guiManager;
+        GUIManager m_guiManager;
+
+    public:
+        ProcessRun(const SMOnlineOK &);
 
     private:
         void scrollMap();
 
     private:
         void loadMap(uint64_t, int, int);
-
-    public:
-        ProcessRun(const SMOnlineOK &);
-        virtual ~ProcessRun() = default;
 
     public:
         int id() const override
@@ -322,16 +321,11 @@ class ProcessRun: public Process
             return uidf::getPlayerDBID(m_myHeroUID);
         }
 
-        MyHero *getMyHero(bool allowNullptr = false) const
+        MyHero *getMyHero() const
         {
             if(auto myHeroPtr = dynamic_cast<MyHero *>(findUID(getMyHeroUID()))){
                 return myHeroPtr;
             }
-
-            if(allowNullptr){
-                return nullptr;
-            }
-
             throw fflerror("failed to get MyHero pointer: uid = %llu", to_llu(getMyHeroUID()));
         }
 
@@ -390,7 +384,7 @@ class ProcessRun: public Process
     public:
         auto getWidget(this auto && self, const std::string_view &widgetName)
         {
-            return self.getGUIManager() ? self.getGUIManager()->getWidget(widgetName) : nullptr;
+            return self.getGUIManager()->getWidget(widgetName);
         }
 
     public:
@@ -417,7 +411,7 @@ class ProcessRun: public Process
     public:
         auto getGUIManager(this auto && self)
         {
-            return self.m_guiManager.get();
+            return std::addressof(self.m_guiManager);
         }
 
     public:
