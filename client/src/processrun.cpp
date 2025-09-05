@@ -779,10 +779,10 @@ void ProcessRun::loadMap(uint64_t newMapUID, int centerGX, int centerGY)
         const std::string mapName = to_cstr(DBCOM_MAPRECORD(uidf::getMapID(newMapUID)).name);
         loadStringBoard.loadXML(str_printf
         (
-            u8R"###( <layout>                                                    )###""\n"
-            u8R"###(     <par align="center">加载地图<t color="red">%s</t></par> )###""\n"
-            u8R"###(     <par align="center">完成<t color="red">%%%d</t></par>   )###""\n"
-            u8R"###( </layout>                                                   )###""\n",
+            u8R"###( <layout>                                     )###""\n"
+            u8R"###(     <par>加载地图<t color="red">%s</t></par> )###""\n"
+            u8R"###(     <par>完成<t color="red">%%%d</t></par>   )###""\n"
+            u8R"###( </layout>                                    )###""\n",
 
             mapName.substr(0, mapName.find('_')).c_str(),
             mathf::bound<int>(ratio, 0, 100)

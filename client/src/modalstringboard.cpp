@@ -66,9 +66,10 @@ class ModalStringBoardImpl: public Widget
                   DIR_UPLEFT, // ignore
                   0,
                   0,
+
                   300,
 
-                  "<layout><par></par></layout>",
+                  nullptr,
                   0,
 
                   {},
@@ -97,10 +98,7 @@ class ModalStringBoardImpl: public Widget
                   {},
                   {},
 
-                  [this](const Widget *) -> SDL_Texture *
-                  {
-                      return g_progUseDB->retrieve(m_texID);
-                  }
+                  [this](const Widget *){ return g_progUseDB->retrieve(m_texID); },
               }
 
             , m_imageUp
@@ -155,10 +153,6 @@ class ModalStringBoardImpl: public Widget
                   false,
               }
         {
-            if(auto texPtr = g_progUseDB->retrieve(m_texID); !texPtr){
-                throw fflerror("invalid texID: %llu", to_llu(m_texID));
-            }
-
             addChildAt(&m_board, DIR_NONE, [this](const Widget *)
             {
                 return m_imageUpDup.w() / 2;

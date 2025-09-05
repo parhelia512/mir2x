@@ -13,7 +13,6 @@ class ModalStringBoard
 
     public:
         ModalStringBoard();
-        ~ModalStringBoard() = default;
 
     public:
         void loadXML(std::u8string);
