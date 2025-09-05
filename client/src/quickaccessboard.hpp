@@ -59,7 +59,7 @@ class QuickAccessBoard: public Widget
         static std::tuple<int, int, int, int> getGridLoc(int slot)
         {
             fflassert(slot >= 0, slot);
-            fflassert(slot <  5, slot);
+            fflassert(slot <  6, slot);
 
             return {17 + 42 * slot, 6, 36, 36};
         }
