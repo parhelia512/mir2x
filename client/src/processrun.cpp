@@ -64,6 +64,17 @@ ProcessRun::ProcessRun(const SMOnlineOK &smOOK)
           // prepare MyHero in m_coList
           // make sure getMyHero() always possible
 
+          // preload mapBin
+          // because MyHero::ctor() checks processRun->mapBin
+
+          if(auto mapBinPtr = g_mapBinDB->retrieve(uidf::getMapID(smOOK.mapUID))){
+              m_mapUID = smOOK.mapUID;
+              m_mir2xMapData = *mapBinPtr;
+          }
+          else{
+              throw fflerror("failed to preload mapBin for mapUID: %llu", to_llu(smOOK.mapUID));
+          }
+
           // cannot initialize m_coList using initializer_list
           // because mapped type is std::unique_ptr<ClientCreature>, which is non-copyable
 
@@ -765,10 +776,10 @@ void ProcessRun::loadMap(uint64_t newMapUID, int centerGX, int centerGY)
         const std::string mapName = to_cstr(DBCOM_MAPRECORD(uidf::getMapID(newMapUID)).name);
         loadStringBoard.loadXML(str_printf
         (
-            u8R"###( <layout>                                     )###""\n"
-            u8R"###(     <par>加载地图<t color="red">%s</t></par> )###""\n"
-            u8R"###(     <par>完成<t color="red">%%%d</t></par>   )###""\n"
-            u8R"###( </layout>                                    )###""\n",
+            u8R"###( <layout>                                                    )###""\n"
+            u8R"###(     <par align="center">加载地图<t color="red">%s</t></par> )###""\n"
+            u8R"###(     <par align="center">完成<t color="red">%%%d</t></par>   )###""\n"
+            u8R"###( </layout>                                                   )###""\n",
 
             mapName.substr(0, mapName.find('_')).c_str(),
             mathf::bound<int>(ratio, 0, 100)
