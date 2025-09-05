@@ -159,6 +159,7 @@ uint32_t CBFace::getFaceTexID() const
     return SYS_U32NIL;
 }
 
+const std::optional<SDBuffIDList> on_empty_getSDBuffIDListOpt{};
 const std::optional<SDBuffIDList> &CBFace::getSDBuffIDListOpt() const
 {
     if(const auto coPtr = m_processRun->findUID(m_processRun->getFocusUID(FOCUS_MOUSE))){
@@ -178,7 +179,7 @@ const std::optional<SDBuffIDList> &CBFace::getSDBuffIDListOpt() const
     if(auto myHero = m_processRun->getMyHero(true)){
         return myHero->getSDBuffIDListOpt();
     }
-    return std::nullopt;
+    return on_empty_getSDBuffIDListOpt;
 }
 
 void CBFace::drawBuffIDList(int drawDstX, int drawDstY, int, int) const
