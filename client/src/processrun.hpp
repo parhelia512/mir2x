@@ -112,9 +112,6 @@ class ProcessRun: public Process
         SDChatPeer m_defaultChatPeer;
 
     private:
-        GUIManager m_guiManager;
-
-    private:
         std::list<std::unique_ptr<FixedLocMagic>> m_fixedLocMagicList;
         std::list<std::unique_ptr<FollowUIDMagic>> m_followUIDMagicList;
 
@@ -144,6 +141,9 @@ class ProcessRun: public Process
 
     private:
         int m_cursorState = CURSOR_DEFAULT;
+
+    private:
+        GUIManager m_guiManager;
 
     private:
         void scrollMap();
@@ -322,11 +322,16 @@ class ProcessRun: public Process
             return uidf::getPlayerDBID(m_myHeroUID);
         }
 
-        MyHero *getMyHero() const
+        MyHero *getMyHero(bool allowNullptr = false) const
         {
             if(auto myHeroPtr = dynamic_cast<MyHero *>(findUID(getMyHeroUID()))){
                 return myHeroPtr;
             }
+
+            if(allowNullptr){
+                return nullptr;
+            }
+
             throw fflerror("failed to get MyHero pointer: uid = %llu", to_llu(getMyHeroUID()));
         }
 
