@@ -46,23 +46,7 @@ class FriendChatBoard: public Widget
         ProcessRun *m_processRun;
 
     private:
-        std::optional<int> m_dragIndex;
-
-    private:
-        ImageBoard m_frame;
-        GfxCropDupBoard m_frameCropDup;
-
-    private:
-        ImageBoard m_background;
-        GfxCropDupBoard m_backgroundCropDup;
-
-    private:
-        TritexButton m_close;
-
-    private:
-        int m_uiLastPage = UIPage_CHATPREVIEW;
-        int m_uiPage     = UIPage_CHATPREVIEW;
-        std::array<FriendChatBoard::UIPage, UIPage_END> m_uiPageList; // {buttons, page}
+        std::optional<int> m_dragIndex {};
 
     private:
         SDFriendList m_sdFriendList;
@@ -74,6 +58,22 @@ class FriendChatBoard: public Widget
     private:
         std::unordered_map<uint64_t, SDChatMessage> m_localMessageList;
         std::list<FriendMessage> m_friendMessageList;
+
+    private:
+        int m_uiLastPage = UIPage_CHATPREVIEW;
+        int m_uiPage     = UIPage_CHATPREVIEW;
+        std::array<FriendChatBoard::UIPage, UIPage_END> m_uiPageList; // {buttons, page}
+
+    private:
+        ImageBoard m_frame;
+        GfxCropDupBoard m_frameCropDup;
+
+    private:
+        ImageBoard m_background;
+        GfxCropDupBoard m_backgroundCropDup;
+
+    private:
+        TritexButton m_close;
 
     public:
         FriendChatBoard(

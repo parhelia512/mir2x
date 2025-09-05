@@ -33,100 +33,21 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
       }
 
     , m_processRun(runPtr)
-    , m_frame
+    , m_cachedChatPeerList
       {
-          DIR_UPLEFT,
-          0,
-          0,
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000800); },
-      }
-
-    , m_frameCropDup
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          [this](const Widget *){ return this->w(); },
-          [this](const Widget *){ return this->h(); },
-
-          &m_frame,
-
-          55,
-          95,
-          285 - 55,
-          345 - 95,
-
-          this,
-          false,
-      }
-
-    , m_background
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000810); },
-
-          false,
-          false,
-          0,
-          colorf::RGBA(160, 160, 160, 255),
-      }
-
-    , m_backgroundCropDup
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          [this](const Widget *){ return m_frameCropDup.w(); },
-          [this](const Widget *){ return m_frameCropDup.h(); },
-
-          &m_background,
-
-          0,
-          0,
-          510,
-          187,
-
-          this,
-          false,
-      }
-
-    , m_close
-      {
-          DIR_UPLEFT,
-          [this](const Widget *){ return m_frameCropDup.w() - 38; },
-          [this](const Widget *){ return m_frameCropDup.h() - 40; },
-
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+          SDChatPeer
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .id = SYS_CHATDBID_SYSTEM,
+              .name = "系统助手",
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          SDChatPeer
           {
-              setShow(false);
+              .id = SYS_CHATDBID_GROUP,
+              .name = "群管理助手",
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
+          m_processRun->getMyHeroChatPeer(),
       }
 
     , m_uiPageList
@@ -858,22 +779,102 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
           },
       }
 
-    , m_cachedChatPeerList
+    , m_frame
       {
-          SDChatPeer
-          {
-              .id = SYS_CHATDBID_SYSTEM,
-              .name = "系统助手",
-          },
-
-          SDChatPeer
-          {
-              .id = SYS_CHATDBID_GROUP,
-              .name = "群管理助手",
-          },
-
-          m_processRun->getMyHeroChatPeer(),
+          DIR_UPLEFT,
+          0,
+          0,
+          {},
+          {},
+          [](const Widget *){ return g_progUseDB->retrieve(0X00000800); },
       }
+
+    , m_frameCropDup
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+          [this](const Widget *){ return this->w(); },
+          [this](const Widget *){ return this->h(); },
+
+          &m_frame,
+
+          55,
+          95,
+          285 - 55,
+          345 - 95,
+
+          this,
+          false,
+      }
+
+    , m_background
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+          {},
+          {},
+          [](const Widget *){ return g_progUseDB->retrieve(0X00000810); },
+
+          false,
+          false,
+          0,
+          colorf::RGBA(160, 160, 160, 255),
+      }
+
+    , m_backgroundCropDup
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+          [this](const Widget *){ return m_frameCropDup.w(); },
+          [this](const Widget *){ return m_frameCropDup.h(); },
+
+          &m_background,
+
+          0,
+          0,
+          510,
+          187,
+
+          this,
+          false,
+      }
+
+    , m_close
+      {
+          DIR_UPLEFT,
+          [this](const Widget *){ return m_frameCropDup.w() - 38; },
+          [this](const Widget *){ return m_frameCropDup.h() - 40; },
+
+          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+          {
+              SYS_U32NIL,
+              SYS_U32NIL,
+              0X01020000 + 105,
+          },
+
+          nullptr,
+          nullptr,
+          nullptr,
+          [this](Widget *, int)
+          {
+              setShow(false);
+          },
+
+          0,
+          0,
+          0,
+          0,
+
+          true,
+          false,
+          true,
+
+          this,
+      }
+
 {
     setShow(false);
 }
