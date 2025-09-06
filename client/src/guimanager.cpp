@@ -216,13 +216,13 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int sta
 
     bool tookEvent = false;
     if(!g_clientArgParser->disableIME){
-        tookEvent |= g_imeBoard->processRootEvent(event, valid && !tookEvent, 0, 0);
+        tookEvent |= g_imeBoard->processRootEvent(event, valid && !tookEvent);
     }
 
     tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
-    tookEvent |= m_controlBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
-    tookEvent |= m_NPCChatBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
-    tookEvent |= m_miniMapBoard.processParentEvent (event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
+    tookEvent |= m_controlBoard.processRootEvent   (event, valid && !tookEvent);
+    tookEvent |= m_NPCChatBoard.processRootEvent   (event, valid && !tookEvent);
+    tookEvent |= m_miniMapBoard.processRootEvent   (event, valid && !tookEvent);
 
     return tookEvent;
 }

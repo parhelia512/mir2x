@@ -46,10 +46,12 @@ class CBMiddleExpand: public Widget
                 Widget::VarInt,
 
                 Widget::VarSizeOpt,
-                Widget::VarSizeOpt,
 
                 ProcessRun *,
 
                 Widget * = nullptr,
                 bool     = false);
+
+    public:
+        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &);
 };

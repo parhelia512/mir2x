@@ -186,7 +186,9 @@ CBMiddle::CBMiddle(
           this,
           false,
       }
-{}
+{
+    setH([this]{ return m_bgImgFull.h(); });
+}
 
 bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
 {
@@ -195,7 +197,7 @@ bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, int start
         return false;
     }
 
-    if(Widget::processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 

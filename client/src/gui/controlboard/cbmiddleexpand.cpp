@@ -12,7 +12,6 @@ CBMiddleExpand::CBMiddleExpand(
         Widget::VarInt argY,
 
         Widget::VarSizeOpt argW,
-        Widget::VarSizeOpt argH,
 
         ProcessRun *argProc,
 
@@ -26,7 +25,7 @@ CBMiddleExpand::CBMiddleExpand(
           std::move(argY),
 
           std::move(argW),
-          std::move(argH),
+          0, // reset
 
           {},
 
@@ -216,4 +215,57 @@ CBMiddleExpand::CBMiddleExpand(
           this,
           false,
       }
-{}
+{
+    setH([this]
+    {
+        switch(hasParent<ControlBoard>()->m_mode){
+            case CBM_EXPAND:
+                {
+                    return std::min<int>(400, g_sdlDevice->getRendererHeight());
+                }
+            case CBM_MAXIMIZE:
+                {
+                    return g_sdlDevice->getRendererHeight();
+                }
+            default:
+                {
+                    return 0;
+                }
+        }
+    });
+}
+
+bool CBMiddleExpand::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+{
+    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
+    if(!roiOpt.has_value()){
+        return false;
+    }
+
+    if(Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value())){
+        return true;
+    }
+
+    switch(event.type){
+        case SDL_KEYDOWN:
+            {
+                switch(event.key.keysym.sym){
+                    case SDLK_RETURN:
+                        {
+                            return valid && hasParent<ControlBoard>()->m_cmdLine.consumeFocus(true);
+                        }
+                    default:
+                        {
+                            return false;
+                        }
+                }
+            }
+        case SDL_MOUSEBUTTONUP:
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEMOTION:
+        default:
+            {
+                return false;
+            }
+    }
+}

@@ -192,8 +192,6 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
               return w() - m_left.w() - m_right.w();
           },
 
-          {},
-
           argProc,
           this,
           false,
