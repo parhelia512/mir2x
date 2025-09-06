@@ -18,6 +18,16 @@ WidgetTreeNode::WidgetTreeNode(Widget *argParent, bool argAutoDelete)
 
 WidgetTreeNode::~WidgetTreeNode()
 {
+    // if construct a widget failed
+    // destructor will be called, we need to automatically remove it from parent
+
+    // otherwise later parent destructor will try to call all its children's destructor again
+    // which causes double free
+
+    if(m_parent){
+        m_parent->removeChild(static_cast<Widget *>(this), false);
+    }
+
     clearChild();
     for(auto widget: m_delayList){
         delete widget;
