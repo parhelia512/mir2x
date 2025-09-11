@@ -15,8 +15,8 @@ GUIManager::GUIManager(ProcessRun *argProc)
           DIR_UPLEFT,
           0,
           0,
-          [](const Widget *){ return g_sdlDevice->getRendererWidth();  },
-          [](const Widget *){ return g_sdlDevice->getRendererHeight(); },
+          []{ return g_sdlDevice->getRendererWidth();  },
+          []{ return g_sdlDevice->getRendererHeight(); },
       }
 
     , m_processRun(argProc)
@@ -298,19 +298,10 @@ Widget *GUIManager::getWidget(const std::string_view &name)
     }
 }
 
-void GUIManager::onWindowResize()
+void GUIManager::afterResize()
 {
-    setW(g_sdlDevice->getRendererWidth ());
-    setH(g_sdlDevice->getRendererHeight());
-    m_runtimeConfigBoard.updateWindowSizeLabel(w(), h(), true);
-
-    // m_controlBoard.onWindowResize(w(), h());
     m_controlBoard.afterResize();
-    m_controlBoard.moveTo(0, h() - 133);
-
-    if(m_miniMapBoard.getMiniMapTexture()){
-        m_miniMapBoard.setPLoc();
-    }
+    m_runtimeConfigBoard.updateWindowSizeLabel(w(), h(), true);
 
     const auto fnSetWidgetPLoc = [this](Widget *widgetPtr)
     {
@@ -325,6 +316,7 @@ void GUIManager::onWindowResize()
     if(!g_clientArgParser->disableIME){
         fnSetWidgetPLoc(g_imeBoard);
     }
+
     fnSetWidgetPLoc(&m_horseBoard);
     fnSetWidgetPLoc(&m_skillBoard);
     fnSetWidgetPLoc(&m_guildBoard);

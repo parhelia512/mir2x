@@ -8,7 +8,7 @@ ShapeCropBoard::ShapeCropBoard(Widget::VarDir argDir,
         Widget::VarSizeOpt argW,
         Widget::VarSizeOpt argH,
 
-        std::function<void(const Widget *, int, int)> argDrawFunc,
+        VarDrawFunc argDrawFunc,
 
         Widget *argParent,
         bool    argAutoDelete)
@@ -32,9 +32,8 @@ ShapeCropBoard::ShapeCropBoard(Widget::VarDir argDir,
 
 void ShapeCropBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    if(!m_drawFunc){
-        return;
-    }
+    if((m_drawFunc.index() == 0) && !std::get<0>(m_drawFunc)){ return; }
+    if((m_drawFunc.index() == 1) && !std::get<1>(m_drawFunc)){ return; }
 
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -42,5 +41,20 @@ void ShapeCropBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
     }
 
     const SDLDeviceHelper::EnableRenderCropRectangle enableClip(dstX, dstY, roiOpt->w, roiOpt->h);
-    m_drawFunc(this, dstX - roiOpt->x, dstY - roiOpt->y);
+    switch(m_drawFunc.index()){
+        case 0:
+            {
+                std::get<0>(m_drawFunc)(dstX - roiOpt->x, dstY - roiOpt->y);
+                return;
+            }
+        case 1:
+            {
+                std::get<1>(m_drawFunc)(this, dstX - roiOpt->x, dstY - roiOpt->y);
+                return;
+            }
+        default:
+            {
+                return;
+            }
+    }
 }

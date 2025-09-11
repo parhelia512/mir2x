@@ -13,7 +13,7 @@ ImageBoard::ImageBoard(
         Widget::VarSizeOpt argW,
         Widget::VarSizeOpt argH,
 
-        std::function<SDL_Texture *(const Widget *)> argLoadFunc,
+        VarTexLoadFunc argLoadFunc,
 
         bool argHFlip,
         bool argVFlip,
@@ -50,13 +50,13 @@ ImageBoard::ImageBoard(
     int texW = 0;
     int texH = 0;
 
-    if(auto texPtr = m_loadFunc ? m_loadFunc(this) : nullptr){
+    if(auto texPtr = getTexture()){
         std::tie(texW, texH) = SDLDeviceHelper::getTextureSize(texPtr);
     }
 
     const auto varTexW = m_varW.has_value() ? m_varW : Widget::VarSizeOpt([this](const Widget *)
     {
-        if(auto texPtr = m_loadFunc ? m_loadFunc(this) : nullptr){
+        if(auto texPtr = getTexture()){
             return SDLDeviceHelper::getTextureWidth(texPtr);
         }
         return 0;
@@ -64,7 +64,7 @@ ImageBoard::ImageBoard(
 
     const auto varTexH = m_varH.has_value() ? m_varH : Widget::VarSizeOpt([this](const Widget *)
     {
-        if(auto texPtr = m_loadFunc ? m_loadFunc(this) : nullptr){
+        if(auto texPtr = getTexture()){
             return SDLDeviceHelper::getTextureHeight(texPtr);
         }
         return 0;
@@ -239,7 +239,7 @@ void ImageBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
         }
     }();
 
-    const auto texPtr = m_loadFunc(this);
+    const auto texPtr = getTexture();
     if(!texPtr){
         return;
     }

@@ -1,4 +1,5 @@
 #pragma once
+#include <variant>
 #include <functional>
 #include <SDL2/SDL.h>
 #include "widget.hpp"
@@ -21,6 +22,10 @@
 class ImageBoard: public Widget
 {
     private:
+        using VarTexLoadFunc = std::variant<std::function<SDL_Texture *(              )>,
+                                            std::function<SDL_Texture *(const Widget *)>>;
+
+    private:
         Widget::VarSizeOpt m_varW;
         Widget::VarSizeOpt m_varH;
 
@@ -29,7 +34,7 @@ class ImageBoard: public Widget
         Widget::VarBlendMode m_varBlendMode;
 
     private:
-        std::function<SDL_Texture *(const Widget *)> m_loadFunc;
+        VarTexLoadFunc m_loadFunc;
 
     private:
         std::pair<bool, int> m_xformPair;
@@ -68,7 +73,7 @@ class ImageBoard: public Widget
             m_varColor = std::move(color);
         }
 
-        void setLoadFunc(std::function<SDL_Texture *(const Widget *)> func)
+        void setLoadFunc(VarTexLoadFunc func)
         {
             m_loadFunc = std::move(func);
         }
@@ -91,6 +96,10 @@ class ImageBoard: public Widget
     public:
         SDL_Texture *getTexture() const
         {
-            return m_loadFunc ? m_loadFunc(this) : nullptr;
+            switch(m_loadFunc.index()){
+                case  0: return std::get<0>(m_loadFunc)();
+                case  1: return std::get<1>(m_loadFunc)(this);
+                default: return nullptr;
+            }
         }
 };

@@ -7,7 +7,7 @@ TextBoard::TextBoard(
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        std::function<std::string(const Widget *)> argTextFunc,
+        VarTextFunc argTextFunc,
 
         uint8_t argFont,
         uint8_t argFontSize,
@@ -47,9 +47,14 @@ TextBoard::TextBoard(
           {}, // image width
           {}, // image height
 
-          [this](const Widget *) -> SDL_Texture *
+          [this]() -> SDL_Texture *
           {
-              return m_textFunc ? g_fontexDB->retrieve(m_font, m_fontSize, m_fontStyle, m_textFunc(this).c_str()) : nullptr;
+              if(const auto text = getText(); text.empty()){
+                  return nullptr;
+              }
+              else{
+                  return g_fontexDB->retrieve(m_font, m_fontSize, m_fontStyle, text.c_str());
+              }
           },
 
           false,
@@ -65,5 +70,14 @@ TextBoard::TextBoard(
 {
     if(!g_fontexDB->hasFont(argFont)){
         throw fflerror("invalid font: %hhu", argFont);
+    }
+}
+
+std::string TextBoard::getText() const
+{
+    switch(m_textFunc.index()){
+        case 0 : if(auto &func = std::get<0>(m_textFunc); func){ return func(    ); } else{ return {}; }
+        case 1 : if(auto &func = std::get<1>(m_textFunc); func){ return func(this); } else{ return {}; }
+        default:                                                                          { return {}; }
     }
 }

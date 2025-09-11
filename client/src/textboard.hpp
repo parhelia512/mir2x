@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <cstdint>
+#include <variant>
 #include <SDL2/SDL.h>
 
 #include "colorf.hpp"
@@ -10,12 +11,15 @@
 class TextBoard: public Widget
 {
     private:
+        using VarTextFunc = std::variant<std::function<std::string(              )>,
+                                         std::function<std::string(const Widget *)>>;
+    private:
         uint8_t m_font;
         uint8_t m_fontSize;
         uint8_t m_fontStyle;
 
     private:
-        std::function<std::string(const Widget *)> m_textFunc;
+        VarTextFunc m_textFunc;
 
     private:
         ImageBoard m_image;
@@ -26,7 +30,7 @@ class TextBoard: public Widget
                 Widget::VarInt,
                 Widget::VarInt,
 
-                std::function<std::string(const Widget *)>,
+                VarTextFunc,
 
                 uint8_t =  0,
                 uint8_t = 10,
@@ -59,15 +63,18 @@ class TextBoard: public Widget
             m_image.setColor(std::move(argColor));
         }
 
-        void setTextFunc(std::function<std::string(const Widget *)> argTextFunc)
+        void setTextFunc(VarTextFunc argTextFunc)
         {
             m_textFunc = std::move(argTextFunc);
         }
 
     public:
+        std::string getText() const;
+
+    public:
         bool empty() const
         {
-            return m_textFunc ? m_textFunc(this).empty() : true;
+            return getText().empty();
         }
 
         void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override

@@ -218,6 +218,13 @@ class Widget: public WidgetTreeNode
                 Widget::ROI evalROI(const Widget::ROI &) const;
         };
 
+        struct ROIMap final
+        {
+            int dstX;
+            int dstY;
+            Widget::ROIOpt roiOpt;
+        };
+
     public:
         template<typename T> static Widget::ROI makeROI(const T &);
 
@@ -298,18 +305,7 @@ class Widget: public WidgetTreeNode
         std::function<bool(Widget *, const SDL_Event &, bool, int, int, const Widget::ROIOpt &)> m_processEventHandler;
 
     public:
-        Widget(
-                Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
-
-                Widget::VarSizeOpt = {},
-                Widget::VarSizeOpt = {},
-
-                std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> = {},
-
-                Widget * = nullptr,
-                bool     = false);
+        Widget(WidgetInitArgs);
 
     private:
         static int  sizeOff(   int, int);
@@ -465,6 +461,39 @@ class Widget: public WidgetTreeNode
         virtual Widget *setW(Widget::VarSizeOpt) final;
         virtual Widget *setH(Widget::VarSizeOpt) final;
         virtual Widget *setSize(Widget::VarSizeOpt, Widget::VarSizeOpt) final;
+};
+
+struct WidgetInitArgs final
+{
+    Widget::VarDir dir = DIR_UPLEFT;
+    Widget::VarInt x   = 0;
+    Widget::VarInt y   = 0;
+
+    Widget::VarSizeOpt w = std::nullopt;
+    Widget::VarSizeOpt h = std::nullopt;
+
+    std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> childList = {};
+
+    std::variant<bool,
+                 std::function<bool()>,
+                 std::function<bool(const Widget *)>,
+                 std::function<bool(const Widget *, const void *>,
+
+                 std::function<bool(                              const Widget::ROIMap &)>,
+                 std::function<bool(const Widget *,               const Widget::ROIMap &)>,
+                 std::function<bool(const Widget *, const void *, const Widget::ROIMap &>> show;
+
+    std::variant<bool,
+                 std::function<bool()>,
+                 std::function<bool(const Widget *)>,
+                 std::function<bool(const Widget *, const void *>,
+
+                 std::function<bool(                              const Widget::ROIMap &)>,
+                 std::function<bool(const Widget *,               const Widget::ROIMap &)>,
+                 std::function<bool(const Widget *, const void *, const Widget::ROIMap &>> active;
+
+    Widget *parent     = nullptr;
+    bool    autoDelete = false;
 };
 
 #include "widget.impl.hpp"

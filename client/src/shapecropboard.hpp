@@ -6,7 +6,11 @@
 class ShapeCropBoard: public Widget
 {
     private:
-        std::function<void(const Widget *, int, int)> m_drawFunc;
+        using VarDrawFunc = std::variant<std::function<void(                int, int)>,
+                                         std::function<void(const Widget *, int, int)>>;
+
+    private:
+        VarDrawFunc m_drawFunc;
 
     public:
         ShapeCropBoard(
@@ -17,7 +21,7 @@ class ShapeCropBoard: public Widget
                 Widget::VarSizeOpt,
                 Widget::VarSizeOpt,
 
-                std::function<void(const Widget *, int, int)>,
+                VarDrawFunc,
 
                 Widget * = nullptr,
                 bool     = false);

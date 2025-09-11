@@ -389,25 +389,13 @@ SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, co
     varBlendMode);
 }
 
-Widget::Widget(
-        Widget::VarDir argDir,
-        Widget::VarInt argX,
-        Widget::VarInt argY,
-
-        Widget::VarSizeOpt argW,
-        Widget::VarSizeOpt argH,
-
-        std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> argChildList,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
-    : WidgetTreeNode(argParent, argAutoDelete)
-    , m_dir(std::move(argDir))
-    , m_x  (std::make_pair(std::move(argX), 0))
-    , m_y  (std::make_pair(std::move(argY), 0))
-    , m_w  (std::move(argW))
-    , m_h  (std::move(argH))
+Widget::Widget(WidgetInitArgs args)
+    : WidgetTreeNode(args.parent, args.autoDelete)
+    , m_dir(std::move(args.dir))
+    , m_x  (std::make_pair(std::move(args.x), 0))
+    , m_y  (std::make_pair(std::move(args.y), 0))
+    , m_w  (std::move(args.w))
+    , m_h  (std::move(args.h))
 {
     for(auto &[childPtr, offDir, offX, offY, autoDelete]: argChildList){
         if(childPtr){

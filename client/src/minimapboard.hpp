@@ -1,6 +1,10 @@
 #pragma once
 #include "widget.hpp"
+#include "imageboard.hpp"
+#include "itemflex.hpp"
 #include "tritexbutton.hpp"
+#include "marginwrapper.hpp"
+#include "shapecropboard.hpp"
 
 class ProcessRun;
 class MiniMapBoard: public Widget
@@ -13,14 +17,25 @@ class MiniMapBoard: public Widget
         ProcessRun *m_processRun;
 
     private:
+        ShapeCropBoard m_canvas;
+
+    private:
+        ImageBoard m_cornerUpLeft;
+        ImageBoard m_cornerUpRight;
+        ImageBoard m_cornerDownLeft;
+
+    private:
         TritexButton m_buttonAlpha;
         TritexButton m_buttonExtend;
 
-    public:
-        MiniMapBoard(ProcessRun *, Widget * = nullptr, bool = false);
+    private:
+        ItemFlex m_buttonFlex;
+
+    private:
+        MarginWrapper m_mouseLoc;
 
     public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        MiniMapBoard(ProcessRun *, Widget * = nullptr, bool = false);
 
     public:
         bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
@@ -29,6 +44,8 @@ class MiniMapBoard: public Widget
         void setPLoc();
         void flipExtended();
         void flipMiniMapShow();
+
+    public:
         SDL_Texture *getMiniMapTexture() const;
 
     private:

@@ -22,7 +22,7 @@ class ItemFlex: public Widget
                 Widget::VarSizeOpt argVarSizeOpt,
 
                 bool argHBox,
-                Widget::VarInt argItemSpace = 0,
+                Widget::VarSize argItemSpace = 0,
 
                 std::initializer_list<std::pair<Widget *, bool>> argChildList = {},
 
@@ -59,7 +59,7 @@ class ItemFlex: public Widget
             if(m_hbox){
                 addChildAt(argWidget, DIR_UPLEFT, [this](const Widget *self)
                 {
-                    const int itemSpace = std::max<int>(0, Widget::evalInt(m_itemSpace, this));
+                    const int itemSpace = std::max<int>(0, Widget::evalSize(m_itemSpace, this));
                     int offset = 0;
 
                     for(auto widget: m_origChildList){
@@ -84,7 +84,7 @@ class ItemFlex: public Widget
             else{
                 addChildAt(argWidget, DIR_UPLEFT, 0, [this](const Widget *self)
                 {
-                    const int itemSpace = std::max<int>(0, Widget::evalInt(m_itemSpace, this));
+                    const int itemSpace = std::max<int>(0, Widget::evalSize(m_itemSpace, this));
                     int offset = 0;
 
                     for(auto widget: m_origChildList){

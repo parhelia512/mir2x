@@ -69,5 +69,5 @@ class GUIManager: public Widget
         }
 
     private:
-        void onWindowResize();
+        void afterResizeDefault() override;
 };
