@@ -749,6 +749,24 @@ std::optional<Widget::ROI> Widget::cropDrawROI(int &dstX, int &dstY, const Widge
     return srcROI;
 }
 
+std::optional<Widget::ROIMap> Widget::cropDrawROI(cosnt Widget::ROIMap &roi) const
+{
+    const auto srcROI = roi.roi.evalROI(this);
+    if(srcROI.empty()){
+        return std::nullopt;
+    }
+
+    const auto srcXDiff = srcROI.x - roi.get([](const auto &r){ return r.x; }, 0);
+    const auto srcYDiff = srcROI.y - roi.get([](const auto &r){ return r.y; }, 0);
+
+    return ROIMap
+    {
+        .roi = srcROI,
+        .dstX = roi.dstX + srcXDiff,
+        .dstY = roi.dstY + srcYDiff,
+    };
+}
+
 Widget *Widget::setData(std::any argData)
 {
     m_data = std::move(argData);
