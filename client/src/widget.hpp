@@ -67,6 +67,12 @@ class WidgetTreeNode // tree concept, used by class Widget only
             bool    autoDelete = false;
         };
 
+        struct WADPair final // Widget-Auto-Delete-Pair
+        {
+            Widget *widget     = nullptr;
+            bool    autoDelete = false;
+        };
+
     private:
         const uint64_t m_id;
 
