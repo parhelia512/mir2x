@@ -761,7 +761,7 @@ std::optional<Widget::ROIMap> Widget::cropDrawROI(cosnt Widget::ROIMap &roi) con
 
     return ROIMap
     {
-        .roi = srcROI,
+        .roiOpt = srcROI,
         .dstX = roi.dstX + srcXDiff,
         .dstY = roi.dstY + srcYDiff,
     };
