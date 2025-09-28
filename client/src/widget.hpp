@@ -418,6 +418,7 @@ class Widget: public WidgetTreeNode
 
     public:
         std::optional<Widget::ROI> cropDrawROI(int &, int &, const Widget::ROIOpt &) const;
+        std::optional<Widget::ROIMap> cropDrawROI(const Widget::ROIMap &) const;
 
     public:
         auto & data(this auto && self)
