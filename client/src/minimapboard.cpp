@@ -244,9 +244,10 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
               2,
           },
 
-          [this](const Widget *self, int drawDstX, int drawDstY)
+          // [this](const Widget *self, int drawDstX, int drawDstY)
+          [this](const Widget *, int, int)
           {
-              g_sdlDevice->fillRectangle((m_processRun->canMove(true, 0, onMapPX, onMapPY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200), mousePX, mousePY, locBoard.w(), locBoard.h());
+              // g_sdlDevice->fillRectangle((m_processRun->canMove(true, 0, onMapPX, onMapPY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200), mousePX, mousePY, locBoard.w(), locBoard.h());
           }
       }
 {

@@ -42,8 +42,8 @@ struct SearchInputLine: public Widget
 
     SearchInputLine(Widget::VarDir,
 
-            Widget::VarInt,
-            Widget::VarInt,
+            Widget::VarOff,
+            Widget::VarOff,
 
             Widget * = nullptr,
             bool     = false);

@@ -7,8 +7,8 @@ struct PageControl: public Widget
 {
     PageControl(
             Widget::VarDir,
-            Widget::VarInt,
-            Widget::VarInt,
+            Widget::VarOff,
+            Widget::VarOff,
 
             int,
 

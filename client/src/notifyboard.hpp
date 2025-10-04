@@ -35,8 +35,8 @@ class NotifyBoard: public Widget
     public:
         NotifyBoard(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 int, // line width
 

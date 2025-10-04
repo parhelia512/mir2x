@@ -26,8 +26,8 @@ class AlphaOnButton: public ButtonBase
     public:
         AlphaOnButton(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 int,
                 int,

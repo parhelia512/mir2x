@@ -12,8 +12,8 @@ class TextShadowBoard: public Widget
     public:
         TextShadowBoard(
                 Widget::VarDir argDir,
-                Widget::VarInt argX,
-                Widget::VarInt argY,
+                Widget::VarOff argX,
+                Widget::VarOff argY,
 
                 int argXShadowOff,
                 int argYShadowOff,

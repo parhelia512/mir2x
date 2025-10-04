@@ -6,8 +6,8 @@
 
 LabelBoard::LabelBoard(
         Widget::VarDir argDir,
-        Widget::VarInt argX,
-        Widget::VarInt argY,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
 
         const char8_t *argContent,
         uint8_t        argFont,

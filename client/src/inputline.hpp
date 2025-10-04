@@ -29,8 +29,8 @@ class InputLine: public Widget
     public:
         InputLine(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 Widget::VarSizeOpt,
                 Widget::VarSizeOpt,

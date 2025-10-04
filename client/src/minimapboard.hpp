@@ -56,4 +56,7 @@ class MiniMapBoard: public Widget
 
     private:
         std::tuple<int, int> mouseOnMapGLoc(int, int) const;
+
+    private:
+        void drawCanvas(int, int);
 };

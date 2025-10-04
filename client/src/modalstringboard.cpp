@@ -55,11 +55,11 @@ class ModalStringBoardImpl: public Widget
     public:
         ModalStringBoardImpl()
             : Widget
-              {
-                  DIR_NONE,
-                  [](const Widget *){ return g_sdlDevice->getRendererWidth () / 2; },
-                  [](const Widget *){ return g_sdlDevice->getRendererHeight() / 2; },
-              }
+              ({
+                  .dir = DIR_NONE,
+                  .x   = [](const Widget *){ return g_sdlDevice->getRendererWidth () / 2; },
+                  .y   = [](const Widget *){ return g_sdlDevice->getRendererHeight() / 2; },
+              })
 
             , m_board
               {

@@ -56,8 +56,8 @@ class TexSlider: public Slider
     public:
         TexSlider(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 Widget::VarSizeOpt,
                 Widget::VarSizeOpt,

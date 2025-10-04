@@ -18,8 +18,8 @@ class TritexButton: public ButtonBase
     public:
         TritexButton(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 const uint32_t (&)[3],
                 const uint32_t (&)[3],

@@ -30,8 +30,8 @@ class InputStringBoard: public Widget
     public:
         InputStringBoard(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 bool,
 

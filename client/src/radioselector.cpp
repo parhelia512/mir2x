@@ -6,8 +6,8 @@ extern PNGTexDB *g_progUseDB;
 
 RadioSelector::RadioSelector(Widget::VarDir argDir,
 
-        Widget::VarInt argX,
-        Widget::VarInt argY,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
 
         int argGap,
         int argItemSpace,

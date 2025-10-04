@@ -16,8 +16,8 @@ extern SDLDevice *g_sdlDevice;
 
 CBRight::CBRight(
         Widget::VarDir argDir,
-        Widget::VarInt argX,
-        Widget::VarInt argY,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
 
         ProcessRun *argProc,
         Widget     *argParent,

@@ -2,8 +2,8 @@
 #include "trigfxbutton.hpp"
 
 TrigfxButton::TrigfxButton(Widget::VarDir argDir,
-        Widget::VarInt argX,
-        Widget::VarInt argY,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
 
         std::array<const Widget *, 3> argGfxList,
         std::array<std::optional<uint32_t>, 3> argSeffIDList,

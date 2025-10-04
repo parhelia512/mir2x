@@ -29,11 +29,11 @@ class MenuBoard: public Widget
     public:
         MenuBoard(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 Widget::VarSizeOpt,
-                std::array<int, 4> = {},
+                std::array<Widget::VarSize, 4> = {},
 
                 int = 0,
                 int = 0,

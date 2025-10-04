@@ -6,8 +6,8 @@ extern SDLDevice *g_sdlDevice;
 
 ChatItemRef::ChatItemRef(
         Widget::VarDir argDir,
-        Widget::VarInt argX,
-        Widget::VarInt argY,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
 
         int argMaxWidth,
 

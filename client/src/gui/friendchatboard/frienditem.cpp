@@ -6,8 +6,8 @@ extern SDLDevice *g_sdlDevice;
 
 FriendItem::FriendItem(
         Widget::VarDir  argDir,
-        Widget::VarInt  argX,
-        Widget::VarInt  argY,
+        Widget::VarOff  argX,
+        Widget::VarOff  argY,
         Widget::VarSizeOpt argW,
 
         const SDChatPeerID &argCPID,

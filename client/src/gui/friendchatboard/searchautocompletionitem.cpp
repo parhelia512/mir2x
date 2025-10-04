@@ -9,8 +9,8 @@ extern SDLDevice *g_sdlDevice;
 
 SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
 
-        Widget::VarInt argX,
-        Widget::VarInt argY,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
 
         bool argByID,
         SDChatPeer argCandidate,

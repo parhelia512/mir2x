@@ -46,13 +46,14 @@ class ImageBoard: public Widget
     public:
         ImageBoard(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 Widget::VarSizeOpt, // {} means image width , otherwise rescale the image
                 Widget::VarSizeOpt, // {} means image height, otherwise rescale the image
 
-                std::function<SDL_Texture *(const Widget *)>,
+                // std::function<SDL_Texture *(const Widget *)>,
+                VarTexLoadFunc,
 
                 bool = false,
                 bool = false,

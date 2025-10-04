@@ -86,8 +86,8 @@ class LayoutBoard: public Widget
     public:
         LayoutBoard(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 int, // line width
 

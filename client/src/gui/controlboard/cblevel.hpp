@@ -19,8 +19,8 @@ class CBLevel: public ButtonBase
     public:
         CBLevel(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 ProcessRun *,
                 std::function<void(Widget *, int)>,

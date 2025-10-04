@@ -9,8 +9,8 @@ extern SDLDevice *g_sdlDevice;
 
 TritexButton::TritexButton(
         Widget::VarDir argDir,
-        Widget::VarInt argX,
-        Widget::VarInt argY,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
 
         const uint32_t (& argTexIDList)[3],
         const uint32_t (&argSeffIDList)[3],

@@ -1,6 +1,6 @@
 #pragma once
 #include <variant>
-#include <<cstddef>
+#include <cstddef>
 #include <functional>
 #include <type_traits>
 #include "widget.hpp"
@@ -8,9 +8,9 @@
 
 struct MarginWrapperInitArgs final
 {
-    Widget::VarDir dir;
-    Widget::VarInt x;
-    Widget::VarInt y;
+    Widget::VarDir dir = DIR_UPLEFT;
+    Widget::VarOff x   = 0;
+    Widget::VarOff y   = 0;
 
     Widget *wrapped           = nullptr;
     bool    wrappedAutoDelete = false;
@@ -36,7 +36,7 @@ struct MarginWrapperInitArgs final
 class MarginWrapper: public Widget
 {
     public:
-        MarginWrapper(MarginWrapperInitArgs args)
+        explicit MarginWrapper(MarginWrapperInitArgs args)
             : Widget
               {{
                   .dir = std::move(args.dir),
@@ -49,35 +49,20 @@ class MarginWrapper: public Widget
                   .parent = args.parent,
                   .autoDelete = args.autoDelete,
               }}
-
-            : Widget
-              {
-                  std::move(argDir),
-                  std::move(argX),
-                  std::move(argY),
-
-                  [argWidget, argMargin, this]{ return argWidget->w() + Widget::evalSize(argMargin[2], this) + Widget::evalSize(argMargin[3], this); },
-                  [argWidget, argMargin, this]{ return argWidget->h() + Widget::evalSize(argMargin[0], this) + Widget::evalSize(argMargin[1], this); },
-
-                  {},
-
-                  argParent,
-                  argAutoDelete,
-              }
         {
-            switch(argDrawFunc.index()){
-                case 1 : Widget::addChild(new ShapeCropBoard{DIR_UPLEFT, 0, 0, [this]{ return w(); }, [this]{ return h(); }, std::move(std::get<1>(argDrawFunc)), }, true); break;
-                case 2 : Widget::addChild(new ShapeCropBoard{DIR_UPLEFT, 0, 0, [this]{ return w(); }, [this]{ return h(); }, std::move(std::get<2>(argDrawFunc)), }, true); break;
-                default:                                                                                                                                                    break;
-            }
+            // switch(argDrawFunc.index()){
+            //     case 1 : Widget::addChild(new ShapeCropBoard{DIR_UPLEFT, 0, 0, [this]{ return w(); }, [this]{ return h(); }, std::move(std::get<1>(argDrawFunc)), }, true); break;
+            //     case 2 : Widget::addChild(new ShapeCropBoard{DIR_UPLEFT, 0, 0, [this]{ return w(); }, [this]{ return h(); }, std::move(std::get<2>(argDrawFunc)), }, true); break;
+            //     default:                                                                                                                                                    break;
+            // }
 
-            Widget::addChildAt(argWidget,
+            Widget::addChildAt(args.wrapped,
                     DIR_UPLEFT,
 
-                    argMargin[2],
-                    argMargin[0],
+                    0, // argMargin[2],
+                    0, // argMargin[0],
 
-                    argWidgetAutoDelete);
+                    args.wrappedAutoDelete);
         }
 
     public:
@@ -94,5 +79,5 @@ class MarginWrapper: public Widget
 
     public:
         void addChild  (Widget *,                                                 bool) override { throw fflvalue(name()); }
-        void addChildAt(Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool) override { throw fflvalue(name()); }
+        void addChildAt(Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool) override { throw fflvalue(name()); }
 };

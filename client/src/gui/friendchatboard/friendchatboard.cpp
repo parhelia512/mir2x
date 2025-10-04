@@ -16,7 +16,7 @@ extern Client *g_client;
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
+FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
     : Widget
       {
           DIR_UPLEFT,

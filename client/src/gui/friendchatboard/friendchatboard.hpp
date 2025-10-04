@@ -77,8 +77,8 @@ class FriendChatBoard: public Widget
 
     public:
         FriendChatBoard(
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 ProcessRun *,
 

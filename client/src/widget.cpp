@@ -98,7 +98,7 @@ void WidgetTreeNode::addChild(Widget *argWidget, bool argAutoDelete)
     doAddChild(argWidget, argAutoDelete);
 }
 
-void WidgetTreeNode::addChildAt(Widget *argWidget, WidgetTreeNode::VarDir argDir, WidgetTreeNode::VarInt argX, WidgetTreeNode::VarInt argY, bool argAutoDelete)
+void WidgetTreeNode::addChildAt(Widget *argWidget, WidgetTreeNode::VarDir argDir, WidgetTreeNode::VarOff argX, WidgetTreeNode::VarOff argY, bool argAutoDelete)
 {
     doAddChild(argWidget, argAutoDelete);
     argWidget->moveAt(std::move(argDir), std::move(argX), std::move(argY));
@@ -238,7 +238,7 @@ dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widget, const
     varDir);
 }
 
-int Widget::evalInt(const Widget::VarInt &varOffset, const Widget *widget, const void *arg)
+int Widget::evalInt(const Widget::VarOff &varOffset, const Widget *widget, const void *arg)
 {
     return std::visit(VarDispatcher
     {
@@ -389,7 +389,7 @@ SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, co
     varBlendMode);
 }
 
-Widget::Widget(WidgetInitArgs args)
+Widget::Widget(Widget::InitArgs args)
     : WidgetTreeNode(args.parent, args.autoDelete)
     , m_dir(std::move(args.dir))
     , m_x  (std::make_pair(std::move(args.x), 0))
@@ -403,6 +403,34 @@ Widget::Widget(WidgetInitArgs args)
         }
     }
 }
+
+Widget::Widget(Widget::VarDir argDir,
+
+        Widget::VarOff argX,
+        Widget::VarOff argY,
+
+        Widget::VarSizeOpt argW,
+        Widget::VarSizeOpt argH,
+
+        std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool>> argChildList,
+
+        Widget * argParent     = nullptr,
+        bool     argAutoDelete = false)
+
+    : Widget
+      {
+          .dir = std::move(argDir),
+          .x   = std::move(argX),
+          .y   = std::move(argY),
+          .w   = std::move(argW),
+          .h   = std::move(argH),
+
+          .childList = std::move(argChildList),
+
+          .parent = argParent,
+          .autoDelete = argAutoDelete,
+      }
+{}
 
 void Widget::drawChildEx(const Widget *child, int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
@@ -964,25 +992,25 @@ Widget *Widget::setActive(Widget::VarBool argActive)
     return this;
 }
 
-void Widget::moveXTo(Widget::VarInt arg)
+void Widget::moveXTo(Widget::VarOff arg)
 {
     m_x = std::make_pair(std::move(arg), 0);
 }
 
-void Widget::moveYTo(Widget::VarInt arg)
+void Widget::moveYTo(Widget::VarOff arg)
 {
     m_y = std::make_pair(std::move(arg), 0);
 }
 
-void Widget::moveTo(Widget::VarInt argX, Widget::VarInt argY)
+void Widget::moveTo(Widget::VarOff argX, Widget::VarOff argY)
 {
     moveXTo(std::move(argX));
     moveYTo(std::move(argY));
 }
 
-void Widget::moveBy(Widget::VarInt dx, Widget::VarInt dy)
+void Widget::moveBy(Widget::VarOff dx, Widget::VarOff dy)
 {
-    const auto fnOp = [](std::pair<Widget::VarInt, int> &offset, Widget::VarInt update)
+    const auto fnOp = [](std::pair<Widget::VarOff, int> &offset, Widget::VarOff update)
     {
         if(update.index() == 0){
             offset.second += std::get<int>(update);
@@ -1004,7 +1032,7 @@ void Widget::moveBy(Widget::VarInt dx, Widget::VarInt dy)
     fnOp(m_y, std::move(dy));
 }
 
-void Widget::moveAt(Widget::VarDir argDir, Widget::VarInt argX, Widget::VarInt argY)
+void Widget::moveAt(Widget::VarDir argDir, Widget::VarOff argX, Widget::VarOff argY)
 {
     m_dir = std::move(argDir);
     m_x   = std::make_pair(std::move(argX), 0);

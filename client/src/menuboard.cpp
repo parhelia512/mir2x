@@ -7,11 +7,11 @@ extern SDLDevice *g_sdlDevice;
 
 MenuBoard::MenuBoard(
         Widget::VarDir argDir,
-        Widget::VarInt argX,
-        Widget::VarInt argY,
+        Widget::VarOff argX,
+        Widget::VarOff argY,
 
         Widget::VarSizeOpt argVarW,
-        std::array<int, 4> argMargin,
+        std::array<Widget::VarSize, 4> argMargin,
 
         int argCorner,
         int argItemSpace,
@@ -48,29 +48,24 @@ MenuBoard::MenuBoard(
           0,
           0,
 
-          Widget::transform(std::move(argVarW), [argMargin](int w)
+          Widget::transform(std::move(argVarW), [argMargin, this](int w)
           {
-              return std::max<int>(0, w - argMargin[2] - argMargin[3]);
+              return std::max<int>(0, w - Widget::evalSize(argMargin[2], this) - Widget::evalSize(argMargin[3], this));
           }),
 
           false,
       }
 
-    , m_wrapper
+    , m_wrapper(MarginWrapperInitArgs
       {
-          DIR_UPLEFT,
-          0,
-          0,
+          .wrapped = &m_canvas,
+          .wrappedAutoDelete = false,
 
-          &m_canvas,
-          false,
+          .margin = argMargin,
 
-          argMargin,
-          nullptr,
-
-          this,
-          false,
-      }
+          .parent = this,
+          .autoDelete = false,
+      })
 
     , m_background
       {

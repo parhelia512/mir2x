@@ -42,8 +42,8 @@ class CBMiddleExpand: public Widget
     public:
         CBMiddleExpand(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 Widget::VarSizeOpt,
 

@@ -14,28 +14,28 @@ class GfxCropBoard: public Widget
         VarGfxWidget m_gfxWidgetGetter;
 
     private:
-        const Widget::VarInt m_gfxCropX;
-        const Widget::VarInt m_gfxCropY;
-        const Widget::VarInt m_gfxCropW;
-        const Widget::VarInt m_gfxCropH;
+        const Widget::VarOff m_gfxCropX;
+        const Widget::VarOff m_gfxCropY;
+        const Widget::VarOff m_gfxCropW;
+        const Widget::VarOff m_gfxCropH;
 
     private:
-        const std::array<Widget::VarInt, 4> m_margin;
+        const std::array<Widget::VarOff, 4> m_margin;
 
     public:
         GfxCropBoard(
                 Widget::VarDir argDir,
-                Widget::VarInt argX,
-                Widget::VarInt argY,
+                Widget::VarOff argX,
+                Widget::VarOff argY,
 
                 VarGfxWidget argWidgetGetter,
 
-                Widget::VarInt argGfxCropX, // crop on gfx widget
-                Widget::VarInt argGfxCropY, // ...
-                Widget::VarInt argGfxCropW, // crop width, don't use Widget::VarSizeOpt, support over-cropping
-                Widget::VarInt argGfxCropH, // ...
+                Widget::VarOff argGfxCropX, // crop on gfx widget
+                Widget::VarOff argGfxCropY, // ...
+                Widget::VarOff argGfxCropW, // crop width, don't use Widget::VarSizeOpt, support over-cropping
+                Widget::VarOff argGfxCropH, // ...
 
-                std::array<Widget::VarInt, 4> argMargin = {},
+                std::array<Widget::VarOff, 4> argMargin = {},
 
                 Widget *argParent     = nullptr,
                 bool    argAutoDelete = false)

@@ -10,14 +10,14 @@ class ItemFlex: public Widget
         const bool m_hbox;
 
     private:
-        Widget::VarInt m_itemSpace;
+        Widget::VarSize m_itemSpace;
         std::vector<Widget *> m_origChildList;
 
     public:
         ItemFlex(
                 Widget::VarDir argDir,
-                Widget::VarInt argX,
-                Widget::VarInt argY,
+                Widget::VarOff argX,
+                Widget::VarOff argY,
 
                 Widget::VarSizeOpt argVarSizeOpt,
 

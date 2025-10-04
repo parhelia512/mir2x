@@ -19,8 +19,8 @@ class GfxCutoutBoard: public Widget
     public:
         GfxCutoutBoard(
                 Widget::VarDir argDir,
-                Widget::VarInt argX,
-                Widget::VarInt argY,
+                Widget::VarOff argX,
+                Widget::VarOff argY,
 
                 const Widget *argWidget,
 

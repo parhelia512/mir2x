@@ -7,8 +7,8 @@ struct ChatInputContainer: public Widget
     LayoutBoard layout;
     ChatInputContainer(
             Widget::VarDir,
-            Widget::VarInt,
-            Widget::VarInt,
+            Widget::VarOff,
+            Widget::VarOff,
             Widget::VarSizeOpt, // width only
 
             Widget * = nullptr,

@@ -27,8 +27,8 @@ class TextBoard: public Widget
     public:
         TextBoard(
                 Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarOff,
+                Widget::VarOff,
 
                 VarTextFunc,
 

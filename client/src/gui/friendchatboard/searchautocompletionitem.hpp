@@ -41,8 +41,8 @@ struct SearchAutoCompletionItem: public Widget
 
     SearchAutoCompletionItem(Widget::VarDir,
 
-            Widget::VarInt,
-            Widget::VarInt,
+            Widget::VarOff,
+            Widget::VarOff,
 
             bool,
             SDChatPeer,

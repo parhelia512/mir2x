@@ -198,7 +198,8 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int sta
                 switch(event.window.event){
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
                         {
-                            onWindowResize();
+                            // onWindowResize();
+                            afterResize();
                             return true;
                         }
                     default:
@@ -298,7 +299,7 @@ Widget *GUIManager::getWidget(const std::string_view &name)
     }
 }
 
-void GUIManager::afterResize()
+void GUIManager::afterResizeDefault()
 {
     m_controlBoard.afterResize();
     m_runtimeConfigBoard.updateWindowSizeLabel(w(), h(), true);

@@ -8,8 +8,8 @@ struct ChatPreviewPage: public Widget
     Widget canvas;
     ChatPreviewPage(Widget::VarDir,
 
-            Widget::VarInt,
-            Widget::VarInt,
+            Widget::VarOff,
+            Widget::VarOff,
             Widget::VarSizeOpt,
             Widget::VarSizeOpt,
 
