@@ -19,6 +19,8 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           [this]{ return getFrameSize(); },
           [this]{ return getFrameSize(); },
 
+          {},
+
           argParent,
           argAutoDelete,
       }
@@ -214,7 +216,7 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
       }
 
     , m_mouseLoc
-      {
+      ({
           DIR_UPLEFT,
           0,
           0,
@@ -249,9 +251,9 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           {
               // g_sdlDevice->fillRectangle((m_processRun->canMove(true, 0, onMapPX, onMapPY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200), mousePX, mousePY, locBoard.w(), locBoard.h());
           }
-      }
+      })
 {
-    setShow([] -> bool { return getMiniMapTexture(); });
+    setShow([this] -> bool { return getMiniMapTexture(); });
 }
 
 bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
@@ -456,3 +458,6 @@ std::tuple<int, int> MiniMapBoard::mouseOnMapGLoc(int xOff, int yOff) const
         std::lround((yOff + srcY) * 1.0 * mapH / texH),
     };
 }
+
+void MiniMapBoard::setPLoc()
+{}

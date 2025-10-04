@@ -397,7 +397,7 @@ Widget::Widget(Widget::InitArgs args)
     , m_w  (std::move(args.w))
     , m_h  (std::move(args.h))
 {
-    for(auto &[childPtr, offDir, offX, offY, autoDelete]: argChildList){
+    for(auto &[childPtr, offDir, offX, offY, autoDelete]: args.childList){
         if(childPtr){
             addChildAt(childPtr, std::move(offDir), std::move(offX), std::move(offY), autoDelete);
         }
@@ -414,11 +414,11 @@ Widget::Widget(Widget::VarDir argDir,
 
         std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool>> argChildList,
 
-        Widget * argParent     = nullptr,
-        bool     argAutoDelete = false)
+        Widget * argParent,
+        bool     argAutoDelete)
 
     : Widget
-      {
+      ({
           .dir = std::move(argDir),
           .x   = std::move(argX),
           .y   = std::move(argY),
@@ -429,7 +429,7 @@ Widget::Widget(Widget::VarDir argDir,
 
           .parent = argParent,
           .autoDelete = argAutoDelete,
-      }
+      })
 {}
 
 void Widget::drawChildEx(const Widget *child, int dstX, int dstY, const Widget::ROIOpt &roi) const
@@ -777,21 +777,22 @@ std::optional<Widget::ROI> Widget::cropDrawROI(int &dstX, int &dstY, const Widge
     return srcROI;
 }
 
-std::optional<Widget::ROIMap> Widget::cropDrawROI(cosnt Widget::ROIMap &roi) const
+std::optional<Widget::ROIMap> Widget::cropDrawROI(const Widget::ROIMap &roi) const
 {
-    const auto srcROI = roi.roi.evalROI(this);
+    const auto srcROI = roi.roiOpt.evalROI(this);
     if(srcROI.empty()){
         return std::nullopt;
     }
 
-    const auto srcXDiff = srcROI.x - roi.get([](const auto &r){ return r.x; }, 0);
-    const auto srcYDiff = srcROI.y - roi.get([](const auto &r){ return r.y; }, 0);
+    const auto srcXDiff = srcROI.x - roi.roiOpt.get([](const auto &r){ return r.x; }, 0);
+    const auto srcYDiff = srcROI.y - roi.roiOpt.get([](const auto &r){ return r.y; }, 0);
 
     return ROIMap
     {
-        .roiOpt = srcROI,
         .dstX = roi.dstX + srcXDiff,
         .dstY = roi.dstY + srcYDiff,
+
+        .roiOpt = srcROI,
     };
 }
 
