@@ -202,6 +202,24 @@ Widget::ROI Widget::ROIOpt::evalROI(const Widget::ROI &roi) const
     }
 }
 
+Widget::ROIMap Widget::ROIMap::crop(const Widget *widget) const
+{
+    fflassert(widget);
+    return crop(widget->roi());
+}
+
+Widget::ROIMap Widget::ROIMap::crop(const Widget::ROI &roi) const
+{
+    const auto r = this->roiOpt.evalROI(roi);
+    return Widget::ROIMap
+    {
+        .dstX = this->dstX + (r.x - this->roiOpt.get([](const auto &r){ return r.x; }, 0)),
+        .dstY = this->dstY + (r.y - this->roiOpt.get([](const auto &r){ return r.y; }, 0)),
+
+        .roiOpt = r,
+    };
+}
+
 dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widget, const void *arg)
 {
     const auto fnValidDir = [](dir8_t argDir)

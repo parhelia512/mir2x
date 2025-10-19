@@ -228,7 +228,11 @@ class Widget: public WidgetTreeNode
         {
             int dstX;
             int dstY;
+
             Widget::ROIOpt roiOpt;
+
+            ROIMap crop(const Widget      *) const;
+            ROIMap crop(const Widget::ROI &) const;
         };
 
     private:
