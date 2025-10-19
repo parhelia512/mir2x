@@ -167,11 +167,8 @@ bool Widget::ROI::crop(Widget::ROI &r) const
         return false;
     }
 
-    // return mathf::cropSegment<int>(r.x, r.w, this->x, this->w)
-    //     && mathf::cropSegment<int>(r.y, r.h, this->y, this->h);
-
-    return mathf::cropSegment(r.x, r.w, this->x, this->w)
-        && mathf::cropSegment(r.y, r.h, this->y, this->h);
+    return mathf::cropSegment<int>(r.x, r.w, this->x, this->w)
+        && mathf::cropSegment<int>(r.y, r.h, this->y, this->h);
 }
 
 bool Widget::ROI::overlap(const Widget::ROI &rhs) const
