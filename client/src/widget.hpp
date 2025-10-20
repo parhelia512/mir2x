@@ -266,8 +266,7 @@ class Widget: public WidgetTreeNode
             Widget::VarBool show;
             Widget::VarBool focus;
 
-            Widget *parent     = nullptr;
-            bool    autoDelete = false;
+            Widget::WADPair parent;
         };
 
     public:

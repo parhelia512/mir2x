@@ -407,7 +407,7 @@ SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, co
 }
 
 Widget::Widget(Widget::InitArgs args)
-    : WidgetTreeNode(args.parent, args.autoDelete)
+    : WidgetTreeNode(args.parent.widget, args.parent.autoDelete)
     , m_dir(std::move(args.dir))
     , m_x  (std::make_pair(std::move(args.x), 0))
     , m_y  (std::make_pair(std::move(args.y), 0))
@@ -444,8 +444,11 @@ Widget::Widget(Widget::VarDir argDir,
 
           .childList = std::move(argChildList),
 
-          .parent = argParent,
-          .autoDelete = argAutoDelete,
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
       })
 {}
 

@@ -46,8 +46,11 @@ class MarginWrapper: public Widget
                   .w = [wrapped = args.wrapped, margin = args.margin, this]{ return wrapped->w() + Widget::evalSize(margin[2], this) + Widget::evalSize(margin[3], this); },
                   .h = [wrapped = args.wrapped, margin = args.margin, this]{ return wrapped->h() + Widget::evalSize(margin[0], this) + Widget::evalSize(margin[1], this); },
 
-                  .parent = args.parent,
-                  .autoDelete = args.autoDelete,
+                  .parent
+                  {
+                      .widget = args.parent,
+                      .autoDelete = args.autoDelete,
+                  }
               }}
         {
             // switch(argDrawFunc.index()){
