@@ -222,6 +222,17 @@ class Widget: public WidgetTreeNode
             public:
                 Widget::ROI evalROI(const Widget *     ) const;
                 Widget::ROI evalROI(const Widget::ROI &) const;
+
+            public:
+                auto operator -> (this auto && self)
+                {
+                    return std::addressof(self.m_roiOpt.value());
+                }
+
+                bool has_value() const
+                {
+                    return m_roiOpt.has_value();
+                }
         };
 
         struct ROIMap final
@@ -233,6 +244,11 @@ class Widget: public WidgetTreeNode
 
             ROIMap crop(const Widget      *) const;
             ROIMap crop(const Widget::ROI &) const;
+
+            bool empty() const
+            {
+                return roiOpt.has_value() && roiOpt->empty();
+            }
         };
 
     private:
@@ -431,9 +447,7 @@ class Widget: public WidgetTreeNode
                 int,    // use dir()/dx()/dy() if gfxWidget is a real child of calling widget
                 int,    //
 
-                int,    // {dstX, dstY, roi} of calling widget
-                int,
-                const Widget::ROIOpt &) const final;
+                const Widget::ROIMap &) const final; // roiMap of calling widget
 
         virtual void drawRoot(int = 0, int = 0) const final;
 

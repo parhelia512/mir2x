@@ -167,8 +167,10 @@ bool Widget::ROI::crop(Widget::ROI &r) const
         return false;
     }
 
-    return mathf::cropSegment<int>(r.x, r.w, this->x, this->w)
-        && mathf::cropSegment<int>(r.y, r.h, this->y, this->h);
+    const auto doneX = mathf::cropSegment<int>(r.x, r.w, this->x, this->w);
+    const auto doneY = mathf::cropSegment<int>(r.y, r.h, this->y, this->h);
+
+    return doneX && doneY;
 }
 
 bool Widget::ROI::overlap(const Widget::ROI &rhs) const
@@ -451,7 +453,7 @@ void Widget::drawChildEx(const Widget *child, int dstX, int dstY, const Widget::
 {
     fflassert(child);
     fflassert(hasChild(child->id()));
-    drawAsChildEx(child, DIR_UPLEFT, child->dx(), child->dy(), dstX, dstY, roi);
+    drawAsChildEx(child, DIR_UPLEFT, child->dx(), child->dy(), {dstX, dstY, roi});
 }
 
 void Widget::drawAt(dir8_t dstDir, int dstX, int dstY, const Widget::ROIOpt &roi) const
@@ -489,25 +491,23 @@ void Widget::drawAsChildEx(
         int    gfxDx,
         int    gfxDy,
 
-        int dstX,
-        int dstY,
-        const Widget::ROIOpt &roi) const
+        const Widget::ROIMap &m) const
 {
-    auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
-        return;
-    }
-
     if(!gfxWidget){
         return;
     }
 
-    if(!mathf::cropChildROI(
-                &roiOpt->x, &roiOpt->y,
-                &roiOpt->w, &roiOpt->h,
+    auto roim = m.crop(this);
+    if(roim.empty()){
+        return;
+    }
 
-                &dstX,
-                &dstY,
+    if(!mathf::cropChildROI(
+                std::addressof(roim.roiOpt->x), std::addressof(roim.roiOpt->y),
+                std::addressof(roim.roiOpt->w), std::addressof(roim.roiOpt->h),
+
+                std::addressof(roim.dstX),
+                std::addressof(roim.dstY),
 
                 w(),
                 h(),
@@ -520,7 +520,7 @@ void Widget::drawAsChildEx(
         return;
     }
 
-    gfxWidget->drawEx(dstX, dstY, roiOpt.value());
+    gfxWidget->drawEx(roim.dstX, roim.dstY, roim.roiOpt);
 }
 
 void Widget::drawRoot(int rootDstX, int rootDstY) const
