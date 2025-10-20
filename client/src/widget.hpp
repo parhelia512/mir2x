@@ -263,23 +263,8 @@ class Widget: public WidgetTreeNode
 
             std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool>> childList = {};
 
-            // std::variant<bool,
-            //              std::function<bool()>,
-            //              std::function<bool(const Widget *)>,
-            //              std::function<bool(const Widget *, const void *>,
-            //
-            //              std::function<bool(                              const Widget::ROIMap &)>,
-            //              std::function<bool(const Widget *,               const Widget::ROIMap &)>,
-            //              std::function<bool(const Widget *, const void *, const Widget::ROIMap &>> show;
-            //
-            // std::variant<bool,
-            //              std::function<bool()>,
-            //              std::function<bool(const Widget *)>,
-            //              std::function<bool(const Widget *, const void *>,
-            //
-            //              std::function<bool(                              const Widget::ROIMap &)>,
-            //              std::function<bool(const Widget *,               const Widget::ROIMap &)>,
-            //              std::function<bool(const Widget *, const void *, const Widget::ROIMap &>> active;
+            Widget::VarBool show;
+            Widget::VarBool focus;
 
             Widget *parent     = nullptr;
             bool    autoDelete = false;
