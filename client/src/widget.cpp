@@ -249,27 +249,27 @@ void Widget::ROIMap::crop(const Widget *widget)
 
 void Widget::ROIMap::crop(const Widget::ROI &r)
 {
-    if(this->roiOpt.has_value()){
-        if(this->dstDir != DIR_UPLEFT){
-            this->dstX  -= xSizeOff(this->dstDir, this->roiOpt->w);
-            this->dstY  -= ySizeOff(this->dstDir, this->roiOpt->h);
-            this->dstDir = DIR_UPLEFT;
+    if(this->ro.has_value()){
+        if(this->dir != DIR_UPLEFT){
+            this->x  -= xSizeOff(this->dir, this->ro->w);
+            this->y  -= ySizeOff(this->dir, this->ro->h);
+            this->dir = DIR_UPLEFT;
         }
 
-        const auto oldX = this->roiOpt->x;
-        const auto oldY = this->roiOpt->y;
+        const auto oldX = this->ro->x;
+        const auto oldY = this->ro->y;
 
-        this->roiOpt.crop(r);
+        this->ro.crop(r);
 
-        this->dstX += (this->roiOpt->x - oldX);
-        this->dstY += (this->roiOpt->y - oldY);
+        this->x += (this->ro->x - oldX);
+        this->y += (this->ro->y - oldY);
     }
 
-    else if(this->dstDir == DIR_UPLEFT){
-        this->roiOpt.crop(r);
+    else if(this->dir == DIR_UPLEFT){
+        this->ro.crop(r);
 
-        this->dstX += r.x;
-        this->dstY += r.y;
+        this->x += r.x;
+        this->y += r.y;
     }
 
     else{
@@ -574,11 +574,11 @@ void Widget::drawAsChildEx(
     }
 
     if(!mathf::cropChildROI(
-                std::addressof(roim.roiOpt->x), std::addressof(roim.roiOpt->y),
-                std::addressof(roim.roiOpt->w), std::addressof(roim.roiOpt->h),
+                std::addressof(roim.ro->x), std::addressof(roim.ro->y),
+                std::addressof(roim.ro->w), std::addressof(roim.ro->h),
 
-                std::addressof(roim.dstX),
-                std::addressof(roim.dstY),
+                std::addressof(roim.x),
+                std::addressof(roim.y),
 
                 w(),
                 h(),
@@ -591,7 +591,7 @@ void Widget::drawAsChildEx(
         return;
     }
 
-    gfxWidget->drawEx(roim.dstX, roim.dstY, roim.roiOpt);
+    gfxWidget->drawEx(roim.x, roim.y, roim.ro);
 }
 
 void Widget::drawRoot(int rootDstX, int rootDstY) const
@@ -865,20 +865,20 @@ std::optional<Widget::ROI> Widget::cropDrawROI(int &dstX, int &dstY, const Widge
 
 std::optional<Widget::ROIMap> Widget::cropDrawROI(const Widget::ROIMap &roi) const
 {
-    const auto srcROI = roi.roiOpt.create(this);
+    const auto srcROI = roi.ro.create(this);
     if(srcROI.empty()){
         return std::nullopt;
     }
 
-    const auto srcXDiff = srcROI.x - roi.roiOpt.get([](const auto &r){ return r.x; }, 0);
-    const auto srcYDiff = srcROI.y - roi.roiOpt.get([](const auto &r){ return r.y; }, 0);
+    const auto srcXDiff = srcROI.x - roi.ro.get([](const auto &r){ return r.x; }, 0);
+    const auto srcYDiff = srcROI.y - roi.ro.get([](const auto &r){ return r.y; }, 0);
 
     return ROIMap
     {
-        .dstX = roi.dstX + srcXDiff,
-        .dstY = roi.dstY + srcYDiff,
+        .x = roi.x + srcXDiff,
+        .y = roi.y + srcYDiff,
 
-        .roiOpt = srcROI,
+        .ro = srcROI,
     };
 }
 

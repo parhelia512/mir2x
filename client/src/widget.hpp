@@ -247,16 +247,16 @@ class Widget: public WidgetTreeNode
 
         struct ROIMap final
         {
-            dir8_t dstDir = DIR_UPLEFT;
+            dir8_t dir = DIR_UPLEFT;
 
-            int dstX = 0;
-            int dstY = 0;
+            int x = 0;
+            int y = 0;
 
-            Widget::ROIOpt roiOpt = std::nullopt;
+            Widget::ROIOpt ro = std::nullopt;
 
             bool empty() const
             {
-                return roiOpt.has_value() && roiOpt->empty(); // nullopt means full region
+                return ro.has_value() && ro->empty(); // nullopt means full region
             }
 
             void crop(const Widget      *);
