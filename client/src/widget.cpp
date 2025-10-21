@@ -562,23 +562,24 @@ void Widget::drawAsChildEx(
         int    gfxDx,
         int    gfxDy,
 
-        const Widget::ROIMap &r) const
+        const Widget::ROIMap &m) const
 {
     if(!gfxWidget){
         return;
     }
 
-    auto roim = r.create(this);
-    if(roim.empty()){
+    auto r = m.create(this);
+
+    if(r.empty()){
         return;
     }
 
     if(!mathf::cropChildROI(
-                std::addressof(roim.ro->x), std::addressof(roim.ro->y),
-                std::addressof(roim.ro->w), std::addressof(roim.ro->h),
+                std::addressof(r.ro->x), std::addressof(r.ro->y),
+                std::addressof(r.ro->w), std::addressof(r.ro->h),
 
-                std::addressof(roim.x),
-                std::addressof(roim.y),
+                std::addressof(r.x),
+                std::addressof(r.y),
 
                 w(),
                 h(),
@@ -591,7 +592,7 @@ void Widget::drawAsChildEx(
         return;
     }
 
-    gfxWidget->drawEx(roim.x, roim.y, roim.ro);
+    gfxWidget->drawEx(r.x, r.y, r.ro);
 }
 
 void Widget::drawRoot(int rootDstX, int rootDstY) const
