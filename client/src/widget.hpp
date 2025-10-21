@@ -249,6 +249,8 @@ class Widget: public WidgetTreeNode
 
         struct ROIMap final
         {
+            dir8_t dstDir = DIR_UPLEFT;
+
             int dstX = 0;
             int dstY = 0;
 

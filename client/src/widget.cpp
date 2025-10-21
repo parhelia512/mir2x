@@ -249,13 +249,32 @@ void Widget::ROIMap::crop(const Widget *widget)
 
 void Widget::ROIMap::crop(const Widget::ROI &r)
 {
-    const auto oldX = this->roiOpt.get([](const auto &r){ return r.x; }, 0);
-    const auto oldY = this->roiOpt.get([](const auto &r){ return r.y; }, 0);
+    if(this->roiOpt.has_value()){
+        if(this->dstDir != DIR_UPLEFT){
+            this->dstX  -= xSizeOff(this->dstDir, this->roiOpt->w);
+            this->dstY  -= ySizeOff(this->dstDir, this->roiOpt->h);
+            this->dstDir = DIR_UPLEFT;
+        }
 
-    this->roiOpt.crop(r);
+        const auto oldX = this->roiOpt->x;
+        const auto oldY = this->roiOpt->y;
 
-    this->dstX += (this->roiOpt.value().x - oldX);
-    this->dstY += (this->roiOpt.value().y - oldY);
+        this->roiOpt.crop(r);
+
+        this->dstX += (this->roiOpt->x - oldX);
+        this->dstY += (this->roiOpt->y - oldY);
+    }
+
+    else if(this->dstDir == DIR_UPLEFT){
+        this->roiOpt.crop(r);
+
+        this->dstX += r.x;
+        this->dstY += r.y;
+    }
+
+    else{
+        throw fflerror("invalid ROIMap state");
+    }
 }
 
 Widget::ROIMap Widget::ROIMap::create(const Widget *widget) const
@@ -505,7 +524,7 @@ void Widget::drawChildEx(const Widget *child, int dstX, int dstY, const Widget::
 {
     fflassert(child);
     fflassert(hasChild(child->id()));
-    drawAsChildEx(child, DIR_UPLEFT, child->dx(), child->dy(), {dstX, dstY, roi});
+    drawAsChildEx(child, DIR_UPLEFT, child->dx(), child->dy(), {DIR_UPLEFT, dstX, dstY, roi});
 }
 
 void Widget::drawAt(dir8_t dstDir, int dstX, int dstY, const Widget::ROIOpt &roi) const
