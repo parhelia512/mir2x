@@ -125,7 +125,9 @@ bool Slider::inSlider(int eventX, int eventY, int startDstX, int startDstY, cons
         .h = sliderH,
     };
 
-    if(!Widget::ROI(startDstX, startDstY, roiOpt->w, roiOpt->h).crop(sliderROI)){
+    sliderROI = Widget::ROI(startDstX, startDstY, roiOpt->w, roiOpt->h).create(sliderROI);
+
+    if(sliderROI.empty()){
         return false;
     }
 

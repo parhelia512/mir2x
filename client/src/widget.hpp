@@ -61,17 +61,13 @@ class WidgetTreeNode // tree concept, used by class Widget only
         friend class Widget;
 
     protected:
-        struct ChildElement final
-        {
-            Widget *widget     = nullptr;
-            bool    autoDelete = false;
-        };
-
         struct WADPair final // Widget-Auto-Delete-Pair
         {
             Widget *widget     = nullptr;
             bool    autoDelete = false;
         };
+
+        using ChildElement = WADPair;
 
     private:
         const uint64_t m_id;
@@ -193,9 +189,10 @@ class Widget: public WidgetTreeNode
 
             bool empty() const;
             bool in(int, int) const;
-
-            bool crop(Widget::ROI &) const;
             bool overlap(const Widget::ROI &) const;
+
+            void crop(const Widget::ROI &);
+            Widget::ROI create(const Widget::ROI &) const;
         };
 
         class ROIOpt final
@@ -220,8 +217,13 @@ class Widget: public WidgetTreeNode
                 }
 
             public:
-                Widget::ROI evalROI(const Widget *     ) const;
-                Widget::ROI evalROI(const Widget::ROI &) const;
+                void crop(const Widget         *);
+                void crop(const Widget::ROI    &);
+                void crop(const Widget::ROIOpt &);
+
+                Widget::ROI    create(const Widget *        ) const;
+                Widget::ROI    create(const Widget::ROI    &) const;
+                Widget::ROIOpt create(const Widget::ROIOpt &) const;
 
             public:
                 auto operator -> (this auto && self)
@@ -233,22 +235,35 @@ class Widget: public WidgetTreeNode
                 {
                     return m_roiOpt.has_value();
                 }
+
+                decltype(auto) value(this auto && self)
+                {
+                    return self.m_roiOpt.value();
+                }
+
+                Widget::ROI value_or(Widget::ROI r) const
+                {
+                    return m_roiOpt.value_or(r);
+                }
         };
 
         struct ROIMap final
         {
-            int dstX;
-            int dstY;
+            int dstX = 0;
+            int dstY = 0;
 
-            Widget::ROIOpt roiOpt;
-
-            ROIMap crop(const Widget      *) const;
-            ROIMap crop(const Widget::ROI &) const;
+            Widget::ROIOpt roiOpt = std::nullopt;
 
             bool empty() const
             {
-                return roiOpt.has_value() && roiOpt->empty();
+                return roiOpt.has_value() && roiOpt->empty(); // nullopt means full region
             }
+
+            void crop(const Widget      *);
+            void crop(const Widget::ROI &);
+
+            ROIMap create(const Widget      *) const;
+            ROIMap create(const Widget::ROI &) const;
         };
 
     private:

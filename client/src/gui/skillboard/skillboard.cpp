@@ -510,7 +510,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
     }
 
     bool captureEvent = false;
-    if(auto pageROI = Widget::makeROI(getPageRectange()); roiOpt->crop(pageROI)){
+    if(const auto pageROI = roiOpt->create(Widget::makeROI(getPageRectange())); !pageROI.empty()){
         const auto loc = SDLDeviceHelper::getMousePLoc();
         captureEvent = (loc.x >= 0 && loc.y >= 0) && pageROI.in(loc.x - remapXDiff, loc.y - remapYDiff);
 

@@ -161,21 +161,22 @@ bool Widget::ROI::in(int argX, int argY) const
     return mathf::pointInRectangle<int>(argX, argY, x, y, w, h);
 }
 
-bool Widget::ROI::crop(Widget::ROI &r) const
+bool Widget::ROI::overlap(const Widget::ROI &r) const
 {
-    if(r.empty()){
-        return false;
-    }
-
-    const auto doneX = mathf::cropSegment<int>(r.x, r.w, this->x, this->w);
-    const auto doneY = mathf::cropSegment<int>(r.y, r.h, this->y, this->h);
-
-    return doneX && doneY;
+    return mathf::rectangleOverlap(x, y, w, h, r.x, r.y, r.w, r.h);
 }
 
-bool Widget::ROI::overlap(const Widget::ROI &rhs) const
+void Widget::ROI::crop(const Widget::ROI &r)
 {
-    return mathf::rectangleOverlap(x, y, w, h, rhs.x, rhs.y, rhs.w, rhs.h);
+    mathf::cropSegment<int>(this->x, this->w, r.x, r.w);
+    mathf::cropSegment<int>(this->y, this->h, r.y, r.h);
+}
+
+Widget::ROI Widget::ROI::create(const Widget::ROI &r) const
+{
+    auto res = *this;
+    res.crop(r);
+    return res;
 }
 
 Widget::ROIOpt::ROIOpt(int argX, int argY, int argW, int argH)
@@ -186,40 +187,88 @@ Widget::ROIOpt::ROIOpt(const Widget::ROI &roi)
     : m_roiOpt(roi)
 {}
 
-Widget::ROI Widget::ROIOpt::evalROI(const Widget *widget) const
+void Widget::ROIOpt::crop(const Widget *widget)
 {
     fflassert(widget);
-    return evalROI(widget->roi());
+    crop(widget->roi());
 }
 
-Widget::ROI Widget::ROIOpt::evalROI(const Widget::ROI &roi) const
+void Widget::ROIOpt::crop(const Widget::ROI &r)
 {
     if(m_roiOpt.has_value()){
-        auto currROI = m_roiOpt.value();
-        roi.crop(currROI);
-        return currROI;
+        m_roiOpt->crop(r);
     }
     else{
-        return roi;
+        m_roiOpt = r;
     }
 }
 
-Widget::ROIMap Widget::ROIMap::crop(const Widget *widget) const
+void Widget::ROIOpt::crop(const Widget::ROIOpt &r)
 {
-    fflassert(widget);
-    return crop(widget->roi());
+    if(r.has_value()){
+        if(m_roiOpt.has_value()){
+            m_roiOpt->crop(r.m_roiOpt.value());
+        }
+        else{
+            m_roiOpt = r.m_roiOpt;
+        }
+    }
 }
 
-Widget::ROIMap Widget::ROIMap::crop(const Widget::ROI &roi) const
+Widget::ROI Widget::ROIOpt::create(const Widget *widget) const
 {
-    const auto r = this->roiOpt.evalROI(roi);
-    return Widget::ROIMap
-    {
-        .dstX = this->dstX + (r.x - this->roiOpt.get([](const auto &r){ return r.x; }, 0)),
-        .dstY = this->dstY + (r.y - this->roiOpt.get([](const auto &r){ return r.y; }, 0)),
+    fflassert(widget);
+    return create(widget->roi());
+}
 
-        .roiOpt = r,
-    };
+Widget::ROI Widget::ROIOpt::create(const Widget::ROI &r) const
+{
+    if(m_roiOpt.has_value()){
+        return m_roiOpt->create(r);
+    }
+    else{
+        return r;
+    }
+}
+
+Widget::ROIOpt Widget::ROIOpt::create(const Widget::ROIOpt &r) const
+{
+    if(r.has_value()){
+        return create(r.value());
+    }
+    else{
+        return *this;
+    }
+}
+
+void Widget::ROIMap::crop(const Widget *widget)
+{
+    fflassert(widget);
+    crop(widget->roi());
+}
+
+void Widget::ROIMap::crop(const Widget::ROI &r)
+{
+    const auto oldX = this->roiOpt.get([](const auto &r){ return r.x; }, 0);
+    const auto oldY = this->roiOpt.get([](const auto &r){ return r.y; }, 0);
+
+    this->roiOpt.crop(r);
+
+    this->dstX += (this->roiOpt.value().x - oldX);
+    this->dstY += (this->roiOpt.value().y - oldY);
+}
+
+Widget::ROIMap Widget::ROIMap::create(const Widget *widget) const
+{
+    fflassert(widget);
+    return create(widget->roi());
+}
+
+Widget::ROIMap Widget::ROIMap::create(const Widget::ROI &r) const
+{
+    auto res = *this;
+    res.crop(r);
+    return res;
 }
 
 dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widget, const void *arg)
@@ -494,13 +543,13 @@ void Widget::drawAsChildEx(
         int    gfxDx,
         int    gfxDy,
 
-        const Widget::ROIMap &m) const
+        const Widget::ROIMap &r) const
 {
     if(!gfxWidget){
         return;
     }
 
-    auto roim = m.crop(this);
+    auto roim = r.create(this);
     if(roim.empty()){
         return;
     }
@@ -781,7 +830,7 @@ int Widget::rdy(const Widget *widget) const
 
 std::optional<Widget::ROI> Widget::cropDrawROI(int &dstX, int &dstY, const Widget::ROIOpt &roi) const
 {
-    const auto srcROI = roi.evalROI(this);
+    const auto srcROI = roi.create(this);
     if(srcROI.empty()){
         return std::nullopt;
     }
@@ -797,7 +846,7 @@ std::optional<Widget::ROI> Widget::cropDrawROI(int &dstX, int &dstY, const Widge
 
 std::optional<Widget::ROIMap> Widget::cropDrawROI(const Widget::ROIMap &roi) const
 {
-    const auto srcROI = roi.roiOpt.evalROI(this);
+    const auto srcROI = roi.roiOpt.create(this);
     if(srcROI.empty()){
         return std::nullopt;
     }
