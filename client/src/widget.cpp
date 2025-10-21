@@ -708,14 +708,19 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDs
     return took;
 }
 
-void Widget::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void Widget::drawEx(const ROIMap &m) const
 {
-    foreachChild([dstX, dstY, &roi, this](const Widget *widget, bool)
+    foreachChild([&m, this](const Widget *widget, bool)
     {
         if(widget->show()){
-            drawChildEx(widget, dstX, dstY, roi);
+            drawChildEx(widget, m.x, m.y, m.ro);
         }
     });
+}
+
+void Widget::drawEx(int dstX, int dstY, const Widget::ROIOpt &roiOpt) const
+{
+    drawEx({.x = dstX, .y = dstY, .ro = roiOpt});
 }
 
 Widget *Widget::setAfterResize(std::function<void(Widget *)> argHandler)

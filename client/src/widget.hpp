@@ -429,7 +429,10 @@ class Widget: public WidgetTreeNode
         virtual bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &);
 
     public:
-        virtual void drawEx     (                int, int, const Widget::ROIOpt &               ) const      ;
+        virtual void drawEx(const ROIMap &) const;
+        virtual void drawEx(int, int, const Widget::ROIOpt &) const; // remove later
+
+    public:
         virtual void drawChildEx(const Widget *, int, int, const Widget::ROIOpt &               ) const final;
         virtual void drawAt     (        dir8_t, int, int, const Widget::ROIOpt & = std::nullopt) const final;
 
