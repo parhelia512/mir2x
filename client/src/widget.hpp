@@ -1,6 +1,3 @@
-// class Widget has no resize(), only setSize()
-// widget has no box concept like gtk, it can't calculate size in parent
-
 #pragma once
 #include <any>
 #include <list>
