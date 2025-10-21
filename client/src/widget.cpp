@@ -529,7 +529,7 @@ void Widget::drawChildEx(const Widget *child, int dstX, int dstY, const Widget::
 
 void Widget::drawAt(dir8_t dstDir, int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    auto m = ROIMap(dstDir, dstX, dstY, roi).create(this);
+    auto m = ROIMap(dstDir, dstX, dstY, roi.value_or(this->roi())).create(this);
     if(m.empty()){
         return;
     }
