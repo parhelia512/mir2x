@@ -257,8 +257,8 @@ class Widget: public WidgetTreeNode
                 return ro.has_value() && ro->empty(); // nullopt means full region
             }
 
-            void crop(const Widget::ROI &);
-            ROIMap create(const Widget::ROI &) const;
+            void   crop  (const Widget::ROI &, const std::optional<Widget::ROI> & = std::nullopt);
+            ROIMap create(const Widget::ROI &, const std::optional<Widget::ROI> & = std::nullopt) const;
         };
 
     private:
@@ -386,7 +386,10 @@ class Widget: public WidgetTreeNode
         Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, int, int, const Widget::ROIOpt &)>);
 
         virtual bool processEvent      (const SDL_Event &, bool, int, int, const Widget::ROIOpt &) final;
-        virtual bool processParentEvent(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) final;
+
+
+        virtual bool processParentEvent(const SDL_Event &, bool, const Widget::ROIMap &);
+        virtual bool processParentEvent(const SDL_Event &, bool, int, int, const Widget::ROIOpt &); // TODO delete later
 
         virtual bool processRootEvent(const SDL_Event &, bool, int = 0, int = 0) final;
 
@@ -426,6 +429,7 @@ class Widget: public WidgetTreeNode
         //     2. won't alter any internal state, directly bypass the event
         //     3. parent needs to change focus outside, not inside widget itself
         //
+        virtual bool processEventDefault(const SDL_Event &, bool , const Widget::ROIMap &);
         virtual bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &);
 
     public:

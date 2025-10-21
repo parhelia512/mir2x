@@ -229,7 +229,7 @@ Widget::ROIOpt Widget::ROIOpt::create(const Widget::ROIOpt &r) const
     }
 }
 
-void Widget::ROIMap::crop(const Widget::ROI &r)
+void Widget::ROIMap::crop(const Widget::ROI &r, const std::optional<Widget::ROI> &roiOpt)
 {
     if(this->ro.has_value()){
         if(this->dir != DIR_UPLEFT){
@@ -254,15 +254,20 @@ void Widget::ROIMap::crop(const Widget::ROI &r)
         this->y += r.y;
     }
 
+    else if(roiOpt.has_value()){
+        this->ro.crop(roiOpt.value());
+        this->crop(r);
+    }
+
     else{
         throw fflerror("invalid ROIMap state");
     }
 }
 
-Widget::ROIMap Widget::ROIMap::create(const Widget::ROI &r) const
+Widget::ROIMap Widget::ROIMap::create(const Widget::ROI &r, const std::optional<Widget::ROI> &roiOpt) const
 {
     auto res = *this;
-    res.crop(r);
+    res.crop(r, roiOpt);
     return res;
 }
 
@@ -631,14 +636,14 @@ bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int
     else                     { return   processEventDefault(      event, valid, startDstX, startDstY, roi); }
 }
 
-// {startDstX, startDstY, roi} is based on parent widget
+// roim is based on parent widget
 // calculate sub-roi for current child widget
-bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &ro)
+bool Widget::processParentEvent(const SDL_Event &event, bool valid, const Widget::ROIMap &roim)
 {
     const auto par = parent();
     fflassert(par);
 
-    auto m = ROIMap{.x = startDstX, .y = startDstY, .ro = ro.value_or(par->roi())}.create(this->roi());
+    auto m = roim.create(this->roi(), this->roi());
     if(m.empty()){
         return false;
     }
@@ -659,7 +664,12 @@ bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDst
                 h())){
         return false;
     }
-    return processEvent(event, valid, startDstX, startDstY, m.ro);
+    return processEvent(event, valid, m.x, m.y, m.ro);
+}
+
+bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &ro)
+{
+    return processParentEvent(event, valid, {.x = startDstX, .y = startDstY, .ro = ro});
 }
 
 bool Widget::processRootEvent(const SDL_Event &event, bool valid, int rootDstX, int rootDstY)
@@ -668,16 +678,16 @@ bool Widget::processRootEvent(const SDL_Event &event, bool valid, int rootDstX, 
     return processEvent(event, valid, dx() + rootDstX, dy() + rootDstY, std::nullopt);
 }
 
-bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool Widget::processEventDefault(const SDL_Event &event, bool valid, const Widget::ROIMap &m)
 {
     bool took = false;
     uint64_t focusedWidgetID = 0;
 
-    foreachChild(false, [&event, valid, &took, &focusedWidgetID, startDstX, startDstY, &roi, this](Widget *widget, bool)
+    foreachChild(false, [&event, valid, &took, &focusedWidgetID, &m, this](Widget *widget, bool)
     {
         if(widget->show()){
             const bool validEvent = valid && !took;
-            const bool takenEvent = widget->processParentEvent(event, validEvent, startDstX, startDstY, roi);
+            const bool takenEvent = widget->processParentEvent(event, validEvent, m);
 
             if(!validEvent && takenEvent){
                 throw fflerror("widget %s takes invalid event", widget->name());
@@ -706,6 +716,11 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDs
     }
 
     return took;
+}
+
+bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+{
+    return processEventDefault(event, valid, ROIMap{.x = startDstX, .y = startDstY, .ro = roi});
 }
 
 void Widget::drawEx(const ROIMap &m) const
