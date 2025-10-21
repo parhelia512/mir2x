@@ -441,7 +441,7 @@ class Widget: public WidgetTreeNode
                 int,
                 const Widget::ROIMap &) const final;    // roiMap of calling widget
 
-        virtual void drawRoot(int = 0, int = 0) const final;
+        virtual void drawRoot(const Widget::ROIMap &) const final;
 
     public:
         Widget *setAfterResize(std::function<void(Widget *)>);

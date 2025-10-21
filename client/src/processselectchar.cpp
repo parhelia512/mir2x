@@ -114,7 +114,7 @@ void ProcessSelectChar::draw() const
         g_sdlDevice->drawTexture(texPtr, 0, 0);
     }
 
-    m_canvas.drawRoot();
+    m_canvas.drawRoot({});
 
     if(hasChar()){
         drawChar();
@@ -122,7 +122,7 @@ void ProcessSelectChar::draw() const
     }
 
     if(m_deleteInput.show()){
-        m_deleteInput.drawRoot();
+        m_deleteInput.drawRoot({});
     }
 }
 

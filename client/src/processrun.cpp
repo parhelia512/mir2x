@@ -515,7 +515,7 @@ void ProcessRun::draw() const
         g_sdlDevice->fillRectangle(colorf::RGBA(128, 0, 0, 64), 0, 0, winW, winH);
     }
 
-    m_guiManager.drawRoot();
+    m_guiManager.drawRoot({});
     if(const auto selectedItemID = getMyHero()->getInvPack().getGrabbedItem().itemID){
         if(const auto &ir = DBCOM_ITEMRECORD(selectedItemID)){
             if(auto texPtr = g_itemDB->retrieve(ir.pkgGfxID | 0X01000000)){
@@ -2143,8 +2143,8 @@ void ProcessRun::drawMouseLocation() const
     LabelBoard locPixelBoard(DIR_UPLEFT, 10, 10, locPixel.c_str(), 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0X00));
     LabelBoard locGridBoard (DIR_UPLEFT, 10, 30, locGrid .c_str(), 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0X00));
 
-    locPixelBoard.drawRoot();
-    locGridBoard .drawRoot();
+    locPixelBoard.drawRoot({});
+    locGridBoard .drawRoot({});
 }
 
 void ProcessRun::drawFPS() const
@@ -2157,7 +2157,7 @@ void ProcessRun::drawFPS() const
 
     g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(200), fpsBoard.dx() - 1, fpsBoard.dy(), fpsBoard.w() + 1, fpsBoard.h());
     g_sdlDevice->drawRectangle(colorf::BLUE  + colorf::A_SHF(255), fpsBoard.dx() - 1, fpsBoard.dy(), fpsBoard.w() + 1, fpsBoard.h());
-    fpsBoard.drawRoot();
+    fpsBoard.drawRoot({});
 }
 
 void ProcessRun::checkMagicSpell(const SDL_Event &event)

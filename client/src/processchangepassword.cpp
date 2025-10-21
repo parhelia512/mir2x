@@ -239,10 +239,10 @@ void ProcessChangePassword::draw() const
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000003), 0, 75);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000004), 0, 75, 0, 0, 800, 450);
 
-    m_boxID.drawRoot();
-    m_boxPwd.drawRoot();
-    m_boxNewPwd.drawRoot();
-    m_boxNewPwdConfirm.drawRoot();
+    m_boxID.drawRoot({});
+    m_boxPwd.drawRoot({});
+    m_boxNewPwd.drawRoot({});
+    m_boxNewPwdConfirm.drawRoot({});
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X0A000001), m_x, m_y);
 
     const auto fnDrawInput = [](int x, int y, int dx, auto &title, auto &check)
@@ -265,12 +265,12 @@ void ProcessChangePassword::draw() const
     fnDrawInput(m_x + 129, m_y + 173, 10, m_LBNewPwd       , m_LBCheckNewPwd       );
     fnDrawInput(m_x + 129, m_y + 220, 10, m_LBNewPwdConfirm, m_LBCheckNewPwdConfirm);
 
-    m_submit.drawRoot();
-    m_quit.drawRoot();
+    m_submit.drawRoot({});
+    m_quit.drawRoot({});
 
     if(hasInfo()){
         g_sdlDevice->fillRectangle(colorf::BLUE + colorf::A_SHF(32), 0, 75, 800, 450);
-        m_infoStr.drawRoot();
+        m_infoStr.drawRoot({});
     }
 }
 

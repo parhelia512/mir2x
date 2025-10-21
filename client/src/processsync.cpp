@@ -121,5 +121,5 @@ void ProcessSync::update(double fUpdateTime)
 void ProcessSync::draw() const
 {
     const SDLDeviceHelper::RenderNewFrame newFrame;
-    m_canvas.drawRoot();
+    m_canvas.drawRoot({});
 }

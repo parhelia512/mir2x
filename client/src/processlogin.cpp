@@ -192,7 +192,7 @@ void ProcessLogin::draw() const
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000004),   0, 465);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000011), 103, 536);
 
-    m_canvas.drawRoot();
+    m_canvas.drawRoot({});
 }
 
 void ProcessLogin::processEvent(const SDL_Event &event)

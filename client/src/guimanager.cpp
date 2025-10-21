@@ -162,16 +162,16 @@ GUIManager::GUIManager(ProcessRun *argProc)
 
 void GUIManager::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    m_miniMapBoard.drawRoot();
-    m_NPCChatBoard.drawRoot();
-    m_controlBoard.drawRoot();
+    m_miniMapBoard.drawRoot({});
+    m_NPCChatBoard.drawRoot({});
+    m_controlBoard.drawRoot({});
 
     drawChildEx(&m_purchaseBoard, dstX, dstY, roi);
 
     const auto [w, h] = g_sdlDevice->getRendererSize();
     Widget::drawEx(0, 0, {0, 0, w, h});
     if(!g_clientArgParser->disableIME){
-        g_imeBoard->drawRoot();
+        g_imeBoard->drawRoot({});
     }
 }
 

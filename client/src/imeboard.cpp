@@ -386,7 +386,7 @@ void IMEBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
             m_font,
             m_fontSize,
             m_fontStyle,
-            m_fontColor).drawRoot();
+            m_fontColor).drawRoot({});
 
     g_sdlDevice->drawLine(m_separatorColor,
             dstX      , dstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2,

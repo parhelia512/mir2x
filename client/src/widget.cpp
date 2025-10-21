@@ -568,10 +568,10 @@ void Widget::drawAsChildEx(
     gfxWidget->drawEx(r.x, r.y, r.ro);
 }
 
-void Widget::drawRoot(int rootDstX, int rootDstY) const
+void Widget::drawRoot(const Widget::ROIMap &m) const
 {
     fflassert(!parent());
-    drawEx(dx() + rootDstX, dy() + rootDstY, std::nullopt);
+    drawEx(dx() + m.x, dy() + m.y, std::nullopt);
 }
 
 int Widget::sizeOff(int size, int index)
