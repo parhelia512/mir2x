@@ -187,12 +187,6 @@ Widget::ROIOpt::ROIOpt(const Widget::ROI &roi)
     : m_roiOpt(roi)
 {}
 
-void Widget::ROIOpt::crop(const Widget *widget)
-{
-    fflassert(widget);
-    crop(widget->roi());
-}
-
 void Widget::ROIOpt::crop(const Widget::ROI &r)
 {
     if(m_roiOpt.has_value()){
@@ -215,12 +209,6 @@ void Widget::ROIOpt::crop(const Widget::ROIOpt &r)
     }
 }
 
-Widget::ROI Widget::ROIOpt::create(const Widget *widget) const
-{
-    fflassert(widget);
-    return create(widget->roi());
-}
-
 Widget::ROI Widget::ROIOpt::create(const Widget::ROI &r) const
 {
     if(m_roiOpt.has_value()){
@@ -239,12 +227,6 @@ Widget::ROIOpt Widget::ROIOpt::create(const Widget::ROIOpt &r) const
     else{
         return *this;
     }
-}
-
-void Widget::ROIMap::crop(const Widget *widget)
-{
-    fflassert(widget);
-    crop(widget->roi());
 }
 
 void Widget::ROIMap::crop(const Widget::ROI &r)
@@ -275,12 +257,6 @@ void Widget::ROIMap::crop(const Widget::ROI &r)
     else{
         throw fflerror("invalid ROIMap state");
     }
-}
-
-Widget::ROIMap Widget::ROIMap::create(const Widget *widget) const
-{
-    fflassert(widget);
-    return create(widget->roi());
 }
 
 Widget::ROIMap Widget::ROIMap::create(const Widget::ROI &r) const
@@ -529,7 +505,7 @@ void Widget::drawChildEx(const Widget *child, int dstX, int dstY, const Widget::
 
 void Widget::drawAt(dir8_t dstDir, int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    auto m = ROIMap(dstDir, dstX, dstY, roi.value_or(this->roi())).create(this);
+    auto m = ROIMap(dstDir, dstX, dstY, roi.value_or(this->roi())).create(this->roi());
     if(m.empty()){
         return;
     }
@@ -565,7 +541,7 @@ void Widget::drawAsChildEx(
         return;
     }
 
-    auto r = m.create(this);
+    auto r = m.create(this->roi());
 
     if(r.empty()){
         return;
@@ -847,7 +823,7 @@ int Widget::rdy(const Widget *widget) const
 
 std::optional<Widget::ROI> Widget::cropDrawROI(int &dstX, int &dstY, const Widget::ROIOpt &roi) const
 {
-    const auto srcROI = roi.create(this);
+    const auto srcROI = roi.create(this->roi());
     if(srcROI.empty()){
         return std::nullopt;
     }
@@ -863,7 +839,7 @@ std::optional<Widget::ROI> Widget::cropDrawROI(int &dstX, int &dstY, const Widge
 
 std::optional<Widget::ROIMap> Widget::cropDrawROI(const Widget::ROIMap &roi) const
 {
-    const auto srcROI = roi.ro.create(this);
+    const auto srcROI = roi.ro.create(this->roi());
     if(srcROI.empty()){
         return std::nullopt;
     }

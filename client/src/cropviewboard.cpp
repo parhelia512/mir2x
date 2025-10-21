@@ -66,7 +66,7 @@ void CropViewBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
         return;
     }
 
-    const auto srcROI = roi.create(this);
+    const auto srcROI = roi.create(this->roi());
     if(srcROI.empty()){
         return;
     }
@@ -110,7 +110,7 @@ bool CropViewBoard::processEventDefault(const SDL_Event &event, bool valid, int 
         return false;
     }
 
-    const auto srcROI = roi.create(this);
+    const auto srcROI = roi.create(this->roi());
     if(srcROI.empty()){
         return false;
     }

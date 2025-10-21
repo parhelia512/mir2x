@@ -215,11 +215,9 @@ class Widget: public WidgetTreeNode
                 }
 
             public:
-                void crop(const Widget         *);
                 void crop(const Widget::ROI    &);
                 void crop(const Widget::ROIOpt &);
 
-                Widget::ROI    create(const Widget *        ) const;
                 Widget::ROI    create(const Widget::ROI    &) const;
                 Widget::ROIOpt create(const Widget::ROIOpt &) const;
 
@@ -259,10 +257,7 @@ class Widget: public WidgetTreeNode
                 return ro.has_value() && ro->empty(); // nullopt means full region
             }
 
-            void crop(const Widget      *);
             void crop(const Widget::ROI &);
-
-            ROIMap create(const Widget      *) const;
             ROIMap create(const Widget::ROI &) const;
         };
 
