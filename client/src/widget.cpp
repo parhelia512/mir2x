@@ -529,30 +529,27 @@ void Widget::drawChildEx(const Widget *child, int dstX, int dstY, const Widget::
 
 void Widget::drawAt(dir8_t dstDir, int dstX, int dstY, const Widget::ROIOpt &roi) const
 {
-    auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    auto m = ROIMap(dstDir, dstX, dstY, roi).create(this);
+    if(m.empty()){
         return;
     }
 
-    dstX -= xSizeOff(dstDir, w());
-    dstY -= ySizeOff(dstDir, h());
-
     if(!mathf::cropROI(
-                &roiOpt->x, &roiOpt->y,
-                &roiOpt->w, &roiOpt->h,
+                &m.ro->x, &m.ro->y,
+                &m.ro->w, &m.ro->h,
 
-                &dstX,
-                &dstY,
+                &m.x,
+                &m.y,
 
                 w(),
                 h(),
 
-                roiOpt->x, roiOpt->y,
-                roiOpt->w, roiOpt->h)){
+                m.ro->x, m.ro->y,
+                m.ro->w, m.ro->h)){
         return;
     }
 
-    drawEx(dstX, dstY, roiOpt.value());
+    drawEx(m.x, m.y, m.ro);
 }
 
 void Widget::drawAsChildEx(
