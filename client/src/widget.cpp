@@ -633,22 +633,22 @@ bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int
 
 // {startDstX, startDstY, roi} is based on parent widget
 // calculate sub-roi for current child widget
-bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &ro)
 {
     const auto par = parent();
     fflassert(par);
 
-    auto roiOpt = par->cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    auto m = ROIMap{.x = startDstX, .y = startDstY, .ro = ro.value_or(par->roi())}.create(this->roi());
+    if(m.empty()){
         return false;
     }
 
     if(!mathf::cropChildROI(
-                &roiOpt->x, &roiOpt->y,
-                &roiOpt->w, &roiOpt->h,
+                std::addressof(m.ro->x), std::addressof(m.ro->y),
+                std::addressof(m.ro->w), std::addressof(m.ro->h),
 
-                &startDstX,
-                &startDstY,
+                std::addressof(m.x),
+                std::addressof(m.y),
 
                 par->w(),
                 par->h(),
@@ -659,7 +659,7 @@ bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDst
                 h())){
         return false;
     }
-    return processEvent(event, valid, startDstX, startDstY, roiOpt.value());
+    return processEvent(event, valid, startDstX, startDstY, m.ro);
 }
 
 bool Widget::processRootEvent(const SDL_Event &event, bool valid, int rootDstX, int rootDstY)
