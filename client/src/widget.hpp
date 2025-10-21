@@ -64,6 +64,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
             bool    autoDelete = false;
         };
 
+    protected:
         using ChildElement = WADPair;
 
     private:
@@ -297,7 +298,6 @@ class Widget: public WidgetTreeNode
         static bool          evalBool     (const Widget::VarBool      &, const Widget *, const void * = nullptr);
         static SDL_BlendMode evalBlendMode(const Widget::VarBlendMode &, const Widget *, const void * = nullptr);
 
-
     public:
         static int evalSizeOpt(const Widget::VarSizeOpt &, const Widget *,               const auto &);
         static int evalSizeOpt(const Widget::VarSizeOpt &, const Widget *, const void *, const auto &);
@@ -335,7 +335,7 @@ class Widget: public WidgetTreeNode
         std::pair<Widget::VarBool, bool> m_active {true, false};
 
     protected:
-        bool m_focus  = false;
+        bool m_focus = false;
 
     protected:
         std::any m_data;
