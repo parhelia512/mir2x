@@ -19,18 +19,16 @@ CropViewBoard::CropViewBoard(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          0,
-          0,
-
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+      {{
+          .dir = std::move(argDir),
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_gfxWidgetGetter(std::move(argWidgetGetter))
 
@@ -55,7 +53,7 @@ CropViewBoard::CropViewBoard(
     });
 }
 
-void CropViewBoard::draw(Widget::ROIMap) const
+void CropViewBoard::draw(Widget::ROIMap m) const
 {
     if(!show()){
         return;
@@ -66,15 +64,16 @@ void CropViewBoard::draw(Widget::ROIMap) const
         return;
     }
 
-    const auto srcROI = roi.create(this->roi());
-    if(srcROI.empty()){
+    if(!m.crop(roi())){
         return;
     }
 
-    int srcX = srcROI.x;
-    int srcY = srcROI.y;
-    int srcW = srcROI.w;
-    int srcH = srcROI.h;
+    int dstX = m.x;
+    int dstY = m.y;
+    int srcX = m.ro->x;
+    int srcY = m.ro->y;
+    int srcW = m.ro->w;
+    int srcH = m.ro->h;
 
     if(!mathf::cropViewROI(
                 &srcX, &srcY,
@@ -96,10 +95,10 @@ void CropViewBoard::draw(Widget::ROIMap) const
                 gfxPtr->h())){
         return;
     }
-    gfxPtr->draw(dstX, dstY, {srcX, srcY, srcW, srcH});
+    gfxPtr->draw({.x{dstX}, .y{dstY}, .ro{srcX, srcY, srcW, srcH}});
 }
 
-bool CropViewBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool CropViewBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
     if(!show()){
         return false;
@@ -110,22 +109,23 @@ bool CropViewBoard::processEventDefault(const SDL_Event &event, bool valid, int 
         return false;
     }
 
-    const auto srcROI = roi.create(this->roi());
-    if(srcROI.empty()){
-        return false;
+    if(!m.crop(roi())){
+        return;
     }
 
-    int srcX = srcROI.x;
-    int srcY = srcROI.y;
-    int srcW = srcROI.w;
-    int srcH = srcROI.h;
+    int dstX = m.x;
+    int dstY = m.y;
+    int srcX = m.ro->x;
+    int srcY = m.ro->y;
+    int srcW = m.ro->w;
+    int srcH = m.ro->h;
 
     if(!mathf::cropViewROI(
                 &srcX, &srcY,
                 &srcW, &srcH,
 
-                &startDstX,
-                &startDstY,
+                &dstX,
+                &dstY,
 
                 margin(2),
                 margin(0),
@@ -143,5 +143,5 @@ bool CropViewBoard::processEventDefault(const SDL_Event &event, bool valid, int 
         return false;
     }
 
-    return gfxPtr->processEvent(event, valid, startDstX, startDstY, {srcX, srcY, srcW, srcH});
+    return gfxPtr->processEvent(event, valid, {.x{dstX}, .y{dstY}, .ro{srcX, srcY, srcW, srcH}});
 }
