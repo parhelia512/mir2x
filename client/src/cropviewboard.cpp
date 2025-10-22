@@ -110,7 +110,7 @@ bool CropViewBoard::processEventDefault(const SDL_Event &event, bool valid, Widg
     }
 
     if(!m.crop(roi())){
-        return;
+        return false;
     }
 
     int dstX = m.x;
