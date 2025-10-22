@@ -624,36 +624,36 @@ void Widget::update(double fUpdateTime)
     });
 }
 
-Widget *Widget::setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, int, int, const Widget::ROIOpt &)> argHandler)
+Widget *Widget::setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, const Widget::ROIMap &)> argHandler)
 {
     m_processEventHandler = std::move(argHandler);
     return this;
 }
 
-bool Widget::processEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool Widget::processEvent(const SDL_Event &event, bool valid, const Widget::ROIMap &m)
 {
-    if(m_processEventHandler){ return m_processEventHandler(this, event, valid, startDstX, startDstY, roi); }
-    else                     { return   processEventDefault(      event, valid, startDstX, startDstY, roi); }
+    if(m_processEventHandler){ return m_processEventHandler(this, event, valid, m); }
+    else                     { return   processEventDefault(      event, valid, m); }
 }
 
-// roim is based on parent widget
+// m is based on parent widget
 // calculate sub-roi for current child widget
-bool Widget::processParentEvent(const SDL_Event &event, bool valid, const Widget::ROIMap &roim)
+bool Widget::processParentEvent(const SDL_Event &event, bool valid, const Widget::ROIMap &m)
 {
     const auto par = parent();
     fflassert(par);
 
-    auto m = roim.create(this->roi(), this->roi());
-    if(m.empty()){
+    auto cm = m.create(this->roi(), par->roi());
+    if(cm.empty()){
         return false;
     }
 
     if(!mathf::cropChildROI(
-                std::addressof(m.ro->x), std::addressof(m.ro->y),
-                std::addressof(m.ro->w), std::addressof(m.ro->h),
+                std::addressof(cm.ro->x), std::addressof(cm.ro->y),
+                std::addressof(cm.ro->w), std::addressof(cm.ro->h),
 
-                std::addressof(m.x),
-                std::addressof(m.y),
+                std::addressof(cm.x),
+                std::addressof(cm.y),
 
                 par->w(),
                 par->h(),
@@ -664,18 +664,13 @@ bool Widget::processParentEvent(const SDL_Event &event, bool valid, const Widget
                 h())){
         return false;
     }
-    return processEvent(event, valid, m.x, m.y, m.ro);
+    return processEvent(event, valid, cm);
 }
 
-bool Widget::processParentEvent(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &ro)
-{
-    return processParentEvent(event, valid, {.x = startDstX, .y = startDstY, .ro = ro});
-}
-
-bool Widget::processRootEvent(const SDL_Event &event, bool valid, int rootDstX, int rootDstY)
+bool Widget::processRootEvent(const SDL_Event &event, bool valid, const Widget::ROIMap &m)
 {
     fflassert(!parent());
-    return processEvent(event, valid, dx() + rootDstX, dy() + rootDstY, std::nullopt);
+    return processEvent(event, valid, {.dir = m.dir, .x = m.x + dx(), .y = m.y + dy(), .ro = m.ro});
 }
 
 bool Widget::processEventDefault(const SDL_Event &event, bool valid, const Widget::ROIMap &m)
@@ -716,11 +711,6 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, const Widge
     }
 
     return took;
-}
-
-bool Widget::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
-{
-    return processEventDefault(event, valid, ROIMap{.x = startDstX, .y = startDstY, .ro = roi});
 }
 
 void Widget::drawEx(const ROIMap &m) const

@@ -355,7 +355,7 @@ class Widget: public WidgetTreeNode
 
     private:
         std::function<void(Widget *)> m_afterResizeHandler;
-        std::function<bool(Widget *, const SDL_Event &, bool, int, int, const Widget::ROIOpt &)> m_processEventHandler;
+        std::function<bool(Widget *, const SDL_Event &, bool, const Widget::ROIMap &)> m_processEventHandler;
 
     public:
         explicit Widget(Widget::InitArgs);
@@ -383,15 +383,11 @@ class Widget: public WidgetTreeNode
         virtual void update(double);
 
     public:
-        Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, int, int, const Widget::ROIOpt &)>);
+        Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, const Widget::ROIMap &)>);
 
-        virtual bool processEvent      (const SDL_Event &, bool, int, int, const Widget::ROIOpt &) final;
-
-
+        virtual bool processEvent      (const SDL_Event &, bool, const Widget::ROIMap &) final;
         virtual bool processParentEvent(const SDL_Event &, bool, const Widget::ROIMap &);
-        virtual bool processParentEvent(const SDL_Event &, bool, int, int, const Widget::ROIOpt &); // TODO delete later
-
-        virtual bool processRootEvent(const SDL_Event &, bool, int = 0, int = 0) final;
+        virtual bool processRootEvent  (const SDL_Event &, bool, const Widget::ROIMap &) final;
 
     protected:
         // @param
@@ -429,8 +425,7 @@ class Widget: public WidgetTreeNode
         //     2. won't alter any internal state, directly bypass the event
         //     3. parent needs to change focus outside, not inside widget itself
         //
-        virtual bool processEventDefault(const SDL_Event &, bool , const Widget::ROIMap &);
-        virtual bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &);
+        virtual bool processEventDefault(const SDL_Event &, bool, const Widget::ROIMap &);
 
     public:
         virtual void drawEx(const ROIMap &) const;
