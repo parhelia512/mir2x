@@ -166,17 +166,10 @@ bool Widget::ROI::overlap(const Widget::ROI &r) const
     return mathf::rectangleOverlap(x, y, w, h, r.x, r.y, r.w, r.h);
 }
 
-void Widget::ROI::crop(const Widget::ROI &r)
+bool Widget::ROI::crop(const Widget::ROI &r)
 {
-    mathf::cropSegment<int>(this->x, this->w, r.x, r.w);
-    mathf::cropSegment<int>(this->y, this->h, r.y, r.h);
-}
-
-Widget::ROI Widget::ROI::create(const Widget::ROI &r) const
-{
-    auto res = *this;
-    res.crop(r);
-    return res;
+    /**/   mathf::cropSegment<int>(this->x, this->w, r.x, r.w);
+    return mathf::cropSegment<int>(this->y, this->h, r.y, r.h);
 }
 
 Widget::ROIOpt::ROIOpt(int argX, int argY, int argW, int argH)
@@ -187,49 +180,57 @@ Widget::ROIOpt::ROIOpt(const Widget::ROI &roi)
     : m_roiOpt(roi)
 {}
 
-void Widget::ROIOpt::crop(const Widget::ROI &r)
+bool Widget::ROIOpt::crop(const Widget::ROI &r)
 {
     if(m_roiOpt.has_value()){
-        m_roiOpt->crop(r);
+        return m_roiOpt->crop(r);
     }
     else{
         m_roiOpt = r;
+        return !m_roiOpt->empty();
     }
 }
 
-void Widget::ROIOpt::crop(const Widget::ROIOpt &r)
+bool Widget::ROIOpt::crop(const Widget::ROIOpt &r)
 {
     if(r.has_value()){
         if(m_roiOpt.has_value()){
-            m_roiOpt->crop(r.m_roiOpt.value());
+            return m_roiOpt->crop(r.m_roiOpt.value());
         }
         else{
             m_roiOpt = r.m_roiOpt;
         }
     }
+    return !m_roiOpt->empty();
 }
 
-Widget::ROI Widget::ROIOpt::create(const Widget::ROI &r) const
+bool Widget::ROIMap::empty(std::optional<Widget::ROI> roiOpt) const
 {
-    if(m_roiOpt.has_value()){
-        return m_roiOpt->create(r);
+    if(this->ro.has_value()){
+        return this->ro->empty();
+    }
+    else if(roiOpt.has_value()){
+        return roiOpt->empty();
     }
     else{
-        return r;
+        throw fflerror("invalid ROIMap state");
     }
 }
 
-Widget::ROIOpt Widget::ROIOpt::create(const Widget::ROIOpt &r) const
+bool Widget::ROIMap::in(int pixelX, int pixelY, std::optional<Widget::ROI> roiOpt) const
 {
-    if(r.has_value()){
-        return create(r.value());
+    if(this->ro.has_value()){
+        return this->ro->in(pixelX - this->x, pixelY - this->y);
+    }
+    else if(roiOpt.has_value()){
+        return roiOpt->in(pixelX - this->x, pixelY - this->y);
     }
     else{
-        return *this;
+        throw fflerror("invalid ROIMap state");
     }
 }
 
-void Widget::ROIMap::crop(const Widget::ROI &r, const std::optional<Widget::ROI> &roiOpt)
+void Widget::ROIMap::crop(const Widget::ROI &r, std::optional<Widget::ROI> roiOpt)
 {
     if(this->ro.has_value()){
         if(this->dir != DIR_UPLEFT){
@@ -245,6 +246,8 @@ void Widget::ROIMap::crop(const Widget::ROI &r, const std::optional<Widget::ROI>
 
         this->x += (this->ro->x - oldX);
         this->y += (this->ro->y - oldY);
+
+        return !this->empty();
     }
 
     else if(this->dir == DIR_UPLEFT){
@@ -252,23 +255,18 @@ void Widget::ROIMap::crop(const Widget::ROI &r, const std::optional<Widget::ROI>
 
         this->x += r.x;
         this->y += r.y;
+
+        return !this->empty();
     }
 
     else if(roiOpt.has_value()){
         this->ro.crop(roiOpt.value());
-        this->crop(r);
+        return this->crop(r);
     }
 
     else{
         throw fflerror("invalid ROIMap state");
     }
-}
-
-Widget::ROIMap Widget::ROIMap::create(const Widget::ROI &r, const std::optional<Widget::ROI> &roiOpt) const
-{
-    auto res = *this;
-    res.crop(r, roiOpt);
-    return res;
 }
 
 dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widget, const void *arg)
@@ -624,13 +622,13 @@ void Widget::update(double fUpdateTime)
     });
 }
 
-Widget *Widget::setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, const Widget::ROIMap &)> argHandler)
+Widget *Widget::setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, Widget::ROIMap)> argHandler)
 {
     m_processEventHandler = std::move(argHandler);
     return this;
 }
 
-bool Widget::processEvent(const SDL_Event &event, bool valid, const Widget::ROIMap &m)
+bool Widget::processEvent(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
     if(m_processEventHandler){ return m_processEventHandler(this, event, valid, m); }
     else                     { return   processEventDefault(      event, valid, m); }
@@ -638,22 +636,21 @@ bool Widget::processEvent(const SDL_Event &event, bool valid, const Widget::ROIM
 
 // m is based on parent widget
 // calculate sub-roi for current child widget
-bool Widget::processParentEvent(const SDL_Event &event, bool valid, const Widget::ROIMap &m)
+bool Widget::processParentEvent(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
     const auto par = parent();
     fflassert(par);
 
-    auto cm = m.create(this->roi(), par->roi());
-    if(cm.empty()){
+    if(!m.crop(this->roi(), par->roi())){
         return false;
     }
 
     if(!mathf::cropChildROI(
-                std::addressof(cm.ro->x), std::addressof(cm.ro->y),
-                std::addressof(cm.ro->w), std::addressof(cm.ro->h),
+                std::addressof(m.ro->x), std::addressof(m.ro->y),
+                std::addressof(m.ro->w), std::addressof(m.ro->h),
 
-                std::addressof(cm.x),
-                std::addressof(cm.y),
+                std::addressof(m.x),
+                std::addressof(m.y),
 
                 par->w(),
                 par->h(),
@@ -664,16 +661,20 @@ bool Widget::processParentEvent(const SDL_Event &event, bool valid, const Widget
                 h())){
         return false;
     }
-    return processEvent(event, valid, cm);
+    return processEvent(event, valid, m);
 }
 
-bool Widget::processRootEvent(const SDL_Event &event, bool valid, const Widget::ROIMap &m)
+bool Widget::processRootEvent(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
     fflassert(!parent());
-    return processEvent(event, valid, {.dir = m.dir, .x = m.x + dx(), .y = m.y + dy(), .ro = m.ro});
+
+    m.x += dx();
+    m.y += dy();
+
+    return processEvent(event, valid, m);
 }
 
-bool Widget::processEventDefault(const SDL_Event &event, bool valid, const Widget::ROIMap &m)
+bool Widget::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
     bool took = false;
     uint64_t focusedWidgetID = 0;

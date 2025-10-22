@@ -97,7 +97,7 @@ class ButtonBase: public Widget
                 bool     = false);
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
+        bool processEventDefault(const SDL_Event &, bool, const Widget::ROIMap &) override;
 
     protected:
         int offX() const { return m_offset[getState()][0]; }

@@ -187,10 +187,9 @@ class Widget: public WidgetTreeNode
 
             bool empty() const;
             bool in(int, int) const;
-            bool overlap(const Widget::ROI &) const;
 
-            void crop(const Widget::ROI &);
-            Widget::ROI create(const Widget::ROI &) const;
+            bool crop   (const Widget::ROI &);
+            bool overlap(const Widget::ROI &) const;
         };
 
         class ROIOpt final
@@ -215,11 +214,8 @@ class Widget: public WidgetTreeNode
                 }
 
             public:
-                void crop(const Widget::ROI    &);
-                void crop(const Widget::ROIOpt &);
-
-                Widget::ROI    create(const Widget::ROI    &) const;
-                Widget::ROIOpt create(const Widget::ROIOpt &) const;
+                bool crop(const Widget::ROI    &);
+                bool crop(const Widget::ROIOpt &);
 
             public:
                 auto operator -> (this auto && self)
@@ -227,6 +223,7 @@ class Widget: public WidgetTreeNode
                     return std::addressof(self.m_roiOpt.value());
                 }
 
+            public:
                 bool has_value() const
                 {
                     return m_roiOpt.has_value();
@@ -252,13 +249,9 @@ class Widget: public WidgetTreeNode
 
             Widget::ROIOpt ro = std::nullopt;
 
-            bool empty() const
-            {
-                return ro.has_value() && ro->empty(); // nullopt means full region
-            }
-
-            void   crop  (const Widget::ROI &, const std::optional<Widget::ROI> & = std::nullopt);
-            ROIMap create(const Widget::ROI &, const std::optional<Widget::ROI> & = std::nullopt) const;
+            bool empty(                     std::optional<Widget::ROI> = std::nullopt) const;
+            bool in   (int, int,            std::optional<Widget::ROI> = std::nullopt) const;
+            bool crop (const Widget::ROI &, std::optional<Widget::ROI> = std::nullopt);
         };
 
     private:
@@ -355,7 +348,7 @@ class Widget: public WidgetTreeNode
 
     private:
         std::function<void(Widget *)> m_afterResizeHandler;
-        std::function<bool(Widget *, const SDL_Event &, bool, const Widget::ROIMap &)> m_processEventHandler;
+        std::function<bool(Widget *, const SDL_Event &, bool, Widget::ROIMap)> m_processEventHandler;
 
     public:
         explicit Widget(Widget::InitArgs);
@@ -383,11 +376,11 @@ class Widget: public WidgetTreeNode
         virtual void update(double);
 
     public:
-        Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, const Widget::ROIMap &)>);
+        Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, Widget::ROIMap)>);
 
-        virtual bool processEvent      (const SDL_Event &, bool, const Widget::ROIMap &) final;
-        virtual bool processParentEvent(const SDL_Event &, bool, const Widget::ROIMap &);
-        virtual bool processRootEvent  (const SDL_Event &, bool, const Widget::ROIMap &) final;
+        virtual bool processEvent      (const SDL_Event &, bool, Widget::ROIMap) final;
+        virtual bool processParentEvent(const SDL_Event &, bool, Widget::ROIMap);
+        virtual bool processRootEvent  (const SDL_Event &, bool, Widget::ROIMap) final;
 
     protected:
         // @param
@@ -425,7 +418,7 @@ class Widget: public WidgetTreeNode
         //     2. won't alter any internal state, directly bypass the event
         //     3. parent needs to change focus outside, not inside widget itself
         //
-        virtual bool processEventDefault(const SDL_Event &, bool, const Widget::ROIMap &);
+        virtual bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap);
 
     public:
         virtual void drawEx(const ROIMap &) const;
