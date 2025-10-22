@@ -35,7 +35,7 @@ class TrigfxButton: public ButtonBase
                 bool     = false);
 
     public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        void draw(Widget::ROIMap) const override;
 
     private:
         void initButtonSize();

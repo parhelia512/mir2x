@@ -95,5 +95,5 @@ class NotifyBoard: public Widget
         void update(double) override;
 
     public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        void draw(Widget::ROIMap) const override;
 };

@@ -66,7 +66,7 @@ class ImageBoard: public Widget
                 bool     = false);
 
     public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        void draw(Widget::ROIMap) const override;
 
     public:
         void setColor(Widget::VarU32 color)

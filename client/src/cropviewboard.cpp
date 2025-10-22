@@ -55,7 +55,7 @@ CropViewBoard::CropViewBoard(
     });
 }
 
-void CropViewBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void CropViewBoard::draw(Widget::ROIMap) const
 {
     if(!show()){
         return;
@@ -96,7 +96,7 @@ void CropViewBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
                 gfxPtr->h())){
         return;
     }
-    gfxPtr->drawEx(dstX, dstY, {srcX, srcY, srcW, srcH});
+    gfxPtr->draw(dstX, dstY, {srcX, srcY, srcW, srcH});
 }
 
 bool CropViewBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)

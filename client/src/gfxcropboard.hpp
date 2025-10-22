@@ -41,18 +41,16 @@ class GfxCropBoard: public Widget
                 bool    argAutoDelete = false)
 
             : Widget
-              {
-                  std::move(argDir),
-                  std::move(argX),
-                  std::move(argY),
-                  0,
-                  0,
-
-                  {},
-
-                  argParent,
-                  argAutoDelete,
-              }
+              {{
+                  .dir = std::move(argDir),
+                  .x = std::move(argX),
+                  .y = std::move(argY),
+                  .parent
+                  {
+                      .widget = argParent,
+                      .autoDelete = argAutoDelete,
+                  }
+              }}
 
             , m_gfxWidgetGetter(std::move(argWidgetGetter))
 
@@ -78,10 +76,9 @@ class GfxCropBoard: public Widget
         }
 
     public:
-        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
+        void draw(Widget::ROIMap m) const override
         {
-            const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-            if(!roiOpt.has_value()){
+            if(!m.crop(roi())){
                 return;
             }
 
@@ -102,12 +99,12 @@ class GfxCropBoard: public Widget
                 return;
             }
 
-            int drawDstX = dstX;
-            int drawDstY = dstY;
-            int drawSrcX = roiOpt->x;
-            int drawSrcY = roiOpt->y;
-            int drawSrcW = roiOpt->w;
-            int drawSrcH = roiOpt->h;
+            int drawDstX = m.x;
+            int drawDstY = m.y;
+            int drawSrcX = m.ro->x;
+            int drawSrcY = m.ro->y;
+            int drawSrcW = m.ro->w;
+            int drawSrcH = m.ro->h;
 
             if(!mathf::cropChildROI(
                         &drawSrcX, &drawSrcY,
@@ -125,7 +122,7 @@ class GfxCropBoard: public Widget
                 return;
             }
 
-            gfxPtr->drawEx(drawDstX, drawDstY, {drawSrcX + brdCropX, drawSrcY + brdCropY, drawSrcW, drawSrcH});
+            gfxPtr->draw({.x = drawDstX, .y = drawDstY, .ro{drawSrcX + brdCropX, drawSrcY + brdCropY, drawSrcW, drawSrcH}});
         }
 
     public:

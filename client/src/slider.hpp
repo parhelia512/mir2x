@@ -52,18 +52,20 @@ class Slider: public Widget
                 bool    argAutoDelete = false)
 
             : Widget
-              {
-                  std::move(argDir),
-                  std::move(argX),
-                  std::move(argY),
-                  std::move(argW),
-                  std::move(argH),
+              ({
+                  .dir = std::move(argDir),
 
-                  {},
+                  .x = std::move(argX),
+                  .y = std::move(argY),
+                  .w = std::move(argW),
+                  .h = std::move(argH),
 
-                  argParent,
-                  argAutoDelete,
-              }
+                  .parent
+                  {
+                      .widget = argParent,
+                      .autoDelete = argAutoDelete,
+                  }
+              })
 
             , m_hslider(argHSlider)
             , m_sliderW(argSliderW)
@@ -72,7 +74,7 @@ class Slider: public Widget
         {}
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
+        bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     public:
         float getValue() const

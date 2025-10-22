@@ -66,9 +66,9 @@ class PasswordBox: public InputLine
         {}
 
     public:
-        bool processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi) override
+        bool processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m) override
         {
-            const auto result = InputLine::processEventDefault(event, valid, startDstX, startDstY, roi);
+            const auto result = InputLine::processEventDefault(event, valid, m);
             if(m_security){
                 const auto inputString = getRawString();
                 if(inputString.size() + 1 == m_passwordString.size()){

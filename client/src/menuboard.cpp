@@ -230,7 +230,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
             }
         });
 
-        if(menuWidget->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+        if(menuWidget->processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
             return self->consumeFocus(true, menuWidget);
         }
 

@@ -89,7 +89,7 @@ XMLParagraphLeaf::XMLParagraphLeaf(tinyxml2::XMLNode *pNode)
         }
     }
 
-    // pre-save for color() and bgColor(), these two get called very frequently in drawEx()
+    // pre-save for color() and bgColor(), these two get called very frequently in draw()
     // colorf::string2RGBA() is expensive and shouldn't get called in tight loop
 
     if(const auto colorStr = xmlf::findAttribute(xmlNode(), "color", true)){

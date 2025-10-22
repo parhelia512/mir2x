@@ -31,10 +31,10 @@ class ItemListBoard: public Widget
         ItemListBoard(int, int, Widget * = nullptr, bool = false);
 
     public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        void draw(Widget::ROIMap) const override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
+        bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     protected:
         std::optional<size_t> getPageGrid() const;

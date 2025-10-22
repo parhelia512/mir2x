@@ -69,9 +69,9 @@ class MarginWrapper: public Widget
         }
 
     public:
-        bool processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi) override
+        bool processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m) override
         {
-            return wrapped()->processEvent(event, valid, startDstX, startDstY, roi);
+            return wrapped()->processEvent(event, valid, m);
         }
 
     public:

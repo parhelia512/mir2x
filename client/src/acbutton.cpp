@@ -90,7 +90,7 @@ ACButton::ACButton(dir8_t dir, int x, int y, ProcessRun *proc, const std::vector
     setLabel();
 }
 
-void ACButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
+void ACButton::draw(Widget::ROIMap m) const
 {
     const auto buttonName = m_buttonNameList.at(m_currButtonName);
     auto texPtr = g_progUseDB->retrieve(m_texMap.at(buttonName));
@@ -103,7 +103,7 @@ void ACButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &) const
     SDL_SetTextureColorMod(texPtr, 255, 255, 255);
 
     g_sdlDevice->drawTexture(texPtr, dstX, dstY);
-    m_labelBoard.drawEx(dstX + w() + 5, dstY, {});
+    m_labelBoard.draw(dstX + w() + 5, dstY, {});
 
     switch(getState()){
         case BEVENT_ON:

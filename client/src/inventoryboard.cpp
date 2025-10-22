@@ -222,7 +222,7 @@ void InventoryBoard::update(double fUpdateTime)
     m_wmdAniBoard.update(fUpdateTime);
 }
 
-void InventoryBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void InventoryBoard::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -261,16 +261,16 @@ void InventoryBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
     drawGold();
     drawInvOpTitle();
 
-    drawChildEx(&m_wmdAniBoard, dstX, dstY, roiOpt.value());
-    drawChildEx(&m_slider     , dstX, dstY, roiOpt.value());
-    drawChildEx(&m_closeButton, dstX, dstY, roiOpt.value());
+    drawChild(&m_wmdAniBoard, dstX, dstY, roiOpt.value());
+    drawChild(&m_slider     , dstX, dstY, roiOpt.value());
+    drawChild(&m_closeButton, dstX, dstY, roiOpt.value());
 
     if(m_sdInvOp.invOp == INVOP_NONE){
-        drawChildEx(&m_sortButton, dstX, dstY, roiOpt.value());
+        drawChild(&m_sortButton, dstX, dstY, roiOpt.value());
     }
     else if(m_selectedIndex >= 0){
         g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X0000B0), dstX + m_invOpButtonX, dstY + m_invOpButtonY);
-        drawChildEx(&m_invOpButton, dstX, dstY, roiOpt.value());
+        drawChild(&m_invOpButton, dstX, dstY, roiOpt.value());
         if(m_invOpCost >= 0){
             drawInvOpCost();
         }
@@ -292,21 +292,21 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roi)){
+    if(m_closeButton.processEventParent(event, valid, startDstX, startDstY, roi)){
         return true;
     }
 
-    if(m_slider.processParentEvent(event, valid, startDstX, startDstY, roi)){
+    if(m_slider.processEventParent(event, valid, startDstX, startDstY, roi)){
         return true;
     }
 
     if(m_sdInvOp.invOp == INVOP_NONE){
-        if(m_sortButton.processParentEvent(event, valid, startDstX, startDstY, roi)){
+        if(m_sortButton.processEventParent(event, valid, startDstX, startDstY, roi)){
             return true;
         }
     }
     else{
-        if(m_selectedIndex >= 0 && m_invOpButton.processParentEvent(event, valid, startDstX, startDstY, roi)){
+        if(m_selectedIndex >= 0 && m_invOpButton.processEventParent(event, valid, startDstX, startDstY, roi)){
             return true;
         }
     }

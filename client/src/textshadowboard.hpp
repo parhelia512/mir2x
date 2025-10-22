@@ -31,18 +31,16 @@ class TextShadowBoard: public Widget
                 bool    argAutoDelete = false)
 
             : Widget
-              {
-                  std::move(argDir),
-                  std::move(argX),
-                  std::move(argY),
-
-                  {},
-                  {},
-                  {},
-
-                  argParent,
-                  argAutoDelete,
-              }
+              {{
+                  .dir = std::move(argDir),
+                  .x = std::move(argX),
+                  .y = std::move(argY),
+                  .parent
+                  {
+                      .widget = argParent,
+                      .autoDelete = argAutoDelete,
+                  }
+              }}
 
             , m_textShadow
               {

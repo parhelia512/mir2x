@@ -174,6 +174,12 @@ template<std::derived_from<Widget> T> auto WidgetTreeNode::hasParent(this auto &
     return nullptr;
 }
 
+template<typename T> bool Widget::ROIMap::in(const T &t, const std::optional<Widget::ROI> &roiOpt) const
+{
+    const auto [tx, ty] = t;
+    return in(tx, ty, roiOpt);
+}
+
 template<typename T> Widget::ROI Widget::makeROI(const T &t)
 {
     const auto [x, y, w, h] = t;

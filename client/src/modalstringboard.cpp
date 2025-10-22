@@ -167,11 +167,11 @@ class ModalStringBoardImpl: public Widget
         }
 
     public:
-        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
+        void draw(Widget::ROIMap) const override
         {
-            drawChildEx(&m_imageUpDup, dstX, dstY, roi);
-            drawChildEx(&m_imageDown , dstX, dstY, roi);
-            drawChildEx(&m_board     , dstX, dstY, roi);
+            drawChild(&m_imageUpDup, dstX, dstY, roi);
+            drawChild(&m_imageDown , dstX, dstY, roi);
+            drawChild(&m_board     , dstX, dstY, roi);
         }
 };
 

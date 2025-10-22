@@ -266,7 +266,7 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *w
     }
 }
 
-void TeamStateBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void TeamStateBoard::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -329,15 +329,15 @@ void TeamStateBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
 
         line.clear();
         line.loadXML(str_printf("<par>%d %s</par>", to_d(i) + m_startIndex[m_showCandidateList], nameText.c_str()).c_str());
-        line.drawEx(remapXDiff + m_uidRegionX + (m_uidRegionW - m_uidTextRegionW) / 2, remapYDiff + m_uidRegionY + m_lineSpace / 2 + i * lineHeight(), 0, 0, std::min<int>(line.pw(), m_uidTextRegionW), line.ph());
+        line.draw(remapXDiff + m_uidRegionX + (m_uidRegionW - m_uidTextRegionW) / 2, remapYDiff + m_uidRegionY + m_lineSpace / 2 + i * lineHeight(), 0, 0, std::min<int>(line.pw(), m_uidTextRegionW), line.ph());
     }
 
-    drawChildEx(&m_enableTeam, dstX, dstY, roiOpt.value());
-    drawChildEx(&m_switchShow, dstX, dstY, roiOpt.value());
-    drawChildEx(&m_addMember, dstX, dstY, roiOpt.value());
-    drawChildEx(&m_deleteMember, dstX, dstY, roiOpt.value());
-    drawChildEx(&m_refresh, dstX, dstY, roiOpt.value());
-    drawChildEx(&m_close, dstX, dstY, roiOpt.value());
+    drawChild(&m_enableTeam, dstX, dstY, roiOpt.value());
+    drawChild(&m_switchShow, dstX, dstY, roiOpt.value());
+    drawChild(&m_addMember, dstX, dstY, roiOpt.value());
+    drawChild(&m_deleteMember, dstX, dstY, roiOpt.value());
+    drawChild(&m_refresh, dstX, dstY, roiOpt.value());
+    drawChild(&m_close, dstX, dstY, roiOpt.value());
 }
 
 bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
@@ -351,27 +351,27 @@ bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int
         return consumeFocus(false);
     }
 
-    if(m_enableTeam.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_enableTeam.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_switchShow.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_switchShow.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_addMember.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_addMember.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_deleteMember.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_deleteMember.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_refresh.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_refresh.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_close.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_close.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 

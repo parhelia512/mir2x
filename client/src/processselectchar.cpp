@@ -130,8 +130,8 @@ void ProcessSelectChar::processEvent(const SDL_Event &event)
 {
     bool tookEvent = false;
 
-    tookEvent |= m_deleteInput.processRootEvent(event, !tookEvent, 0, 0);
-    tookEvent |= m_canvas     .processRootEvent(event, !tookEvent, 0, 0);
+    tookEvent |= m_deleteInput.processEventRoot(event, !tookEvent, 0, 0);
+    tookEvent |= m_canvas     .processEventRoot(event, !tookEvent, 0, 0);
 
     if(!tookEvent){
     }

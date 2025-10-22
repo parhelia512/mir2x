@@ -201,7 +201,7 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int star
     }
 }
 
-void InputLine::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void InputLine::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -229,7 +229,7 @@ void InputLine::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
             tpsetX, tpsetY, m_tpset.pw(), m_tpset.ph());
 
     if(needDraw){
-        m_tpset.drawEx(dstCropX, dstCropY, srcCropX - tpsetX, srcCropY - tpsetY, srcCropW, srcCropH);
+        m_tpset.draw(dstCropX, dstCropY, srcCropX - tpsetX, srcCropY - tpsetY, srcCropW, srcCropH);
     }
 
     if(std::fmod(m_cursorBlink, 1000.0) > 500.0){

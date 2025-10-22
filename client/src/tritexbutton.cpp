@@ -93,7 +93,7 @@ TritexButton::TritexButton(
             fnGetEdgeSize([](SDL_Texture *texPtr){ return SDLDeviceHelper::getTextureHeight(texPtr); }));
 }
 
-void TritexButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void TritexButton::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){

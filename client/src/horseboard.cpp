@@ -245,11 +245,11 @@ bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
         return consumeFocus(false);
     }
 
-    if(m_close.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_up   .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_down .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_hide .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_show .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_close.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_up   .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_down .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_hide .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_show .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:

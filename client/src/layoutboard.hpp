@@ -213,10 +213,10 @@ class LayoutBoard: public Widget
         void setLineWidth(int);
 
     public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        void draw(Widget::ROIMap) const override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
+        bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     private:
         void addPar(int, const std::array<int, 4> &, const tinyxml2::XMLNode *);

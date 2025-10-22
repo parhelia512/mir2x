@@ -22,18 +22,20 @@ class GfxDupBoard: public Widget
                 bool    argAutoDelete = false)
 
             : Widget
-              {
-                  std::move(argDir),
-                  std::move(argX),
-                  std::move(argY),
-                  std::move(argW),
-                  std::move(argH),
+              {{
+                  .dir = std::move(argDir),
 
-                  {},
+                  .x = std::move(argX),
+                  .y = std::move(argY),
+                  .w = std::move(argW),
+                  .h = std::move(argH),
 
-                  argParent,
-                  argAutoDelete,
-              }
+                  .parent
+                  {
+                      .widget = argParent,
+                      .autoDelete = argAutoDelete,
+                  }
+              }}
 
             , m_gfxWidget(argWidget)
         {}
@@ -45,14 +47,13 @@ class GfxDupBoard: public Widget
         }
 
     public:
-        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
+        void draw(Widget::ROIMap m) const override
         {
-            const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-            if(!roiOpt.has_value()){
+            if(!m.crop(roi())){
                 return;
             }
 
-            const auto fnCropDraw = [dstX, dstY, &roiOpt, this](int onCropBrdX, int onCropBrdY, int onCropBrdW, int onCropBrdH, int onScreenX, int onScreenY)
+            const auto fnCropDraw = [dstX = m.x, dstY = m.y, &m, this](int onCropBrdX, int onCropBrdY, int onCropBrdW, int onCropBrdH, int onScreenX, int onScreenY)
             {
                 if(mathf::cropROI(
                             &onCropBrdX, &onCropBrdY,
@@ -64,13 +65,13 @@ class GfxDupBoard: public Widget
                             m_gfxWidget->w(),
                             m_gfxWidget->h(),
 
-                            0, 0, -1, -1, dstX, dstY, roiOpt->w, roiOpt->h)){
-                    m_gfxWidget->drawEx(onScreenX, onScreenY, {onCropBrdX, onCropBrdY, onCropBrdW, onCropBrdH});
+                            0, 0, -1, -1, dstX, dstY, m.ro->w, m.ro->h)){
+                    m_gfxWidget->draw({.x = onScreenX, .y = onScreenY, .ro{onCropBrdX, onCropBrdY, onCropBrdW, onCropBrdH}});
                 }
             };
 
-            const int extendedDstX = dstX - roiOpt->x;
-            const int extendedDstY = dstY - roiOpt->y;
+            const int extendedDstX = m.x - m.ro->x;
+            const int extendedDstY = m.y - m.ro->y;
 
             for(int doneDrawWidth = 0; doneDrawWidth < w();){
                 const int drawWidth = std::min<int>(m_gfxWidget->w(), w() - doneDrawWidth);

@@ -70,10 +70,10 @@ class PurchaseBoard: public Widget
         PurchaseBoard(ProcessRun *, Widget * = nullptr, bool = false);
 
     public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        void draw(Widget::ROIMap) const override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
+        bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     public:
         void loadSell(uint64_t, std::vector<uint32_t>);
@@ -102,9 +102,9 @@ class PurchaseBoard: public Widget
         static std::tuple<int, int, int, int> getExt1PageGridLoc(int, int);
 
     private:
-        void drawExt1(int, int, const Widget::ROI &) const;
-        void drawExt2(int, int, const Widget::ROI &) const;
-        void drawExt1GridHoverText(int) const;
+        void drawt1(int, int, const Widget::ROI &) const;
+        void drawt2(int, int, const Widget::ROI &) const;
+        void drawt1GridHoverText(int) const;
 
     private:
         std::tuple<uint32_t, uint32_t> getExtSelectedItemSeqID() const;

@@ -178,10 +178,10 @@ bool ItemListBoard::processEventDefault(const SDL_Event &event, bool valid, int 
         return consumeFocus(false);
     }
 
-    if(m_leftButton  .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_selectButton.processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_rightButton .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_closeButton .processParentEvent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_leftButton  .processEventParent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_selectButton.processEventParent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_rightButton .processEventParent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_closeButton .processEventParent(event, valid, startDstX, startDstY, roi)){ return true; }
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
@@ -266,7 +266,7 @@ void ItemListBoard::drawGridHoverLayout(size_t index) const
     hoverTextBoard.drawAt(DIR_UPLEFT, mousePX + margin, mousePY + margin);
 }
 
-void ItemListBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void ItemListBoard::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -277,10 +277,10 @@ void ItemListBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
         g_sdlDevice->drawTexture(texPtr, dstX, dstY, m_gfxSrcX, m_gfxSrcY, m_gfxSrcW, m_gfxSrcH);
     }
 
-    drawChildEx(&m_leftButton  , dstX, dstY, roiOpt.value());
-    drawChildEx(&m_selectButton, dstX, dstY, roiOpt.value());
-    drawChildEx(&m_rightButton , dstX, dstY, roiOpt.value());
-    drawChildEx(&m_closeButton , dstX, dstY, roiOpt.value());
+    drawChild(&m_leftButton  , dstX, dstY, roiOpt.value());
+    drawChild(&m_selectButton, dstX, dstY, roiOpt.value());
+    drawChild(&m_rightButton , dstX, dstY, roiOpt.value());
+    drawChild(&m_closeButton , dstX, dstY, roiOpt.value());
 
     const auto fnDrawTitle = [this](const std::u8string &title)
     {

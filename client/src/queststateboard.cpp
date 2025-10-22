@@ -209,10 +209,10 @@ bool QuestStateBoard::processEventDefault(const SDL_Event &event, bool valid, in
         return consumeFocus(false);
     }
 
-    if(m_despBoard  .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_slider     .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_lrButton   .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_despBoard  .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_slider     .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_lrButton   .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_closeButton.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:

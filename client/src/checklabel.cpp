@@ -28,18 +28,16 @@ CheckLabel::CheckLabel(
         bool argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-          0,
-          0,
-
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+      ({
+          .dir = argDir,
+          .x = argX,
+          .y = argY,
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      })
 
     , m_checkBoxColor(argBoxColor)
     , m_labelBoardColor(argFontColor)
@@ -124,14 +122,13 @@ CheckLabel::CheckLabel(
     }
 }
 
-bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
     if(!show()){
         return false;
     }
 
-    auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -158,8 +155,7 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid, int sta
         case SDL_MOUSEBUTTONUP:
         case SDL_MOUSEBUTTONDOWN:
             {
-                const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                fnOnColor(in(eventX, eventY, startDstX, startDstY, roiOpt.value()));
+                fnOnColor(m.in(SDLDeviceHelper::getEventPLoc(event).value()));
                 break;
             }
         default:
@@ -168,14 +164,14 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
     }
 
-    if(m_checkBox.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_checkBox.processEvent(event, valid, m.create(m_checkBox.roi()))){
         return true;
     }
 
     switch(event.type){
         case SDL_MOUSEBUTTONUP:
             {
-                if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(m.in(event.button.x, event.button.y)){
                     return consumeFocus(true, &m_checkBox);
                 }
                 else{
@@ -184,7 +180,7 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(m.in(event.button.x, event.button.y)){
                     m_checkBox.toggle();
                     return consumeFocus(true, &m_checkBox);
                 }
@@ -194,7 +190,7 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
         case SDL_MOUSEMOTION:
             {
-                if(in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value())){
+                if(m.in(event.motion.x, event.motion.y)){
                     return consumeFocus(true, &m_checkBox);
                 }
                 else{

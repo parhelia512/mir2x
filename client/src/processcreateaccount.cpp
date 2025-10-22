@@ -237,7 +237,7 @@ void ProcessCreateAccount::draw() const
 
 void ProcessCreateAccount::processEvent(const SDL_Event &event)
 {
-    if(m_quit.processRootEvent(event, true, 0, 0)){
+    if(m_quit.processEventRoot(event, true, 0, 0)){
         return;
     }
 
@@ -246,7 +246,7 @@ void ProcessCreateAccount::processEvent(const SDL_Event &event)
         return;
     }
 
-    if(m_submit.processRootEvent(event, true, 0, 0)){
+    if(m_submit.processEventRoot(event, true, 0, 0)){
         return;
     }
 
@@ -288,9 +288,9 @@ void ProcessCreateAccount::processEvent(const SDL_Event &event)
     // widget idbox and pwdbox are not independent from each other
     // tab in one box will grant focus to another
 
-    m_boxID        .processRootEvent(event, true, 0, 0);
-    m_boxPwd       .processRootEvent(event, true, 0, 0);
-    m_boxPwdConfirm.processRootEvent(event, true, 0, 0);
+    m_boxID        .processEventRoot(event, true, 0, 0);
+    m_boxPwd       .processEventRoot(event, true, 0, 0);
+    m_boxPwdConfirm.processEventRoot(event, true, 0, 0);
 
     localCheck();
 }

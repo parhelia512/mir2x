@@ -249,9 +249,13 @@ class Widget: public WidgetTreeNode
 
             Widget::ROIOpt ro = std::nullopt;
 
-            bool empty(                     std::optional<Widget::ROI> = std::nullopt) const;
-            bool in   (int, int,            std::optional<Widget::ROI> = std::nullopt) const;
-            bool crop (const Widget::ROI &, std::optional<Widget::ROI> = std::nullopt);
+            bool   crop  (const Widget::ROI &, const std::optional<Widget::ROI> & = std::nullopt);
+            ROIMap create(const Widget::ROI &, const std::optional<Widget::ROI> & = std::nullopt) const; // create ROIMap for child
+
+            bool empty(const std::optional<Widget::ROI> & = std::nullopt) const;
+
+            /**/                 bool in(int, int,  const std::optional<Widget::ROI> & = std::nullopt) const;
+            template<typename T> bool in(const T &, const std::optional<Widget::ROI> & = std::nullopt) const;
         };
 
     private:
@@ -353,20 +357,6 @@ class Widget: public WidgetTreeNode
     public:
         explicit Widget(Widget::InitArgs);
 
-    public:
-        Widget(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                Widget::VarSizeOpt,
-                Widget::VarSizeOpt,
-
-                std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool>> = {},
-
-                Widget * = nullptr,
-                bool     = false);
-
     private:
         static int  sizeOff(   int, int);
         static int xSizeOff(dir8_t, int);
@@ -379,8 +369,8 @@ class Widget: public WidgetTreeNode
         Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, Widget::ROIMap)>);
 
         virtual bool processEvent      (const SDL_Event &, bool, Widget::ROIMap) final;
-        virtual bool processParentEvent(const SDL_Event &, bool, Widget::ROIMap);
-        virtual bool processRootEvent  (const SDL_Event &, bool, Widget::ROIMap) final;
+        virtual bool processEventRoot  (const SDL_Event &, bool, Widget::ROIMap) final;
+        virtual bool processEventParent(const SDL_Event &, bool, Widget::ROIMap) final;
 
     protected:
         // @param
@@ -394,7 +384,7 @@ class Widget: public WidgetTreeNode
         //      true if event is consumed
         //
         // widget has no x()/y() supported
-        // when draw/processEvent, needs give explicit startDstX/startDstY when calling drawEx()/processEvent()
+        // when draw/processEvent, needs give explicit startDstX/startDstY when calling draw()/processEvent()
         // this helps to support more features, like:
         //
         //      +--------+   +--------+
@@ -406,12 +396,12 @@ class Widget: public WidgetTreeNode
         // above two view-window can show the same widget, but different part of it
         // and either view can capture and process event
         //
-        // for drawEx() and processEventDefault(), it doesn't check show()
+        // for draw() and processEventDefault(), it doesn't check show()
         //
         //     1. if need to manually draw a widget, we ignore show() result
         //     2. if draw by its parent, parent needs to check show()
         //
-        // but processEventDefault() and drawEx() needs to check if given ROI is empty
+        // but processEventDefault() and draw() needs to check if given ROI is empty
         // we agree that if a widget is not show() or ROI is empty, it
         //
         //     1. won't accept any event
@@ -421,22 +411,10 @@ class Widget: public WidgetTreeNode
         virtual bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap);
 
     public:
-        virtual void drawEx(const ROIMap &) const;
-        virtual void drawEx(int, int, const Widget::ROIOpt &) const; // remove later
-
-    public:
-        virtual void drawChildEx(const Widget *, int, int, const Widget::ROIOpt &               ) const final;
-        virtual void drawAt     (        dir8_t, int, int, const Widget::ROIOpt & = std::nullopt) const final;
-
-    public:
-        virtual void drawAsChildEx(
-                const Widget *,                         // widget as child
-                dir8_t,                                 // anchor if widget as child in parent
-                int,
-                int,
-                const Widget::ROIMap &) const final;    // roiMap of calling widget
-
-        virtual void drawRoot(const Widget::ROIMap &) const final;
+        virtual void draw       (                                  Widget::ROIMap) const;
+        virtual void drawChild  (const Widget *,                   Widget::ROIMap) const final;
+        virtual void drawAsChild(const Widget *, dir8_t, int, int, Widget::ROIMap) const final;
+        virtual void drawRoot   (                                  Widget::ROIMap) const final;
 
     public:
         Widget *setAfterResize(std::function<void(Widget *)>);
@@ -470,10 +448,6 @@ class Widget: public WidgetTreeNode
         }
 
     public:
-        std::optional<Widget::ROI> cropDrawROI(int &, int &, const Widget::ROIOpt &) const;
-        std::optional<Widget::ROIMap> cropDrawROI(const Widget::ROIMap &) const;
-
-    public:
         auto & data(this auto && self)
         {
             return self.m_data;
@@ -481,10 +455,6 @@ class Widget: public WidgetTreeNode
 
     public:
         Widget *setData(std::any);
-
-    public:
-        virtual bool       in(int, int, int, int, const Widget::ROIOpt &) const;
-        virtual bool parentIn(int, int, int, int, const Widget::ROIOpt &) const final;
 
     public:
         virtual bool focus() const;

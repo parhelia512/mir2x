@@ -40,7 +40,7 @@ class CheckBox: public Widget
                 bool     = false);  // auto-delete
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, const Widget::ROIMap &) override;
+        bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     public:
         void setColor(uint32_t color)

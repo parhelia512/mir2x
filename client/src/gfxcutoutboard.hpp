@@ -33,19 +33,20 @@ class GfxCutoutBoard: public Widget
                 bool    argAutoDelete = false)
 
             : Widget
-              {
-                  std::move(argDir),
-                  std::move(argX),
-                  std::move(argY),
+              {{
+                  .dir = std::move(argDir),
 
-                  [argWidget](const Widget *){ return argWidget->w(); },
-                  [argWidget](const Widget *){ return argWidget->h(); },
+                  .x = std::move(argX),
+                  .y = std::move(argY),
+                  .w = [argWidget]{ return argWidget->w(); },
+                  .h = [argWidget]{ return argWidget->h(); },
 
-                  {},
-
-                  argParent,
-                  argAutoDelete,
-              }
+                  .parent
+                  {
+                      .widget = argParent,
+                      .autoDelete = argAutoDelete,
+                  }
+              }}
 
             , m_gfxWidget(fflcheck(argWidget))
 
@@ -56,10 +57,9 @@ class GfxCutoutBoard: public Widget
         {}
 
     public:
-        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
+        void draw(Widget::ROIMap m) const override
         {
-            const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-            if(!roiOpt.has_value()){
+            if(!m.crop(roi())){
                 return;
             }
 
@@ -108,12 +108,12 @@ class GfxCutoutBoard: public Widget
                 static_cast<const Widget *>(&right ),
                 static_cast<const Widget *>(&bottom),
             }){
-                int drawDstX = dstX;
-                int drawDstY = dstY;
-                int drawSrcX = roiOpt->x;
-                int drawSrcY = roiOpt->y;
-                int drawSrcW = roiOpt->w;
-                int drawSrcH = roiOpt->h;
+                int drawDstX = m.x;
+                int drawDstY = m.y;
+                int drawSrcX = m.ro->x;
+                int drawSrcY = m.ro->y;
+                int drawSrcW = m.ro->w;
+                int drawSrcH = m.ro->h;
 
                 if(mathf::cropChildROI(
                             &drawSrcX, &drawSrcY,
@@ -127,7 +127,7 @@ class GfxCutoutBoard: public Widget
                             p->dy(),
                             p-> w(),
                             p-> h())){
-                    p->drawEx(drawDstX, drawDstY, {drawSrcX, drawSrcY, drawSrcW, drawSrcH});
+                    p->draw({.x=drawDstX, .y=drawDstY, .ro{drawSrcX, drawSrcY, drawSrcW, drawSrcH}});
                 }
             }
         }

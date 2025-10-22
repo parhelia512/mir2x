@@ -20,18 +20,20 @@ CheckBox::CheckBox(dir8_t argDir,
         bool    argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-          argW,
-          argH,
+      ({
+          .dir = argDir,
 
-          {},
+          .x = argX,
+          .y = argY,
+          .w = argW,
+          .h = argH,
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      })
 
     , m_color(argColor)
 
@@ -100,7 +102,7 @@ CheckBox::CheckBox(dir8_t argDir,
     m_img.setShow([this](const Widget *){ return getter(); });
 }
 
-bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
     if(!valid){
         return consumeFocus(false);
@@ -110,19 +112,18 @@ bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, int start
         return consumeFocus(false);
     }
 
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return consumeFocus(false);
     }
 
     switch(event.type){
         case SDL_MOUSEBUTTONUP:
             {
-                return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
+                return consumeFocus(m.in(event.button.x, event.button.y));
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(m.in(event.button.x, event.button.y, roi())){
                     toggle();
                     return consumeFocus(true);
                 }
@@ -132,7 +133,7 @@ bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, int start
             }
         case SDL_MOUSEMOTION:
             {
-                return consumeFocus(in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()));
+                return consumeFocus(m.in(event.motion.x, event.motion.y));
             }
         case SDL_KEYUP:
             {

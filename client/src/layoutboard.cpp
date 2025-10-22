@@ -431,7 +431,7 @@ void LayoutBoard::addParXML(int loc, const std::array<int, 4> &parMargin, const 
     addPar(loc, parMargin, xmlDoc.RootElement());
 }
 
-void LayoutBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void LayoutBoard::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -457,11 +457,11 @@ void LayoutBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
                     node.margin[2], node.startY, node.tpset->pw(), node.tpset->ph())){
             continue;
         }
-        node.tpset->drawEx(dstXCrop, dstYCrop, srcXCrop - node.margin[2], srcYCrop - node.startY, srcWCrop, srcHCrop);
+        node.tpset->draw(dstXCrop, dstYCrop, srcXCrop - node.margin[2], srcYCrop - node.startY, srcWCrop, srcHCrop);
     }
 
     if(m_canEdit && focus()){
-        Widget::drawEx(dstX, dstY, roiOpt.value()); // draw cursor
+        Widget::draw(dstX, dstY, roiOpt.value()); // draw cursor
     }
 }
 

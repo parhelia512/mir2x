@@ -96,7 +96,7 @@ void NotifyBoard::update(double)
     }
 }
 
-void NotifyBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void NotifyBoard::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -128,7 +128,7 @@ void NotifyBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
             break;
         }
 
-        p->drawEx(dstXCrop, dstYCrop, srcXCrop - startX, srcYCrop - startY, srcWCrop, srcHCrop);
+        p->draw(dstXCrop, dstYCrop, srcXCrop - startX, srcYCrop - startY, srcWCrop, srcHCrop);
         startY += p->ph();
     }
 }

@@ -36,18 +36,20 @@ class GfxCropDupBoard: public Widget
                 bool    argAutoDelete = false)
 
             : Widget
-              {
-                  std::move(argDir),
-                  std::move(argX),
-                  std::move(argY),
-                  std::move(argW),
-                  std::move(argH),
+              {{
+                  .dir = std::move(argDir),
 
-                  {},
+                  .x = std::move(argX),
+                  .y = std::move(argY),
+                  .w = std::move(argW),
+                  .h = std::move(argH),
 
-                  argParent,
-                  argAutoDelete,
-              }
+                  .parent
+                  {
+                      .widget = argParent,
+                      .autoDelete = argAutoDelete,
+                  }
+              }}
 
             , m_gfxWidget([argWidget]{ fflassert(argWidget); return argWidget; }())
 
@@ -58,10 +60,9 @@ class GfxCropDupBoard: public Widget
         {}
 
     public:
-        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
+        void draw(Widget::ROIMap m) const override
         {
-            const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-            if(!roiOpt.has_value()){
+            if(!m.crop(roi())){
                 return;
             }
 
@@ -131,12 +132,12 @@ class GfxCropDupBoard: public Widget
                 {static_cast<const Widget *>(&bottomDup  ),       w0, h() - h2},
                 {static_cast<const Widget *>(&bottomRight), w() - w2, h() - h2},
             }){
-                int drawDstX = dstX;
-                int drawDstY = dstY;
-                int drawSrcX = roiOpt->x;
-                int drawSrcY = roiOpt->y;
-                int drawSrcW = roiOpt->w;
-                int drawSrcH = roiOpt->h;
+                int drawDstX = m.x;
+                int drawDstY = m.y;
+                int drawSrcX = m.ro->x;
+                int drawSrcY = m.ro->y;
+                int drawSrcW = m.ro->w;
+                int drawSrcH = m.ro->h;
 
                 if(mathf::cropChildROI(
                             &drawSrcX, &drawSrcY,
@@ -150,7 +151,7 @@ class GfxCropDupBoard: public Widget
                             offY,
                             widgetPtr->w(),
                             widgetPtr->h())){
-                    widgetPtr->drawEx(drawDstX, drawDstY, {drawSrcX, drawSrcY, drawSrcW, drawSrcH});
+                    widgetPtr->draw({.x = drawDstX, .y = drawDstY, .ro{drawSrcX, drawSrcY, drawSrcW, drawSrcH}});
                 }
             }
         }

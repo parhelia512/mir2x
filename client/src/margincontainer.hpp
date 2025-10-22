@@ -27,18 +27,20 @@ class MarginContainer: public Widget
                 bool    argAutoDelete = false)
 
             : Widget
-              {
-                  std::move(argDir),
-                  std::move(argX),
-                  std::move(argY),
-                  std::move(argW),
-                  std::move(argH),
+              {{
+                  .dir = std::move(argDir),
 
-                  {},
+                  .x = std::move(argX),
+                  .y = std::move(argY),
+                  .w = std::move(argW),
+                  .h = std::move(argH),
 
-                  argParent,
-                  argAutoDelete,
-              }
+                  .parent
+                  {
+                      .widget = argParent,
+                      .autoDelete = argAutoDelete,
+                  }
+              }}
 
             , m_widgetDir(std::move(argWidgetDir))
         {
@@ -95,9 +97,9 @@ class MarginContainer: public Widget
         }
 
     public:
-        bool processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi) override
+        bool processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m) override
         {
-            return contained()->processEvent(event, valid, startDstX, startDstY, roi);
+            return contained()->processEvent(event, valid, m);
         }
 
     public:

@@ -224,7 +224,7 @@ void ProcessLogin::processEvent(const SDL_Event &event)
             }
     }
 
-    m_canvas.processRootEvent(event, true);
+    m_canvas.processEventRoot(event, true);
 }
 
 void ProcessLogin::doLogin()

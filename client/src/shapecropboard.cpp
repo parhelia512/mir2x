@@ -30,7 +30,7 @@ ShapeCropBoard::ShapeCropBoard(Widget::VarDir argDir,
     , m_drawFunc(std::move(argDrawFunc))
 {}
 
-void ShapeCropBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void ShapeCropBoard::draw(Widget::ROIMap) const
 {
     if((m_drawFunc.index() == 0) && !std::get<0>(m_drawFunc)){ return; }
     if((m_drawFunc.index() == 1) && !std::get<1>(m_drawFunc)){ return; }

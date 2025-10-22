@@ -30,19 +30,20 @@ class ItemFlex: public Widget
                 bool    argAutoDelete = false)
 
             : Widget
-              {
-                  std::move(argDir),
-                  std::move(argX),
-                  std::move(argY),
+              ({
+                  .dir = std::move(argDir),
+                  .x = std::move(argX),
+                  .y = std::move(argY),
 
-                  /**/  argHBox ? Widget::VarSizeOpt{} : std::move(argVarSizeOpt),
-                  /**/ !argHBox ? Widget::VarSizeOpt{} : std::move(argVarSizeOpt),
+                  .w =  argHBox ? Widget::VarSizeOpt{} : std::move(argVarSizeOpt),
+                  .h = !argHBox ? Widget::VarSizeOpt{} : std::move(argVarSizeOpt),
 
-                  {},
-
-                  argParent,
-                  argAutoDelete,
-              }
+                  .parent
+                  {
+                      .widget = argParent,
+                      .autoDelete = argAutoDelete,
+                  }
+              })
 
             , m_hbox(argHBox)
             , m_itemSpace(std::move(argItemSpace))

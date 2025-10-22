@@ -74,7 +74,7 @@ ImageBoard::ImageBoard(
     setH((m_rotate % 2 == 0) ? varTexH : varTexW);
 }
 
-void ImageBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void ImageBoard::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){

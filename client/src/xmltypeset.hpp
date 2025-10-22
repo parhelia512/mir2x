@@ -290,7 +290,7 @@ class XMLTypeset // means XMLParagraph typeset
         }
 
     public:
-        void drawEx(int, int, int, int, int, int) const;
+        void draw(Widget::ROIMap) const;
 
     public:
         void setFont(uint8_t font)

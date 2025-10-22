@@ -93,12 +93,12 @@ void LabelBoard::setImageMaskColor(uint32_t argColor)
     m_tpset.setImageMaskColor(argColor);
 }
 
-void LabelBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void LabelBoard::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if (!roiOpt.has_value()){
         return;
     }
 
-    m_tpset.drawEx(dstX, dstY, roiOpt->x, roiOpt->y, roiOpt->w, roiOpt->h);
+    m_tpset.draw(dstX, dstY, roiOpt->x, roiOpt->y, roiOpt->w, roiOpt->h);
 }

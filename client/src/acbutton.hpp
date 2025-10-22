@@ -27,7 +27,7 @@ class ACButton: public ButtonBase
         ACButton(dir8_t, int, int, ProcessRun *, const std::vector<std::string> &, Widget * = nullptr, bool = false);
 
     public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        void draw(Widget::ROIMap) const override;
 
     private:
         void setLabel();

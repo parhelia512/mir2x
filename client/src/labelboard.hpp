@@ -12,6 +12,12 @@
 class LabelBoard: public Widget
 {
     private:
+        struct InitArgs final
+        {
+
+        };
+
+    private:
         XMLTypeset m_tpset;
 
     public:
@@ -68,5 +74,5 @@ class LabelBoard: public Widget
         }
 
     public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        void draw(Widget::ROIMap) const override;
 };

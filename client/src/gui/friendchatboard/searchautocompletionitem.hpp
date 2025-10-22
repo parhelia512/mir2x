@@ -52,6 +52,6 @@ struct SearchAutoCompletionItem: public Widget
             Widget * = nullptr,
             bool     = false);
 
-    bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
+    bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 };
 

@@ -312,7 +312,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
     }
 }
 
-void IMEBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void IMEBoard::draw(Widget::ROIMap) const
 {
     //        +---------------------------------------------------------------------------------- m_startX
     //        |
@@ -393,7 +393,7 @@ void IMEBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
             dstX + w(), dstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2);
 
     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-        drawChildEx(m_labelBoardList.at(i).get(), dstX, dstY, roi);
+        drawChild(m_labelBoardList.at(i).get(), dstX, dstY, roi);
     }
 
     if(auto tex = g_progUseDB->retrieve(0X09000006)){

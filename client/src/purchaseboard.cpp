@@ -351,7 +351,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDel
     }
 }
 
-void PurchaseBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void PurchaseBoard::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -362,9 +362,9 @@ void PurchaseBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
         g_sdlDevice->drawTexture(pTexture, dstX, dstY);
     }
 
-    drawChildEx(&m_closeButton, dstX, dstY, roiOpt.value());
-    drawChildEx(&m_selectButton, dstX, dstY, roiOpt.value());
-    drawChildEx(&m_slider, dstX, dstY, roiOpt.value());
+    drawChild(&m_closeButton, dstX, dstY, roiOpt.value());
+    drawChild(&m_selectButton, dstX, dstY, roiOpt.value());
+    drawChild(&m_slider, dstX, dstY, roiOpt.value());
 
     const auto remapX = dstX - roiOpt->x;
     const auto remapY = dstY - roiOpt->y;
@@ -399,8 +399,8 @@ void PurchaseBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
     }
 
     switch(extendedBoardGfxID()){
-        case 1: drawExt1(dstX, dstY, roiOpt.value()); break;
-        case 2: drawExt2(dstX, dstY, roiOpt.value()); break;
+        case 1: drawt1(dstX, dstY, roiOpt.value()); break;
+        case 2: drawt2(dstX, dstY, roiOpt.value()); break;
         default: break;
     }
 }
@@ -416,45 +416,45 @@ bool PurchaseBoard::processEventDefault(const SDL_Event &event, bool valid, int 
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_closeButton.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_selectButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_selectButton.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
-    if(m_slider.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_slider.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
     switch(extendedBoardGfxID()){
         case 1:
             {
-                if(m_closeExt1Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+                if(m_closeExt1Button.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_leftExt1Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+                if(m_leftExt1Button.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_selectExt1Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+                if(m_selectExt1Button.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_rightExt1Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+                if(m_rightExt1Button.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
                 break;
             }
         case 2:
             {
-                if(m_closeExt2Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+                if(m_closeExt2Button.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
                     return true;
                 }
 
-                if(m_selectExt2Button.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+                if(m_selectExt2Button.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
                     if(m_processRun->getWidget("InputStringBoard")->focus()){
                         setFocus(false);
                     }
@@ -615,7 +615,7 @@ std::tuple<int, int, int, int> PurchaseBoard::getExt1PageGridLoc(int gridX, int 
     throw fflerror("invalid grid location: (%d, %d)", gridX, gridY);
 }
 
-void PurchaseBoard::drawExt1GridHoverText(int itemIndex) const
+void PurchaseBoard::drawt1GridHoverText(int itemIndex) const
 {
     if(extendedPageCount() <= 0){
         throw fflreach();
@@ -664,16 +664,16 @@ void PurchaseBoard::drawExt1GridHoverText(int itemIndex) const
     hoverTextBoard.drawAt(DIR_UPLEFT, mousePX + 10, mousePY + 10);
 }
 
-void PurchaseBoard::drawExt1(int dstX, int dstY, const Widget::ROI &roi) const
+void PurchaseBoard::drawt1(int dstX, int dstY, const Widget::ROI &roi) const
 {
     if(extendedBoardGfxID() != 1){
         throw fflreach();
     }
 
-    drawChildEx(&m_closeExt1Button, dstX, dstY, roi);
-    drawChildEx(&m_leftExt1Button,  dstX, dstY, roi);
-    drawChildEx(&m_selectExt1Button, dstX, dstY, roi);
-    drawChildEx(&m_rightExt1Button, dstX, dstY, roi);
+    drawChild(&m_closeExt1Button, dstX, dstY, roi);
+    drawChild(&m_leftExt1Button,  dstX, dstY, roi);
+    drawChild(&m_selectExt1Button, dstX, dstY, roi);
+    drawChild(&m_rightExt1Button, dstX, dstY, roi);
 
     const int ext1PageCount = extendedPageCount();
     if(ext1PageCount <= 0){
@@ -754,11 +754,11 @@ void PurchaseBoard::drawExt1(int dstX, int dstY, const Widget::ROI &roi) const
     }.drawAt(DIR_NONE, remapX + 389, remapY + 18);
 
     if(cursorOnGridIndex >= 0){
-        drawExt1GridHoverText(cursorOnGridIndex);
+        drawt1GridHoverText(cursorOnGridIndex);
     }
 }
 
-void PurchaseBoard::drawExt2(int dstX, int dstY, const Widget::ROI &roi) const
+void PurchaseBoard::drawt2(int dstX, int dstY, const Widget::ROI &roi) const
 {
     if(extendedBoardGfxID() != 2){
         throw fflreach();
@@ -769,8 +769,8 @@ void PurchaseBoard::drawExt2(int dstX, int dstY, const Widget::ROI &roi) const
         throw fflerror("unexpected extSeqID: %llu", to_llu(extSeqID));
     }
 
-    drawChildEx(&m_closeExt2Button, dstX, dstY, roi);
-    drawChildEx(&m_selectExt2Button, dstX, dstY, roi);
+    drawChild(&m_closeExt2Button, dstX, dstY, roi);
+    drawChild(&m_selectExt2Button, dstX, dstY, roi);
 
     if(m_sdSellItemList.list.empty()){
         return;

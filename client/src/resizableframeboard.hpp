@@ -49,5 +49,5 @@ class ResizableFrameBoard: public Widget
                 bool     = false);
 
     public:
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        void draw(Widget::ROIMap) const override;
 };

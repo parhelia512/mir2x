@@ -459,7 +459,7 @@ RuntimeConfigBoard::LabelSliderBar::LabelSliderBar(
     m_slider   .moveAt(DIR_LEFT, m_labelCrop.dx() + m_labelCrop.w(), h() / 2);
 }
 
-void RuntimeConfigBoard::PullMenu::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void RuntimeConfigBoard::PullMenu::draw(Widget::ROIMap) const
 {
     for(const auto p:
     {
@@ -470,7 +470,7 @@ void RuntimeConfigBoard::PullMenu::drawEx(int dstX, int dstY, const Widget::ROIO
         static_cast<const Widget *>(&m_menuList),
     }){
         if(p->show()){
-            drawChildEx(p, dstX, dstY, roi);
+            drawChild(p, dstX, dstY, roi);
         }
     }
 }
@@ -1196,7 +1196,7 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
     setShow(false);
 }
 
-void RuntimeConfigBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void RuntimeConfigBoard::draw(Widget::ROIMap) const
 {
     for(const auto p:
     {
@@ -1208,7 +1208,7 @@ void RuntimeConfigBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) c
         static_cast<const Widget *>(&m_pageGameConfig),
     }){
         if(p->show()){
-            drawChildEx(p, dstX, dstY, roi);
+            drawChild(p, dstX, dstY, roi);
         }
     }
 }
@@ -1232,7 +1232,7 @@ bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid,
         static_cast<Widget *>(&m_pageSocial),
         static_cast<Widget *>(&m_pageGameConfig),
     }){
-        if(widgetPtr->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+        if(widgetPtr->processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
             return true;
         }
     }

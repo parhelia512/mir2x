@@ -160,16 +160,16 @@ GUIManager::GUIManager(ProcessRun *argProc)
     }
 }
 
-void GUIManager::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void GUIManager::draw(Widget::ROIMap) const
 {
     m_miniMapBoard.drawRoot({});
     m_NPCChatBoard.drawRoot({});
     m_controlBoard.drawRoot({});
 
-    drawChildEx(&m_purchaseBoard, dstX, dstY, roi);
+    drawChild(&m_purchaseBoard, dstX, dstY, roi);
 
     const auto [w, h] = g_sdlDevice->getRendererSize();
-    Widget::drawEx(0, 0, {0, 0, w, h});
+    Widget::draw(0, 0, {0, 0, w, h});
     if(!g_clientArgParser->disableIME){
         g_imeBoard->drawRoot({});
     }
@@ -217,13 +217,13 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int sta
 
     bool tookEvent = false;
     if(!g_clientArgParser->disableIME){
-        tookEvent |= g_imeBoard->processRootEvent(event, valid && !tookEvent);
+        tookEvent |= g_imeBoard->processEventRoot(event, valid && !tookEvent);
     }
 
     tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
-    tookEvent |= m_controlBoard.processRootEvent   (event, valid && !tookEvent);
-    tookEvent |= m_NPCChatBoard.processRootEvent   (event, valid && !tookEvent);
-    tookEvent |= m_miniMapBoard.processRootEvent   (event, valid && !tookEvent);
+    tookEvent |= m_controlBoard.processEventRoot   (event, valid && !tookEvent);
+    tookEvent |= m_NPCChatBoard.processEventRoot   (event, valid && !tookEvent);
+    tookEvent |= m_miniMapBoard.processEventRoot   (event, valid && !tookEvent);
 
     return tookEvent;
 }

@@ -83,7 +83,7 @@ void MenuButton::updateMenuButtonSize()
     setH(m_margin[0] + m_gfxWidget->h() + std::max<int>(                   m_margin[1], m_menuBoard->show() ? m_menuBoard->h() : 0));
 }
 
-void MenuButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void MenuButton::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -117,7 +117,7 @@ void MenuButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
             continue;
         }
 
-        widget->drawEx(dstXCrop, dstYCrop, {srcXCrop, srcYCrop, srcWCrop, srcHCrop});
+        widget->draw(dstXCrop, dstYCrop, {srcXCrop, srcYCrop, srcWCrop, srcHCrop});
         if(widget == m_gfxWidget){
             switch(m_button.getState()){
                 case BEVENT_ON  : g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(128), dstXCrop, dstYCrop, srcWCrop, srcHCrop); break;

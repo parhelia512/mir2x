@@ -77,8 +77,8 @@ class TextBoard: public Widget
             return getText().empty();
         }
 
-        void drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const override
+        void draw(Widget::ROIMap m) const override
         {
-            return m_image.drawEx(dstX, dstY, roi);
+            return m_image.draw(m);
         }
 };

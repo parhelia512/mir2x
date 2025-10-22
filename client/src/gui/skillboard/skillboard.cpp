@@ -138,7 +138,7 @@ SkillBoard::MagicIconButton::MagicIconButton(
     setH(m_icon.h() + 8);
 }
 
-void SkillBoard::MagicIconButton::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void SkillBoard::MagicIconButton::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -146,7 +146,7 @@ void SkillBoard::MagicIconButton::drawEx(int dstX, int dstY, const Widget::ROIOp
     }
 
     if(const auto levelOpt = m_config->getMagicLevel(magicID()); levelOpt.has_value()){
-        Widget::drawEx(dstX, dstY, roi);
+        Widget::draw(dstX, dstY, roi);
 
         const LabelBoard magicLevel
         {
@@ -225,7 +225,7 @@ SkillBoard::SkillPage::SkillPage(uint32_t pageImage, SkillBoardConfig *configPtr
     setSize(r[2], r[3]);
 }
 
-void SkillBoard::SkillPage::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void SkillBoard::SkillPage::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -251,7 +251,7 @@ void SkillBoard::SkillPage::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi
             g_sdlDevice->drawTexture(texPtr, dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
         }
     }
-    Widget::drawEx(dstX, dstY, roiOpt.value());
+    Widget::draw(dstX, dstY, roiOpt.value());
 }
 
 SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
@@ -429,23 +429,23 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
     }
 }
 
-void SkillBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void SkillBoard::draw(Widget::ROIMap) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X05000000)){
         g_sdlDevice->drawTexture(texPtr, dstX, dstY);
     }
 
     drawTabName();
-    drawChildEx(&m_slider, dstX, dstY, roi);
-    drawChildEx(&m_closeButton, dstX, dstY, roi);
+    drawChild(&m_slider, dstX, dstY, roi);
+    drawChild(&m_closeButton, dstX, dstY, roi);
 
     for(auto buttonPtr: m_tabButtonList){
-        drawChildEx(buttonPtr, dstX, dstY, roi);
+        drawChild(buttonPtr, dstX, dstY, roi);
     }
 
     const auto r = SkillBoard::getPageRectange();
     auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
-    pagePtr->drawEx(dstX + r[0], dstY + r[1], {r[0] - pagePtr->dx(), r[1] - pagePtr->dy(), r[2], r[3]});
+    pagePtr->draw(dstX + r[0], dstY + r[1], {r[0] - pagePtr->dx(), r[1] - pagePtr->dy(), r[2], r[3]});
 }
 
 bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)

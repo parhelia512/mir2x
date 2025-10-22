@@ -878,7 +878,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
     setShow(false);
 }
 
-void FriendChatBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) const
+void FriendChatBoard::draw(Widget::ROIMap) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){
@@ -914,7 +914,7 @@ void FriendChatBoard::drawEx(int dstX, int dstY, const Widget::ROIOpt &roi) cons
                     p->dy(),
                     p-> w(),
                     p-> h())){
-            p->drawEx(drawDstX, drawDstY, {drawSrcX, drawSrcY, drawSrcW, drawSrcH});
+            p->draw(drawDstX, drawDstY, {drawSrcX, drawSrcY, drawSrcW, drawSrcH});
         }
     }
 }

@@ -109,10 +109,10 @@ class SkillBoard: public Widget
                 MagicIconButton(dir8_t, int, int, uint32_t, SkillBoardConfig *, ProcessRun *, Widget * = nullptr, bool = false);
 
             public:
-                void drawEx(int, int, const Widget::ROIOpt &) const override;
+                void draw(Widget::ROIMap) const override;
 
             public:
-                bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
+                bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
             public:
                 bool cursorOn() const
@@ -167,7 +167,7 @@ class SkillBoard: public Widget
                 }
 
             public:
-                void drawEx(int, int, const Widget::ROIOpt &) const override;
+                void draw(Widget::ROIMap) const override;
 
             public:
                 const auto &getMagicIconButtonList() const
@@ -201,10 +201,10 @@ class SkillBoard: public Widget
 
     public:
         void drawTabName() const;
-        void drawEx(int, int, const Widget::ROIOpt &) const override;
+        void draw(Widget::ROIMap) const override;
 
     public:
-        bool processEventDefault(const SDL_Event &, bool, int, int, const Widget::ROIOpt &) override;
+        bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     private:
         static std::array<int, 4> getPageRectange()

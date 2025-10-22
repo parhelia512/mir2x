@@ -36,18 +36,20 @@ ButtonBase::ButtonBase(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          std::move(argW),
-          std::move(argH),
+      ({
+          .dir = std::move(argDir),
 
-          {},
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::move(argW),
+          .h = std::move(argH),
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      })
 
     , m_onClickDone(argOnClickDone)
     , m_radioMode(argRadioMode)
@@ -72,7 +74,7 @@ ButtonBase::ButtonBase(
     , m_onTrigger(std::move(argOnTrigger))
 {}
 
-bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, const Widget::ROIMap &m)
+bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
     if(!valid){
         if(m_radioMode){
@@ -107,7 +109,7 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, const W
     switch(event.type){
         case SDL_MOUSEBUTTONUP:
             {
-                if(in(event.button.x, event.button.y, startDstX, startDstY, roi)){
+                if(m.in(event.button.x, event.button.y, roi())){
                     switch(getState()){
                         case BEVENT_OFF:
                             {
@@ -149,7 +151,7 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, const W
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y, startDstX, startDstY, roi)){
+                if(m.in(event.button.x, event.button.y, roi())){
                     switch(getState()){
                         case BEVENT_OFF:
                             {
@@ -186,7 +188,7 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, const W
             }
         case SDL_MOUSEMOTION:
             {
-                if(in(event.motion.x, event.motion.y, startDstX, startDstY, roi)){
+                if(m.in(event.motion.x, event.motion.y, roi())){
                     switch(getState()){
                         case BEVENT_OFF:
                             {

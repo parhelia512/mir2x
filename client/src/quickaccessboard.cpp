@@ -228,7 +228,7 @@ bool QuickAccessBoard::processEventDefault(const SDL_Event &event, bool valid, i
         return consumeFocus(false);
     }
 
-    if(m_buttonClose.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_buttonClose.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 

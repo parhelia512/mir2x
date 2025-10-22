@@ -129,7 +129,7 @@ void PlayerStateBoard::update(double)
 {
 }
 
-void PlayerStateBoard::drawEx(int startDstX, int startDstY, const Widget::ROIOpt &roi) const
+void PlayerStateBoard::draw(int startDstX, int startDstY, const Widget::ROIOpt &roi) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X06000000)){
         g_sdlDevice->drawTexture(texPtr, startDstX, startDstY);
@@ -347,7 +347,7 @@ void PlayerStateBoard::drawEx(int startDstX, int startDstY, const Widget::ROIOpt
         }
     }
 
-    drawChildEx(&m_closeButton, startDstX, startDstY, roi);
+    drawChild(&m_closeButton, startDstX, startDstY, roi);
 }
 
 bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
@@ -361,7 +361,7 @@ bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, i
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_closeButton.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
         return true;
     }
 
