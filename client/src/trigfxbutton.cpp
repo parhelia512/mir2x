@@ -25,7 +25,7 @@ TrigfxButton::TrigfxButton(Widget::VarDir argDir,
         bool    argAutoDelete)
 
     : ButtonBase
-      {
+      {{
           .dir = std::move(argDir),
 
           .x = std::move(argX),
@@ -48,7 +48,7 @@ TrigfxButton::TrigfxButton(Widget::VarDir argDir,
           .offYOnOver = argOffYOnOver,
 
           .offXOnClick = argOffXOnClick,
-          .offXOnClick = argOffYOnClick,
+          .offYOnClick = argOffYOnClick,
 
           .onClickDone = argOnClickDone,
           .radioMode = argRadioMode,
@@ -58,7 +58,7 @@ TrigfxButton::TrigfxButton(Widget::VarDir argDir,
               .widget = argParent,
               .autoDelete = argAutoDelete,
           }
-      }
+      }}
 
     , m_gfxList
       {
