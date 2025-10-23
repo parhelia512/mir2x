@@ -29,33 +29,26 @@ AlphaOnButton::AlphaOnButton(
         bool    autoDelete)
 
     : ButtonBase
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          0,
-          0,
+      {{
+          .dir = std::move(argDir),
 
-          std::move(fnOnOverIn),
-          std::move(fnOnOverOut),
-          std::move(fnOnClick),
-          std::move(fnOnTrigger),
+          .x = std::move(argX),
+          .y = std::move(argY),
 
-          SYS_U32NIL,
-          SYS_U32NIL,
-          SYS_U32NIL,
+          .onOverIn  = std::move(fnOnOverIn),
+          .onOverOut = std::move(fnOnOverOut),
 
-          0,
-          0,
-          0,
-          0,
+          .onClick = std::move(fnOnClick),
+          .onTrigger = std::move(fnOnTrigger),
 
-          triggerOnDone,
-          false,
+          .onClickDone = triggerOnDone,
 
-          pwidget,
-          autoDelete,
-      }
+          .parent
+          {
+              .widget = pwidget,
+              .autoDelete = autoDelete,
+          }
+      }}
 
     , m_modColor(argModColor)
     , m_texID(argDownTexID)

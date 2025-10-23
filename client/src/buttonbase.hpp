@@ -18,6 +18,49 @@
 class ButtonBase: public Widget
 {
     private:
+        using    OverCBFunc = std::variant<std::nullptr_t, std::function<void(         )>, std::function<void(Widget *           )>>;
+        using   ClickCBFunc = std::variant<std::nullptr_t, std::function<void(bool, int)>, std::function<void(Widget *, bool, int)>>;
+        using TriggerCBFunc = std::variant<std::nullptr_t, std::function<void(      int)>, std::function<void(Widget *,       int)>>;
+
+        struct SeffIDList
+        {
+            std::optional<uint32_t> onOverIn  = {};
+            std::optional<uint32_t> onOverOut = {};
+            std::optional<uint32_t> onClick   = 0X01020000 + 105;
+        };
+
+    private:
+        struct InitArgs
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            Widget::VarSizeOpt w = 0;
+            Widget::VarSizeOpt h = 0;
+
+            OverCBFunc onOverIn  = nullptr;
+            OverCBFunc onOverOut = nullptr;
+
+            ClickCBFunc onClick = nullptr;
+            TriggerCBFunc onTrigger = nullptr;
+
+            SeffIDList seff {};
+
+            int offXOnOver = 0;
+            int offYOnOver = 0;
+
+            int offXOnClick = 0;
+            int offYOnClick = 0;
+
+            bool onClickDone = true;
+            bool radioMode   = false;
+
+            Widget::WADPair parent {};
+        };
+
+    private:
         class InnButtonState final
         {
             // encapsulate it as a class
@@ -56,45 +99,21 @@ class ButtonBase: public Widget
         const bool m_radioMode;
 
     protected:
-        const std::optional<uint32_t> m_seffID[3];
+        const ButtonBase::SeffIDList m_seff;
 
     protected:
         const int m_offset[3][2];
 
     protected:
-        std::function<void(Widget *           )> m_onOverIn;
-        std::function<void(Widget *           )> m_onOverOut;
-        std::function<void(Widget *, bool, int)> m_onClick;
-        std::function<void(Widget *,       int)> m_onTrigger;
+        ButtonBase::OverCBFunc m_onOverIn;
+        ButtonBase::OverCBFunc m_onOverOut;
+
+    protected:
+        ButtonBase::ClickCBFunc m_onClick;
+        ButtonBase::TriggerCBFunc m_onTrigger;
 
     public:
-        ButtonBase(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                Widget::VarSizeOpt,
-                Widget::VarSizeOpt,
-
-                std::function<void(Widget *           )> = nullptr,
-                std::function<void(Widget *           )> = nullptr,
-                std::function<void(Widget *, bool, int)> = nullptr,
-                std::function<void(Widget *,       int)> = nullptr,
-
-                std::optional<uint32_t> = {},
-                std::optional<uint32_t> = {},
-                std::optional<uint32_t> = {},
-
-                int = 0,
-                int = 0,
-                int = 0,
-                int = 0,
-
-                bool = true,
-                bool = false,
-
-                Widget * = nullptr,
-                bool     = false);
+        ButtonBase(ButtonBase::InitArgs);
 
     public:
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;

@@ -7,71 +7,34 @@
 extern SDLDevice *g_sdlDevice;
 extern SoundEffectDB *g_seffDB;
 
-ButtonBase::ButtonBase(
-        Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
-
-        Widget::VarSizeOpt argW,
-        Widget::VarSizeOpt argH,
-
-        std::function<void(Widget *           )> argOnOverIn,
-        std::function<void(Widget *           )> argOnOverOut,
-        std::function<void(Widget *, bool, int)> argOnClick,
-        std::function<void(Widget *,       int)> argOnTrigger,
-
-        std::optional<uint32_t> argSeffIDOnOverIn,
-        std::optional<uint32_t> argSeffIDOnOverOut,
-        std::optional<uint32_t> argSeffIDOnClick,
-
-        int argOffXOnOver,
-        int argOffYOnOver,
-        int argOffXOnClick,
-        int argOffYOnClick,
-
-        bool argOnClickDone,
-        bool argRadioMode,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
+ButtonBase::ButtonBase(ButtonBase::InitArgs args)
     : Widget
-      ({
-          .dir = std::move(argDir),
+      {{
+          .dir = std::move(args.dir),
 
-          .x = std::move(argX),
-          .y = std::move(argY),
-          .w = std::move(argW),
-          .h = std::move(argH),
+          .x = std::move(args.x),
+          .y = std::move(args.y),
+          .w = std::move(args.w),
+          .h = std::move(args.h),
 
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
-      })
+          .parent = std::move(args.parent),
+      }}
 
-    , m_onClickDone(argOnClickDone)
-    , m_radioMode(argRadioMode)
+    , m_onClickDone(args.onClickDone)
+    , m_radioMode  (args.radioMode  )
 
-    , m_seffID
-      {
-          argSeffIDOnOverIn,
-          argSeffIDOnOverOut,
-          argSeffIDOnClick,
-      }
-
+    , m_seff(std::move(args.seff))
     , m_offset
       {
-          {0               , 0             },
-          {argOffXOnOver   , argOffYOnOver },
-          {argOffXOnClick  , argOffYOnClick},
+          {0               , 0               },
+          {args.offXOnOver , args.offYOnOver },
+          {args.offXOnClick, args.offYOnClick},
       }
 
-    , m_onOverIn (std::move(argOnOverIn ))
-    , m_onOverOut(std::move(argOnOverOut))
-    , m_onClick  (std::move(argOnClick  ))
-    , m_onTrigger(std::move(argOnTrigger))
+    , m_onOverIn (std::move(args.onOverIn ))
+    , m_onOverOut(std::move(args.onOverOut))
+    , m_onClick  (std::move(args.onClick  ))
+    , m_onTrigger(std::move(args.onTrigger))
 {}
 
 bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
@@ -242,47 +205,67 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
 
 void ButtonBase::onOverIn()
 {
-    if(m_onOverIn){
-        m_onOverIn(this);
-    }
+    std::visit(VarDispatcher
+    {
+        [    ](std::function<void(        )> &f){ if(f){f(    );} },
+        [this](std::function<void(Widget *)> &f){ if(f){f(this);} },
 
-    if(m_seffID[0].has_value()){
-        g_sdlDevice->playSoundEffect(g_seffDB->retrieve((m_seffID[0].value())));
+        [](auto &){},
+
+    }, m_onOverIn);
+
+    if(m_seff.onOverIn.has_value()){
+        g_sdlDevice->playSoundEffect(g_seffDB->retrieve((m_seff.onOverIn.value())));
     }
 }
 
 void ButtonBase::onOverOut()
 {
-    if(m_onOverOut){
-        m_onOverOut(this);
-    }
+    std::visit(VarDispatcher
+    {
+        [    ](std::function<void(        )> &f){ if(f){f(    );} },
+        [this](std::function<void(Widget *)> &f){ if(f){f(this);} },
 
-    if(m_seffID[1].has_value()){
-        g_sdlDevice->playSoundEffect(g_seffDB->retrieve((m_seffID[1].value())));
+        [](auto &){},
+
+    }, m_onOverOut);
+
+    if(m_seff.onOverOut.has_value()){
+        g_sdlDevice->playSoundEffect(g_seffDB->retrieve((m_seff.onOverOut.value())));
     }
 }
 
 void ButtonBase::onClick(bool clickDone, int clickCount)
 {
-    if(m_onClick){
-        m_onClick(this, clickDone, clickCount);
-    }
+    std::visit(VarDispatcher
+    {
+        [      clickDone, clickCount](std::function<void(          bool, int)> &f){ if(f){f(      clickDone, clickCount);} },
+        [this, clickDone, clickCount](std::function<void(Widget *, bool, int)> &f){ if(f){f(this, clickDone, clickCount);} },
+
+        [](auto &){},
+
+    }, m_onClick);
 
     if(clickDone){
-        // press button
+        // pressed button released
     }
     else{
-        if(m_seffID[2].has_value()){
-            g_sdlDevice->playSoundEffect(g_seffDB->retrieve((m_seffID[2].value())));
+        if(m_seff.onClick.has_value()){
+            g_sdlDevice->playSoundEffect(g_seffDB->retrieve((m_seff.onClick.value())));
         }
     }
 }
 
 void ButtonBase::onTrigger(int clickCount)
 {
-    if(m_onTrigger){
-        m_onTrigger(this, clickCount);
-    }
+    std::visit(VarDispatcher
+    {
+        [      clickCount](std::function<void(          int)> &f){ if(f){f(      clickCount);} },
+        [this, clickCount](std::function<void(Widget *, int)> &f){ if(f){f(this, clickCount);} },
+
+        [](auto &){},
+
+    }, m_onTrigger);
 }
 
 void ButtonBase::onBadEvent()

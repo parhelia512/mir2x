@@ -9,37 +9,25 @@ extern SDLDevice *g_sdlDevice;
 
 ACButton::ACButton(dir8_t dir, int x, int y, ProcessRun *proc, const std::vector<std::string> &buttonList, Widget *pwidget, bool autoDelete)
     : ButtonBase
-      {
-          dir,
-          x,
-          y,
-          0,
-          0,
+      {{
+          .dir = dir,
+          .x = x,
+          .y = y,
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               m_currButtonName = (m_currButtonName + 1) % m_buttonNameList.size();
               setLabel();
           },
 
-          SYS_U32NIL,
-          SYS_U32NIL,
-          SYS_U32NIL,
+          .onClickDone = false,
+          .parent
+          {
+              .widget = pwidget,
+              .autoDelete = autoDelete,
+          }
+      }}
 
-          0,
-          0,
-          0,
-          0,
-
-          false,
-          false,
-
-          pwidget,
-          autoDelete,
-      }
     , m_proc(proc)
     , m_texMap
       {
