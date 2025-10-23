@@ -16,34 +16,22 @@ CBLevel::CBLevel(
         bool    argAutoDelete)
 
     : ButtonBase
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          16,
-          16,
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = 16,
+          .h = 16,
 
-          nullptr,
-          nullptr,
-          nullptr,
-          std::move(argOnClick),
+          .onTrigger = std::move(argOnClick),
 
-          std::nullopt,
-          std::nullopt,
-          std::nullopt,
-
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_processRun(argProc)
     , m_image

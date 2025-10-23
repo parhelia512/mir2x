@@ -34,37 +34,27 @@ MenuButton::MenuButton(dir8_t argDir,
     , m_menuBoard(argMenuBoard.first)
 
     , m_button
-      {
-          DIR_UPLEFT,
-          m_margin[2],
-          m_margin[0],
-          m_gfxWidget->w() + m_margin[2] + m_margin[3],
-          m_gfxWidget->h() + m_margin[0] + m_margin[1],
+      {{
+          .x = m_margin[2],
+          .y = m_margin[0],
+          .w = m_gfxWidget->w() + m_margin[2] + m_margin[3],
+          .h = m_gfxWidget->h() + m_margin[0] + m_margin[1],
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               m_menuBoard->flipShow();
               updateMenuButtonSize();
           },
 
-          SYS_U32NIL,
-          SYS_U32NIL,
-          SYS_U32NIL,
+          .offXOnClick = 1,
+          .offYOnClick = 1,
 
-          0,
-          0,
-          1,
-          1,
-
-          false,
-          false,
-
-          this,
-          false,
-      }
+          .onClickDone = false,
+          .parent
+          {
+              .widget = this,
+          }
+      }}
 {
     m_gfxWidget->moveAt(DIR_UPLEFT, m_margin[2], m_margin[0]);
     m_menuBoard->moveAt(DIR_UPLEFT, m_margin[2], m_margin[0] + m_gfxWidget->h());

@@ -26,31 +26,38 @@ TrigfxButton::TrigfxButton(Widget::VarDir argDir,
 
     : ButtonBase
       {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          0,
-          0,
+          .dir = std::move(argDir),
 
-          std::move(argOnOverIn),
-          std::move(argOnOverOut),
-          std::move(argOnClick),
-          std::move(argOnTrigger),
+          .x = std::move(argX),
+          .y = std::move(argY),
 
-          argSeffIDList[0],
-          argSeffIDList[1],
-          argSeffIDList[2],
+          .onOverIn  = std::move(argOnOverIn),
+          .onOverOut = std::move(argOnOverOut),
 
-          argOffXOnOver,
-          argOffYOnOver,
-          argOffXOnClick,
-          argOffYOnClick,
+          .onClick = std::move(argOnClick),
+          .onTrigger = std::move(argOnTrigger),
 
-          argOnClickDone,
-          argRadioMode,
+          .seff
+          {
+              .onOverIn  = argSeffIDList[0],
+              .onOverOut = argSeffIDList[1],
+              .onClick   = argSeffIDList[2],
+          },
 
-          argParent,
-          argAutoDelete,
+          .offXOnOver = argOffXOnOver,
+          .offYOnOver = argOffYOnOver,
+
+          .offXOnClick = argOffXOnClick,
+          .offXOnClick = argOffYOnClick,
+
+          .onClickDone = argOnClickDone,
+          .radioMode = argRadioMode,
+
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
       }
 
     , m_gfxList
