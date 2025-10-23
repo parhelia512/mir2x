@@ -18,15 +18,9 @@ ProcessSync::ProcessSync()
       }}
 
     , m_barFull
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000002); },
-      }
+      {{
+          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(0X00000002); },
+      }}
 
     , m_bar
       {
@@ -48,25 +42,10 @@ ProcessSync::ProcessSync()
       }
 
     , m_bgImg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000001); },
-
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_BLEND,
-
-          &m_canvas,
-          false,
-      }
+      {{
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000001); },
+          .parent{&m_canvas},
+      }}
 
     , m_barText
       {

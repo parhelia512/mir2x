@@ -81,19 +81,12 @@ CBMiddle::CBMiddle(
       }
 
     , m_bgImgFull
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *)
+      {{
+          .texLoadFunc = [](const Widget *)
           {
               return g_progUseDB->retrieve(0X00000013);
           },
-      }
+      }}
 
     , m_bgImg
       {

@@ -77,26 +77,18 @@ FriendItem::FriendItem(
       }
 
     , avatar
-      {
-          DIR_UPLEFT,
-          FriendItem::ITEM_MARGIN,
-          FriendItem::ITEM_MARGIN,
+      {{
+          .x = FriendItem::ITEM_MARGIN,
+          .y = FriendItem::ITEM_MARGIN,
 
-          FriendItem::AVATAR_WIDTH,
-          FriendItem::HEIGHT - FriendItem::ITEM_MARGIN * 2,
+          .w = FriendItem::AVATAR_WIDTH,
+          .h = FriendItem::HEIGHT - FriendItem::ITEM_MARGIN * 2,
 
-          std::move(argLoadImageFunc),
+          .texLoadFunc = std::move(argLoadImageFunc),
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , name
       {

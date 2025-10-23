@@ -65,16 +65,13 @@ QuickAccessBoard::Grid::Grid(
       }
 
     , item
-      {
-          DIR_NONE,
+      {{
+          .dir = DIR_NONE,
 
-          [this](const Widget *){ return w() / 2; },
-          [this](const Widget *){ return h() / 2; },
+          .x = [this](const Widget *){ return w() / 2; },
+          .y = [this](const Widget *){ return h() / 2; },
 
-          {},
-          {},
-
-          [this](const Widget *) -> SDL_Texture *
+          .texLoadFunc = [this](const Widget *) -> SDL_Texture *
           {
               if(const auto &item = proc->getMyHero()->getBelt(slot)){
                   return g_itemDB->retrieve(DBCOM_ITEMRECORD(item.itemID).pkgGfxID | 0X01000000);
@@ -82,16 +79,9 @@ QuickAccessBoard::Grid::Grid(
               return nullptr;
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , count
       {
@@ -147,29 +137,15 @@ QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
 
     , m_processRun(argProc)
     , m_bg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [this](const Widget *)
+      {{
+          .texLoadFunc = [this](const Widget *)
           {
               return g_progUseDB->retrieve(m_texID);
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , m_buttonClose
       {

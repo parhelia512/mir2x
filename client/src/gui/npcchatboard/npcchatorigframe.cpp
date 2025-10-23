@@ -30,52 +30,27 @@ NPCChatOrigFrame::NPCChatOrigFrame(
       }}
 
     , m_up
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *) -> SDL_Texture *
+      {{
+          .texLoadFunc = [] -> SDL_Texture *
           {
               return g_progUseDB->retrieve(0X00000051);
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , m_down
-      {
-          DIR_UPLEFT,
-          0,
-          [this](const Widget *){ return m_up.h(); },
+      {{
+          .x = 0,
+          .y = [this]{ return m_up.h(); },
 
-          {},
-          {},
-
-          [](const Widget *) -> SDL_Texture *
+          .texLoadFunc = [] -> SDL_Texture *
           {
               return g_progUseDB->retrieve(0X00000053);
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 {}

@@ -34,14 +34,9 @@ SearchInputLine::SearchInputLine(Widget::VarDir argDir,
       }}
 
     , image
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000460); },
-      }
+      {{
+          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(0X00000460); },
+      }}
 
     , inputbg
       {
@@ -64,26 +59,19 @@ SearchInputLine::SearchInputLine(Widget::VarDir argDir,
       }
 
     , icon
-      {
-          DIR_NONE,
-          SearchInputLine::ICON_WIDTH / 2 + SearchInputLine::ICON_MARGIN + 3,
-          SearchInputLine::HEIGHT     / 2,
+      {{
+          .dir = DIR_NONE,
+          .x = SearchInputLine::ICON_WIDTH / 2 + SearchInputLine::ICON_MARGIN + 3,
+          .y = SearchInputLine::HEIGHT     / 2,
 
-          std::min<int>(SearchInputLine::ICON_WIDTH, SearchInputLine::HEIGHT - 3 * 2),
-          std::min<int>(SearchInputLine::ICON_WIDTH, SearchInputLine::HEIGHT - 3 * 2),
+          .w = std::min<int>(SearchInputLine::ICON_WIDTH, SearchInputLine::HEIGHT - 3 * 2),
+          .h = std::min<int>(SearchInputLine::ICON_WIDTH, SearchInputLine::HEIGHT - 3 * 2),
 
-          [](const Widget *) { return g_progUseDB->retrieve(0X00001200); },
+          .texLoadFunc = [](const Widget *) { return g_progUseDB->retrieve(0X00001200); },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , input
       {

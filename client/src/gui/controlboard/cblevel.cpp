@@ -35,24 +35,18 @@ CBLevel::CBLevel(
 
     , m_processRun(argProc)
     , m_image
-      {
-          DIR_NONE,
-          [this](const Widget *){ return w() / 2; },
-          [this](const Widget *){ return h() / 2; },
+      {{
+          .dir = DIR_NONE,
 
-          {},
-          {},
+          .x = [this](const Widget *){ return w() / 2; },
+          .y = [this](const Widget *){ return h() / 2; },
 
-          [](const Widget *)
+          .texLoadFunc = [](const Widget *)
           {
               return g_sdlDevice->getCover(8, 360);
           },
 
-          false,
-          false,
-          0,
-
-          [this](const Widget *) -> uint32_t
+          .modColor = [this](const Widget *) -> uint32_t
           {
               switch(getState()){
                   case BEVENT_ON  : return colorf::BLUE + colorf::A_SHF(0XFF);
@@ -61,11 +55,9 @@ CBLevel::CBLevel(
               }
           },
 
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , m_level
       {

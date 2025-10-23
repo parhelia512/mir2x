@@ -42,19 +42,12 @@ CBRight::CBRight(
     , m_processRun(argProc)
 
     , m_bgFull
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *)
+      {{
+          .texLoadFunc = [](const Widget *)
           {
               return g_progUseDB->retrieve(0X00000012);
           },
-      }
+      }}
 
     , m_bg
       {

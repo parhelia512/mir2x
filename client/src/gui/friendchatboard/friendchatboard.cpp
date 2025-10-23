@@ -51,14 +51,9 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
       }
 
     , m_frame
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000800); },
-      }
+      {{
+          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(0X00000800); },
+      }}
 
     , m_frameCropDup
       {
@@ -80,19 +75,10 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
       }
 
     , m_background
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000810); },
-
-          false,
-          false,
-          0,
-          colorf::RGBA(160, 160, 160, 255),
-      }
+      {{
+          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(0X00000810); },
+          .modColor = colorf::RGBA(160, 160, 160, 255),
+      }}
 
     , m_backgroundCropDup
       {

@@ -44,9 +44,9 @@ RadioSelector::RadioSelector(Widget::VarDir argDir,
     , m_valSetter(std::move(argValSetter))
     , m_valOnChange(std::move(argValOnChange))
 
-    , m_imgOff  {DIR_UPLEFT, 0, 0, 16, 16, [](const Widget *){ return g_progUseDB->retrieve(0X00000370); }, false, false, 0, colorf::WHITE + colorf::A_SHF(0XFF)}
-    , m_imgOn   {DIR_UPLEFT, 0, 0, 16, 16, [](const Widget *){ return g_progUseDB->retrieve(0X00000370); }, false, false, 0, colorf::RED   + colorf::A_SHF(0XFF)}
-    , m_imgDown {DIR_UPLEFT, 0, 0, 16, 16, [](const Widget *){ return g_progUseDB->retrieve(0X00000371); }, false, false, 0, colorf::WHITE + colorf::A_SHF(0XFF)}
+    , m_imgOff  {{.w=16, .h=16, .texLoadFunc=[](const Widget *){ return g_progUseDB->retrieve(0X00000370); }, .modColor=colorf::WHITE_A255}}
+    , m_imgOn   {{.w=16, .h=16, .texLoadFunc=[](const Widget *){ return g_progUseDB->retrieve(0X00000370); }, .modColor=colorf::  RED_A255}}
+    , m_imgDown {{.w=16, .h=16, .texLoadFunc=[](const Widget *){ return g_progUseDB->retrieve(0X00000371); }, .modColor=colorf::WHITE_A255}}
 
 {
     for(auto [widget, autoDelete]: argWidgetList){

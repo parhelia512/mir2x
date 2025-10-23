@@ -41,19 +41,12 @@ CBLeft::CBLeft(
     , m_processRun(argProc)
 
     , m_bgFull
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *)
+      {{
+          .texLoadFunc = [](const Widget *)
           {
               return g_progUseDB->retrieve(0X00000012);
           },
-      }
+      }}
 
     , m_bg
       {
@@ -75,19 +68,12 @@ CBLeft::CBLeft(
       }
 
     , m_hpFull
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *)
+      {{
+          .texLoadFunc = [](const Widget *)
           {
               return g_progUseDB->retrieve(0X00000018);
           },
-      }
+      }}
 
     , m_hp
       {
@@ -119,19 +105,12 @@ CBLeft::CBLeft(
       }
 
     , m_mpFull
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *)
+      {{
+          .texLoadFunc = []
           {
               return g_progUseDB->retrieve(0X00000019);
           },
-      }
+      }}
 
     , m_mp
       {
@@ -163,19 +142,12 @@ CBLeft::CBLeft(
       }
 
     , m_levelBarFull
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *)
+      {{
+          .texLoadFunc = []
           {
               return g_progUseDB->retrieve(0X000000A0);
           },
-      }
+      }}
 
     , m_levelBar
       {
@@ -207,19 +179,12 @@ CBLeft::CBLeft(
       }
 
     , m_inventoryBarFull
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *)
+      {{
+          .texLoadFunc = [](const Widget *)
           {
               return g_progUseDB->retrieve(0X000000A0);
           },
-      }
+      }}
 
     , m_inventoryBar
       {

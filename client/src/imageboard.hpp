@@ -21,9 +21,27 @@
 // widget uses original image width/height if widget size is given by {}, otherwise rescaling applied
 class ImageBoard: public Widget
 {
-    private:
-        using VarTexLoadFunc = std::variant<std::function<SDL_Texture *(              )>,
-                                            std::function<SDL_Texture *(const Widget *)>>;
+    protected:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            Widget::VarSizeOpt w = {}; // {} means image width , otherwise rescale the image
+            Widget::VarSizeOpt h = {}; // {} means image height, otherwise rescale the image
+
+            Widget::VarTexLoadFunc texLoadFunc = nullptr;
+
+            bool hflip  = false;
+            bool vflip  = false;
+            int  rotate = 0;
+
+            Widget::VarU32 modColor = colorf::WHITE_A255;
+            Widget::VarBlendMode blendMode = SDL_BLENDMODE_BLEND;
+
+            Widget::WADPair parent {};
+        };
 
     private:
         Widget::VarSizeOpt m_varW;
@@ -34,7 +52,7 @@ class ImageBoard: public Widget
         Widget::VarBlendMode m_varBlendMode;
 
     private:
-        VarTexLoadFunc m_loadFunc;
+        Widget::VarTexLoadFunc m_loadFunc;
 
     private:
         std::pair<bool, int> m_xformPair;
@@ -44,26 +62,7 @@ class ImageBoard: public Widget
         int  &m_rotate = m_xformPair.second;
 
     public:
-        ImageBoard(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                Widget::VarSizeOpt, // {} means image width , otherwise rescale the image
-                Widget::VarSizeOpt, // {} means image height, otherwise rescale the image
-
-                // std::function<SDL_Texture *(const Widget *)>,
-                VarTexLoadFunc,
-
-                bool = false,
-                bool = false,
-                int  = 0,
-
-                Widget::VarU32       = colorf::WHITE_A255,
-                Widget::VarBlendMode = SDL_BLENDMODE_BLEND,
-
-                Widget * = nullptr,
-                bool     = false);
+        ImageBoard(ImageBoard::InitArgs);
 
     public:
         void draw(Widget::ROIMap) const override;
@@ -97,10 +96,6 @@ class ImageBoard: public Widget
     public:
         SDL_Texture *getTexture() const
         {
-            switch(m_loadFunc.index()){
-                case  0: return std::get<0>(m_loadFunc)();
-                case  1: return std::get<1>(m_loadFunc)(this);
-                default: return nullptr;
-            }
+            return Widget::evalTexLoadFunc(m_loadFunc, this);
         }
 };

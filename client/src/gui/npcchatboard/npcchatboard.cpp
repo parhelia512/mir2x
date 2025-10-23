@@ -60,29 +60,18 @@ NPCChatBoard::NPCChatBoard(
     , m_processRun(argProc)
 
     , m_face
-      {
-          DIR_UPLEFT,
-          m_margin,
-          m_margin,
+      {{
+          .x = m_margin,
+          .y = m_margin,
 
-          {},
-          {},
-
-          [this](const Widget *)
+          .texLoadFunc = [this](const Widget *)
           {
               return g_progUseDB->retrieve(getNPCFaceKey());
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , m_chatBoard
       {

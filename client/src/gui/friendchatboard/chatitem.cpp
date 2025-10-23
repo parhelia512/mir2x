@@ -54,16 +54,12 @@ ChatItem::ChatItem(
     , bgColor(std::move(argBGColor))
 
     , avatar
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = ChatItem::AVATAR_WIDTH,
+          .h = ChatItem::AVATAR_HEIGHT,
 
-          ChatItem::AVATAR_WIDTH,
-          ChatItem::AVATAR_HEIGHT,
-
-          std::move(argLoadImageFunc),
-      }
+          .texLoadFunc = std::move(argLoadImageFunc),
+      }}
 
     , name
       {

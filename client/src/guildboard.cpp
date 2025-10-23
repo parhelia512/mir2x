@@ -22,29 +22,15 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 
     , m_processRun(runPtr)
     , m_bg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *) -> SDL_Texture *
+      {{
+          .texLoadFunc = [](const Widget *) -> SDL_Texture *
           {
               return g_progUseDB->retrieve(0X00000500);
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , m_closeButton
       {

@@ -73,16 +73,9 @@ CBMiddleExpand::CBMiddleExpand(
       }
 
     , m_bgImgFull
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000027); },
-      }
+      {{
+          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(0X00000027); },
+      }}
 
     , m_bgImg
       {

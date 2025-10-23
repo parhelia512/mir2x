@@ -44,70 +44,34 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
       }
 
     , m_cornerUpLeft
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X09000006); },
 
-          {},
-          {},
-
-          []{ return g_progUseDB->retrieve(0X09000006); },
-
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_BLEND,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_BLEND,
+          .parent{this},
+      }}
 
     , m_cornerUpRight
-      {
-          DIR_UPRIGHT,
-          [this]{ return w() - 1; },
-          0,
+      {{
+          .dir = DIR_UPRIGHT,
 
-          {},
-          {},
+          .x = [this]{ return w() - 1; },
+          .y = 0,
 
-          []{ return g_progUseDB->retrieve(0X09000007); },
-
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_BLEND,
-
-          this,
-          false,
-      }
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X09000007); },
+          .parent{this},
+      }}
 
     , m_cornerDownLeft
-      {
-          DIR_DOWNLEFT,
-          0,
-          [this]{ return h() - 1; },
+      {{
+          .dir = DIR_DOWNLEFT,
 
-          {},
-          {},
+          .x = 0,
+          .y = [this]{ return h() - 1; },
 
-          []{ return g_progUseDB->retrieve(0X09000008); },
-
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_BLEND,
-
-          this,
-          false,
-      }
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X09000008); },
+          .parent{this},
+      }}
 
     , m_buttonAlpha
       {

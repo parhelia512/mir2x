@@ -33,29 +33,15 @@ InputStringBoard::InputStringBoard(
       }}
 
     , m_bg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *)
+      {{
+          .texLoadFunc = [](const Widget *)
           {
               return g_progUseDB->retrieve(0X07000000);
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_BLEND,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_BLEND,
+          .parent{this},
+      }}
 
     , m_textInfo
       {

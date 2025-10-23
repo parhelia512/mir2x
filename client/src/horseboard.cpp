@@ -53,29 +53,15 @@ HorseBoard::HorseBoard(
       }
 
     , m_imageBg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *)
+      {{
+          .texLoadFunc = [](const Widget *)
           {
               return g_progUseDB->retrieve(0X00000700);
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , m_close
       {

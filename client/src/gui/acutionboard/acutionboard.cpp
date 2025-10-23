@@ -22,27 +22,13 @@ AcutionBoard::AcutionBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
 
     , m_runProc(argProc)
     , m_background
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *) -> SDL_Texture *
+      {{
+          .texLoadFunc = [](const Widget *) -> SDL_Texture *
           {
               return g_progUseDB->retrieve(0X00001400);
           },
 
-          false,
-          false,
-          false,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 {}

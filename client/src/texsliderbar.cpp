@@ -34,36 +34,16 @@ TexSliderBar::TexSliderBar(
       }}
 
     , m_slotImage
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000460); },
-
-          false,
-          false,
-          argHSlider ? 0 : 1,
-      }
+      {{
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000460); },
+          .rotate = argHSlider ? 0 : 1,
+      }}
 
     , m_barImage
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000470); },
-
-          false,
-          false,
-          argHSlider ? 0 : 1,
-      }
+      {{
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000470); },
+          .rotate = argHSlider ? 0 : 1,
+      }}
 
     , m_slotCropLeft
       {

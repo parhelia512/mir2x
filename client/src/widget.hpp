@@ -42,15 +42,13 @@ class WidgetTreeNode // tree concept, used by class Widget only
             std::function<T(const Widget *, const void *)>>;
 
     private:
-        using alias_VarDir       = VarTypeHelper<       dir8_t>;
-        using alias_VarOff       = VarTypeHelper<          int>;
-        using alias_VarU32       = VarTypeHelper<     uint32_t>;
-        using alias_VarSize      = VarTypeHelper<          int>;
-        using alias_VarBool      = VarTypeHelper<         bool>;
-        using alias_VarBlendMode = VarTypeHelper<SDL_BlendMode>;
-
-    private:
-        using alias_VarTexLoadFunc = std::variant<std::nullptr_t, std::function<SDL_Texture *()>, std::function<SDL_Texture *(const Widget *)>>;
+        using alias_VarDir         = VarTypeHelper<       dir8_t>;
+        using alias_VarOff         = VarTypeHelper<          int>;
+        using alias_VarU32         = VarTypeHelper<     uint32_t>;
+        using alias_VarSize        = VarTypeHelper<          int>;
+        using alias_VarBool        = VarTypeHelper<         bool>;
+        using alias_VarBlendMode   = VarTypeHelper<SDL_BlendMode>;
+        using alias_VarTexLoadFunc = VarTypeHelper<SDL_Texture *>;
 
     protected:
         // make all var types distinct
@@ -188,6 +186,7 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarSizeOpt;
         using WidgetTreeNode::VarBool;
         using WidgetTreeNode::VarBlendMode;
+        using WidgetTreeNode::VarTexLoadFunc;
 
     public:
         struct ROI final
@@ -299,12 +298,13 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::ChildElement;
 
     public:
-        static dir8_t        evalDir      (const Widget::VarDir       &, const Widget *, const void * = nullptr);
-        static int           evalInt      (const Widget::VarOff       &, const Widget *, const void * = nullptr);
-        static uint32_t      evalU32      (const Widget::VarU32       &, const Widget *, const void * = nullptr);
-        static int           evalSize     (const Widget::VarSize      &, const Widget *, const void * = nullptr);
-        static bool          evalBool     (const Widget::VarBool      &, const Widget *, const void * = nullptr);
-        static SDL_BlendMode evalBlendMode(const Widget::VarBlendMode &, const Widget *, const void * = nullptr);
+        static dir8_t        evalDir        (const Widget::VarDir         &, const Widget *, const void * = nullptr);
+        static int           evalInt        (const Widget::VarOff         &, const Widget *, const void * = nullptr);
+        static uint32_t      evalU32        (const Widget::VarU32         &, const Widget *, const void * = nullptr);
+        static int           evalSize       (const Widget::VarSize        &, const Widget *, const void * = nullptr);
+        static bool          evalBool       (const Widget::VarBool        &, const Widget *, const void * = nullptr);
+        static SDL_BlendMode evalBlendMode  (const Widget::VarBlendMode   &, const Widget *, const void * = nullptr);
+        static SDL_Texture * evalTexLoadFunc(const Widget::VarTexLoadFunc &, const Widget *, const void * = nullptr);
 
     public:
         static int evalSizeOpt(const Widget::VarSizeOpt &, const Widget *,               const auto &);

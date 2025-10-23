@@ -39,14 +39,11 @@ CBFace::CBFace(
 
     , m_processRun(argProc)
     , m_face
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this](const Widget *){ return w(); },
+          .h = [this](const Widget *){ return h(); },
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-          [this](const Widget *)
+          .texLoadFunc = [this](const Widget *)
           {
               if(auto texPtr = g_progUseDB->retrieve(getFaceTexID())){
                   return texPtr;
@@ -54,45 +51,27 @@ CBFace::CBFace(
               return g_progUseDB->retrieve(0X010007CF);
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , m_hpBar
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          [this](const Widget *)
+      {{
+          .w = [this](const Widget *)
           {
               return to_dround(getHPRatio() * w());
           },
 
-          CBFace::BAR_HEIGHT,
+          .h = CBFace::BAR_HEIGHT,
 
-          [](const Widget *)
+          .texLoadFunc = [](const Widget *)
           {
               return g_progUseDB->retrieve(0X00000015);
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , m_drawBuffIDList
       {

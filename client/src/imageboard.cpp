@@ -5,44 +5,21 @@
 
 extern SDLDevice *g_sdlDevice;
 
-ImageBoard::ImageBoard(
-        Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
-
-        Widget::VarSizeOpt argW,
-        Widget::VarSizeOpt argH,
-
-        VarTexLoadFunc argLoadFunc,
-
-        bool argHFlip,
-        bool argVFlip,
-        int  argRotate,
-
-        Widget::VarU32 argColor,
-        Widget::VarBlendMode argBlendMode,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
+ImageBoard::ImageBoard(ImageBoard::InitArgs args)
     : Widget
       {{
-          .dir = std::move(argDir),
-          .x = std::move(argX),
-          .y = std::move(argY),
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .dir = std::move(args.dir),
+          .x = std::move(args.x),
+          .y = std::move(args.y),
+          .parent = args.parent,
       }}
 
-    , m_varW(std::move(argW))
-    , m_varH(std::move(argH))
-    , m_varColor(std::move(argColor))
-    , m_varBlendMode(std::move(argBlendMode))
-    , m_loadFunc(std::move(argLoadFunc))
-    , m_xformPair(getHFlipRotatePair(argHFlip, argVFlip, argRotate))
+    , m_varW(std::move(args.w))
+    , m_varH(std::move(args.h))
+    , m_varColor(std::move(args.modColor))
+    , m_varBlendMode(std::move(args.blendMode))
+    , m_loadFunc(std::move(args.texLoadFunc))
+    , m_xformPair(getHFlipRotatePair(args.hflip, args.vflip, args.rotate))
 {
 
     int texW = 0;

@@ -66,26 +66,19 @@ SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
       }
 
     , icon
-      {
-          DIR_NONE,
-          SearchAutoCompletionItem::ICON_WIDTH / 2 + SearchAutoCompletionItem::ICON_MARGIN + 3,
-          SearchAutoCompletionItem::HEIGHT     / 2,
+      {{
+          .dir = DIR_NONE,
+          .x = SearchAutoCompletionItem::ICON_WIDTH / 2 + SearchAutoCompletionItem::ICON_MARGIN + 3,
+          .y = SearchAutoCompletionItem::HEIGHT     / 2,
 
-          std::min<int>(SearchAutoCompletionItem::ICON_WIDTH, SearchAutoCompletionItem::HEIGHT - 3 * 2),
-          std::min<int>(SearchAutoCompletionItem::ICON_WIDTH, SearchAutoCompletionItem::HEIGHT - 3 * 2),
+          .w = std::min<int>(SearchAutoCompletionItem::ICON_WIDTH, SearchAutoCompletionItem::HEIGHT - 3 * 2),
+          .h = std::min<int>(SearchAutoCompletionItem::ICON_WIDTH, SearchAutoCompletionItem::HEIGHT - 3 * 2),
 
-          [](const Widget *) { return g_progUseDB->retrieve(0X00001200); },
+          .texLoadFunc = [](const Widget *) { return g_progUseDB->retrieve(0X00001200); },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , label
       {

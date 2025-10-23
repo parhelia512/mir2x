@@ -464,6 +464,34 @@ SDL_BlendMode Widget::evalBlendMode(const Widget::VarBlendMode &varBlendMode, co
     varBlendMode);
 }
 
+SDL_Texture *Widget::evalTexLoadFunc(const Widget::VarTexLoadFunc &varTexLoadFunc, const Widget *widget, const void *arg)
+{
+    return std::visit(VarDispatcher
+    {
+        [](SDL_Texture *varg)
+        {
+            return varg;
+        },
+
+        [](const std::function<SDL_Texture *()> &varg)
+        {
+            return varg ? varg() : nullptr;
+        },
+
+        [widget](const std::function<SDL_Texture *(const Widget *)> &varg)
+        {
+            return varg ? varg(widget) : nullptr;
+        },
+
+        [widget, arg](const std::function<SDL_Texture *(const Widget *, const void *)> &varg)
+        {
+            return varg ? varg(widget, arg) : nullptr;
+        },
+    },
+
+    varTexLoadFunc);
+}
+
 Widget::Widget(Widget::InitArgs args)
     : WidgetTreeNode(args.parent.widget, args.parent.autoDelete)
     , m_dir(std::move(args.dir))

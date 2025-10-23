@@ -33,54 +33,32 @@ AlphaOnButton::AlphaOnButton(AlphaOnButton::InitArgs args)
     , m_onRadius(args.onRadius)
 
     , m_on
-      {
-          DIR_UPLEFT,
-          m_onOffX,
-          m_onOffY,
+      {{
+          .x = m_onOffX,
+          .y = m_onOffY,
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
+          .w = [this](const Widget *){ return w(); },
+          .h = [this](const Widget *){ return h(); },
 
-          [this](const Widget *) -> SDL_Texture *
+          .texLoadFunc = [this](const Widget *) -> SDL_Texture *
           {
               return (getState() == BEVENT_ON) ? g_sdlDevice->getCover(m_onRadius, 360) : nullptr;
           },
 
-          false,
-          false,
-          0,
-
-          m_modColor,
-          SDL_BLENDMODE_BLEND,
-
-          this,
-          false,
-      }
+          .modColor = m_modColor,
+          .parent{this},
+      }}
 
     , m_down
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [this](const Widget *) -> SDL_Texture *
+      {{
+          .texLoadFunc = [this](const Widget *) -> SDL_Texture *
           {
               return (getState() == BEVENT_DOWN) ? g_progUseDB->retrieve(Widget::evalU32(m_downTexID, this)) : nullptr;
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE + colorf::A_SHF(0XFF),
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 {
     m_on  .setShow([this](const Widget *){ return getState() == BEVENT_ON  ; });
     m_down.setShow([this](const Widget *){ return getState() == BEVENT_DOWN; });

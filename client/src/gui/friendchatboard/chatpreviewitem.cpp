@@ -40,29 +40,21 @@ ChatPreviewItem::ChatPreviewItem(
     , cpid(argCPID)
 
     , avatar
-      {
-          DIR_UPLEFT,
-          ChatPreviewItem::ITEM_MARGIN,
-          ChatPreviewItem::ITEM_MARGIN,
+      {{
+          .x = ChatPreviewItem::ITEM_MARGIN,
+          .y = ChatPreviewItem::ITEM_MARGIN,
 
-          ChatPreviewItem::AVATAR_WIDTH,
-          ChatPreviewItem::HEIGHT - ChatPreviewItem::ITEM_MARGIN * 2,
+          .w = ChatPreviewItem::AVATAR_WIDTH,
+          .h = ChatPreviewItem::HEIGHT - ChatPreviewItem::ITEM_MARGIN * 2,
 
-          [this](const Widget *) -> SDL_Texture *
+          .texLoadFunc = [this](const Widget *) -> SDL_Texture *
           {
               return g_progUseDB->retrieve(0X010007CF);
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , name
       {

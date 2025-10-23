@@ -83,14 +83,9 @@ RuntimeConfigBoard::TextInput::TextInput(
       }
 
     , m_image
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000460); },
-      }
+      {{
+          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(0X00000460); },
+      }}
 
     , m_imageBg
       {
@@ -214,14 +209,9 @@ RuntimeConfigBoard::PullMenu::PullMenu(
       }
 
     , m_menuTitleImage
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000460); },
-      }
+      {{
+          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(0X00000460); },
+      }}
 
     , m_menuTitleBackground
       {
@@ -275,9 +265,9 @@ RuntimeConfigBoard::PullMenu::PullMenu(
           false,
       }
 
-    , m_imgOff {DIR_UPLEFT, 0, 0, 22, 22, [](const Widget *){ return g_progUseDB->retrieve(0X00000301); }, false, false, 1}
-    , m_imgOn  {DIR_UPLEFT, 0, 0, 22, 22, [](const Widget *){ return g_progUseDB->retrieve(0X00000300); }, false, false, 1}
-    , m_imgDown{DIR_UPLEFT, 0, 0, 22, 22, [](const Widget *){ return g_progUseDB->retrieve(0X00000302); }, false, false, 1}
+    , m_imgOff {{.w = 22, .h = 22, .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000301); }, .rotate = 1}}
+    , m_imgOn  {{.w = 22, .h = 22, .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000300); }, .rotate = 1}}
+    , m_imgDown{{.w = 22, .h = 22, .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000302); }, .rotate = 1}}
 
     , m_button
       {

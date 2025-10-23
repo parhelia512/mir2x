@@ -34,14 +34,9 @@ ResizableFrameBoard::ResizableFrameBoard(
       }}
 
     , m_frame
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          {},
-          {},
-          [](const Widget *){ return g_progUseDB->retrieve(m_frameTexID); },
-      }
+      {{
+          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(m_frameTexID); },
+      }}
 
     , m_frameCropDup
       {

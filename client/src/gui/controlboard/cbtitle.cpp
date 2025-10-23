@@ -30,26 +30,10 @@ CBTitle::CBTitle(
 
     , m_processRun(argProc)
     , m_bg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {},
-          {},
-
-          [](const Widget *){ return g_progUseDB->retrieve(0X00000022); },
-
-          false,
-          false,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_BLEND,
-
-          this,
-          false,
-      }
+      {{
+          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(0X00000022); },
+          .parent{this},
+      }}
 
     , m_arcAni
       {

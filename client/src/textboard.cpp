@@ -41,15 +41,8 @@ TextBoard::TextBoard(
     , m_textFunc(std::move(argTextFunc))
 
     , m_image
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          {}, // image width
-          {}, // image height
-
-          [this]() -> SDL_Texture *
+      {{
+          .texLoadFunc = [this]() -> SDL_Texture *
           {
               if(const auto text = getText(); text.empty()){
                   return nullptr;
@@ -59,16 +52,10 @@ TextBoard::TextBoard(
               }
           },
 
-          false,
-          false,
-          0,
-
-          std::move(argColor),
-          std::move(argBlendMode),
-
-          this,
-          false,
-      }
+          .modColor = std::move(argColor),
+          .blendMode = std::move(argBlendMode),
+          .parent{this},
+      }}
 {
     if(!g_fontexDB->hasFont(argFont)){
         throw fflerror("invalid font: %hhu", argFont);

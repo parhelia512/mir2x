@@ -45,45 +45,31 @@ TexSlider::TexSlider(
     , m_sliderTexInfo(getSliderTexInfo(argSliderIndex))
 
     , m_image
-      {
-          DIR_UPLEFT,
-          [this](const Widget *){ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.offX; },
-          [this](const Widget *){ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.offY; },
+      {{
+          .x = [this](const Widget *){ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.offX; },
+          .y = [this](const Widget *){ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.offY; },
 
-          {},
-          {},
-
-          [this](const Widget *) -> SDL_Texture *
+          .texLoadFunc = [this](const Widget *) -> SDL_Texture *
           {
               return g_progUseDB->retrieve(m_sliderTexInfo.texID);
           },
 
-          false,
-          false,
-          0,
-
-          [this](const Widget *)
+          .modColor = [this](const Widget *)
           {
               if(active()){ return colorf::WHITE + colorf::A_SHF(0XFF); }
               else        { return colorf::GREY  + colorf::A_SHF(0XFF); }
           },
 
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , m_cover
-      {
-          DIR_UPLEFT,
-          [this](const Widget *){ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
-          [this](const Widget *){ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
+      {{
+          .x = [this](const Widget *){ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
+          .y = [this](const Widget *){ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
 
-          {},
-          {},
-
-          [this](const Widget *) -> SDL_Texture *
+          .texLoadFunc = [this](const Widget *) -> SDL_Texture *
           {
               switch(m_sliderState){
                   case BEVENT_ON:
@@ -98,11 +84,7 @@ TexSlider::TexSlider(
               }
           },
 
-          false,
-          false,
-          0,
-
-          [this](const Widget *)
+          .modColor = [this](const Widget *)
           {
               switch(m_sliderState){
                   case BEVENT_ON:
@@ -122,11 +104,8 @@ TexSlider::TexSlider(
               }
           },
 
-          SDL_BLENDMODE_BLEND,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_debugDraw
       {

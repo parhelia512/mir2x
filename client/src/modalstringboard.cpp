@@ -90,16 +90,9 @@ class ModalStringBoardImpl: public Widget
               }
 
             , m_image
-              {
-                  DIR_UPLEFT,
-                  0,
-                  0,
-
-                  {},
-                  {},
-
-                  [this](const Widget *){ return g_progUseDB->retrieve(m_texID); },
-              }
+              {{
+                  .texLoadFunc = [this](const Widget *){ return g_progUseDB->retrieve(m_texID); },
+              }}
 
             , m_imageUp
               {

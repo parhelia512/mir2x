@@ -42,29 +42,19 @@ CheckBox::CheckBox(dir8_t argDir,
     , m_valOnChange(std::move(argValOnChange))
 
     , m_img
-      {
-          DIR_NONE,
-          [this](const Widget *){ return w() / 2; },
-          [this](const Widget *){ return h() / 2; },
+      {{
+          .dir = DIR_NONE,
+          .x = [this](const Widget *){ return w() / 2; },
+          .y = [this](const Widget *){ return h() / 2; },
 
-          {},
-          {},
-
-          [](const Widget *) -> SDL_Texture *
+          .texLoadFunc = [](const Widget *) -> SDL_Texture *
           {
               return g_progUseDB->retrieve(0X00000480);
           },
 
-          false,
-          false,
-          0,
-
-          colorf::WHITE + colorf::A_SHF(0XFF),
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 
     , m_box
       {
