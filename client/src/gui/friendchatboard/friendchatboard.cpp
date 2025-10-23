@@ -100,37 +100,23 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
       }
 
     , m_close
-      {
-          DIR_UPLEFT,
-          [this]{ return w() - 38; },
-          [this]{ return h() - 40; },
+      {{
+          .x = [this]{ return w() - 38; },
+          .y = [this]{ return h() - 40; },
 
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_uiPageList
       {
@@ -161,7 +147,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                   {
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X000008F0,
@@ -173,14 +159,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
-                          },
+                          }},
 
                           true,
                       },
 
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X00000023,
@@ -191,14 +177,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               .onTrigger = [this](Widget *, int)
                               {
                               },
-                          },
+                          }},
 
                           true,
                       },
 
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X000008B0,
@@ -209,14 +195,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               .onTrigger = [this](Widget *, int)
                               {
                               },
-                          },
+                          }},
 
                           true,
                       },
 
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X00000590,
@@ -227,7 +213,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               .onTrigger = [this](Widget *, int)
                               {
                               },
-                          },
+                          }},
 
                           true,
                       },
@@ -311,7 +297,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                   {
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X00000160,
@@ -323,7 +309,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               {
                                   setUIPage(UIPage_FRIENDLIST);
                               },
-                          },
+                          }},
 
                           true,
                       },
@@ -390,7 +376,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                   {
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X000008F0,
@@ -402,14 +388,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
-                          },
+                          }},
 
                           true,
                       },
 
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X00000900,
@@ -421,14 +407,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               {
                                   setUIPage(UIPage_FRIENDSEARCH);
                               },
-                          },
+                          }},
 
                           true,
                       },
 
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X00000170,
@@ -440,7 +426,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               {
                                   setUIPage(UIPage_CREATEGROUP);
                               },
-                          },
+                          }},
 
                           true,
                       },
@@ -507,7 +493,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                   {
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X000008F0,
@@ -519,7 +505,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
-                          },
+                          }},
 
                           true,
                       },
@@ -583,7 +569,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                   {
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X000008F0,
@@ -595,14 +581,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
-                          },
+                          }},
 
                           true,
                       },
 
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X00000910,
@@ -662,14 +648,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                                       });
                                   });
                               },
-                          },
+                          }},
 
                           true,
                       },
 
                       {
                           new TritexButton
-                          {
+                          {{
                               .texIDList
                               {
                                   .off  = 0X00000860,
@@ -688,7 +674,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                                       }
                                   });
                               },
-                          },
+                          }},
 
                           true,
                       },
