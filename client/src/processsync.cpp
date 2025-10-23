@@ -12,13 +12,10 @@ extern SDLDevice *g_sdlDevice;
 ProcessSync::ProcessSync()
     : Process()
     , m_canvas
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          800,
-          600,
-      }
+      {{
+          .w = 800,
+          .h = 600,
+      }}
 
     , m_barFull
       {

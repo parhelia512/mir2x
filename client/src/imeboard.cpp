@@ -25,19 +25,16 @@ IMEBoard::IMEBoard(
         bool autoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-
-          0,
-          0,
-
-          {},
-
-          parent,
-          autoDelete,
-      }
+      {{
+          .dir = argDir,
+          .x = argX,
+          .y = argY,
+          .parent
+          {
+              .widget = parent,
+              .autoDelete = autoDelete,
+          }
+      }}
 
     , m_font(font)
     , m_fontSize(fontSize)
@@ -159,10 +156,9 @@ size_t IMEBoard::totalLabelWidth() const
     return totalWidth;
 }
 
-bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -254,7 +250,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
                 if(event.button.button == SDL_BUTTON_LEFT){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
                         m_labelBoardList[i]->setFontColor(m_fontColor);
-                        if(m_labelBoardList[i]->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                        if(m.create(m_labelBoardList.at(i)->roi()).in(event.button.x, event.button.y)){
                             m_ime.select(i);
                         }
                     }
@@ -263,13 +259,13 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(!in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(!m.in(event.button.x, event.button.y)){
                     dropFocus();
                     return true;
                 }
 
                 for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                    if(m_labelBoardList.at(i)->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                    if(m.create(m_labelBoardList.at(i)->roi()).in(event.button.x, event.button.y)){
                         m_labelBoardList.at(i)->setFontColor(m_fontColorPressed);
                     }
                     else{
@@ -281,8 +277,8 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
         case SDL_MOUSEMOTION:
             {
                 if(event.motion.state & SDL_BUTTON_LMASK){
-                    const auto remapXDiff = startDstX - roiOpt->x;
-                    const auto remapYDiff = startDstY - roiOpt->y;
+                    const auto remapXDiff = m.x - m.ro->x;
+                    const auto remapYDiff = m.y - m.ro->y;
 
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
@@ -293,9 +289,9 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
 
                     moveBy(newX - remapXDiff, newY - remapYDiff);
                 }
-                else if(in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value())){
+                else if(m.in(event.motion.x, event.motion.y)){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                        if(m_labelBoardList.at(i)->parentIn(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value())){
+                        if(m.create(m_labelBoardList.at(i)->roi()).in(event.motion.x, event.motion.y)){
                             m_labelBoardList.at(i)->setFontColor(m_fontColorHover);
                         }
                         else{
@@ -312,7 +308,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, int start
     }
 }
 
-void IMEBoard::draw(Widget::ROIMap) const
+void IMEBoard::draw(Widget::ROIMap m) const
 {
     //        +---------------------------------------------------------------------------------- m_startX
     //        |
@@ -336,6 +332,10 @@ void IMEBoard::draw(Widget::ROIMap) const
     // +----------------------------------------------------------------------+----------+
     //            -->| |<-- m_candidateSpace
 
+    if(!m.crop(roi())){
+        return;
+    }
+
     if(auto frame = g_progUseDB->retrieve(0X09000100)){
         // tex  +-----+-----------------------+-----+
         //      |     |                       |     |
@@ -358,8 +358,8 @@ void IMEBoard::draw(Widget::ROIMap) const
         const auto marginWidth = (texW + 1 - repeatWidth) / 2;
         const auto coveredWidth = w() - marginWidth * 2;
 
-        g_sdlDevice->drawTexture(frame, dstX,                     dstY, marginWidth, h(),                         0, 0, marginWidth, texH);
-        g_sdlDevice->drawTexture(frame, dstX + w() - marginWidth, dstY, marginWidth, h(), marginWidth + repeatWidth, 0, marginWidth, texH);
+        g_sdlDevice->drawTexture(frame, m.x,                     m.y, marginWidth, h(),                         0, 0, marginWidth, texH);
+        g_sdlDevice->drawTexture(frame, m.x + w() - marginWidth, m.y, marginWidth, h(), marginWidth + repeatWidth, 0, marginWidth, texH);
 
         const auto repeat = (coveredWidth + 1) / repeatWidth;
         for(int i = 0; i < repeat; ++i){
@@ -372,14 +372,14 @@ void IMEBoard::draw(Widget::ROIMap) const
                     return coveredWidth / repeat;
                 }
             }();
-            g_sdlDevice->drawTexture(frame, dstX + marginWidth + (coveredWidth / repeat) * i, dstY, dstCurrWidth, h(), marginWidth, 0, repeatWidth, texH);
+            g_sdlDevice->drawTexture(frame, m.x + marginWidth + (coveredWidth / repeat) * i, m.y, dstCurrWidth, h(), marginWidth, 0, repeatWidth, texH);
         }
     }
 
     LabelBoard(
             DIR_UPLEFT,
-            dstX + to_d(m_startX),
-            dstY + to_d(m_startY),
+            m.x + to_d(m_startX),
+            m.y + to_d(m_startY),
 
             to_u8cstr(m_ime.result()),
 
@@ -389,19 +389,19 @@ void IMEBoard::draw(Widget::ROIMap) const
             m_fontColor).drawRoot({});
 
     g_sdlDevice->drawLine(m_separatorColor,
-            dstX      , dstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2,
-            dstX + w(), dstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2);
+            m.x      , m.y + m_startY + m_fontTokenHeight + m_separatorSpace / 2,
+            m.y + w(), m.y + m_startY + m_fontTokenHeight + m_separatorSpace / 2);
 
     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-        drawChild(m_labelBoardList.at(i).get(), dstX, dstY, roi);
+        drawChild(m_labelBoardList.at(i).get(), m);
     }
 
     if(auto tex = g_progUseDB->retrieve(0X09000006)){
-        g_sdlDevice->drawTexture(tex, dstX, dstY);
+        g_sdlDevice->drawTexture(tex, m.x, m.y);
     }
 
     if(auto tex = g_progUseDB->retrieve(0X09000009)){
-        g_sdlDevice->drawTexture(tex, DIR_DOWNRIGHT,  dstX + w(), dstY + h());
+        g_sdlDevice->drawTexture(tex, DIR_DOWNRIGHT,  m.x + w(), m.y + h());
     }
 }
 

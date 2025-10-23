@@ -24,12 +24,13 @@ NotifyBoard::NotifyBoard(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          [this](const Widget *)
+          .x = std::move(argX),
+          .y = std::move(argY),
+
+          .w = [this](const Widget *)
           {
               if(m_lineW > 0){
                   return m_lineW;
@@ -42,7 +43,7 @@ NotifyBoard::NotifyBoard(
               return maxW;
           },
 
-          [this](const Widget *)
+          .h = [this](const Widget *)
           {
               int sumH = 0;
               for(const auto &tp: m_boardList){
@@ -51,11 +52,12 @@ NotifyBoard::NotifyBoard(
               return sumH;
           },
 
-          {},
-
-          argWidgetPtr,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argWidgetPtr,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_lineW(argLineW)
     , m_font(argDefaultFont)
@@ -96,10 +98,9 @@ void NotifyBoard::update(double)
     }
 }
 
-void NotifyBoard::draw(Widget::ROIMap) const
+void NotifyBoard::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
@@ -109,12 +110,12 @@ void NotifyBoard::draw(Widget::ROIMap) const
     for(const auto &tp: m_boardList){
         const auto p = tp.typeset.get();
 
-        int dstXCrop = dstX;
-        int dstYCrop = dstY;
-        int srcXCrop = roiOpt->x;
-        int srcYCrop = roiOpt->y;
-        int srcWCrop = roiOpt->w;
-        int srcHCrop = roiOpt->h;
+        int dstXCrop = m.x;
+        int dstYCrop = m.y;
+        int srcXCrop = m.ro->x;
+        int srcYCrop = m.ro->y;
+        int srcWCrop = m.ro->w;
+        int srcHCrop = m.ro->h;
 
         if(!mathf::cropROI(
                     &srcXCrop, &srcYCrop,
@@ -128,7 +129,7 @@ void NotifyBoard::draw(Widget::ROIMap) const
             break;
         }
 
-        p->draw(dstXCrop, dstYCrop, srcXCrop - startX, srcYCrop - startY, srcWCrop, srcHCrop);
+        p->draw({.x=dstXCrop, .y=dstYCrop, .ro{srcXCrop - startX, srcYCrop - startY, srcWCrop, srcHCrop}});
         startY += p->ph();
     }
 }

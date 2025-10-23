@@ -265,8 +265,8 @@ class Widget: public WidgetTreeNode
             Widget::VarOff x   = 0;
             Widget::VarOff y   = 0;
 
-            Widget::VarSizeOpt w = std::nullopt;
-            Widget::VarSizeOpt h = std::nullopt;
+            Widget::VarSizeOpt w = 0; // nullopt means auto-resize
+            Widget::VarSizeOpt h = 0;
 
             std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool>> childList = {};
 

@@ -17,19 +17,21 @@ HorseBoard::HorseBoard(
         bool    argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
+      {{
+          .dir = argDir,
 
-          257,
-          322,
+          .x = argX,
+          .y = argY,
 
-          {},
+          .w = 257,
+          .h = 322,
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              argParent,
+              argAutoDelete,
+          }
+      }}
 
     , m_processRun(argProc)
     , m_greyBg
@@ -234,10 +236,9 @@ HorseBoard::HorseBoard(
     setShow(false);
 }
 
-bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -245,11 +246,11 @@ bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
         return consumeFocus(false);
     }
 
-    if(m_close.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_up   .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_down .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_hide .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_show .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_close.processEventParent(event, valid, m)){ return true; }
+    if(m_up   .processEventParent(event, valid, m)){ return true; }
+    if(m_down .processEventParent(event, valid, m)){ return true; }
+    if(m_hide .processEventParent(event, valid, m)){ return true; }
+    if(m_show .processEventParent(event, valid, m)){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:
@@ -269,9 +270,9 @@ bool HorseBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
-                    const auto remapXDiff = startDstX - roiOpt->x;
-                    const auto remapYDiff = startDstY - roiOpt->y;
+                if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || focus())){
+                    const auto remapXDiff = m.x - m.ro->x;
+                    const auto remapYDiff = m.y - m.ro->y;
 
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();

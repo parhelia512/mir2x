@@ -18,17 +18,20 @@ ResizableFrameBoard::ResizableFrameBoard(
         bool    argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-          argW,
-          argH,
-          {},
+      {{
+          .dir = argDir,
 
-          argParent,
-          argAutoDelete
-      }
+          .x = argX,
+          .y = argY,
+          .w = argW,
+          .h = argH,
+
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_frame
       {
@@ -96,10 +99,9 @@ ResizableFrameBoard::ResizableFrameBoard(
     fflassert(argH >= m_cornerSize * 2);
 }
 
-void ResizableFrameBoard::draw(Widget::ROIMap) const
+void ResizableFrameBoard::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
@@ -108,12 +110,12 @@ void ResizableFrameBoard::draw(Widget::ROIMap) const
         static_cast<const Widget *>(&m_frameCropDup),
         static_cast<const Widget *>(&m_close),
     }){
-        int drawDstX = dstX;
-        int drawDstY = dstY;
-        int drawSrcX = roiOpt->x;
-        int drawSrcY = roiOpt->y;
-        int drawSrcW = roiOpt->w;
-        int drawSrcH = roiOpt->h;
+        int drawDstX = m.x;
+        int drawDstY = m.y;
+        int drawSrcX = m.ro->x;
+        int drawSrcY = m.ro->y;
+        int drawSrcW = m.ro->w;
+        int drawSrcH = m.ro->h;
 
         if(mathf::cropChildROI(
                     &drawSrcX, &drawSrcY,
@@ -127,7 +129,7 @@ void ResizableFrameBoard::draw(Widget::ROIMap) const
                     p->dy(),
                     p-> w(),
                     p-> h())){
-            p->draw(drawDstX, drawDstY, {drawSrcX, drawSrcY, drawSrcW, drawSrcH});
+            p->draw({.x=drawDstX, .y=drawDstY, .ro{drawSrcX, drawSrcY, drawSrcW, drawSrcH}});
         }
     }
 }

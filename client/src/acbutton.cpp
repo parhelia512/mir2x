@@ -102,8 +102,8 @@ void ACButton::draw(Widget::ROIMap m) const
     SDL_SetTextureAlphaMod(texPtr, 255);
     SDL_SetTextureColorMod(texPtr, 255, 255, 255);
 
-    g_sdlDevice->drawTexture(texPtr, dstX, dstY);
-    m_labelBoard.draw(dstX + w() + 5, dstY, {});
+    g_sdlDevice->drawTexture(texPtr, m.x, m.y);
+    m_labelBoard.draw({.x = m.x + w() + 5, .y = m.y, .ro = m.ro});
 
     switch(getState()){
         case BEVENT_ON:
@@ -111,7 +111,7 @@ void ACButton::draw(Widget::ROIMap m) const
             {
                 SDL_SetTextureColorMod(texPtr, 255, 0, 0);
                 SDL_SetTextureAlphaMod(texPtr, 128);
-                g_sdlDevice->drawTexture(texPtr, dstX, dstY);
+                g_sdlDevice->drawTexture(texPtr, m.x, m.y);
                 break;
             }
         default:

@@ -24,18 +24,18 @@ MenuBoard::MenuBoard(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-
-          {},
-          {},
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+      {{
+          .dir = std::move(argDir),
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::nullopt,
+          .h = std::nullopt,
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_itemSpace     (std::max<int>(0, argItemSpace     ))
     , m_separatorSpace(std::max<int>(0, argSeperatorSpace))
@@ -144,13 +144,11 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
 
     m_itemList.emplace_back(argWidget, argAddSeparator);
     m_canvas.addChild((new Widget
-    {
-        DIR_UPLEFT, // ignore
-        0,
-        0,
+    {{
+        .w = std::nullopt,
+        .h = std::nullopt,
 
-        {},
-        {},
+        .childList
         {
             {new ShapeCropBoard
             {
@@ -205,10 +203,9 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
                 return upperItemSpace(argWidget);
             }, argAutoDelete},
         },
-    })->setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+    }})->setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
     {
-        const auto roiOpt = self->cropDrawROI(startDstX, startDstY, roi);
-        if(!roiOpt.has_value()){
+        if(!m.crop(self->roi())){
             return false;
         }
 
@@ -230,7 +227,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
             }
         });
 
-        if(menuWidget->processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
+        if(menuWidget->processEventParent(event, valid, m)){
             return self->consumeFocus(true, menuWidget);
         }
 
@@ -239,8 +236,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
             case SDL_MOUSEBUTTONUP:
             case SDL_MOUSEBUTTONDOWN:
                 {
-                    const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                    if(background->parentIn(eventX, eventY, startDstX, startDstY, roiOpt.value())){
+                    if(m.create(background->roi()).in(SDLDeviceHelper::getEventPLoc(event).value())){
                         if(event.type == SDL_MOUSEMOTION){
                             return self->consumeFocus(true);
                         }

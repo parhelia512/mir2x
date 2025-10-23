@@ -218,8 +218,8 @@ void ProcessCreateAccount::draw() const
         //      -->|  |<--  186  -->|  |<--
         //          dx               dx
 
-        title.drawAt(DIR_RIGHT, x - dx      , y);
-        check.drawAt(DIR_LEFT , x + dx + 186, y);
+        title.draw({.dir=DIR_RIGHT, .x{x - dx      }, .y=y});
+        check.draw({.dir=DIR_LEFT , .x{x + dx + 186}, .y=y});
     };
 
     fnDrawInput(m_x + 129, m_y +  85, 10, m_LBID        , m_LBCheckID        );
@@ -237,7 +237,7 @@ void ProcessCreateAccount::draw() const
 
 void ProcessCreateAccount::processEvent(const SDL_Event &event)
 {
-    if(m_quit.processEventRoot(event, true, 0, 0)){
+    if(m_quit.processEventRoot(event, true, {})){
         return;
     }
 
@@ -246,7 +246,7 @@ void ProcessCreateAccount::processEvent(const SDL_Event &event)
         return;
     }
 
-    if(m_submit.processEventRoot(event, true, 0, 0)){
+    if(m_submit.processEventRoot(event, true, {})){
         return;
     }
 
@@ -288,9 +288,9 @@ void ProcessCreateAccount::processEvent(const SDL_Event &event)
     // widget idbox and pwdbox are not independent from each other
     // tab in one box will grant focus to another
 
-    m_boxID        .processEventRoot(event, true, 0, 0);
-    m_boxPwd       .processEventRoot(event, true, 0, 0);
-    m_boxPwdConfirm.processEventRoot(event, true, 0, 0);
+    m_boxID        .processEventRoot(event, true, {});
+    m_boxPwd       .processEventRoot(event, true, {});
+    m_boxPwdConfirm.processEventRoot(event, true, {});
 
     localCheck();
 }

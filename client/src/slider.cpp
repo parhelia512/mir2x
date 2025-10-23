@@ -22,10 +22,9 @@ std::tuple<int, int, int, int> Slider::getSliderRectangle(int startDstX, int sta
     };
 }
 
-bool Slider::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool Slider::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return consumeFocus(false);
     }
 
@@ -40,13 +39,13 @@ bool Slider::processEventDefault(const SDL_Event &event, bool valid, int startDs
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(inSlider(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(inSlider(event.button.x, event.button.y, m)){
                     m_sliderState = BEVENT_DOWN;
                     return consumeFocus(true);
                 }
-                else if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                else if(m.in(event.button.x, event.button.y)){
                     m_sliderState = BEVENT_ON;
-                    setValue([&event, startDstX, startDstY, &roiOpt, this]() -> float
+                    setValue([&event, startDstX = m.x, startDstY = m.y, roiOpt = m.ro, this]() -> float
                     {
                         if(m_hslider){
                             return ((event.button.x - (startDstX - roiOpt->x)) * 1.0f) / std::max<int>(1, w());
@@ -64,7 +63,7 @@ bool Slider::processEventDefault(const SDL_Event &event, bool valid, int startDs
             }
         case SDL_MOUSEBUTTONUP:
             {
-                if(inSlider(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(inSlider(event.button.x, event.button.y, m)){
                     m_sliderState = BEVENT_ON;
                     return consumeFocus(true);
                 }
@@ -76,7 +75,7 @@ bool Slider::processEventDefault(const SDL_Event &event, bool valid, int startDs
         case SDL_MOUSEMOTION:
             {
                 if(event.motion.state & SDL_BUTTON_LMASK){
-                    if(inSlider(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus()){
+                    if(inSlider(event.motion.x, event.motion.y, m) || focus()){
                         m_sliderState = BEVENT_DOWN;
                         if(m_hslider){
                             addValue(pixel2Value(event.motion.xrel), true);
@@ -92,7 +91,7 @@ bool Slider::processEventDefault(const SDL_Event &event, bool valid, int startDs
                     }
                 }
                 else{
-                    if(inSlider(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value())){
+                    if(inSlider(event.motion.x, event.motion.y, m)){
                         m_sliderState = BEVENT_ON;
                         return consumeFocus(true);
                     }
@@ -109,23 +108,14 @@ bool Slider::processEventDefault(const SDL_Event &event, bool valid, int startDs
     }
 }
 
-bool Slider::inSlider(int eventX, int eventY, int startDstX, int startDstY, const Widget::ROIOpt &roi) const
+bool Slider::inSlider(int eventX, int eventY, Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
-    const auto [sliderX, sliderY, sliderW, sliderH] = getSliderRectangle(startDstX - roiOpt->x, startDstY - roiOpt->y);
-    Widget::ROI sliderROI
-    {
-        .x = sliderX,
-        .y = sliderY,
-        .w = sliderW,
-        .h = sliderH,
-    };
-
-    sliderROI = Widget::ROI(startDstX, startDstY, roiOpt->w, roiOpt->h).create(sliderROI);
+    auto sliderROI = Widget::makeROI(getSliderRectangle(m.x - m.ro->x, m.y - m.ro->y));
+    sliderROI.crop({m.x, m.y, m.ro->w, m.ro->h});
 
     if(sliderROI.empty()){
         return false;

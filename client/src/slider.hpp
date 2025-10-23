@@ -116,5 +116,5 @@ class Slider: public Widget
         }
 
     protected:
-        bool inSlider(int, int, int, int, const Widget::ROIOpt &) const;
+        bool inSlider(int, int, Widget::ROIMap) const;
 };

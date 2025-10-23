@@ -22,18 +22,20 @@ RadioSelector::RadioSelector(Widget::VarDir argDir,
         bool     argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          {},
-          {},
-          {},
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::nullopt,
+          .h = std::nullopt,
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_gap(std::max<int>(0, argGap))
     , m_itemSpace(std::max<int>(0, argItemSpace))

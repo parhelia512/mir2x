@@ -26,18 +26,16 @@ ImageBoard::ImageBoard(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          0,
-          0,
-
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+      {{
+          .dir = std::move(argDir),
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_varW(std::move(argW))
     , m_varH(std::move(argH))
@@ -74,10 +72,9 @@ ImageBoard::ImageBoard(
     setH((m_rotate % 2 == 0) ? varTexH : varTexW);
 }
 
-void ImageBoard::draw(Widget::ROIMap) const
+void ImageBoard::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
@@ -94,13 +91,13 @@ void ImageBoard::draw(Widget::ROIMap) const
         centerOffY,
 
         rotateDegree] = [
-            dstX,
-            dstY,
+            dstX = m.x,
+            dstY = m.y,
 
-            srcX = roiOpt->x,
-            srcY = roiOpt->y,
-            srcW = roiOpt->w,
-            srcH = roiOpt->h,
+            srcX = m.ro->x,
+            srcY = m.ro->y,
+            srcW = m.ro->w,
+            srcH = m.ro->h,
 
             this]() -> std::array<int, 9>
     {

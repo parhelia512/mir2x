@@ -14,42 +14,43 @@ ShapeCropBoard::ShapeCropBoard(Widget::VarDir argDir,
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          std::move(argW),
-          std::move(argH),
+      {{
+          .dir = std::move(argDir),
 
-          {},
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::move(argW),
+          .h = std::move(argH),
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_drawFunc(std::move(argDrawFunc))
 {}
 
-void ShapeCropBoard::draw(Widget::ROIMap) const
+void ShapeCropBoard::draw(Widget::ROIMap m) const
 {
     if((m_drawFunc.index() == 0) && !std::get<0>(m_drawFunc)){ return; }
     if((m_drawFunc.index() == 1) && !std::get<1>(m_drawFunc)){ return; }
 
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
-    const SDLDeviceHelper::EnableRenderCropRectangle enableClip(dstX, dstY, roiOpt->w, roiOpt->h);
+    const SDLDeviceHelper::EnableRenderCropRectangle enableClip(m.x, m.y, m.ro->w, m.ro->h);
     switch(m_drawFunc.index()){
         case 0:
             {
-                std::get<0>(m_drawFunc)(dstX - roiOpt->x, dstY - roiOpt->y);
+                std::get<0>(m_drawFunc)(m.x - m.ro->x, m.y - m.ro->y);
                 return;
             }
         case 1:
             {
-                std::get<1>(m_drawFunc)(this, dstX - roiOpt->x, dstY - roiOpt->y);
+                std::get<1>(m_drawFunc)(this, m.x - m.ro->x, m.y - m.ro->y);
                 return;
             }
         default:

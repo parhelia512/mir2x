@@ -256,8 +256,8 @@ void ProcessChangePassword::draw() const
         //      -->|  |<--  186  -->|  |<--
         //          dx               dx
 
-        title.drawAt(DIR_RIGHT, x - dx      , y);
-        check.drawAt(DIR_LEFT , x + dx + 186, y);
+        title.draw({.dir=DIR_RIGHT, .x{x - dx      }, .y=y});
+        check.draw({.dir=DIR_LEFT , .x{x + dx + 186}, .y=y});
     };
 
     fnDrawInput(m_x + 129, m_y +  79, 10, m_LBID           , m_LBCheckID           );

@@ -19,18 +19,16 @@ LabelBoard::LabelBoard(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          0,
-          0,
-
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+      {{
+          .dir = std::move(argDir),
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_tpset
       {
@@ -93,12 +91,10 @@ void LabelBoard::setImageMaskColor(uint32_t argColor)
     m_tpset.setImageMaskColor(argColor);
 }
 
-void LabelBoard::draw(Widget::ROIMap) const
+void LabelBoard::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if (!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
-
-    m_tpset.draw(dstX, dstY, roiOpt->x, roiOpt->y, roiOpt->w, roiOpt->h);
+    m_tpset.draw(m);
 }

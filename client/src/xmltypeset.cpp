@@ -1094,8 +1094,15 @@ XMLTypeset *XMLTypeset::split(int cursorX, int cursorY)
     return newTpset;
 }
 
-void XMLTypeset::draw(Widget::ROIMap) const
+void XMLTypeset::draw(Widget::ROIMap m) const
 {
+    int dstX = m.x;
+    int dstY = m.y;
+    int srcX = m.ro->x;
+    int srcY = m.ro->y;
+    int srcW = m.ro->w;
+    int srcH = m.ro->h;
+
     if(!mathf::rectangleOverlap<int>(srcX, srcY, srcW, srcH, px(), py(), pw(), ph())){
         return;
     }

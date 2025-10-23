@@ -39,19 +39,20 @@ InputLine::InputLine(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          std::move(argW),
-          std::move(argH),
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::move(argW),
+          .h = std::move(argH),
 
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_imeEnabled(argIMEEnabled)
     , m_tpset
@@ -72,10 +73,9 @@ InputLine::InputLine(
     , m_onChange(std::move(argOnChange))
 {}
 
-bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool InputLine::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -175,13 +175,13 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int star
                     return consumeFocus(false);
                 }
 
-                if(!in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(!m.in(event.button.x, event.button.y)){
                     return consumeFocus(false);
                 }
 
                 if(event.type == SDL_MOUSEBUTTONDOWN){
-                    const int eventX = event.button.x - startDstX;
-                    const int eventY = event.button.y - startDstY;
+                    const int eventX = event.button.x - m.x;
+                    const int eventY = event.button.y - m.y;
 
                     const auto [cursorX, cursorY] = m_tpset.locCursor(eventX, eventY);
                     if(cursorY != 0){
@@ -201,19 +201,18 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, int star
     }
 }
 
-void InputLine::draw(Widget::ROIMap) const
+void InputLine::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
-    int dstCropX = dstX;
-    int dstCropY = dstY;
-    int srcCropX = roiOpt->x;
-    int srcCropY = roiOpt->y;
-    int srcCropW = roiOpt->w;
-    int srcCropH = roiOpt->h;
+    int dstCropX = m.x;
+    int dstCropY = m.y;
+    int srcCropX = m.ro->x;
+    int srcCropY = m.ro->y;
+    int srcCropW = m.ro->w;
+    int srcCropH = m.ro->h;
 
     const int tpsetX = 0;
     const int tpsetY = 0 + (h() - (m_tpset.empty() ? m_tpset.getDefaultFontHeight() : m_tpset.ph())) / 2;
@@ -229,7 +228,7 @@ void InputLine::draw(Widget::ROIMap) const
             tpsetX, tpsetY, m_tpset.pw(), m_tpset.ph());
 
     if(needDraw){
-        m_tpset.draw(dstCropX, dstCropY, srcCropX - tpsetX, srcCropY - tpsetY, srcCropW, srcCropH);
+        m_tpset.draw({.x=dstCropX, .y=dstCropY, .ro{srcCropX - tpsetX, srcCropY - tpsetY, srcCropW, srcCropH}});
     }
 
     if(std::fmod(m_cursorBlink, 1000.0) > 500.0){
@@ -240,8 +239,8 @@ void InputLine::draw(Widget::ROIMap) const
         return;
     }
 
-    int cursorY = dstY + tpsetY;
-    int cursorX = dstX + tpsetX + [this]()
+    int cursorY = m.y + tpsetY;
+    int cursorX = m.x + tpsetX + [this]()
     {
         if(m_tpset.empty() || m_cursor == 0){
             return 0;
@@ -258,12 +257,12 @@ void InputLine::draw(Widget::ROIMap) const
     int cursorW = m_cursorWidth;
     int cursorH = std::max<int>(m_tpset.ph(), h());
 
-    if(mathf::rectangleOverlapRegion(dstX, dstY, roiOpt->w, roiOpt->h, cursorX, cursorY, cursorW, cursorH)){
+    if(mathf::rectangleOverlapRegion(m.x, m.y, m.ro->w, m.ro->h, cursorX, cursorY, cursorW, cursorH)){
         g_sdlDevice->fillRectangle(Widget::evalU32(m_cursorColor, this), cursorX, cursorY, cursorW, cursorH);
     }
 
     if(g_clientArgParser->debugDrawInputLine){
-        g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), dstX, dstY, w(), h());
+        g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), m.x, m.y, w(), h());
     }
 }
 

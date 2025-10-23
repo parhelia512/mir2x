@@ -10,8 +10,19 @@ extern PNGTexDB *g_itemDB;
 extern SoundEffectDB *g_seffDB;
 extern SDLDevice *g_sdlDevice;
 
-InventoryBoard::InventoryBoard(int nX, int nY, ProcessRun *pRun, Widget *pwidget, bool autoDelete)
-    : Widget(DIR_UPLEFT, nX, nY, 0, 0, {}, pwidget, autoDelete)
+InventoryBoard::InventoryBoard(int argX, int argY, ProcessRun *pRun, Widget *argParent, bool argAutoDelete)
+    : Widget
+      {
+          .x = argX,
+          .y = argY,
+
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }
+
     , m_wmdAniBoard
       {
           DIR_UPLEFT,

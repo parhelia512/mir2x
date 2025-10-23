@@ -21,13 +21,10 @@ extern PNGTexOffDB *g_selectCharDB;
 ProcessSelectChar::ProcessSelectChar()
     : Process()
     , m_canvas
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          800,
-          600,
-      }
+      {{
+          .w = 800,
+          .h = 600,
+      }}
 
     , m_start (DIR_UPLEFT, 335,  75, {0X0C000030, 0X0C000030, 0X0C000031}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onStart (); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
     , m_create(DIR_UPLEFT, 565, 130, {0X0C000010, 0X0C000010, 0X0C000011}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onCreate(); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)

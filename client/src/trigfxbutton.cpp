@@ -63,18 +63,16 @@ TrigfxButton::TrigfxButton(Widget::VarDir argDir,
     initButtonSize();
 }
 
-void TrigfxButton::draw(Widget::ROIMap) const
+void TrigfxButton::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
     if(auto gfxPtr = m_gfxList[getState()]){
-        const int offX = m_offset[getState()][0];
-        const int offY = m_offset[getState()][1];
-        // gfxPtr->draw(dstX + offX, dstY + offY, srcX, srcY, srcW, srcH);
-        gfxPtr->draw(dstX + offX, dstY + offY, roiOpt.value());
+        m.x += m_offset[getState()][0];
+        m.y += m_offset[getState()][1];
+        gfxPtr->draw(m);
     }
 }
 

@@ -59,12 +59,13 @@ LayoutBoard::LayoutBoard(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          [this]
+          .x = std::move(argX),
+          .y = std::move(argY),
+
+          .w = [this]
           {
               int maxW = 0;
               for(const auto &node: m_parNodeList){
@@ -77,7 +78,7 @@ LayoutBoard::LayoutBoard(
               return maxW;
           },
 
-          [this]
+          .h = [this]
           {
               if(empty()){
                   if(m_canEdit){
@@ -95,11 +96,12 @@ LayoutBoard::LayoutBoard(
               return backNode.startY + lastPerHeight + backNode.margin[1];
           },
 
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_parNodeConfig
       {
@@ -431,20 +433,19 @@ void LayoutBoard::addParXML(int loc, const std::array<int, 4> &parMargin, const 
     addPar(loc, parMargin, xmlDoc.RootElement());
 }
 
-void LayoutBoard::draw(Widget::ROIMap) const
+void LayoutBoard::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
     for(const auto &node: m_parNodeList){
-        int dstXCrop = dstX;
-        int dstYCrop = dstY;
-        int srcXCrop = roiOpt->x;
-        int srcYCrop = roiOpt->y;
-        int srcWCrop = roiOpt->w;
-        int srcHCrop = roiOpt->h;
+        int dstXCrop = m.x;
+        int dstYCrop = m.y;
+        int srcXCrop = m.ro->x;
+        int srcYCrop = m.ro->y;
+        int srcWCrop = m.ro->w;
+        int srcHCrop = m.ro->h;
 
         if(!mathf::cropROI(
                     &srcXCrop, &srcYCrop,
@@ -457,11 +458,11 @@ void LayoutBoard::draw(Widget::ROIMap) const
                     node.margin[2], node.startY, node.tpset->pw(), node.tpset->ph())){
             continue;
         }
-        node.tpset->draw(dstXCrop, dstYCrop, srcXCrop - node.margin[2], srcYCrop - node.startY, srcWCrop, srcHCrop);
+        node.tpset->draw({.x=dstXCrop, .y=dstYCrop, .ro{srcXCrop - node.margin[2], srcYCrop - node.startY, srcWCrop, srcHCrop}});
     }
 
     if(m_canEdit && focus()){
-        Widget::draw(dstX, dstY, roiOpt.value()); // draw cursor
+        Widget::draw(m); // draw cursor
     }
 }
 
@@ -510,10 +511,9 @@ void LayoutBoard::setLineWidth(int argLineWidth)
     }
 }
 
-bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -667,15 +667,15 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, int st
                 }();
 
                 const auto [eventPX, eventPY] = SDLDeviceHelper::getEventPLoc(event).value();
-                const auto fnHandleEvent = [&event, newEvent, eventPX, eventPY, startDstX, startDstY, &roiOpt, this](ParNode *node, bool currValid) -> bool
+                const auto fnHandleEvent = [&event, newEvent, eventPX, eventPY, m, this](ParNode *node, bool currValid) -> bool
                 {
                     if(!currValid){
                         node->tpset->clearEvent(-1);
                         return false;
                     }
 
-                    const int xOff = eventPX - (startDstX + node->margin[2]);
-                    const int yOff = eventPY - (startDstY + node->startY);
+                    const int xOff = eventPX - (m.x + node->margin[2]);
+                    const int yOff = eventPY - (m.y + node->startY);
 
                     const auto [tokenX, tokenY] = node->tpset->locToken(xOff, yOff, true);
 
@@ -718,7 +718,7 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, int st
                 }
 
                 if(!takeEvent && event.type != SDL_MOUSEMOTION){
-                    takeEvent = in(eventPX, eventPY, startDstX, startDstY, roiOpt.value());
+                    takeEvent = m.in(eventPX, eventPY);
                 }
 
                 if(takeEvent){

@@ -17,17 +17,16 @@ MenuButton::MenuButton(dir8_t argDir,
         Widget *argParent,
         bool argAutoDelete)
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-          0,
-          0,
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+      {{
+          .dir = argDir,
+          .x = argX,
+          .y = argY,
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_margin(argMargin)
 
@@ -83,10 +82,9 @@ void MenuButton::updateMenuButtonSize()
     setH(m_margin[0] + m_gfxWidget->h() + std::max<int>(                   m_margin[1], m_menuBoard->show() ? m_menuBoard->h() : 0));
 }
 
-void MenuButton::draw(Widget::ROIMap) const
+void MenuButton::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
@@ -95,12 +93,12 @@ void MenuButton::draw(Widget::ROIMap) const
             continue;
         }
 
-        int dstXCrop = dstX;
-        int dstYCrop = dstY;
-        int srcXCrop = roiOpt->x;
-        int srcYCrop = roiOpt->y;
-        int srcWCrop = roiOpt->w;
-        int srcHCrop = roiOpt->h;
+        int dstXCrop = m.x;
+        int dstYCrop = m.y;
+        int srcXCrop = m.ro->x;
+        int srcYCrop = m.ro->y;
+        int srcWCrop = m.ro->w;
+        int srcHCrop = m.ro->h;
 
         if(!mathf::cropChildROI(
                     &srcXCrop, &srcYCrop,
@@ -117,7 +115,7 @@ void MenuButton::draw(Widget::ROIMap) const
             continue;
         }
 
-        widget->draw(dstXCrop, dstYCrop, {srcXCrop, srcYCrop, srcWCrop, srcHCrop});
+        widget->draw({.x{dstXCrop}, .y{dstYCrop}, .ro{srcXCrop, srcYCrop, srcWCrop, srcHCrop}});
         if(widget == m_gfxWidget){
             switch(m_button.getState()){
                 case BEVENT_ON  : g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(128), dstXCrop, dstYCrop, srcWCrop, srcHCrop); break;
@@ -128,10 +126,9 @@ void MenuButton::draw(Widget::ROIMap) const
     }
 }
 
-bool MenuButton::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool MenuButton::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -139,14 +136,14 @@ bool MenuButton::processEventDefault(const SDL_Event &event, bool valid, int sta
         return consumeFocus(false);
     }
 
-    if(Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(Widget::processEventDefault(event, valid, m)){
         return true;
     }
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(m_menuBoard->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(m.create(m_menuBoard->roi()).in(event.button.x, event.button.y)){
                     m_menuBoard->setShow(false);
                 }
                 return consumeFocus(false);

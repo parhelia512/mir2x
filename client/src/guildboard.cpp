@@ -5,19 +5,20 @@
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
+GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
-          DIR_UPLEFT,
-          argX,
-          argY,
-          594,
-          444,
-          {},
+      {{
+          .x = argX,
+          .y = argY,
+          .w = 594,
+          .h = 444,
 
-          widgetPtr,
-          autoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_processRun(runPtr)
     , m_bg
@@ -344,10 +345,9 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
     setShow(false);
 }
 
-bool GuildBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool GuildBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -355,16 +355,16 @@ bool GuildBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
         return consumeFocus(false);
     }
 
-    if(m_closeButton       .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_announcement      .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_members           .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_chat              .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_editAnnouncement  .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_removeMember      .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_disbandGuild      .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_editMemberPosition.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_dissolveCovenant  .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_slider            .processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_closeButton       .processEventParent(event, valid, m)){ return true; }
+    if(m_announcement      .processEventParent(event, valid, m)){ return true; }
+    if(m_members           .processEventParent(event, valid, m)){ return true; }
+    if(m_chat              .processEventParent(event, valid, m)){ return true; }
+    if(m_editAnnouncement  .processEventParent(event, valid, m)){ return true; }
+    if(m_removeMember      .processEventParent(event, valid, m)){ return true; }
+    if(m_disbandGuild      .processEventParent(event, valid, m)){ return true; }
+    if(m_editMemberPosition.processEventParent(event, valid, m)){ return true; }
+    if(m_dissolveCovenant  .processEventParent(event, valid, m)){ return true; }
+    if(m_slider            .processEventParent(event, valid, m)){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:
@@ -384,9 +384,9 @@ bool GuildBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
-                    const auto remapXDiff = startDstX - roiOpt->x;
-                    const auto remapYDiff = startDstY - roiOpt->y;
+                if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || focus())){
+                    const auto remapXDiff = m.x - m.ro->x;
+                    const auto remapYDiff = m.y - m.ro->y;
 
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();

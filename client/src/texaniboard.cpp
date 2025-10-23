@@ -26,12 +26,13 @@ TexAniBoard::TexAniBoard(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          [this](const Widget *)
+          .x = std::move(argX),
+          .y = std::move(argY),
+
+          .w = [this](const Widget *)
           {
               if(const auto [frame, _] = getDrawFrame(); frame >= 0){
                   if(auto texPtr = g_progUseDB->retrieve(m_startTexID + frame)){
@@ -41,7 +42,7 @@ TexAniBoard::TexAniBoard(
               return 0;
           },
 
-          [this](const Widget *)
+          .h = [this](const Widget *)
           {
               if(const auto [frame, _] = getDrawFrame(); frame >= 0){
                   if(auto texPtr = g_progUseDB->retrieve(m_startTexID + frame)){
@@ -51,11 +52,12 @@ TexAniBoard::TexAniBoard(
               return 0;
           },
 
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_startTexID(argStartTexID)
     , m_frameCount(argFrameCount)
