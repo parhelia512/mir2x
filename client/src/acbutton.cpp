@@ -7,12 +7,12 @@
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-ACButton::ACButton(dir8_t dir, int x, int y, ProcessRun *proc, const std::vector<std::string> &buttonList, Widget *pwidget, bool autoDelete)
+ACButton::ACButton(ACButton::InitArgs args)
     : ButtonBase
       {{
-          .dir = dir,
-          .x = x,
-          .y = y,
+          .dir = std::move(args.dir),
+          .x = std::move(args.x),
+          .y = std::move(args.y),
 
           .onTrigger = [this](Widget *, int)
           {
@@ -21,14 +21,10 @@ ACButton::ACButton(dir8_t dir, int x, int y, ProcessRun *proc, const std::vector
           },
 
           .onClickDone = false,
-          .parent
-          {
-              .widget = pwidget,
-              .autoDelete = autoDelete,
-          }
+          .parent = args.parent,
       }}
 
-    , m_proc(proc)
+    , m_proc(fflcheck(args.proc))
     , m_texMap
       {
           {"AC", 0X00000046},
@@ -37,7 +33,7 @@ ACButton::ACButton(dir8_t dir, int x, int y, ProcessRun *proc, const std::vector
           {"MC", 0X00000049},
       }
     , m_currButtonName(0)
-    , m_buttonNameList(buttonList)
+    , m_buttonNameList(std::move(fflcheck(args.names, !args.names.empty())))
     , m_labelBoard
       {
           DIR_UPLEFT,
@@ -53,14 +49,6 @@ ACButton::ACButton(dir8_t dir, int x, int y, ProcessRun *proc, const std::vector
           this,
       }
 {
-    if(!m_proc){
-        throw fflerror("null process pointer");
-    }
-
-    if(m_buttonNameList.empty()){
-        throw fflerror("button list empty");
-    }
-
     bool inited = false;
     for(auto &p: m_texMap){
         if(auto texPtr = g_progUseDB->retrieve(p.second)){

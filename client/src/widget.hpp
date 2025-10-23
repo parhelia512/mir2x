@@ -19,6 +19,14 @@
 #include "fflerror.hpp"
 #include "protocoldef.hpp"
 
+enum WidgetFocusPolicy: int
+{
+    WFP_NONE    = 0,
+    WFP_TAB     = 1 << 0,
+    WFP_CLICK   = 1 << 1,
+    WFP_WHEEL   = 1 << 2,
+};
+
 class Widget;        // size concept
 class WidgetTreeNode // tree concept, used by class Widget only
 {

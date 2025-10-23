@@ -13,6 +13,19 @@ class ProcessRun;
 class ACButton: public ButtonBase
 {
     private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;;
+            Widget::VarOff x   = 0;
+            Widget::VarOff y   = 0;
+
+            ProcessRun *proc = nullptr;
+            std::vector<std::string> names {};
+
+            Widget::WADPair parent {};
+        };
+
+    private:
         ProcessRun *m_proc;
         const std::unordered_map<std::string, uint32_t> m_texMap;
 
@@ -24,7 +37,7 @@ class ACButton: public ButtonBase
         LabelBoard m_labelBoard;
 
     public:
-        ACButton(dir8_t, int, int, ProcessRun *, const std::vector<std::string> &, Widget * = nullptr, bool = false);
+        ACButton(ACButton::InitArgs);
 
     public:
         void draw(Widget::ROIMap) const override;

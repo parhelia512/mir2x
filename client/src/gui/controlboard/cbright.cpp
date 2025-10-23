@@ -488,34 +488,32 @@ CBRight::CBRight(
       }
 
     , m_buttonAC
-      {
-          DIR_UPLEFT,
-          1,
-          105,
+      {{
+          .x = 1,
+          .y = 105,
 
-          argProc,
+          .proc = argProc,
+          .names
           {
               "AC",
               "MA",
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonDC
-      {
-          DIR_UPLEFT,
-          84,
-          105,
+      {{
+          .x = 84,
+          .y = 105,
 
-          argProc,
+          .proc = argProc,
+          .names
           {
               "DC",
               "MC",
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {}
