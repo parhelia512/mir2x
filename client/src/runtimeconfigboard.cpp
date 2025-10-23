@@ -1216,10 +1216,9 @@ void RuntimeConfigBoard::draw(Widget::ROIMap m) const
     }
 }
 
-bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -1235,7 +1234,7 @@ bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid,
         static_cast<Widget *>(&m_pageSocial),
         static_cast<Widget *>(&m_pageGameConfig),
     }){
-        if(widgetPtr->processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
+        if(widgetPtr->processEventParent(event, valid, m)){
             return true;
         }
     }
@@ -1251,9 +1250,9 @@ bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid,
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
-                    const auto remapXDiff = startDstX - roiOpt->x;
-                    const auto remapYDiff = startDstY - roiOpt->y;
+                if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || focus())){
+                    const auto remapXDiff = m.x - m.ro->x;
+                    const auto remapYDiff = m.y - m.ro->y;
 
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
@@ -1270,7 +1269,7 @@ bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid,
         case SDL_MOUSEBUTTONUP:
         case SDL_MOUSEBUTTONDOWN:
             {
-                return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
+                return consumeFocus(m.in(event.button.x, event.button.y));
             }
         default:
             {
