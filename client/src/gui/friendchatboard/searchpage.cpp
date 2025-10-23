@@ -21,19 +21,21 @@ SearchPage::SearchPage(Widget::VarDir argDir,
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          UIPage_MIN_WIDTH  - UIPage_MARGIN * 2,
-          UIPage_MIN_HEIGHT - UIPage_MARGIN * 2,
+          .x = std::move(argX),
+          .y = std::move(argY),
 
-          {},
+          .w = UIPage_MIN_WIDTH  - UIPage_MARGIN * 2,
+          .h = UIPage_MIN_HEIGHT - UIPage_MARGIN * 2,
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , input
       {
@@ -93,34 +95,30 @@ SearchPage::SearchPage(Widget::VarDir argDir,
       }
 
     , autocompletes
-      {
-          DIR_UPLEFT,
-          0,
-          SearchInputLine::HEIGHT,
+      {{
+          .y = SearchInputLine::HEIGHT,
 
-          SearchPage::WIDTH,
-          SearchPage::HEIGHT - SearchInputLine::HEIGHT,
+          .w = SearchPage::WIDTH,
+          .h = SearchPage::HEIGHT - SearchInputLine::HEIGHT,
 
-          {},
-
-          this,
-          false,
-      }
+          .parent
+          {
+              .widget = this,
+          }
+      }}
 
     , candidates
-      {
-          DIR_UPLEFT,
-          0,
-          SearchInputLine::HEIGHT,
+      {{
+          .y = SearchInputLine::HEIGHT,
 
-          SearchPage::WIDTH,
-          SearchPage::HEIGHT - SearchInputLine::HEIGHT,
+          .w = SearchPage::WIDTH,
+          .h = SearchPage::HEIGHT - SearchInputLine::HEIGHT,
 
-          {},
-
-          this,
-          false,
-      }
+          .parent
+          {
+              .widget = this,
+          }
+      }}
 {
     candidates.setShow(false);
 }

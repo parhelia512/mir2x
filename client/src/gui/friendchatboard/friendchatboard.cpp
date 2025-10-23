@@ -878,10 +878,9 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
     setShow(false);
 }
 
-void FriendChatBoard::draw(Widget::ROIMap) const
+void FriendChatBoard::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
@@ -895,12 +894,12 @@ void FriendChatBoard::draw(Widget::ROIMap) const
         static_cast<const Widget *>( m_uiPageList[m_uiPage].slider),
         static_cast<const Widget *>(&m_close),
     }){
-        int drawDstX = dstX;
-        int drawDstY = dstY;
-        int drawSrcX = roiOpt->x;
-        int drawSrcY = roiOpt->y;
-        int drawSrcW = roiOpt->w;
-        int drawSrcH = roiOpt->h;
+        int drawDstX = m.x;
+        int drawDstY = m.y;
+        int drawSrcX = m.ro->x;
+        int drawSrcY = m.ro->y;
+        int drawSrcW = m.ro->w;
+        int drawSrcH = m.ro->h;
 
         if(mathf::cropChildROI(
                     &drawSrcX, &drawSrcY,
@@ -914,15 +913,14 @@ void FriendChatBoard::draw(Widget::ROIMap) const
                     p->dy(),
                     p-> w(),
                     p-> h())){
-            p->draw(drawDstX, drawDstY, {drawSrcX, drawSrcY, drawSrcW, drawSrcH});
+            p->draw({.x=drawDstX, .y=drawDstY, .ro{drawSrcX, drawSrcY, drawSrcW, drawSrcH}});
         }
     }
 }
 
-bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -931,10 +929,10 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
         return consumeFocus(false);
     }
 
-    if(m_close                        .processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_uiPageList[m_uiPage].slider ->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_uiPageList[m_uiPage].page   ->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
-    if(m_uiPageList[m_uiPage].control->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){ return true; }
+    if(m_close                        .processEventParent(event, valid, m)){ return true; }
+    if(m_uiPageList[m_uiPage].slider ->processEventParent(event, valid, m)){ return true; }
+    if(m_uiPageList[m_uiPage].page   ->processEventParent(event, valid, m)){ return true; }
+    if(m_uiPageList[m_uiPage].control->processEventParent(event, valid, m)){ return true; }
 
     switch(event.type){
         case SDL_KEYDOWN:
@@ -957,19 +955,19 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(m_uiPageList[m_uiPage].page->parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
-                    if(m_uiPageList[m_uiPage].page->processParentEvent(event, true, startDstX, startDstY, roiOpt.value())){
+                if(m.create(m_uiPageList[m_uiPage].page->roi()).in(event.button.x, event.button.y)){
+                    if(m_uiPageList[m_uiPage].page->processEventParent(event, true, m)){
                         return consumeFocus(true, m_uiPageList[m_uiPage].page);
                     }
                 }
 
                 m_dragIndex = getEdgeDragIndex(event.button.x, event.button.y);
-                return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
+                return consumeFocus(m.in(event.button.x, event.button.y));
             }
         case SDL_MOUSEBUTTONUP:
             {
                 m_dragIndex.reset();
-                return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
+                return consumeFocus(m.in(event.button.x, event.button.y));
             }
         case SDL_MOUSEMOTION:
             {
@@ -1018,8 +1016,8 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
                         }
                     }
                     else{
-                        const auto remapXDiff = startDstX - roiOpt->x;
-                        const auto remapYDiff = startDstY - roiOpt->y;
+                        const auto remapXDiff = m.x - m.ro->x;
+                        const auto remapYDiff = m.y - m.ro->y;
 
                         const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
 
@@ -1038,7 +1036,7 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, in
         case SDL_MOUSEWHEEL:
             {
                 if(m_uiPageList[m_uiPage].page->focus()){
-                    if(m_uiPageList[m_uiPage].page->processEvent(event, true, startDstX, startDstY, roiOpt.value())){
+                    if(m_uiPageList[m_uiPage].page->processEvent(event, true, m)){
                         return consumeFocus(true, m_uiPageList[m_uiPage].page);
                     }
                 }

@@ -4,6 +4,7 @@
 #include "processrun.hpp"
 #include "skillboard.hpp"
 #include "tritexbutton.hpp"
+#include "textshadowboard.hpp"
 
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
@@ -142,13 +143,12 @@ SkillBoard::MagicIconButton::MagicIconButton(
 
 void SkillBoard::MagicIconButton::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
     if(const auto levelOpt = m_config->getMagicLevel(magicID()); levelOpt.has_value()){
-        Widget::draw(dstX, dstY, roi);
+        Widget::draw(m);
 
         const LabelBoard magicLevel
         {
@@ -163,7 +163,7 @@ void SkillBoard::MagicIconButton::draw(Widget::ROIMap m) const
 
             colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
         };
-        magicLevel.drawAt(DIR_UPLEFT, (dstX - roiOpt->x) + (m_icon.w() - 2), (dstY - roiOpt->y) + (m_icon.h() - 1), roiOpt.value());
+        magicLevel.draw({.x=(m.x - m.ro->x) + (m_icon.w() - 2), .y=(m.y - m.ro->y) + (m_icon.h() - 1), .ro{m.ro}});
 
         if(const auto keyOpt = m_config->getMagicKey(magicID()); keyOpt.has_value()){
             const TextShadowBoard magicKey
@@ -187,36 +187,25 @@ void SkillBoard::MagicIconButton::draw(Widget::ROIMap m) const
                 colorf::RGBA(0XFF, 0X80, 0X00, 0XE0),
                 colorf::RGBA(0X00, 0X00, 0X00, 0XE0),
             };
-            magicKey.drawAt(DIR_UPLEFT, (dstX - roiOpt->x + 2), (dstY - roiOpt->y + 2), roiOpt.value());
+            magicKey.draw({.x=(m.x - m.ro->x + 2), .y=(m.y - m.ro->y + 2), .ro=m.ro});
         }
     }
 }
 
-SkillBoard::SkillPage::SkillPage(uint32_t pageImage, SkillBoardConfig *configPtr, ProcessRun *proc, Widget *widgetPtr, bool autoDelete)
+SkillBoard::SkillPage::SkillPage(uint32_t pageImage, SkillBoardConfig *configPtr, ProcessRun *proc, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
-          DIR_UPLEFT,
-          SkillBoard::getPageRectange().at(0),
-          SkillBoard::getPageRectange().at(1),
-          0, // reset in ctor body
-          0,
-          {},
-          widgetPtr,
-          autoDelete,
-      }
+      {{
+          .x = SkillBoard::getPageRectange().at(0),
+          .y = SkillBoard::getPageRectange().at(1),
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
-    , m_config([configPtr]()
-      {
-          fflassert(configPtr);
-          return configPtr;
-      }())
-
-    , m_processRun([proc]()
-      {
-          fflassert(proc);
-          return proc;
-      }())
-
+    , m_config(fflcheck(configPtr))
+    , m_processRun(fflcheck(proc))
     , m_pageImage(pageImage)
 {
     if(auto texPtr = g_progUseDB->retrieve(m_pageImage)){
@@ -227,20 +216,19 @@ SkillBoard::SkillPage::SkillPage(uint32_t pageImage, SkillBoardConfig *configPtr
     setSize(r[2], r[3]);
 }
 
-void SkillBoard::SkillPage::draw(Widget::ROIMap) const
+void SkillBoard::SkillPage::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
     if(auto texPtr = g_progUseDB->retrieve(m_pageImage)){
-        int dstXCrop = dstX;
-        int dstYCrop = dstY;
-        int srcXCrop = roiOpt->x;
-        int srcYCrop = roiOpt->y;
-        int srcWCrop = roiOpt->w;
-        int srcHCrop = roiOpt->h;
+        int dstXCrop = m.x;
+        int dstYCrop = m.y;
+        int srcXCrop = m.ro->x;
+        int srcYCrop = m.ro->y;
+        int srcWCrop = m.ro->w;
+        int srcHCrop = m.ro->h;
 
         const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
         if(mathf::cropROI(
@@ -253,11 +241,22 @@ void SkillBoard::SkillPage::draw(Widget::ROIMap) const
             g_sdlDevice->drawTexture(texPtr, dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
         }
     }
-    Widget::draw(dstX, dstY, roiOpt.value());
+    Widget::draw(m);
 }
 
-SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
-    : Widget(DIR_UPLEFT, argX, argY, 0, 0, {}, widgetPtr, autoDelete)
+SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent, bool argAutoDelete)
+    : Widget
+      {{
+          .x = argX,
+          .y = argY,
+
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
+
     , m_skillPageList([runPtr, this]() -> std::vector<SkillBoard::SkillPage *>
       {
           std::vector<SkillBoard::SkillPage *> pageList;
@@ -420,7 +419,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
 
           this,
       }
-    , m_processRun(runPtr)
+    , m_processRun(fflcheck(runPtr))
 {
     setShow(false);
     if(auto texPtr = g_progUseDB->retrieve(0X05000000)){
@@ -431,37 +430,36 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr
     }
 }
 
-void SkillBoard::draw(Widget::ROIMap) const
+void SkillBoard::draw(Widget::ROIMap m) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X05000000)){
-        g_sdlDevice->drawTexture(texPtr, dstX, dstY);
+        g_sdlDevice->drawTexture(texPtr, m.x, m.y);
     }
 
     drawTabName();
-    drawChild(&m_slider, dstX, dstY, roi);
-    drawChild(&m_closeButton, dstX, dstY, roi);
+    drawChild(&m_slider, m);
+    drawChild(&m_closeButton, m);
 
     for(auto buttonPtr: m_tabButtonList){
-        drawChild(buttonPtr, dstX, dstY, roi);
+        drawChild(buttonPtr, m);
     }
 
     const auto r = SkillBoard::getPageRectange();
     auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
-    pagePtr->draw(dstX + r[0], dstY + r[1], {r[0] - pagePtr->dx(), r[1] - pagePtr->dy(), r[2], r[3]});
+    pagePtr->draw({.x=m.x + r[0], .y=m.y + r[1], .ro{r[0] - pagePtr->dx(), r[1] - pagePtr->dy(), r[2], r[3]}});
 }
 
-bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
     if(!show()){
         return false;
     }
 
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
-    const auto result = m_icon.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value());
+    const auto result = m_icon.processEventParent(event, valid, m);
     if(event.type == SDL_KEYDOWN && cursorOn()){
         if(const auto key = SDLDeviceHelper::getKeyChar(event, false); (key >= '0' && key <= '9') || (key >= 'a' && key <= 'z')){
             if(m_config->hasMagicID(magicID())){
@@ -479,10 +477,9 @@ bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bo
     return result;
 }
 
-bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(m.crop(roi())){
         return false;
     }
 
@@ -490,33 +487,33 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
         return consumeFocus(false);
     }
 
-    const auto remapXDiff = startDstX - roiOpt->x;
-    const auto remapYDiff = startDstY - roiOpt->y;
+    const auto remapXDiff = m.x - m.ro->x;
+    const auto remapYDiff = m.y - m.ro->y;
 
-    if(m_closeButton.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_closeButton.processEventParent(event, valid, m)){
         consumeFocus(false);
         return true;
     }
 
     bool tabConsumed = false;
     for(auto buttonPtr: m_tabButtonList){
-        tabConsumed |= buttonPtr->processParentEvent(event, valid && !tabConsumed, startDstX, startDstY, roiOpt.value());
+        tabConsumed |= buttonPtr->processEventParent(event, valid && !tabConsumed, m);
     }
 
     if(tabConsumed){
         return consumeFocus(true);
     }
 
-    if(m_slider.processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(m_slider.processEventParent(event, valid, m)){
         return consumeFocus(true);
     }
 
     bool captureEvent = false;
-    if(const auto pageROI = roiOpt->create(Widget::makeROI(getPageRectange())); !pageROI.empty()){
+    if(const auto pageROI = m.create(Widget::makeROI(getPageRectange())); !pageROI.empty()){
         const auto loc = SDLDeviceHelper::getMousePLoc();
         captureEvent = (loc.x >= 0 && loc.y >= 0) && pageROI.in(loc.x - remapXDiff, loc.y - remapYDiff);
 
-        if(m_skillPageList.at(m_selectedTabIndex)->processParentEvent(event, captureEvent && valid, startDstX, startDstY, roiOpt.value())){
+        if(m_skillPageList.at(m_selectedTabIndex)->processEventParent(event, captureEvent && valid, m)){
             return consumeFocus(true);
         }
     }
@@ -524,7 +521,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
     switch(event.type){
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();
@@ -532,7 +529,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
                     const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
                     const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
 
-                    moveBy(newX - startDstX, newY - startDstY);
+                    moveBy(newX - m.x, newY - m.y);
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);
@@ -542,7 +539,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, int sta
                 switch(event.button.button){
                     case SDL_BUTTON_LEFT:
                         {
-                            return consumeFocus(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value()));
+                            return consumeFocus(m.in(event.button.x, event.button.y));
                         }
                     default:
                         {
@@ -608,5 +605,5 @@ void SkillBoard::drawTabName() const
         colorf::WHITE_A255,
     };
     // tabName.drawAt(DIR_UPLEFT, x() + 30, y() + 400);
-    tabName.drawAt(DIR_UPLEFT, 30, 400);
+    tabName.draw({.x=30, .y=400});
 }

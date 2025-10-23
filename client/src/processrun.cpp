@@ -2004,7 +2004,7 @@ void ProcessRun::drawGroundItem(int x0, int y0, int x1, int y1) const
                 LabelBoard itemName(DIR_UPLEFT, 0, 0, ir.name, 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF));
                 const int drawNameX = x * SYS_MAPGRIDXP - m_viewX + SYS_MAPGRIDXP / 2 - itemName.w() / 2;
                 const int drawNameY = y * SYS_MAPGRIDYP - m_viewY + SYS_MAPGRIDYP / 2 - itemName.h() / 2 - 20;
-                itemName.drawAt(DIR_UPLEFT, drawNameX, drawNameY);
+                itemName.draw({.x=drawNameX, .y=drawNameY});
             }
         }
     }

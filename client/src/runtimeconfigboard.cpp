@@ -397,18 +397,18 @@ RuntimeConfigBoard::LabelSliderBar::LabelSliderBar(
         bool    argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-          0,
-          0,
+      {{
+          .dir = argDir,
 
-          {},
+          .x = argX,
+          .y = argY,
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_label
       {
@@ -464,7 +464,7 @@ RuntimeConfigBoard::LabelSliderBar::LabelSliderBar(
     m_slider   .moveAt(DIR_LEFT, m_labelCrop.dx() + m_labelCrop.w(), h() / 2);
 }
 
-void RuntimeConfigBoard::PullMenu::draw(Widget::ROIMap) const
+void RuntimeConfigBoard::PullMenu::draw(Widget::ROIMap m) const
 {
     for(const auto p:
     {
@@ -475,15 +475,14 @@ void RuntimeConfigBoard::PullMenu::draw(Widget::ROIMap) const
         static_cast<const Widget *>(&m_menuList),
     }){
         if(p->show()){
-            drawChild(p, dstX, dstY, roi);
+            drawChild(p, m);
         }
     }
 }
 
-bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -491,7 +490,7 @@ bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, b
         return consumeFocus(false);
     }
 
-    if(Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(Widget::processEventDefault(event, valid, m)){
         if(!focus()){
             if(!m_menuList.show()){
                 consumeFocus(true, &m_button);
@@ -507,8 +506,7 @@ bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, b
         case SDL_MOUSEBUTTONDOWN:
             {
                 if(m_menuList.show()){
-                    const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                    if(!m_menuList.parentIn(eventX, eventY, startDstX, startDstY, roiOpt.value())){
+                    if(!m.create(m_menuList.roi()).in(SDLDeviceHelper::getEventPLoc(event).value())){
                         m_menuList.setShow(false);
                     }
                 }
@@ -533,18 +531,20 @@ RuntimeConfigBoard::MenuPage::TabHeader::TabHeader(
         bool    argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-          {},
-          {},
+      {{
+          .dir = argDir,
 
-          {},
+          .x = argX,
+          .y = argY,
+          .w = {},
+          .h = {},
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_label
       {
@@ -609,18 +609,20 @@ RuntimeConfigBoard::MenuPage::MenuPage(
         bool    argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-          {},
-          {},
+      {{
+          .dir = argDir,
 
-          {},
+          .x = argX,
+          .y = argY,
+          .w = {},
+          .h = {},
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_buttonMask
       {
@@ -700,8 +702,21 @@ RuntimeConfigBoard::MenuPage::MenuPage(
     m_buttonMask.setH(h());
 }
 
-RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, ProcessRun *proc, Widget *widgetPtr, bool autoDelete)
-    : Widget(DIR_UPLEFT, argX, argY, argW, argH, {}, widgetPtr, autoDelete)
+RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, ProcessRun *proc, Widget *argParent, bool argAutoDelete)
+    : Widget
+      {{
+           .x = argX,
+           .y = argY,
+           .w = argW,
+           .h = argH,
+
+           .parent
+           {
+               .widget = argParent,
+               .autoDelete = argAutoDelete,
+           }
+       }}
+
     , m_frameBoard
       {
           DIR_UPLEFT,
@@ -866,13 +881,11 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
               {
                   u8"系统",
                   new Widget
-                  {
-                      DIR_UPLEFT,
-                      0,
-                      0,
-                      {},
-                      {},
+                  {{
+                      .w = {},
+                      .h = {},
 
+                      .childList
                       {
                           {&m_pageSystem_resolution, DIR_UPLEFT, 0, 0, false},
 
@@ -957,7 +970,7 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
 
                           {&m_pageSystem_soundEffectSlider, DIR_UPLEFT, 0, 185, false},
                       },
-                  },
+                  }},
                   true,
               },
           },
@@ -979,14 +992,11 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
               {
                   u8"社交",
                   new Widget
-                  {
-                      DIR_UPLEFT,
-                      0,
-                      0,
+                  {{
+                      .w = {},
+                      .h = {},
 
-                      {},
-                      {},
-
+                      .childList
                       {
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_允许私聊        >(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_允许私聊        >(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_允许私聊        ); }, u8"允许私聊"        , 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT,   0,   0, true},
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_允许白字聊天    >(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_允许白字聊天    >(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_允许白字聊天    ); }, u8"允许白字聊天"    , 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT,   0,  25, true},
@@ -1004,21 +1014,18 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_允许拜师        >(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_允许拜师        >(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_允许拜师        ); }, u8"允许拜师"        , 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 200, 200, true},
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_允许好友上线提示>(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_允许好友上线提示>(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_允许好友上线提示); }, u8"允许好友上线提示", 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 200, 225, true},
                       },
-                  },
+                  }},
                   true,
               },
 
               {
                   u8"好友",
                   new Widget
-                  {
-                      DIR_UPLEFT,
-                      0,
-                      0,
+                  {{
+                      .w = {},
+                      .h = {},
 
-                      {},
-                      {},
-
+                      .childList
                       {
                           {new LabelBoard
                           {
@@ -1073,7 +1080,7 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
 
                           }, DIR_UPLEFT, 0, 20, true},
                       },
-                  },
+                  }},
                   true,
               },
           },
@@ -1095,14 +1102,11 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
               {
                   u8"常用",
                   new Widget
-                  {
-                      DIR_UPLEFT,
-                      0,
-                      0,
+                  {{
+                      .w = {},
+                      .h = {},
 
-                      {},
-                      {},
-
+                      .childList
                       {
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_强制攻击    >(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_强制攻击    >(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_强制攻击    ); }, u8"强制攻击"    , 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 0,   0, true},
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_显示体力变化>(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_显示体力变化>(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_显示体力变化); }, u8"显示体力变化", 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 0,  25, true},
@@ -1119,21 +1123,18 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_队友染色    >(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_队友染色    >(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_队友染色    ); }, u8"队友染色"    , 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 0, 300, true},
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_显示队友位置>(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_显示队友位置>(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_显示队友位置); }, u8"显示队友位置", 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 0, 325, true},
                       },
-                  },
+                  }},
                   true,
               },
 
               {
                   u8"辅助",
                   new Widget
-                  {
-                      DIR_UPLEFT,
-                      0,
-                      0,
+                  {{
+                      .w = {},
+                      .h = {},
 
-                      {},
-                      {},
-
+                      .childList
                       {
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_持续盾      >(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_持续盾      >(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_持续盾      ); }, u8"持续盾"      , 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 0,   0, true},
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_持续移花接木>(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_持续移花接木>(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_持续移花接木); }, u8"持续移花接木", 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 0,  25, true},
@@ -1141,21 +1142,18 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_持续破血    >(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_持续破血    >(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_持续破血    ); }, u8"持续破血"    , 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 0, 100, true},
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_持续铁布衫  >(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_持续铁布衫  >(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_持续铁布衫  ); }, u8"持续铁布衫"  , 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 0, 125, true},
                       },
-                  },
+                  }},
                   true,
               },
 
               {
                   u8"保护",
                   new Widget
-                  {
-                      DIR_UPLEFT,
-                      0,
-                      0,
+                  {{
+                      .w = {},
+                      .h = {},
 
-                      {},
-                      {},
-
+                      .childList
                       {
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_自动喝红>(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_自动喝红>(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_自动喝红); }, u8"自动喝红", 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 0,  0, true},
                           {new CheckLabel(DIR_UPLEFT, 0, 0, true, 8, colorf::RGBA(231, 231, 189, 128), 16, 16, [this](const Widget *){ return SDRuntimeConfig_getConfig<RTCFG_保持满血>(m_sdRuntimeConfig); }, [this](Widget *, bool value){ SDRuntimeConfig_setConfig<RTCFG_保持满血>(m_sdRuntimeConfig, value); }, [this](Widget *, bool){ reportRuntimeConfig(RTCFG_保持满血); }, u8"保持满血", 1, 12, 0, colorf::WHITE_A255), DIR_UPLEFT, 0, 25, true},
@@ -1164,7 +1162,7 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
 
                           {new TextInput(DIR_UPLEFT, 0, 0, u8"等待", u8"秒", 3, 3, true, 50, 20), DIR_UPLEFT, 0, 110, true},
                       },
-                  },
+                  }},
                   true,
               },
           },
@@ -1201,7 +1199,7 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
     setShow(false);
 }
 
-void RuntimeConfigBoard::draw(Widget::ROIMap) const
+void RuntimeConfigBoard::draw(Widget::ROIMap m) const
 {
     for(const auto p:
     {
@@ -1213,7 +1211,7 @@ void RuntimeConfigBoard::draw(Widget::ROIMap) const
         static_cast<const Widget *>(&m_pageGameConfig),
     }){
         if(p->show()){
-            drawChild(p, dstX, dstY, roi);
+            drawChild(p, m);
         }
     }
 }

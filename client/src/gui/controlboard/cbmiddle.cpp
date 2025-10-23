@@ -190,14 +190,13 @@ CBMiddle::CBMiddle(
     setH([this]{ return m_bgImgFull.h(); });
 }
 
-bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
-    if(Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(Widget::processEventDefault(event, valid, m)){
         return true;
     }
 
