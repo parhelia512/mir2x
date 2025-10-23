@@ -167,10 +167,9 @@ ItemListBoard::ItemListBoard(int argX, int argY, Widget *argParent, bool argAuto
     }
 }
 
-bool ItemListBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool ItemListBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -178,10 +177,10 @@ bool ItemListBoard::processEventDefault(const SDL_Event &event, bool valid, int 
         return consumeFocus(false);
     }
 
-    if(m_leftButton  .processEventParent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_selectButton.processEventParent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_rightButton .processEventParent(event, valid, startDstX, startDstY, roi)){ return true; }
-    if(m_closeButton .processEventParent(event, valid, startDstX, startDstY, roi)){ return true; }
+    if(m_leftButton  .processEventParent(event, valid, m)){ return true; }
+    if(m_selectButton.processEventParent(event, valid, m)){ return true; }
+    if(m_rightButton .processEventParent(event, valid, m)){ return true; }
+    if(m_closeButton .processEventParent(event, valid, m)){ return true; }
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:

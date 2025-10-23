@@ -521,7 +521,7 @@ void InventoryBoard::drawInvOpTitle() const
         colorf::WHITE_A255,
     };
     // title.drawAt(DIR_NONE, m.x + 238, m.y + 25);
-    title.drawAt(DIR_NONE, 238, 25);
+    title.draw({.dir=DIR_NONE, .x=238, .y=25});
 }
 
 void InventoryBoard::drawInvOpCost() const

@@ -183,10 +183,9 @@ void GUIManager::update(double fUpdateTime)
     }
 }
 
-bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -196,7 +195,6 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int sta
                 switch(event.window.event){
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
                         {
-                            // onWindowResize();
                             afterResize();
                             return true;
                         }
@@ -215,13 +213,13 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, int sta
 
     bool tookEvent = false;
     if(!g_clientArgParser->disableIME){
-        tookEvent |= g_imeBoard->processEventRoot(event, valid && !tookEvent);
+        tookEvent |= g_imeBoard->processEventRoot(event, valid && !tookEvent, {});
     }
 
-    tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent, startDstX, startDstY, roiOpt.value());
-    tookEvent |= m_controlBoard.processEventRoot   (event, valid && !tookEvent);
-    tookEvent |= m_NPCChatBoard.processEventRoot   (event, valid && !tookEvent);
-    tookEvent |= m_miniMapBoard.processEventRoot   (event, valid && !tookEvent);
+    tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent, m );
+    tookEvent |= m_controlBoard.processEventRoot   (event, valid && !tookEvent, {});
+    tookEvent |= m_NPCChatBoard.processEventRoot   (event, valid && !tookEvent, {});
+    tookEvent |= m_miniMapBoard.processEventRoot   (event, valid && !tookEvent, {});
 
     return tookEvent;
 }

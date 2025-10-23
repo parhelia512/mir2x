@@ -253,10 +253,9 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
     setShow([this] -> bool { return getMiniMapTexture(); });
 }
 
-bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -267,8 +266,8 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, int s
     }
 
     bool took = false;
-    took |= m_buttonAlpha .processEvent(event, valid && !took, startDstX, startDstY, roiOpt.value());
-    took |= m_buttonExtend.processEvent(event, valid && !took, startDstX, startDstY, roiOpt.value());
+    took |= m_buttonAlpha .processEvent(event, valid && !took, m);
+    took |= m_buttonExtend.processEvent(event, valid && !took, m);
 
     if(took){
         return true;
@@ -278,9 +277,9 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, int s
         case SDL_MOUSEBUTTONDOWN:
             {
                 if(event.button.button == SDL_BUTTON_RIGHT){
-                    if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
-                        const auto remapXDiff = startDstX - roiOpt->x;
-                        const auto remapYDiff = startDstY - roiOpt->y;
+                    if(m.in(event.button.x, event.button.y)){
+                        const auto remapXDiff = m.x - m.ro->x;
+                        const auto remapYDiff = m.y - m.ro->y;
                         const auto [onMapPX, onMapPY] = mouseOnMapGLoc(event.button.x - remapXDiff, event.button.y - remapYDiff);
                         m_processRun->requestSpaceMove(std::get<0>(m_processRun->getMap()), onMapPX, onMapPY);
                         return true;
