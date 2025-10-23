@@ -23,18 +23,20 @@ CBLeft::CBLeft(
         bool argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          178,
-          133,
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = 178,
+          .h = 133,
 
-          {},
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_processRun(argProc)
 

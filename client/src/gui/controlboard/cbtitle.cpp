@@ -15,18 +15,18 @@ CBTitle::CBTitle(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          0, // need reset
-          0,
-          {},
+          .x = std::move(argX),
+          .y = std::move(argY),
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_processRun(argProc)
     , m_bg

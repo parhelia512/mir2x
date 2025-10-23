@@ -11,13 +11,10 @@ extern ClientArgParser *g_clientArgParser;
 
 GUIManager::GUIManager(ProcessRun *argProc)
     : Widget
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          []{ return g_sdlDevice->getRendererWidth();  },
-          []{ return g_sdlDevice->getRendererHeight(); },
-      }
+      {{
+          .w = []{ return g_sdlDevice->getRendererWidth();  },
+          .h = []{ return g_sdlDevice->getRendererHeight(); },
+      }}
 
     , m_processRun(argProc)
     , m_NPCChatBoard

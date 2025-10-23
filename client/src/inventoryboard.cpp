@@ -12,7 +12,7 @@ extern SDLDevice *g_sdlDevice;
 
 InventoryBoard::InventoryBoard(int argX, int argY, ProcessRun *pRun, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
+      {{
           .x = argX,
           .y = argY,
 
@@ -21,7 +21,7 @@ InventoryBoard::InventoryBoard(int argX, int argY, ProcessRun *pRun, Widget *arg
               .widget = argParent,
               .autoDelete = argAutoDelete,
           }
-      }
+      }}
 
     , m_wmdAniBoard
       {
@@ -221,7 +221,7 @@ void InventoryBoard::drawItem(int dstX, int dstY, size_t startRow, const PackBin
 
                         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
                     };
-                    itemCount.drawAt(DIR_UPRIGHT, startX + (binGridX + binGridW) * SYS_INVGRIDPW, startY + binGridY * SYS_INVGRIDPH - 2 /* pixel adjust */);
+                    itemCount.draw({.dir=DIR_UPRIGHT, .x{startX + (binGridX + binGridW) * SYS_INVGRIDPW}, .y{startY + binGridY * SYS_INVGRIDPH - 2 /* pixel adjust */}});
                 }
             }
         }
@@ -233,15 +233,14 @@ void InventoryBoard::update(double fUpdateTime)
     m_wmdAniBoard.update(fUpdateTime);
 }
 
-void InventoryBoard::draw(Widget::ROIMap) const
+void InventoryBoard::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
-    if(auto pTexture = g_progUseDB->retrieve(0X0000001B)){
-        g_sdlDevice->drawTexture(pTexture, dstX, dstY);
+    if(auto texPtr = g_progUseDB->retrieve(0X0000001B)){
+        g_sdlDevice->drawTexture(texPtr, m.x, m.y);
     }
 
     const auto myHeroPtr = m_processRun->getMyHero();
@@ -266,22 +265,22 @@ void InventoryBoard::draw(Widget::ROIMap) const
                 return 0;
             }
         }();
-        drawItem(dstX, dstY, startRow, packBinListCRef.at(i), fillColor);
+        drawItem(m.x, m.y, startRow, packBinListCRef.at(i), fillColor);
     }
 
     drawGold();
     drawInvOpTitle();
 
-    drawChild(&m_wmdAniBoard, dstX, dstY, roiOpt.value());
-    drawChild(&m_slider     , dstX, dstY, roiOpt.value());
-    drawChild(&m_closeButton, dstX, dstY, roiOpt.value());
+    drawChild(&m_wmdAniBoard, m);
+    drawChild(&m_slider     , m);
+    drawChild(&m_closeButton, m);
 
     if(m_sdInvOp.invOp == INVOP_NONE){
-        drawChild(&m_sortButton, dstX, dstY, roiOpt.value());
+        drawChild(&m_sortButton, m);
     }
     else if(m_selectedIndex >= 0){
-        g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X0000B0), dstX + m_invOpButtonX, dstY + m_invOpButtonY);
-        drawChild(&m_invOpButton, dstX, dstY, roiOpt.value());
+        g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X0000B0), m.x + m_invOpButtonX, m.y + m_invOpButtonY);
+        drawChild(&m_invOpButton, m);
         if(m_invOpCost >= 0){
             drawInvOpCost();
         }
@@ -292,10 +291,9 @@ void InventoryBoard::draw(Widget::ROIMap) const
     }
 }
 
-bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -303,21 +301,21 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
         return consumeFocus(false);
     }
 
-    if(m_closeButton.processEventParent(event, valid, startDstX, startDstY, roi)){
+    if(m_closeButton.processEventParent(event, valid, m)){
         return true;
     }
 
-    if(m_slider.processEventParent(event, valid, startDstX, startDstY, roi)){
+    if(m_slider.processEventParent(event, valid, m)){
         return true;
     }
 
     if(m_sdInvOp.invOp == INVOP_NONE){
-        if(m_sortButton.processEventParent(event, valid, startDstX, startDstY, roi)){
+        if(m_sortButton.processEventParent(event, valid, m)){
             return true;
         }
     }
     else{
-        if(m_selectedIndex >= 0 && m_invOpButton.processEventParent(event, valid, startDstX, startDstY, roi)){
+        if(m_selectedIndex >= 0 && m_invOpButton.processEventParent(event, valid, m)){
             return true;
         }
     }
@@ -340,9 +338,9 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
-                    const auto remapXDiff = startDstX - roiOpt->x;
-                    const auto remapYDiff = startDstY - roiOpt->y;
+                if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || focus())){
+                    const auto remapXDiff = m.x - m.ro->x;
+                    const auto remapYDiff = m.y - m.ro->y;
 
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
@@ -365,7 +363,7 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
                 switch(event.button.button){
                     case SDL_BUTTON_LEFT:
                         {
-                            if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                            if(m.in(event.button.x, event.button.y)){
                                 if(m_sdInvOp.invOp == INVOP_NONE){
                                     if(const int selectedPackIndex = getPackBinIndex(event.button.x, event.button.y); selectedPackIndex >= 0){
                                         auto selectedPackBin = invPackRef.getPackBinList().at(selectedPackIndex);
@@ -411,7 +409,7 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
                         }
                     case SDL_BUTTON_RIGHT:
                         {
-                            if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                            if(m.in(event.button.x, event.button.y)){
                                 if(const int selectedPackIndex = getPackBinIndex(event.button.x, event.button.y); selectedPackIndex >= 0){
                                     const auto &packBin = invPackRef.getPackBinList().at(selectedPackIndex);
                                     packBinConsume(packBin);
@@ -429,7 +427,7 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, int
         case SDL_MOUSEWHEEL:
             {
                 const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-                if(mathf::pointInRectangle<int>(mousePX, mousePY, startDstX + m_invGridX0, startDstY + m_invGridY0, SYS_INVGRIDGW * SYS_INVGRIDPW, SYS_INVGRIDGH * SYS_INVGRIDPH)){
+                if(mathf::pointInRectangle<int>(mousePX, mousePY, m.x + m_invGridX0, m.y + m_invGridY0, SYS_INVGRIDGW * SYS_INVGRIDPW, SYS_INVGRIDGH * SYS_INVGRIDPH)){
                     const auto rowCount = getRowCount();
                     if(rowCount > SYS_INVGRIDGH){
                         m_slider.addValue((event.wheel.y > 0 ? -1.0 : 1.0) / (rowCount - SYS_INVGRIDGH), false);
@@ -494,7 +492,7 @@ void InventoryBoard::drawGold() const
 
         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
     };
-    // goldBoard.drawAt(DIR_NONE, startDstX + 132, startDstY + 486);
+    // goldBoard.drawAt(DIR_NONE, m.x + 132, m.y + 486);
     goldBoard.drawAt(DIR_NONE, 132, 486);
 }
 
@@ -522,7 +520,7 @@ void InventoryBoard::drawInvOpTitle() const
 
         colorf::WHITE_A255,
     };
-    // title.drawAt(DIR_NONE, startDstX + 238, startDstY + 25);
+    // title.drawAt(DIR_NONE, m.x + 238, m.y + 25);
     title.drawAt(DIR_NONE, 238, 25);
 }
 
@@ -545,7 +543,7 @@ void InventoryBoard::drawInvOpCost() const
 
         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
     };
-    // queryResultBoard.drawAt(DIR_NONE, startDstX + 132, startDstY + 503);
+    // queryResultBoard.drawAt(DIR_NONE, m.x + 132, m.y + 503);
     queryResultBoard.drawAt(DIR_NONE, 132, 503);
 }
 
@@ -570,8 +568,8 @@ int InventoryBoard::getPackBinIndex(int locPX, int locPY) const
 
 std::tuple<int, int> InventoryBoard::getInvGrid(int locPX, int locPY) const
 {
-    const int gridPX0 = m_invGridX0; // + startDstX;
-    const int gridPY0 = m_invGridY0; // + startDstY;
+    const int gridPX0 = m_invGridX0; // + m.x;
+    const int gridPY0 = m_invGridY0; // + m.y;
 
     if(!mathf::pointInRectangle<int>(locPX, locPY, gridPX0, gridPY0, SYS_INVGRIDGW * SYS_INVGRIDPW, SYS_INVGRIDGH * SYS_INVGRIDPH)){
         return {-1, -1};

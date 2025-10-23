@@ -6,13 +6,12 @@ extern SDLDevice *g_sdlDevice;
 
 ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
-          DIR_DOWNLEFT,
+      {{
+          .dir = DIR_DOWNLEFT,
 
-          0,
-          [this]{ return g_sdlDevice->getRendererHeight() - 1; },
-          [this]{ return g_sdlDevice->getRendererWidth ()    ; },
-          [this]
+          .y = [this]{ return g_sdlDevice->getRendererHeight() - 1; },
+          .w = [this]{ return g_sdlDevice->getRendererWidth ()    ; },
+          .h = [this]
           {
               switch(m_mode){
                   case CBM_HIDE:
@@ -30,11 +29,12 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
               }
           },
 
-          {},
-
-          argParent,
-          argAutoDelete
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_processRun(argProc)
     , m_logBoard

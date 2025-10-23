@@ -264,15 +264,14 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *a
     }
 }
 
-void TeamStateBoard::draw(Widget::ROIMap) const
+void TeamStateBoard::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
-    const auto remapXDiff = dstX - roiOpt->x;
-    const auto remapYDiff = dstY - roiOpt->y;
+    const auto remapXDiff = m.x - m.ro->x;
+    const auto remapYDiff = m.y - m.ro->y;
 
     if(auto texPtr = g_progUseDB->retrieve(0X00000150)){
         const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
@@ -330,18 +329,17 @@ void TeamStateBoard::draw(Widget::ROIMap) const
         line.draw(remapXDiff + m_uidRegionX + (m_uidRegionW - m_uidTextRegionW) / 2, remapYDiff + m_uidRegionY + m_lineSpace / 2 + i * lineHeight(), 0, 0, std::min<int>(line.pw(), m_uidTextRegionW), line.ph());
     }
 
-    drawChild(&m_enableTeam, dstX, dstY, roiOpt.value());
-    drawChild(&m_switchShow, dstX, dstY, roiOpt.value());
-    drawChild(&m_addMember, dstX, dstY, roiOpt.value());
-    drawChild(&m_deleteMember, dstX, dstY, roiOpt.value());
-    drawChild(&m_refresh, dstX, dstY, roiOpt.value());
-    drawChild(&m_close, dstX, dstY, roiOpt.value());
+    drawChild(&m_enableTeam,   m);
+    drawChild(&m_switchShow,   m);
+    drawChild(&m_addMember,    m);
+    drawChild(&m_deleteMember, m);
+    drawChild(&m_refresh,      m);
+    drawChild(&m_close,        m);
 }
 
-bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -349,32 +347,15 @@ bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int
         return consumeFocus(false);
     }
 
-    if(m_enableTeam.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
-        return true;
-    }
+    if(m_enableTeam  .processEventParent(event, valid, m)){ return true; }
+    if(m_switchShow  .processEventParent(event, valid, m)){ return true; }
+    if(m_addMember   .processEventParent(event, valid, m)){ return true; }
+    if(m_deleteMember.processEventParent(event, valid, m)){ return true; }
+    if(m_refresh     .processEventParent(event, valid, m)){ return true; }
+    if(m_close       .processEventParent(event, valid, m)){ return true; }
 
-    if(m_switchShow.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
-        return true;
-    }
-
-    if(m_addMember.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
-        return true;
-    }
-
-    if(m_deleteMember.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
-        return true;
-    }
-
-    if(m_refresh.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
-        return true;
-    }
-
-    if(m_close.processEventParent(event, valid, startDstX, startDstY, roiOpt.value())){
-        return true;
-    }
-
-    const auto remapXDiff = startDstX - roiOpt->x;
-    const auto remapYDiff = startDstY - roiOpt->y;
+    const auto remapXDiff = m.x - m.ro->x;
+    const auto remapYDiff = m.y - m.ro->y;
 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
@@ -427,7 +408,7 @@ bool TeamStateBoard::processEventDefault(const SDL_Event &event, bool valid, int
             }
         case SDL_MOUSEMOTION:
             {
-                if((event.motion.state & SDL_BUTTON_LMASK) && (in(event.motion.x, event.motion.y, startDstX, startDstY, roiOpt.value()) || focus())){
+                if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || focus())){
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
                     const int maxY = rendererH - h();

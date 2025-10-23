@@ -21,18 +21,18 @@ ChatItemRef::ChatItemRef(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          0, // setup later
-          0, //
+      {{
+          .dir = std::move(argDir),
 
-          {},
+          .x = std::move(argX),
+          .y = std::move(argY),
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_crossBgColor(colorf::GREY + colorf::A_SHF(255))
     , m_background
