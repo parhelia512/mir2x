@@ -274,29 +274,22 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 
           for(int i = 0; i < 8; ++i){
               tabButtonList.push_back(new TritexButton
-              {
-                  DIR_UPLEFT,
-                  tabX + tabW * i,
-                  tabY,
+              {{
+                  .x = tabX + tabW * i,
+                  .y = tabY,
 
+                  .texIDList
                   {
-                      SYS_U32NIL,
-                      0X05000020 + to_u32(i),
-                      0X05000030 + to_u32(i),
+                      .on   = 0X05000020 + to_u32(i),
+                      .down = 0X05000030 + to_u32(i),
                   },
 
-                  {
-                      SYS_U32NIL,
-                      SYS_U32NIL,
-                      0X01020000 + 105,
-                  },
-
-                  [i, this](Widget *)
+                  .onOnverIn = [i, this](Widget *)
                   {
                       m_cursorOnTabIndex = i;
                   },
 
-                  [i, this](Widget *)
+                  .onOverOut = [i, this](Widget *)
                   {
                       if(i != m_cursorOnTabIndex){
                           return;
@@ -304,9 +297,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
                       m_cursorOnTabIndex = -1;
                   },
 
-                  nullptr,
-
-                  [i, this](Widget *, int)
+                  .onTrigger = [i, this](Widget *, int)
                   {
                       if(m_selectedTabIndex == i){
                           return;
@@ -323,18 +314,12 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
                       }
                   },
 
-                  0,
-                  0,
-                  0,
-                  0,
+                  .onClickDOne = false,
+                  .radioMode = true,
+                  .alterColor = false,
 
-                  false,
-                  true,
-                  false,
-
-                  this,
-                  true,
-              });
+                  .parent{this},
+              }});
 
               if(i == m_selectedTabIndex){
                   m_tabButtonList.at(i)->setDown();

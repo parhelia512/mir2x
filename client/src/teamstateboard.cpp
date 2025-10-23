@@ -30,51 +30,31 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *a
       }}
 
     , m_enableTeam
-      {
-          DIR_UPLEFT,
-          24,
-          47,
-          {SYS_U32NIL, 0X00000200, 0X00000201},
+      {{
+          .x = 24,
+          .y = 47,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000200,
+              .down = 0X00000201,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          nullptr,
-
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_switchShow
-      {
-          DIR_UPLEFT,
-          19,
-          0, // reset by adjustButtonPos()
-          {SYS_U32NIL, 0X00000160, 0X00000161},
+      {{
+          .x = 19,
+          .y = 0, // reset by adjustButtonPos()
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000160,
+              .down = 0X00000161,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               m_showCandidateList = !m_showCandidateList;
               if(m_showCandidateList){
@@ -87,154 +67,90 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *a
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_addMember
-      {
-          DIR_UPLEFT,
-          72,
-          0, // reset by adjustButtonPos()
-          {0X00000170, 0X00000170, 0X00000171},
+      {{
+          .x = 72,
+          .y = 0, // reset by adjustButtonPos()
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X00000170,
+              .on   = 0X00000170,
+              .down = 0X00000171,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(m_showCandidateList && (m_selectedIndex[m_showCandidateList] >= 0)){
                   m_processRun->requestJoinTeam(getSDTeamPlayer(m_selectedIndex[m_showCandidateList]).uid);
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_deleteMember
-      {
-          DIR_UPLEFT,
-          125,
-          0, // reset by adjustButtonPos()
-          {0X00000180, 0X00000180, 0X00000181},
+      {{
+          .x = 125,
+          .y = 0, // reset by adjustButtonPos()
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X00000180,
+              .on   = 0X00000180,
+              .down = 0X00000181,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(!m_showCandidateList && (m_selectedIndex[m_showCandidateList] >= 0)){
                   m_processRun->requestLeaveTeam(getSDTeamPlayer(m_selectedIndex[m_showCandidateList]).uid);
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_refresh
-      {
-          DIR_UPLEFT,
-          177,
-          0, // reset by adjustButtonPos()
-          {SYS_U32NIL, 0X00000190, 0X00000191},
+      {{
+          .x = 177,
+          .y = 0, // reset by adjustButtonPos()
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000190,
+              .down = 0X00000191,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               refresh();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_close
-      {
-          DIR_UPLEFT,
-          217,
-          0, // reset by adjustButtonPos()
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+      {{
+          .x = 217,
+          .y = 0, // reset by adjustButtonPos()
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_processRun(runPtr)
 {

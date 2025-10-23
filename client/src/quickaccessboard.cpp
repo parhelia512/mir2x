@@ -148,36 +148,24 @@ QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
       }}
 
     , m_buttonClose
-      {
-          DIR_UPLEFT,
-          263,
-          32,
-          {0X00000061, 0X00000061, 0X00000062},
+      {{
+          .x = 263,
+          .y = 32,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X00000061,
+              .on   = 0X00000061,
+              .down = 0X00000062,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 {
     for(int slot = 0; slot < 6; ++slot){
         addChild(new Grid

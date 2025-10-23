@@ -22,156 +22,96 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
       }}
 
     , m_closeButton
-      {
-          DIR_UPLEFT,
-          257,
-          183,
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+      {{
+          .x = 257,
+          .y = 183,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
               setExtendedItemID(0);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_selectButton
-      {
-          DIR_UPLEFT,
-          105,
-          185,
-          {SYS_U32NIL, 0X08000003, 0X08000004},
+      {{
+          .x = 105,
+          .y = 185,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X08000003,
+              .down = 0X08000004,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setExtendedItemID(selectedItemID());
               m_closeExt1Button.setOff();
               m_closeExt2Button.setOff();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_closeExt1Button
-      {
-          DIR_UPLEFT,
-          448,
-          159,
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+      {{
+          .x = 448,
+          .y = 159,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setExtendedItemID(0);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_leftExt1Button
-      {
-          DIR_UPLEFT,
-          315,
-          163,
-          {SYS_U32NIL, 0X08000007, 0X08000008},
+      {{
+          .x = 315,
+          .y = 163,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X08000007,
+              .down = 0X08000008,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               m_ext1Page = std::max<int>(0, m_ext1Page - 1);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_selectExt1Button
-      {
-          DIR_UPLEFT,
-          357,
-          163,
-          {SYS_U32NIL, 0X08000005, 0X08000006},
+      {{
+          .x = 357,
+          .y = 163,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X08000005,
+              .down = 0X08000006,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               const auto [itemID, seqID] = getExtSelectedItemSeqID();
               if(itemID){
@@ -179,35 +119,21 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_rightExt1Button
-      {
-          DIR_UPLEFT,
-          405,
-          163,
-          {SYS_U32NIL, 0X08000009, 0X0800000A},
+      {{
+          .x = 405,
+          .y = 163,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X08000009,
+              .down = 0X0800000A,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(const auto ext1PageCount = extendedPageCount(); ext1PageCount > 0){
                   m_ext1Page = std::min<int>(ext1PageCount - 1, m_ext1Page + 1);
@@ -217,68 +143,40 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_closeExt2Button
-      {
-          DIR_UPLEFT,
-          474,
-          56,
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+      {{
+          .x = 474,
+          .y = 56,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setExtendedItemID(0);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_selectExt2Button
-      {
-          DIR_UPLEFT,
-          366,
-          60,
-          {SYS_U32NIL, 0X0800000B, 0X0800000C},
+      {{
+          .x = 366,
+          .y = 60,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0800000B,
+              .down = 0X0800000C,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               const auto [itemID, seqID] = getExtSelectedItemSeqID();
               if(!itemID){
@@ -310,18 +208,8 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
               });
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_slider
       {

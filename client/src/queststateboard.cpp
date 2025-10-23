@@ -111,67 +111,38 @@ QuestStateBoard::QuestStateBoard(
       }
 
     , m_lrButton
-      {
-          DIR_UPLEFT,
-          315,
-          76,
-          {0X00000300, 0X00000300, 0X00000302},
+      {{
+          .x = 315,
+          .y = 76,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X00000300,
+              .on   = 0X00000300,
+              .down = 0X00000302,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          nullptr,
-
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_closeButton
-      {
-          DIR_UPLEFT,
-          316,
-          108,
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+      {{
+          .x = 316,
+          .y = 108,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     setShow(false);
 }

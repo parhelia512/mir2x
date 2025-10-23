@@ -343,7 +343,7 @@ CBRight::CBRight(
               .down = 0X00000041,
           },
 
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("FriendChatBoard")){
                   p->flipShow();
