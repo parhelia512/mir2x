@@ -93,10 +93,9 @@ TritexButton::TritexButton(
             fnGetEdgeSize([](SDL_Texture *texPtr){ return SDLDeviceHelper::getTextureHeight(texPtr); }));
 }
 
-void TritexButton::draw(Widget::ROIMap) const
+void TritexButton::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
@@ -142,6 +141,6 @@ void TritexButton::draw(Widget::ROIMap) const
                 return SDL_BLENDMODE_BLEND;
             }
         }());
-        g_sdlDevice->drawTexture(texPtr, dstX + offX, dstY + offY, roiOpt->x, roiOpt->y, roiOpt->w, roiOpt->h); // TODO: need to crop roiOpt-> region for offset
+        g_sdlDevice->drawTexture(texPtr, m.x + offX, m.y + offY, m.ro->x, m.ro->y, m.ro->w, m.ro->h); // TODO: need to crop m.ro-> region for offset
     }
 }

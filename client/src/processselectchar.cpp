@@ -127,8 +127,8 @@ void ProcessSelectChar::processEvent(const SDL_Event &event)
 {
     bool tookEvent = false;
 
-    tookEvent |= m_deleteInput.processEventRoot(event, !tookEvent, 0, 0);
-    tookEvent |= m_canvas     .processEventRoot(event, !tookEvent, 0, 0);
+    tookEvent |= m_deleteInput.processEventRoot(event, !tookEvent, {});
+    tookEvent |= m_canvas     .processEventRoot(event, !tookEvent, {});
 
     if(!tookEvent){
     }
@@ -240,7 +240,7 @@ void ProcessSelectChar::drawCharName() const
 
         g_sdlDevice->fillRectangle(colorf::RGBA(  0,   0,   0, 128), drawBoardX - drawBoardMargin, drawBoardY - drawBoardMargin, charBoard.w() + drawBoardMargin * 2, charBoard.h() + drawBoardMargin * 2, 5);
         g_sdlDevice->drawRectangle(colorf::RGBA(231, 231, 189, 128), drawBoardX - drawBoardMargin, drawBoardY - drawBoardMargin, charBoard.w() + drawBoardMargin * 2, charBoard.h() + drawBoardMargin * 2, 5);
-        charBoard.drawAt(DIR_UPLEFT, drawBoardX, drawBoardY);
+        charBoard.draw({.x=drawBoardX, .y=drawBoardY});
     }
 }
 

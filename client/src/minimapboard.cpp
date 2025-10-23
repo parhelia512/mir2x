@@ -11,19 +11,16 @@ extern SDLDevice *g_sdlDevice;
 
 MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this]{ return getFrameSize(); },
+          .h = [this]{ return getFrameSize(); },
 
-          [this]{ return getFrameSize(); },
-          [this]{ return getFrameSize(); },
-
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_processRun(argProc)
     , m_canvas

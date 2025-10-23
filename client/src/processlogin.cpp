@@ -23,13 +23,10 @@ extern ClientArgParser *g_clientArgParser;
 ProcessLogin::ProcessLogin()
 	: Process()
         , m_canvas
-          {
-              DIR_UPLEFT,
-              0,
-              0,
-              800,
-              600,
-          }
+          {{
+              .w = 800,
+              .h = 600,
+          }}
 
 	, m_button1(DIR_UPLEFT, 150, 482, {0X00000005, 0X00000006, 0X00000007}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doCreateAccount();  }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
 	, m_button2(DIR_UPLEFT, 352, 482, {0X00000008, 0X00000009, 0X0000000A}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doChangePassword(); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
@@ -224,7 +221,7 @@ void ProcessLogin::processEvent(const SDL_Event &event)
             }
     }
 
-    m_canvas.processEventRoot(event, true);
+    m_canvas.processEventRoot(event, true, {});
 }
 
 void ProcessLogin::doLogin()

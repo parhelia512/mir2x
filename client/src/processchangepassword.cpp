@@ -276,7 +276,7 @@ void ProcessChangePassword::draw() const
 
 void ProcessChangePassword::processEvent(const SDL_Event &event)
 {
-    if(m_quit.processEventRoot(event, true, 0, 0)){
+    if(m_quit.processEventRoot(event, true, {})){
         return;
     }
 
@@ -285,7 +285,7 @@ void ProcessChangePassword::processEvent(const SDL_Event &event)
         return;
     }
 
-    if(m_submit.processEventRoot(event, true, 0, 0)){
+    if(m_submit.processEventRoot(event, true, {})){
         return;
     }
 
@@ -328,10 +328,10 @@ void ProcessChangePassword::processEvent(const SDL_Event &event)
     // widget idbox and pwdbox are not independent from each other
     // tab in one box will grant focus to another
 
-    m_boxID           .processEventRoot(event, true, 0, 0);
-    m_boxPwd          .processEventRoot(event, true, 0, 0);
-    m_boxNewPwd       .processEventRoot(event, true, 0, 0);
-    m_boxNewPwdConfirm.processEventRoot(event, true, 0, 0);
+    m_boxID           .processEventRoot(event, true, {});
+    m_boxPwd          .processEventRoot(event, true, {});
+    m_boxNewPwd       .processEventRoot(event, true, {});
+    m_boxNewPwdConfirm.processEventRoot(event, true, {});
 
     localCheck();
 }

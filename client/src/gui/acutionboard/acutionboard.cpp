@@ -7,19 +7,18 @@ extern SDLDevice *g_sdlDevice;
 
 AcutionBoard::AcutionBoard(ProcessRun *argProc, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
-          DIR_NONE,
-          [](const Widget *){ return g_sdlDevice->getRendererWidth () / 2; },
-          [](const Widget *){ return g_sdlDevice->getRendererHeight() / 2; },
+      {{
+          .dir = DIR_NONE,
 
-          0,
-          0,
+          .x = [](const Widget *){ return g_sdlDevice->getRendererWidth () / 2; },
+          .y = [](const Widget *){ return g_sdlDevice->getRendererHeight() / 2; },
 
-          {},
-
-          argParent,
-          argAutoDelete
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_runProc(argProc)
     , m_background

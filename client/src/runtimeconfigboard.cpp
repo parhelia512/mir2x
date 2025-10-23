@@ -37,18 +37,18 @@ RuntimeConfigBoard::TextInput::TextInput(
         bool    argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-
-          {},
-          {},
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+      {{
+          .dir = argDir,
+          .x = argX,
+          .y = argY,
+          .w = {},
+          .h = {},
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_labelFirst
       {

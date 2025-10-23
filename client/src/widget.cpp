@@ -230,7 +230,7 @@ bool Widget::ROIMap::in(int pixelX, int pixelY, const std::optional<Widget::ROI>
     }
 }
 
-void Widget::ROIMap::crop(const Widget::ROI &r, const std::optional<Widget::ROI> &roiOpt)
+bool Widget::ROIMap::crop(const Widget::ROI &r, const std::optional<Widget::ROI> &roiOpt)
 {
     if(this->ro.has_value()){
         if(this->dir != DIR_UPLEFT){
@@ -274,8 +274,8 @@ Widget::ROIMap Widget::ROIMap::create(const Widget::ROI &childROI, const std::op
     auto r = *this;
     r.crop(childROI, roiOpt);
 
-    r.op->x -= childROI.x;
-    r.op->y -= childROI.y;
+    r.ro->x -= childROI.x;
+    r.ro->y -= childROI.y;
 
     return r;
 }
@@ -478,37 +478,6 @@ Widget::Widget(Widget::InitArgs args)
         }
     }
 }
-
-Widget::Widget(Widget::VarDir argDir,
-
-        Widget::VarOff argX,
-        Widget::VarOff argY,
-
-        Widget::VarSizeOpt argW,
-        Widget::VarSizeOpt argH,
-
-        std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool>> argChildList,
-
-        Widget * argParent,
-        bool     argAutoDelete)
-
-    : Widget
-      ({
-          .dir = std::move(argDir),
-          .x   = std::move(argX),
-          .y   = std::move(argY),
-          .w   = std::move(argW),
-          .h   = std::move(argH),
-
-          .childList = std::move(argChildList),
-
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
-      })
-{}
 
 void Widget::drawChild(const Widget *child, Widget::ROIMap m) const
 {

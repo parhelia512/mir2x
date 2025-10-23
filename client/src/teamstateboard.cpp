@@ -17,19 +17,17 @@ extern SoundEffectDB *g_seffDB;
 extern SDLDevice *g_sdlDevice;
 extern ClientArgParser *g_clientArgParser;
 
-TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
+TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
-          DIR_UPLEFT,
-          argX,
-          argY,
-          0,
-          0,
-          {},
-
-          widgetPtr,
-          autoDelete
-      }
+      {{
+          .x = argX,
+          .y = argY,
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_enableTeam
       {

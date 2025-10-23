@@ -10,19 +10,19 @@ extern PNGTexDB *g_itemDB;
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-ItemListBoard::ItemListBoard(int argX, int argY, Widget *widgetPtr, bool autoDelete)
+ItemListBoard::ItemListBoard(int argX, int argY, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
-          DIR_UPLEFT,
-          argX,
-          argY,
-          m_gfxSrcW,
-          m_gfxSrcH,
-          {},
-
-          widgetPtr,
-          autoDelete
-      }
+      {{
+          .x = argX,
+          .y = argY,
+          .w = m_gfxSrcW,
+          .h = m_gfxSrcH,
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_leftButton
       {

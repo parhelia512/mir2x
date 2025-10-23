@@ -137,22 +137,22 @@ void ProcessCreateChar::draw() const
         g_sdlDevice->fillRectangle(colorf::RGBA(0, 0,   0, 128), notifX - margin, notifY - margin, m_notifyBoard.pw() + margin * 2, m_notifyBoard.h() + margin * 2, 8);
         g_sdlDevice->drawRectangle(colorf::RGBA(0, 0, 255, 128), notifX - margin, notifY - margin, m_notifyBoard.pw() + margin * 2, m_notifyBoard.h() + margin * 2, 8);
     }
-    m_notifyBoard.drawAt(DIR_UPLEFT, notifX, notifY);
+    m_notifyBoard.draw({.dir=DIR_UPLEFT, .x=notifX, .y=notifY});
 }
 
 void ProcessCreateChar::processEvent(const SDL_Event &event)
 {
     bool tookEvent = false;
     if(!g_clientArgParser->disableIME){
-        tookEvent |= g_imeBoard->processEventRoot(event, !tookEvent, 0, 0);
+        tookEvent |= g_imeBoard->processEventRoot(event, !tookEvent, {});
     }
 
-    tookEvent |= m_warrior.processEventRoot(event, !tookEvent, 0, 0);
-    tookEvent |= m_wizard .processEventRoot(event, !tookEvent, 0, 0);
-    tookEvent |= m_taoist .processEventRoot(event, !tookEvent, 0, 0);
-    tookEvent |= m_submit .processEventRoot(event, !tookEvent, 0, 0);
-    tookEvent |= m_exit   .processEventRoot(event, !tookEvent, 0, 0);
-    tookEvent |= m_nameBox.processEventRoot(event, !tookEvent, 0, 0);
+    tookEvent |= m_warrior.processEventRoot(event, !tookEvent, {});
+    tookEvent |= m_wizard .processEventRoot(event, !tookEvent, {});
+    tookEvent |= m_taoist .processEventRoot(event, !tookEvent, {});
+    tookEvent |= m_submit .processEventRoot(event, !tookEvent, {});
+    tookEvent |= m_exit   .processEventRoot(event, !tookEvent, {});
+    tookEvent |= m_nameBox.processEventRoot(event, !tookEvent, {});
 
     if(!tookEvent){
         switch(event.type){

@@ -551,7 +551,7 @@ void ProcessRun::draw() const
 
         g_sdlDevice->fillRectangle(colorf::GREEN + colorf::A_SHF(180), x, y, w, h);
         g_sdlDevice->drawRectangle(colorf::BLUE  + colorf::A_SHF(255), x, y, w, h);
-        g_notifyBoard->drawAt(DIR_UPLEFT, x, y);
+        g_notifyBoard->draw({.x=x, .y=y});
     }
 
     if(g_clientArgParser->drawMouseLocation){

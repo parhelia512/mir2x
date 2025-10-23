@@ -54,7 +54,7 @@ QuickAccessBoard::Grid::Grid(
 
           [this](const Widget *self, int drawDstX, int drawDstY)
           {
-               if(const auto [mouseX, mouseY] = SDLDeviceHelper::getMousePLoc(); self->in(mouseX, mouseY, drawDstX, drawDstY, roi())){
+              if(Widget::ROIMap({.x = drawDstX, .y = drawDstY, .ro = self->roi()}).in(SDLDeviceHelper::getMousePLoc())){
                    g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(64), drawDstX, drawDstY, self->w(), self->h());
                }
           },

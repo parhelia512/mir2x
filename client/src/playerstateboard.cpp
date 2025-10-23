@@ -17,19 +17,18 @@ extern SoundEffectDB *g_seffDB;
 extern SDLDevice *g_sdlDevice;
 extern ClientArgParser *g_clientArgParser;
 
-PlayerStateBoard::PlayerStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
+PlayerStateBoard::PlayerStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
-          DIR_UPLEFT,
-          argX,
-          argY,
-          0,
-          0,
-          {},
+      {{
+          .x = argX,
+          .y = argY,
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
-          widgetPtr,
-          autoDelete
-      }
     , m_gridList([this]()
       {
           std::remove_cvref_t<decltype(this->m_gridList)> gridList;

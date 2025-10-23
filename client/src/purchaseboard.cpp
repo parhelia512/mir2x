@@ -11,19 +11,15 @@ extern PNGTexDB *g_itemDB;
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
+PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          0,
-          0,
-          {},
-
-          widgetPtr,
-          autoDelete
-      }
+      {{
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_closeButton
       {
