@@ -33,7 +33,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
       }}
 
     , m_closeButton
-      {
+      {{
           .x = 554,
           .y = 399,
 
@@ -49,10 +49,10 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           },
 
           .parent{this},
-      }
+      }}
 
     , m_announcement
-      {
+      {{
           .x = 40,
           .y = 385,
 
@@ -67,10 +67,10 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           },
 
           .parent{this},
-      }
+      }}
 
     , m_members
-      {
+      {{
           .x = 90,
           .y = 385,
 
@@ -85,10 +85,10 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           },
 
           .parent{this},
-      }
+      }}
 
     , m_chat
-      {
+      {{
           .x = 140,
           .y = 385,
 
@@ -103,10 +103,10 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           },
 
           .parent{this},
-      }
+      }}
 
     , m_editAnnouncement
-      {
+      {{
           .x = 290,
           .y = 385,
 
@@ -121,10 +121,10 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           },
 
           .parent{this},
-      }
+      }}
 
     , m_removeMember
-      {
+      {{
           .x = 340,
           .y = 385,
 
@@ -139,10 +139,10 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           },
 
           .parent{this},
-      }
+      }}
 
     , m_disbandGuild
-      {
+      {{
           .x = 390,
           .y = 385,
 
@@ -157,10 +157,10 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           },
 
           .parent{this},
-      }
+      }}
 
     , m_editMemberPosition
-      {
+      {{
           .x = 440,
           .y = 385,
 
@@ -175,10 +175,10 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           },
 
           .parent{this},
-      }
+      }}
 
     , m_dissolveCovenant
-      {
+      {{
           .x = 490,
           .y = 385,
 
@@ -193,7 +193,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           },
 
           .parent{this},
-      }
+      }}
 
     , m_slider
       {
