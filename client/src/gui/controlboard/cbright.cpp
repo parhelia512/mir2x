@@ -76,49 +76,43 @@ CBRight::CBRight(
       }
 
     , m_buttonExchange
-      {
-          DIR_UPLEFT,
-          4,
-          6,
+      {{
+          .x = 4,
+          .y = 6,
 
-          1,
-          1,
-          10,
+          .onOffX = 1,
+          .onOffY = 1,
 
-          colorf::WHITE + colorf::A_SHF(80),
-          0X00000042,
+          .onRadius = 10,
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .modColor  = colorf::WHITE + colorf::A_SHF(80),
+          .downTexID = 0X00000042U,
+
+          .onTrigger = [this](Widget *, int)
           {
               if(auto cb = hasParent<ControlBoard>()){
                   cb->addLog(0, "exchange doesn't implemented yet");
               }
           },
 
-          true,
-          this,
-      }
+          .triggerOnDone = true,
+          .parent{this},
+      }}
 
     , m_buttonMiniMap
-      {
-          DIR_UPLEFT,
-          4,
-          40,
+      {{
+          .x = 4,
+          .y = 40,
 
-          1,
-          1,
-          10,
+          .onOffX = 1,
+          .onOffY = 1,
 
-          colorf::WHITE + colorf::A_SHF(80),
-          0X00000043,
+          .onRadius = 10,
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .modColor  = colorf::WHITE + colorf::A_SHF(80),
+          .downTexID = 0X00000043U,
+
+          .onTrigger = [this](Widget *, int)
           {
               if(auto p = dynamic_cast<MiniMapBoard *>(m_processRun->getWidget("MiniMapBoard"))){
                   if(p->getMiniMapTexture()){
@@ -132,34 +126,30 @@ CBRight::CBRight(
               }
           },
 
-          true,
-          this,
-      }
+          .triggerOnDone = true,
+          .parent{this},
+      }}
 
     , m_buttonMagicKey
-      {
-          DIR_UPLEFT,
-          4,
-          75,
+      {{
+          .x = 4,
+          .y = 75,
 
-          1,
-          1,
-          10,
+          .onOffX = 1,
+          .onOffY = 1,
+          .onRadius = 10,
 
-          colorf::WHITE + colorf::A_SHF(80),
-          0X00000044,
+          .modColor  = colorf::WHITE + colorf::A_SHF(80),
+          .downTexID = 0X00000044U,
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               m_processRun->flipDrawMagicKey();
           },
 
-          true,
-          this,
-      }
+          .triggerOnDone = true,
+          .parent{this},
+      }}
 
     , m_buttonInventory
       {

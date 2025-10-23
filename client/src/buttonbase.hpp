@@ -17,7 +17,7 @@
 
 class ButtonBase: public Widget
 {
-    private:
+    protected:
         using    OverCBFunc = std::variant<std::nullptr_t, std::function<void(         )>, std::function<void(Widget *           )>>;
         using   ClickCBFunc = std::variant<std::nullptr_t, std::function<void(bool, int)>, std::function<void(Widget *, bool, int)>>;
         using TriggerCBFunc = std::variant<std::nullptr_t, std::function<void(      int)>, std::function<void(Widget *,       int)>>;

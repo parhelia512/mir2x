@@ -7,54 +7,30 @@
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-AlphaOnButton::AlphaOnButton(
-        Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
-
-        int argOnOffX,
-        int argOnOffY,
-        int argOnRadius,
-
-        uint32_t argModColor,
-        uint32_t argDownTexID,
-
-        std::function<void(Widget *           )> fnOnOverIn,
-        std::function<void(Widget *           )> fnOnOverOut,
-        std::function<void(Widget *, bool, int)> fnOnClick,
-        std::function<void(Widget *,       int)> fnOnTrigger,
-
-        bool    triggerOnDone,
-        Widget *pwidget,
-        bool    autoDelete)
-
+AlphaOnButton::AlphaOnButton(AlphaOnButton::InitArgs args)
     : ButtonBase
       {{
-          .dir = std::move(argDir),
+          .dir = std::move(args.dir),
 
-          .x = std::move(argX),
-          .y = std::move(argY),
+          .x = std::move(args.x),
+          .y = std::move(args.y),
 
-          .onOverIn  = std::move(fnOnOverIn),
-          .onOverOut = std::move(fnOnOverOut),
+          .onOverIn  = std::move(args.onOverIn),
+          .onOverOut = std::move(args.onOverOut),
 
-          .onClick = std::move(fnOnClick),
-          .onTrigger = std::move(fnOnTrigger),
+          .onClick = std::move(args.onClick),
+          .onTrigger = std::move(args.onTrigger),
 
-          .onClickDone = triggerOnDone,
-
-          .parent
-          {
-              .widget = pwidget,
-              .autoDelete = autoDelete,
-          }
+          .onClickDone = args.triggerOnDone,
+          .parent = args.parent,
       }}
 
-    , m_modColor(argModColor)
-    , m_texID(argDownTexID)
-    , m_onOffX(argOnOffX)
-    , m_onOffY(argOnOffY)
-    , m_onRadius(argOnRadius)
+    , m_modColor(std::move(args.modColor))
+    , m_downTexID(std::move(args.downTexID))
+
+    , m_onOffX(args.onOffX)
+    , m_onOffY(args.onOffY)
+    , m_onRadius(args.onRadius)
 
     , m_on
       {
@@ -92,7 +68,7 @@ AlphaOnButton::AlphaOnButton(
 
           [this](const Widget *) -> SDL_Texture *
           {
-              return (getState() == BEVENT_DOWN) ? g_progUseDB->retrieve(m_texID) : nullptr;
+              return (getState() == BEVENT_DOWN) ? g_progUseDB->retrieve(Widget::evalU32(m_downTexID, this)) : nullptr;
           },
 
           false,
@@ -111,7 +87,7 @@ AlphaOnButton::AlphaOnButton(
 
     setSize([this](const Widget *)
     {
-        if(auto texPtr = g_progUseDB->retrieve(m_texID)){
+        if(auto texPtr = g_progUseDB->retrieve(Widget::evalU32(m_downTexID, this))){
             return SDLDeviceHelper::getTextureWidth(texPtr);
         }
         return 0;
@@ -119,7 +95,7 @@ AlphaOnButton::AlphaOnButton(
 
     [this](const Widget *)
     {
-        if(auto texPtr = g_progUseDB->retrieve(m_texID)){
+        if(auto texPtr = g_progUseDB->retrieve(Widget::evalU32(m_downTexID, this))){
             return SDLDeviceHelper::getTextureHeight(texPtr);
         }
         return 0;

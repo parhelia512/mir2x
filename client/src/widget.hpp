@@ -49,15 +49,19 @@ class WidgetTreeNode // tree concept, used by class Widget only
         using alias_VarBool      = VarTypeHelper<         bool>;
         using alias_VarBlendMode = VarTypeHelper<SDL_BlendMode>;
 
+    private:
+        using alias_VarTexLoadFunc = std::variant<std::nullptr_t, std::function<SDL_Texture *()>, std::function<SDL_Texture *(const Widget *)>>;
+
     protected:
         // make all var types distinct
         // this is necessary for Widget::transform
-        struct VarDir      : public alias_VarDir       { using alias_VarDir      ::alias_VarDir      ; };
-        struct VarOff      : public alias_VarOff       { using alias_VarOff      ::alias_VarOff      ; };
-        struct VarU32      : public alias_VarU32       { using alias_VarU32      ::alias_VarU32      ; };
-        struct VarSize     : public alias_VarSize      { using alias_VarSize     ::alias_VarSize     ; };
-        struct VarBool     : public alias_VarBool      { using alias_VarBool     ::alias_VarBool     ; };
-        struct VarBlendMode: public alias_VarBlendMode { using alias_VarBlendMode::alias_VarBlendMode; };
+        struct VarDir        : public alias_VarDir        { using alias_VarDir        ::alias_VarDir        ; };
+        struct VarOff        : public alias_VarOff        { using alias_VarOff        ::alias_VarOff        ; };
+        struct VarU32        : public alias_VarU32        { using alias_VarU32        ::alias_VarU32        ; };
+        struct VarSize       : public alias_VarSize       { using alias_VarSize       ::alias_VarSize       ; };
+        struct VarBool       : public alias_VarBool       { using alias_VarBool       ::alias_VarBool       ; };
+        struct VarBlendMode  : public alias_VarBlendMode  { using alias_VarBlendMode  ::alias_VarBlendMode  ; };
+        struct VarTexLoadFunc: public alias_VarTexLoadFunc{ using alias_VarTexLoadFunc::alias_VarTexLoadFunc; };
 
     protected:
         using VarSizeOpt = std::optional<VarSize>;

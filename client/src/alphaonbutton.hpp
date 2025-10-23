@@ -8,11 +8,41 @@
 
 class AlphaOnButton: public ButtonBase
 {
-    private:
-        const uint32_t m_modColor;
+    protected:
+        using    OverCBFunc = ButtonBase::   OverCBFunc;
+        using   ClickCBFunc = ButtonBase::  ClickCBFunc;
+        using TriggerCBFunc = ButtonBase::TriggerCBFunc;
 
     private:
-        const uint32_t m_texID;
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            int onOffX = 0;
+            int onOffY = 0;
+
+            int onRadius = 0;
+
+            Widget::VarU32 modColor  = colorf::WHITE_A255;
+            Widget::VarU32 downTexID = 0U;
+
+            AlphaOnButton::OverCBFunc onOverIn  = nullptr;
+            AlphaOnButton::OverCBFunc onOverOut = nullptr;
+
+            AlphaOnButton::ClickCBFunc onClick = nullptr;
+            AlphaOnButton::TriggerCBFunc onTrigger = nullptr;
+
+            bool triggerOnDone = true;
+
+            Widget::WADPair parent {};
+        };
+
+    private:
+        Widget::VarU32 m_modColor;
+        Widget::VarU32 m_downTexID;
 
     private:
         const int m_onOffX;
@@ -24,25 +54,5 @@ class AlphaOnButton: public ButtonBase
         ImageBoard m_down;
 
     public:
-        AlphaOnButton(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                int,
-                int,
-                int,
-
-                uint32_t,
-                uint32_t,
-
-                std::function<void(Widget *           )> = nullptr,
-                std::function<void(Widget *           )> = nullptr,
-                std::function<void(Widget *, bool, int)> = nullptr,
-                std::function<void(Widget *,       int)> = nullptr,
-
-                bool = true,
-
-                Widget * = nullptr,
-                bool     = false);
+        AlphaOnButton(AlphaOnButton::InitArgs);
 };
