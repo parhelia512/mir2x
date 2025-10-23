@@ -145,161 +145,106 @@ CBRight::CBRight(
       }}
 
     , m_buttonInventory
-      {
-          DIR_UPLEFT,
-          48,
-          33,
-          {0X00000030, 0X00000030, 0X00000031},
+      {{
+          .x = 48,
+          .y = 33,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X00000030,
+              .on   = 0X00000030,
+              .down = 0X00000031,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("InventoryBoard")){
                   p->flipShow();
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonHeroState
-      {
-          DIR_UPLEFT,
-          77,
-          31,
-          {0X00000033, 0X00000033, 0X00000032},
+      {{
+          .x = 77,
+          .y = 31,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X00000033,
+              .on   = 0X00000033,
+              .down = 0X00000032,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("PlayerStateBoard")){
                   p->flipShow();
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonHeroMagic
-      {
-          DIR_UPLEFT,
-          105,
-          33,
-          {0X00000035, 0X00000035, 0X00000034},
+      {{
+          .x = 105,
+          .y = 33,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X00000035,
+              .on   = 0X00000035,
+              .down = 0X00000034,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("SkillBoard")){
                   p->flipShow();
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonGuild
-      {
-          DIR_UPLEFT,
-          40,
-          11,
-          {0X00000036, 0X00000036, 0X00000037},
+      {{
+          .x = 40,
+          .y = 11,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X00000036,
+              .on   = 0X00000036,
+              .down = 0X00000037,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("GuildBoard")){
                   p->flipShow();
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonTeam
-      {
-          DIR_UPLEFT,
-          72,
-          8,
-          {0X00000038, 0X00000038, 0X00000039},
+      {{
+          .x = 72,
+          .y = 8,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X00000038,
+              .on   = 0X00000038,
+              .down = 0X00000039,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               auto boardPtr = dynamic_cast<TeamStateBoard *>(m_processRun->getWidget("TeamStateBoard"));
               auto  heroPtr = m_processRun->getMyHero();
@@ -315,35 +260,22 @@ CBRight::CBRight(
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonQuest
-      {
-          DIR_UPLEFT,
-          108,
-          11,
-          {0X0000003A, 0X0000003A, 0X0000003B},
+      {{
+          .x = 108,
+          .y = 11,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X0000003A,
+              .on   = 0X0000003A,
+              .down = 0X0000003B,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("QuestStateBoard")){
                   p->flipShow();
@@ -352,104 +284,65 @@ CBRight::CBRight(
               m_buttonQuest.stopBlink();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonHorse
-      {
-          DIR_UPLEFT,
-          40,
-          61,
-          {0X0000003C, 0X0000003C, 0X0000003D},
+      {{
+          .x = 40,
+          .y = 61,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X0000003C,
+              .on   = 0X0000003C,
+              .down = 0X0000003D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("HorseBoard")){
                   p->flipShow();
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonRuntimeConfig
-      {
-          DIR_UPLEFT,
-          72,
-          72,
-          {0X0000003E, 0X0000003E, 0X0000003F},
+      {{
+          .x = 72,
+          .y = 72,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X0000003E,
+              .on   = 0X0000003E,
+              .down = 0X0000003F,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("RuntimeConfigBoard")){
                   p->flipShow();
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonFriendChat
-      {
-          DIR_UPLEFT,
-          108,
-          61,
-          {0X00000040, 0X00000040, 0X00000041},
+      {{
+          .x = 108,
+          .y = 61,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X00000040,
+              .on   = 0X00000040,
+              .down = 0X00000041,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
           [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("FriendChatBoard")){
@@ -457,18 +350,8 @@ CBRight::CBRight(
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonAC
       {{

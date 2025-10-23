@@ -100,40 +100,17 @@ SkillBoard::MagicIconButton::MagicIconButton(
     , m_processRun(argProc)
 
     , m_icon
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
+      {{
+          .texIDList
           {
-              SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
-              SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
-              SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
+              .off  = SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
+              .on   = SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
+              .down = SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
           },
 
-          {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              SYS_U32NIL,
-          },
-
-          nullptr,
-          nullptr,
-          nullptr,
-          nullptr,
-
-          0,
-          0,
-          0,
-          0,
-
-          false,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .onClickDone = false,
+          .parent{this},
+      }}
 {
     // leave some pixels to draw level label
     // since level can change during run, can't get the exact size here

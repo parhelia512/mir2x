@@ -26,10 +26,10 @@ ProcessSelectChar::ProcessSelectChar()
           .h = 600,
       }}
 
-    , m_start (DIR_UPLEFT, 335,  75, {0X0C000030, 0X0C000030, 0X0C000031}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onStart (); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
-    , m_create(DIR_UPLEFT, 565, 130, {0X0C000010, 0X0C000010, 0X0C000011}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onCreate(); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
-    , m_delete(DIR_UPLEFT, 110, 305, {0X0C000020, 0X0C000020, 0X0C000021}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onDelete(); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
-    , m_exit  (DIR_UPLEFT,  45, 544, {0X0C000040, 0X0C000040, 0X0C000041}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ onExit  (); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
+    , m_start {{ .x = 335, .y =  75, .texIDList{.off = 0X0C000030, .on = 0X0C000030, .down = 0X0C000031}, .onTrigger = [this](Widget *, int){ onStart (); }, .parent{&m_canvas}}}
+    , m_create{{ .x = 565, .y = 130, .texIDList{.off = 0X0C000010, .on = 0X0C000010, .down = 0X0C000011}, .onTrigger = [this](Widget *, int){ onCreate(); }, .parent{&m_canvas}}}
+    , m_delete{{ .x = 110, .y = 305, .texIDList{.off = 0X0C000020, .on = 0X0C000020, .down = 0X0C000021}, .onTrigger = [this](Widget *, int){ onDelete(); }, .parent{&m_canvas}}}
+    , m_exit  {{ .x =  45, .y = 544, .texIDList{.off = 0X0C000040, .on = 0X0C000040, .down = 0X0C000041}, .onTrigger = [this](Widget *, int){ onExit  (); }, .parent{&m_canvas}}}
 
     , m_notifyBoardBg
       {

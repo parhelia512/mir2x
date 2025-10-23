@@ -98,7 +98,7 @@ CBMiddleExpand::CBMiddleExpand(
       }
 
     , m_buttonSwitchMode
-      {
+      {{
           .x = [this]{ return w() - 178; },
           .y = 3,
 
@@ -114,10 +114,10 @@ CBMiddleExpand::CBMiddleExpand(
           },
 
           .parent{this},
-      }
+      }}
 
     , m_buttonEmoji
-      {
+      {{
           .x = [this]{ return w() - 178; },
           .y = 87,
 
@@ -128,10 +128,10 @@ CBMiddleExpand::CBMiddleExpand(
           },
 
           .parent{this},
-      }
+      }}
 
     , m_buttonMute
-      {
+      {{
           .x = [this]{ return w() - 220; },
           .y = 87,
 
@@ -142,7 +142,7 @@ CBMiddleExpand::CBMiddleExpand(
           },
 
           .parent{this},
-      }
+      }}
 
     , m_slider
       {

@@ -74,27 +74,15 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
       }}
 
     , m_buttonAlpha
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
+      {{
+          .texIDList
           {
-              0X09000002,
-              0X09000002,
-              0X09000002,
+              .off  = 0X09000002,
+              .on   = 0X09000002,
+              .down = 0X09000002,
           },
 
-          {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
-          },
-
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               m_alphaOn = !m_alphaOn;
               if(m_alphaOn){
@@ -104,37 +92,18 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
                   m_buttonAlpha.setTexID({0X09000002, 0X09000002, 0X09000002});
               }
           },
-
-          0,
-          0,
-          0,
-          0,
-
-          false,
-      }
+      }}
 
     , m_buttonExtend
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
+      {{
+          .texIDList
           {
-              0X09000004,
-              0X09000004,
-              0X09000004,
+              .off  = 0X09000004,
+              .on   = 0X09000004,
+              .down = 0X09000004,
           },
 
-          {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
-          },
-
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(getMiniMapTexture()){
                   flipExtended();
@@ -147,14 +116,7 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
                   m_buttonExtend.setTexID({0X09000004, 0X09000004, 0X09000004});
               }
           },
-
-          0,
-          0,
-          0,
-          0,
-
-          false,
-      }
+      }}
 
     , m_buttonFlex
       {

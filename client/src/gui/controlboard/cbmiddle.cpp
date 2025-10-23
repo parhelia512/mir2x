@@ -109,40 +109,25 @@ CBMiddle::CBMiddle(
       }
 
     , m_switchMode
-      {
-          DIR_UPLEFT,
-          [this](const Widget *){ return w() - 17; },
-          3,
+      {{
+          .x = [this](const Widget *){ return w() - 17; },
+          .y = 3,
 
-          {SYS_U32NIL, 0X00000028, 0X00000029},
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000028,
+              .down = 0X00000029,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int clickCount)
+          .onTrigger = [this](Widget *, int clickCount)
           {
               if(auto parptr = hasParent<ControlBoard>()){
                   parptr->onClickSwitchModeButton(clickCount);
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_slider
       {

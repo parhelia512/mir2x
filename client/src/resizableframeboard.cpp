@@ -58,37 +58,23 @@ ResizableFrameBoard::ResizableFrameBoard(
       }
 
     , m_close
-      {
-          DIR_UPLEFT,
-          argW - 51,
-          argH - 53,
+      {{
+          .x = argW - 51,
+          .y = argH - 53,
 
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               this->parent()->setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 {
     fflassert(argW >= m_cornerSize * 2);
     fflassert(argH >= m_cornerSize * 2);

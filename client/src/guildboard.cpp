@@ -92,7 +92,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           .x = 140,
           .y = 385,
 
-          .texIDLIst
+          .texIDList
           {
               .on   = 0X00000530,
               .down = 0X00000531,

@@ -216,99 +216,58 @@ CBLeft::CBLeft(
       }
 
     , m_buttonQuickAccess
-      {
-          DIR_UPLEFT,
-          148,
-          2,
-          {SYS_U32NIL, 0X0B000000, 0X0B000001},
+      {{
+          .x = 148,
+          .y = 2,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0B000000,
+              .down = 0X0B000001,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               if(auto p = m_processRun->getWidget("QuickAccessBoard")){
                   p->flipShow();
               }
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_buttonClose
-      {
-          DIR_UPLEFT,
-          8,
-          72,
-          {SYS_U32NIL, 0X0000001E, 0X0000001F},
+      {{
+          .x = 8,
+          .y = 72,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001E,
+              .down = 0X0000001F,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [](Widget *, int)
+          .onTrigger = [](Widget *, int)
           {
               std::exit(0);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_buttonMinize
-      {
-          DIR_UPLEFT,
-          109,
-          72,
-          {SYS_U32NIL, 0X00000020, 0X00000021},
+      {{
+          .x = 109,
+          .y = 72,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000020,
+              .down = 0X00000021,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          nullptr,
-
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_mapGLocFull
       {

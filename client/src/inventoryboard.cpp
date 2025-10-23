@@ -46,106 +46,63 @@ InventoryBoard::InventoryBoard(int argX, int argY, ProcessRun *pRun, Widget *arg
       }
 
     , m_sortButton
-      {
-          DIR_UPLEFT,
-          374,
-          12,
-          {SYS_U32NIL, 0X000000C0, 0X000000C1},
+      {{
+          .x = 374,
+          .y = 12,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X000000C0,
+              .down = 0X000000C1,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               m_processRun->getMyHero()->getInvPack().repack();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_closeButton
-      {
-          DIR_UPLEFT,
-          394,
-          498,
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+      {{
+          .x = 394,
+          .y = 498,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
               m_sdInvOp.clear();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_invOpButton
-      {
-          DIR_UPLEFT,
-          m_invOpButtonX + 3,
-          m_invOpButtonY + 3,
+      {{
+          .x = m_invOpButtonX + 3,
+          .y = m_invOpButtonY + 3,
+
+          .texIDList
           {
-              0X000000B3, // use trade gfx, needs it to setup widget size
-              0X000000B3,
-              0X000000B4,
+              .off  = 0X000000B3, // use trade gfx, needs it to setup widget size
+              .on   = 0X000000B3,
+              .down = 0X000000B4,
           },
 
-          {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
-          },
-
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               commitInvOp();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_processRun(pRun)
 {

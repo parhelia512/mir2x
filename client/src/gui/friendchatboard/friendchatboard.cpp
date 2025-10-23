@@ -162,21 +162,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X000008F0, 0X000008F0, 0X000008F1},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X000008F0,
+                                  .on   = 0X000008F0,
+                                  .down = 0X000008F1,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
@@ -188,21 +181,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X00000023, 0X00000023, 0X00000024},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X00000023,
+                                  .on   = 0X00000023,
+                                  .down = 0X00000024,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                               },
                           },
@@ -213,21 +199,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X000008B0, 0X000008B0, 0X000008B1},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X000008B0,
+                                  .on   = 0X000008B0,
+                                  .down = 0X000008B1,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                               },
                           },
@@ -238,21 +217,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X00000590, 0X00000590, 0X00000591},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X00000590,
+                                  .on   = 0X00000590,
+                                  .down = 0X00000591,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                               },
                           },
@@ -340,21 +312,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X00000160, 0X00000160, 0X00000161},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X00000160,
+                                  .on   = 0X00000160,
+                                  .down = 0X00000161,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                                   setUIPage(UIPage_FRIENDLIST);
                               },
@@ -426,21 +391,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X000008F0, 0X000008F0, 0X000008F1},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X000008F0,
+                                  .on   = 0X000008F0,
+                                  .down = 0X000008F1,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
@@ -452,21 +410,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X00000900, 0X00000900, 0X00000901},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X00000900,
+                                  .on   = 0X00000900,
+                                  .down = 0X00000901,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                                   setUIPage(UIPage_FRIENDSEARCH);
                               },
@@ -478,21 +429,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X00000170, 0X00000170, 0X00000171},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X00000170,
+                                  .on   = 0X00000170,
+                                  .down = 0X00000171,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                                   setUIPage(UIPage_CREATEGROUP);
                               },
@@ -564,21 +508,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X000008F0, 0X000008F0, 0X000008F1},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X000008F0,
+                                  .on   = 0X000008F0,
+                                  .down = 0X000008F1,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
@@ -647,21 +584,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X000008F0, 0X000008F0, 0X000008F1},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X000008F0,
+                                  .on   = 0X000008F0,
+                                  .down = 0X000008F1,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                                   setUIPage(UIPage_CHATPREVIEW);
                               },
@@ -673,21 +603,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X00000910, 0X00000910, 0X00000911},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X00000910,
+                                  .on   = 0X00000910,
+                                  .down = 0X00000911,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                                   std::vector<uint32_t> dbidList;
                                   dynamic_cast<FriendListPage *>(m_uiPageList[UIPage_CREATEGROUP].page)->canvas.foreachChild([&dbidList](const Widget *widget, bool)
@@ -747,21 +670,14 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
                       {
                           new TritexButton
                           {
-                              DIR_UPLEFT,
-                              0,
-                              0,
-
-                              {0X00000860, 0X00000860, 0X00000861},
+                              .texIDList
                               {
-                                  SYS_U32NIL,
-                                  SYS_U32NIL,
-                                  0X01020000 + 105,
+                                  .off  = 0X00000860,
+                                  .on   = 0X00000860,
+                                  .down = 0X00000861,
                               },
 
-                              nullptr,
-                              nullptr,
-                              nullptr,
-                              [this](Widget *, int)
+                              .onTrigger = [this](Widget *, int)
                               {
                                   dynamic_cast<FriendListPage *>(m_uiPageList[UIPage_CREATEGROUP].page)->canvas.foreachChild([](Widget *widget, bool)
                                   {

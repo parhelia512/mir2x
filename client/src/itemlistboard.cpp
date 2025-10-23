@@ -25,137 +25,81 @@ ItemListBoard::ItemListBoard(int argX, int argY, Widget *argParent, bool argAuto
       }}
 
     , m_leftButton
-      {
-          DIR_UPLEFT,
-          25,
-          163,
-          {SYS_U32NIL, 0X08000007, 0X08000008},
+      {{
+          .x = 25,
+          .y = 163,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X08000007,
+              .down = 0X08000008,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               m_page = to_uz(mathf::bound<int>(to_d(m_page) - 1, 0, to_d(pageCount()) - 1));
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_selectButton
-      {
-          DIR_UPLEFT,
-          67,
-          163,
-          {SYS_U32NIL, 0X08000005, 0X08000006},
+      {{
+          .x = 67,
+          .y = 163,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X08000005,
+              .down = 0X08000006,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               onSelect();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_rightButton
-      {
-          DIR_UPLEFT,
-          115,
-          163,
-          {SYS_U32NIL, 0X08000009, 0X0800000A},
+      {{
+          .x = 115,
+          .y = 163,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X08000009,
+              .down = 0X0800000A,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               m_page = to_uz(mathf::bound<int>(to_d(m_page) + 1, 0, to_d(pageCount()) - 1));
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_closeButton
-      {
-          DIR_UPLEFT,
-          158,
-          159,
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+      {{
+          .x = 158,
+          .y = 159,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               onClose();
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     setShow(false);
     if(auto texPtr = g_progUseDB->retrieve(0X08000000)){

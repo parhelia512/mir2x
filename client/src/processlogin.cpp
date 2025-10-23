@@ -28,10 +28,10 @@ ProcessLogin::ProcessLogin()
               .h = 600,
           }}
 
-	, m_button1(DIR_UPLEFT, 150, 482, {0X00000005, 0X00000006, 0X00000007}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doCreateAccount();  }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
-	, m_button2(DIR_UPLEFT, 352, 482, {0X00000008, 0X00000009, 0X0000000A}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doChangePassword(); }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
-	, m_button3(DIR_UPLEFT, 554, 482, {0X0000000B, 0X0000000C, 0X0000000D}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doExit();           }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
-        , m_button4(DIR_UPLEFT, 600, 536, {0X0000000E, 0X0000000F, 0X00000010}, {SYS_U32NIL, SYS_U32NIL, 0X01020000 + 105}, nullptr, nullptr, nullptr, [this](Widget *, int){ doLogin();          }, 0, 0, 0, 0, true, false, true, &m_canvas, false)
+	, m_button1{{.x = 150, .y = 482, .texIDList{.off = 0X00000005, .on = 0X00000006, .down = 0X00000007}, .onTrigger = [this](Widget *, int){ doCreateAccount (); }, .parent{&m_canvas}}}
+	, m_button2{{.x = 352, .y = 482, .texIDList{.off = 0X00000008, .on = 0X00000009, .down = 0X0000000A}, .onTrigger = [this](Widget *, int){ doChangePassword(); }, .parent{&m_canvas}}}
+	, m_button3{{.x = 554, .y = 482, .texIDList{.off = 0X0000000B, .on = 0X0000000C, .down = 0X0000000D}, .onTrigger = [this](Widget *, int){ doExit ();          }, .parent{&m_canvas}}}
+        , m_button4{{.x = 600, .y = 536, .texIDList{.off = 0X0000000E, .on = 0X0000000F, .down = 0X00000010}, .onTrigger = [this](Widget *, int){ doLogin();          }, .parent{&m_canvas}}}
 
 	, m_idBox
           {

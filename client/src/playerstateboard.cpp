@@ -81,37 +81,23 @@ PlayerStateBoard::PlayerStateBoard(int argX, int argY, ProcessRun *runPtr, Widge
       }())
 
     , m_closeButton
-      {
-          DIR_UPLEFT,
-          288,
-          13,
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+      {{
+          .x = 288,
+          .y = 13,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
     , m_processRun(runPtr)
 {
     setShow(false);

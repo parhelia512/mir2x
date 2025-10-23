@@ -64,160 +64,95 @@ HorseBoard::HorseBoard(
       }}
 
     , m_close
-      {
-          DIR_UPLEFT,
-          217,
-          278,
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+      {{
+          .x = 217,
+          .y = 278,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_up
-      {
-          DIR_UPLEFT,
-          20,
-          231,
-          {SYS_U32NIL, 0X00000710, 0X00000711},
+      {{
+          .x = 20,
+          .y = 231,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000710,
+              .down = 0X00000711,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_down
-      {
-          DIR_UPLEFT,
-          77,
-          231,
-          {SYS_U32NIL, 0X00000720, 0X00000721},
+      {{
+          .x = 77,
+          .y = 231,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000720,
+              .down = 0X00000721,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_hide
-      {
-          DIR_UPLEFT,
-          134,
-          231,
-          {SYS_U32NIL, 0X00000730, 0X00000731},
+      {{
+          .x = 134,
+          .y = 231,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000730,
+              .down = 0X00000731,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 
     , m_show
-      {
-          DIR_UPLEFT,
-          191,
-          231,
-          {SYS_U32NIL, 0X00000740, 0X00000741},
+      {{
+          .x = 191,
+          .y = 231,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000740,
+              .down = 0X00000741,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-      }
+          .parent{this},
+      }}
 {
     setShow(false);
 }

@@ -146,38 +146,23 @@ NPCChatBoard::NPCChatBoard(
       }
 
     , m_buttonClose
-      {
-          DIR_UPLEFT,
-          [this](const Widget *){ return w() - 40; },
-          [this](const Widget *){ return h() - 43; },
+      {{
+          .x = [this](const Widget *){ return w() - 40; },
+          .y = [this](const Widget *){ return h() - 43; },
 
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     fflassert(m_margin >= 0);
     setShow(false);

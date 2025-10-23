@@ -109,67 +109,42 @@ ProcessCreateAccount::ProcessCreateAccount()
     , m_LBCheckPwdConfirm(DIR_UPLEFT, 0, 0, u8"", 0, 15, 0, colorf::RGBA(0xFF, 0X00, 0X00, 0XFF))
 
     , m_submit
-      {
-          DIR_UPLEFT,
-          m_x + 189,
-          m_y + 233,
+      {{
+          .x = m_x + 189,
+          .y = m_y + 233,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              0X0800000B,
-              0X0800000C,
+              .on   = 0X0800000B,
+              .down = 0X0800000C,
           },
 
-          {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
-          },
-
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               doPostAccount();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          true,
-      }
+          .radioMode = true,
+      }}
 
     , m_quit
-      {
-          DIR_UPLEFT,
-          m_x + 400,
-          m_y + 267,
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+      {{
+          .x = m_x + 400,
+          .y = m_y + 267,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               doExit();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          true,
-      }
+          .radioMode = true,
+      }}
 
     , m_infoStr
       {

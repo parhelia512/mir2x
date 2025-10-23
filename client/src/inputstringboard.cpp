@@ -132,74 +132,48 @@ InputStringBoard::InputStringBoard(
       }
 
     , m_yesButton
-      {
-          DIR_UPLEFT,
-          66,
-          190,
+      {{
+          .x = 66,
+          .y = 190,
 
-          {0X07000001, 0X07000002, 0X07000003},
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X07000001,
+              .on   = 0X07000002,
+              .down = 0X07000003,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               inputLineDone();
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          false,
-
-          this,
-          false,
-      }
+          .alterColor = false,
+          .parent{this},
+      }}
 
     , m_nopButton
-      {
-          DIR_UPLEFT,
-          212,
-          190,
+      {{
+          .x = 212,
+          .y = 190,
 
-          {0X07000004, 0X07000005, 0X07000006},
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .off  = 0X07000004,
+              .on   = 0X07000005,
+              .down = 0X07000006,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
               m_input.clear();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          false,
-
-          this,
-          false,
-      }
+          .alterColor = false,
+          .parent{this},
+      }}
 {
     setShow(false);
     setSize([this]{ return m_bg.w(); },
