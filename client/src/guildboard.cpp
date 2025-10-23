@@ -34,282 +34,165 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 
     , m_closeButton
       {
-          DIR_UPLEFT,
-          554,
-          399,
-          {SYS_U32NIL, 0X0000001C, 0X0000001D},
+          .x = 554,
+          .y = 399,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
+          .parent{this},
       }
 
     , m_announcement
       {
-          DIR_UPLEFT,
-          40,
-          385,
-          {SYS_U32NIL, 0X00000510, 0X00000511},
+          .x = 40,
+          .y = 385,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000510,
+              .down = 0X00000511,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
+          .parent{this},
       }
 
     , m_members
       {
-          DIR_UPLEFT,
-          90,
-          385,
-          {SYS_U32NIL, 0X00000520, 0X00000521},
+          .x = 90,
+          .y = 385,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000520,
+              .down = 0X00000521,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
+          .parent{this},
       }
 
     , m_chat
       {
-          DIR_UPLEFT,
-          140,
-          385,
-          {SYS_U32NIL, 0X00000530, 0X00000531},
+          .x = 140,
+          .y = 385,
+
+          .texIDLIst
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000530,
+              .down = 0X00000531,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
+          .parent{this},
       }
 
     , m_editAnnouncement
       {
-          DIR_UPLEFT,
-          290,
-          385,
-          {SYS_U32NIL, 0X00000540, 0X00000541},
+          .x = 290,
+          .y = 385,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000540,
+              .down = 0X00000541,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
+          .parent{this},
       }
 
     , m_removeMember
       {
-          DIR_UPLEFT,
-          340,
-          385,
-          {SYS_U32NIL, 0X00000550, 0X00000551},
+          .x = 340,
+          .y = 385,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000550,
+              .down = 0X00000551,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
+          .parent{this},
       }
 
     , m_disbandGuild
       {
-          DIR_UPLEFT,
-          390,
-          385,
-          {SYS_U32NIL, 0X00000560, 0X00000561},
+          .x = 390,
+          .y = 385,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000560,
+              .down = 0X00000561,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
+          .parent{this},
       }
 
     , m_editMemberPosition
       {
-          DIR_UPLEFT,
-          440,
-          385,
-          {SYS_U32NIL, 0X00000570, 0X00000571},
+          .x = 440,
+          .y = 385,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000570,
+              .down = 0X00000571,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
+          .parent{this},
       }
 
     , m_dissolveCovenant
       {
-          DIR_UPLEFT,
-          490,
-          385,
-          {SYS_U32NIL, 0X00000580, 0X00000581},
+          .x = 490,
+          .y = 385,
+
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000580,
+              .down = 0X00000581,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
+          .parent{this},
       }
 
     , m_slider

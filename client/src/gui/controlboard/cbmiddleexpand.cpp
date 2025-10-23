@@ -99,98 +99,49 @@ CBMiddleExpand::CBMiddleExpand(
 
     , m_buttonSwitchMode
       {
-          DIR_UPLEFT,
-          [this]{ return w() - 178; },
-          3,
+          .x = [this]{ return w() - 178; },
+          .y = 3,
 
-          {SYS_U32NIL, 0X00000028, 0X00000029},
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000028,
+              .down = 0X00000029,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int clickDone)
+          .onTrigger = [this](Widget *, int clickDone)
           {
               hasParent<ControlBoard>()->onClickSwitchModeButton(clickDone);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
+          .parent{this},
       }
 
     , m_buttonEmoji
       {
-          DIR_UPLEFT,
-          [this]{ return w() - 178; },
-          87,
+          .x = [this]{ return w() - 178; },
+          .y = 87,
 
-          {SYS_U32NIL, 0X00000023, 0X00000024},
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000023,
+              .down = 0X00000024,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          nullptr,
-
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
+          .parent{this},
       }
 
     , m_buttonMute
       {
-          DIR_UPLEFT,
-          [this]{ return w() - 220; },
-          87,
+          .x = [this]{ return w() - 220; },
+          .y = 87,
 
-          {SYS_U32NIL, 0X00000025, 0X00000026},
+          .texIDList
           {
-              SYS_U32NIL,
-              SYS_U32NIL,
-              0X01020000 + 105,
+              .on   = 0X00000025,
+              .down = 0X00000026,
           },
 
-          nullptr,
-          nullptr,
-          nullptr,
-          nullptr,
-
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-          true,
-
-          this,
-          false,
+          .parent{this},
       }
 
     , m_slider

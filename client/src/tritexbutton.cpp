@@ -7,75 +7,36 @@
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-TritexButton::TritexButton(
-        Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
-
-        const uint32_t (& argTexIDList)[3],
-        const uint32_t (&argSeffIDList)[3],
-
-        std::function<void(Widget *           )> argOnOverIn,
-        std::function<void(Widget *           )> argOnOverOut,
-        std::function<void(Widget *, bool, int)> argOnClick,
-        std::function<void(Widget *      , int)> argOnTrigger,
-
-        int argOffXOnOver,
-        int argOffYOnOver,
-        int argOffXOnClick,
-        int argOffYOnClick,
-
-        bool argOnClickDone,
-        bool argRadioMode,
-        bool argAlterColor,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
+TritexButton::TritexButton(TritexButton::InitArgs args)
     : ButtonBase
       {{
-          .dir = std::move(argDir),
+          .dir = std::move(args.dir),
 
-          .x = std::move(argX),
-          .y = std::move(argY),
+          .x = std::move(args.x),
+          .y = std::move(args.y),
 
-          .onOverIn  = std::move(argOnOverIn),
-          .onOverOut = std::move(argOnOverOut),
+          .onOverIn  = std::move(args.onOverIn),
+          .onOverOut = std::move(args.onOverOut),
 
-          .onClick = std::move(argOnClick),
-          .onTrigger = std::move(argOnTrigger),
+          .onClick = std::move(args.onClick),
+          .onTrigger = std::move(args.onTrigger),
 
-          .seff
-          {
-              .onOverIn  = argSeffIDList[0],
-              .onOverOut = argSeffIDList[1],
-              .onClick   = argSeffIDList[2],
-          },
+          .seff = std::move(args.seff),
 
-          .offXOnOver = argOffXOnOver,
-          .offYOnOver = argOffYOnOver,
+          .offXOnOver = args.offXOnOver,
+          .offYOnOver = args.offYOnOver,
 
-          .offXOnClick = argOffXOnClick,
-          .offYOnClick = argOffYOnClick,
+          .offXOnClick = args.offXOnClick,
+          .offYOnClick = args.offYOnClick,
 
-          .onClickDone = argOnClickDone,
-          .radioMode = argRadioMode,
+          .onClickDone = args.onClickDone,
+          .radioMode = args.radioMode,
 
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .parent = args.parent,
       }}
 
-    , m_texIDList
-      {
-          argTexIDList[0],
-          argTexIDList[1],
-          argTexIDList[2],
-      }
-
-    , m_alterColor(argAlterColor)
+    , m_texIDList(args.texIDList)
+    , m_alterColor(args.alterColor)
 {
     const auto fnGetEdgeSize = [this](auto fn)
     {

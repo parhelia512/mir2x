@@ -5,8 +5,61 @@
 
 class TritexButton: public ButtonBase
 {
+    protected:
+        using ButtonBase::SeffIDList;
+        using ButtonBase::OverCBFunc;
+        using ButtonBase::ClickCBFunc;
+        using ButtonBase::TriggerCBFunc;
+
     private:
-        uint32_t m_texIDList[3];
+        struct TritexIDList final
+        {
+            std::optional<uint32_t> off  = std::nullopt;
+            std::optional<uint32_t> on   = std::nullopt;
+            std::optional<uint32_t> down = std::nullopt;
+
+            decltype(auto) operator[](this auto && self, size_t index)
+            {
+                switch(index){
+                    case  0: return self.off;
+                    case  1: return self.on;
+                    case  2: return self.down;
+                    default: throw fflerror("index out of range: %zu", index);
+                }
+            }
+        };
+
+    private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            TritexButton::TritexIDList texIDList {};
+            TritexButton::SeffIDList seff {};
+
+            TritexButton::OverCBFunc onOverIn  = nullptr;
+            TritexButton::OverCBFunc onOverOut = nullptr;
+
+            TritexButton::ClickCBFunc onClick = nullptr;
+            TritexButton::TriggerCBFunc onTrigger = nullptr;
+
+            int offXOnOver = 0;
+            int offYOnOver = 0;
+
+            int offXOnClick = 0;
+            int offYOnClick = 0;
+
+            bool onClickDone = true;
+            bool radioMode   = false;
+            bool alterColor  = true;
+
+            Widget::WADPair parent {};
+        };
+
+    private:
+        TritexButton::TritexIDList m_texIDList;
 
     private:
         double m_accuBlinkTime = 0.0;
@@ -16,40 +69,15 @@ class TritexButton: public ButtonBase
         const bool m_alterColor;
 
     public:
-        TritexButton(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                const uint32_t (&)[3],
-                const uint32_t (&)[3],
-
-                std::function<void(Widget *           )> = nullptr,
-                std::function<void(Widget *           )> = nullptr,
-                std::function<void(Widget *, bool, int)> = nullptr,
-                std::function<void(Widget *,       int)> = nullptr,
-
-                int = 0,
-                int = 0,
-                int = 0,
-                int = 0,
-
-                bool = true,
-                bool = false,
-                bool = true,
-
-                Widget * = nullptr,
-                bool     = false);
+        TritexButton(TritexButton::InitArgs);
 
     public:
         void draw(Widget::ROIMap) const override;
 
     public:
-        void setTexID(const uint32_t (&texIDList)[3])
+        void setTexID(const TritexButton::TritexIDList &texIDList)
         {
-            for(int i: {0, 1, 2}){
-                m_texIDList[i] = texIDList[i];
-            }
+            m_texIDList = texIDList;
         }
 
         void setBlinkTime(unsigned offTime, unsigned onTime, unsigned activeTotalTime = 0)
