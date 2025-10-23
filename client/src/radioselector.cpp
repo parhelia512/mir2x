@@ -57,27 +57,15 @@ RadioSelector::RadioSelector(Widget::VarDir argDir,
 void RadioSelector::append(Widget *widget, bool autoDelete)
 {
     auto button = new RadioSelector::InternalRadioButton
-    {
-        DIR_UPLEFT, // ignored
-        0,
-        0,
-
+    {{
+        .gfxList
         {
             &m_imgOff,
             &m_imgOn,
             &m_imgDown,
         },
 
-        {
-            std::nullopt,
-            std::nullopt,
-            0X01020000 + 105,
-        },
-
-        nullptr,
-        nullptr,
-        nullptr,
-        [this](Widget *selfButton, int)
+        .onTrigger = [this](Widget *selfButton, int)
         {
             setter(getRadioWidget(selfButton));
             foreachRadioButton([selfButton, this](Widget *button)
@@ -92,17 +80,11 @@ void RadioSelector::append(Widget *widget, bool autoDelete)
             });
         },
 
-        0,
-        0,
-        0,
-        0,
+        .onClickDone = false,
+        .radioMode = true,
 
-        false,
-        true,
-
-        this,
-        true,
-    };
+        .parent{this},
+    }};
 
     button->setData(widget);
     if(getter() == widget){

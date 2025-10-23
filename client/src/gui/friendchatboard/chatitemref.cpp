@@ -99,36 +99,31 @@ ChatItemRef::ChatItemRef(
       }}
 
     , m_crossButton
-      {
-          DIR_RIGHT,
-          [this](const Widget *){ return w() - ChatItemRef::BUTTON_MARGIN - 1; },
-          [this](const Widget *){ return h() / 2;                              },
+      {{
+          .dir = DIR_RIGHT,
+          .x = [this]{ return w() - ChatItemRef::BUTTON_MARGIN - 1; },
+          .y = [this]{ return h() / 2;                              },
 
+          .gfxList
           {
               &m_crossButtonGfx,
               &m_crossButtonGfx,
               &m_crossButtonGfx,
           },
 
-          {
-              std::nullopt,
-              std::nullopt,
-              0X01020000 + 105,
-          },
-
-          [this](Widget *)
+          .onOverIn = [this](Widget *)
           {
               m_crossBgColor = colorf::BLUE + colorf::A_SHF(64);
               m_cross.setFontSize(ChatItemRef::CROSS_FONT_SIZES[1]);
           },
 
-          [this](Widget *)
+          .onOverOut = [this](Widget *)
           {
               m_crossBgColor = colorf::GREY + colorf::A_SHF(255);
               m_cross.setFontSize(ChatItemRef::CROSS_FONT_SIZES[0]);
           },
 
-          [this](Widget *, bool clickDone, int)
+          .onClick = [this](Widget *, bool clickDone, int)
           {
               if(clickDone){
               }
@@ -137,22 +132,13 @@ ChatItemRef::ChatItemRef(
               }
           },
 
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               setShow(false);
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_refer(argRef)
 

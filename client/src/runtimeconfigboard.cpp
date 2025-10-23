@@ -270,42 +270,21 @@ RuntimeConfigBoard::PullMenu::PullMenu(
     , m_imgDown{{.w = 22, .h = 22, .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000302); }, .rotate = 1}}
 
     , m_button
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
+      {{
+          .gfxList
           {
               &m_imgOff,
               &m_imgOn,
               &m_imgDown,
           },
 
-          {
-              std::nullopt,
-              std::nullopt,
-              0X01020000 + 105,
-          },
-
-          nullptr,
-          nullptr,
-          nullptr,
-          [this](Widget *, int)
+          .onTrigger = [this](Widget *, int)
           {
               m_menuList.flipShow();
           },
 
-          0,
-          0,
-          0,
-          0,
-
-          true,
-          false,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_menuList
       {
@@ -550,39 +529,21 @@ RuntimeConfigBoard::MenuPage::TabHeader::TabHeader(
       }
 
     , m_button
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
+      {{
+          .gfxList
           {
               &m_label,
               &m_label,
               &m_label,
           },
 
-          {
-              std::nullopt,
-              std::nullopt,
-              0X01020000 + 105,
-          },
+          .onTrigger = std::move(argOnClick),
 
-          nullptr,
-          nullptr,
-          nullptr,
-          std::move(argOnClick),
+          .offXOnClick = 1,
+          .offYOnClick = 1,
 
-          0,
-          0,
-          1,
-          1,
-
-          true,
-          false,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {}
 
 RuntimeConfigBoard::MenuPage::MenuPage(

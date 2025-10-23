@@ -6,33 +6,45 @@
 
 class TrigfxButton: public ButtonBase
 {
+    protected:
+        using ButtonBase::   OverCBFunc;
+        using ButtonBase::  ClickCBFunc;
+        using ButtonBase::TriggerCBFunc;
+        using ButtonBase::SeffIDList;
+
+    private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            std::array<const Widget *, 3> gfxList {};
+            TrigfxButton::SeffIDList seff {};
+
+            TrigfxButton::OverCBFunc onOverIn  = nullptr;
+            TrigfxButton::OverCBFunc onOverOut = nullptr;
+
+            TrigfxButton::ClickCBFunc onClick = nullptr;
+            TrigfxButton::TriggerCBFunc onTrigger = nullptr;
+
+            int offXOnOver = 0;
+            int offYOnOver = 0;
+
+            int offXOnClick = 0;
+            int offYOnClick = 0;
+
+            bool onClickDone = true;
+            bool radioMode   = false;
+
+            Widget::WADPair parent {};
+        };
+
     private:
         std::array<const Widget *, 3> m_gfxList;
 
     public:
-        TrigfxButton(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                std::array<const Widget *, 3>,
-                std::array<std::optional<uint32_t>, 3>,
-
-                std::function<void(Widget *      )> = nullptr,
-                std::function<void(Widget *      )> = nullptr,
-                std::function<void(Widget *, bool, int)> = nullptr,
-                std::function<void(Widget *      , int)> = nullptr,
-
-                int = 0,
-                int = 0,
-                int = 0,
-                int = 0,
-
-                bool = true,
-                bool = false,
-
-                Widget * = nullptr,
-                bool     = false);
+        TrigfxButton(TrigfxButton::InitArgs);
 
     public:
         void draw(Widget::ROIMap) const override;

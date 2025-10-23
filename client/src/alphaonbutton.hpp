@@ -9,9 +9,9 @@
 class AlphaOnButton: public ButtonBase
 {
     protected:
-        using    OverCBFunc = ButtonBase::   OverCBFunc;
-        using   ClickCBFunc = ButtonBase::  ClickCBFunc;
-        using TriggerCBFunc = ButtonBase::TriggerCBFunc;
+        using ButtonBase::   OverCBFunc;
+        using ButtonBase::  ClickCBFunc;
+        using ButtonBase::TriggerCBFunc;
 
     private:
         struct InitArgs final
