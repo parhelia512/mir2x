@@ -14,18 +14,20 @@ NPCChatOrigFrame::NPCChatOrigFrame(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          {},
-          {},
-          {},
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = {},
+          .h = {},
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_up
       {

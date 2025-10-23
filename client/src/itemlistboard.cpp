@@ -262,24 +262,23 @@ void ItemListBoard::drawGridHoverLayout(size_t index) const
     const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
 
     g_sdlDevice->fillRectangle(colorf::RGBA(0, 0, 0, 200), mousePX, mousePY, std::max<int>(hoverTextBoard.w(), maxWidth) + margin * 2, hoverTextBoard.h() + margin * 2);
-    hoverTextBoard.drawAt(DIR_UPLEFT, mousePX + margin, mousePY + margin);
+    hoverTextBoard.draw({.x=mousePX + margin, .y=mousePY + margin});
 }
 
-void ItemListBoard::draw(Widget::ROIMap) const
+void ItemListBoard::draw(Widget::ROIMap m) const
 {
-    const auto roiOpt = cropDrawROI(dstX, dstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return;
     }
 
     if(auto texPtr = g_progUseDB->retrieve(0X08000001)){
-        g_sdlDevice->drawTexture(texPtr, dstX, dstY, m_gfxSrcX, m_gfxSrcY, m_gfxSrcW, m_gfxSrcH);
+        g_sdlDevice->drawTexture(texPtr, m.x, m.y, m_gfxSrcX, m_gfxSrcY, m_gfxSrcW, m_gfxSrcH);
     }
 
-    drawChild(&m_leftButton  , dstX, dstY, roiOpt.value());
-    drawChild(&m_selectButton, dstX, dstY, roiOpt.value());
-    drawChild(&m_rightButton , dstX, dstY, roiOpt.value());
-    drawChild(&m_closeButton , dstX, dstY, roiOpt.value());
+    drawChild(&m_leftButton  , m);
+    drawChild(&m_selectButton, m);
+    drawChild(&m_rightButton , m);
+    drawChild(&m_closeButton , m);
 
     const auto fnDrawTitle = [this](const std::u8string &title)
     {
@@ -295,7 +294,7 @@ void ItemListBoard::draw(Widget::ROIMap) const
             0,
 
             colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-        }.drawAt(DIR_NONE, 99, 18); // (DIR_NONE, x() + 99, y() + 18);
+        }.draw({.dir=DIR_NONE, .x=99, .y=18}); // (DIR_NONE, x() + 99, y() + 18);
     };
 
     if(pageCount() > 0){
@@ -324,8 +323,8 @@ void ItemListBoard::draw(Widget::ROIMap) const
             const int rightBoxX = rightStartX + c * m_boxW;
             const int rightBoxY = rightStartY + r * m_boxH;
 
-            const int remapXDiff = dstX - roiOpt->x;
-            const int remapYDiff = dstY - roiOpt->y;
+            const int remapXDiff = m.x - m.ro->x;
+            const int remapYDiff = m.y - m.ro->y;
 
             if(auto texPtr = g_itemDB->retrieve(ir.pkgGfxID | 0X02000000)){
                 const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
@@ -348,7 +347,7 @@ void ItemListBoard::draw(Widget::ROIMap) const
                     0,
 
                     colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-                }.drawAt(DIR_UPLEFT, remapXDiff + rightBoxX, remapYDiff + rightBoxY);
+                }.draw({.x=remapXDiff + rightBoxX, .y=remapYDiff + rightBoxY});
             }
 
             const bool gridSelected = m_selectedPageGrid.has_value() && (m_selectedPageGrid.value() == i);

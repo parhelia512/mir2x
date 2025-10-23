@@ -544,7 +544,7 @@ void InventoryBoard::drawInvOpCost() const
         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
     };
     // queryResultBoard.drawAt(DIR_NONE, m.x + 132, m.y + 503);
-    queryResultBoard.drawAt(DIR_NONE, 132, 503);
+    queryResultBoard.draw({.dir=DIR_NONE, .x=132, .y=503});
 }
 
 int InventoryBoard::getPackBinIndex(int locPX, int locPY) const
@@ -620,7 +620,7 @@ void InventoryBoard::drawItemHoverText(const PackBin &bin) const
 
     g_sdlDevice->fillRectangle(colorf::RGBA(  0,   0,   0, 200), drawBoardPX, drawBoardPY, textBoxW, textBoxH, 5);
     g_sdlDevice->drawRectangle(colorf::RGBA(231, 231, 189, 200), drawBoardPX, drawBoardPY, textBoxW, textBoxH, 5);
-    hoverTextBoard.drawAt(DIR_UPLEFT, drawBoardPX + 10, drawBoardPY + 10);
+    hoverTextBoard.draw({.x=drawBoardPX + 10, .y=drawBoardPY + 10});
 }
 
 void InventoryBoard::packBinConsume(const PackBin &bin)

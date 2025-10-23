@@ -565,7 +565,7 @@ void ProcessRun::draw() const
 
 void ProcessRun::processEvent(const SDL_Event &event)
 {
-    const bool tookEvent = m_guiManager.processEventRoot(event, true, 0, 0);
+    const bool tookEvent = m_guiManager.processEventRoot(event, true, {});
     m_guiManager.purge();
 
     if(tookEvent){

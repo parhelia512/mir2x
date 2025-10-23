@@ -297,7 +297,7 @@ void TeamStateBoard::draw(Widget::ROIMap m) const
         g_sdlDevice->drawTexture(texPtr, remapXDiff, remapYDiff + texRepeatStartY + neededRepeatTexH, 0, texRepeatEndY, texW, texH - texRepeatEndY);
 
         LabelBoard header(DIR_NONE, 0, 0, m_showCandidateList ? u8"申请加入" : u8"当前队伍", 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF));
-        header.drawAt(DIR_NONE, remapXDiff + w() / 2, remapYDiff + 57);
+        header.draw({.dir=DIR_NONE, .x{remapXDiff + w() / 2}, .y{remapYDiff + 57}});
     }
 
     const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
@@ -326,7 +326,18 @@ void TeamStateBoard::draw(Widget::ROIMap m) const
 
         line.clear();
         line.loadXML(str_printf("<par>%d %s</par>", to_d(i) + m_startIndex[m_showCandidateList], nameText.c_str()).c_str());
-        line.draw(remapXDiff + m_uidRegionX + (m_uidRegionW - m_uidTextRegionW) / 2, remapYDiff + m_uidRegionY + m_lineSpace / 2 + i * lineHeight(), 0, 0, std::min<int>(line.pw(), m_uidTextRegionW), line.ph());
+        line.draw(
+        {
+            .x=remapXDiff + m_uidRegionX + (m_uidRegionW - m_uidTextRegionW) / 2,
+            .y=remapYDiff + m_uidRegionY + m_lineSpace / 2 + static_cast<int>(i) * lineHeight(),
+            .ro
+            {
+                0,
+                0,
+                std::min<int>(line.pw(), m_uidTextRegionW),
+                line.ph(),
+            }
+        });
     }
 
     drawChild(&m_enableTeam,   m);

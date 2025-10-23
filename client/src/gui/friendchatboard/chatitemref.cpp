@@ -87,19 +87,16 @@ ChatItemRef::ChatItemRef(
       }
 
     , m_crossButtonGfx
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this](const Widget *){ return m_crossBg.w(); },
+          .h = [this](const Widget *){ return m_crossBg.h(); },
 
-          [this](const Widget *){ return m_crossBg.w(); },
-          [this](const Widget *){ return m_crossBg.h(); },
-
+          .childList
           {
               {&m_crossBg, DIR_NONE, [this](const Widget *){ return m_crossButtonGfx.w() / 2; }, [this](const Widget *){ return m_crossButtonGfx.h() / 2; }, false},
               {&m_cross  , DIR_NONE, [this](const Widget *){ return m_crossButtonGfx.w() / 2; }, [this](const Widget *){ return m_crossButtonGfx.h() / 2; }, false},
           },
-      }
+      }}
 
     , m_crossButton
       {

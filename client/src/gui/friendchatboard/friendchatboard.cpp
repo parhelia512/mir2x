@@ -16,21 +16,21 @@ extern Client *g_client;
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, ProcessRun *runPtr, Widget *widgetPtr, bool autoDelete)
+FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, ProcessRun *runPtr, Widget *argParent, bool argAutoDelete)
     : Widget
-      {
-          DIR_UPLEFT,
-          std::move(argX),
-          std::move(argY),
+      {{
+          .x = std::move(argX),
+          .y = std::move(argY),
 
-          UIPage_BORDER[2] + UIPage_MIN_WIDTH  + UIPage_BORDER[3],
-          UIPage_BORDER[0] + UIPage_MIN_HEIGHT + UIPage_BORDER[1],
+          .w = UIPage_BORDER[2] + UIPage_MIN_WIDTH  + UIPage_BORDER[3],
+          .h = UIPage_BORDER[0] + UIPage_MIN_HEIGHT + UIPage_BORDER[1],
 
-          {},
-
-          widgetPtr,
-          autoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_processRun(runPtr)
     , m_cachedChatPeerList

@@ -371,8 +371,8 @@ bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, W
         case SDL_MOUSEMOTION:
             {
                 if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || focus())){
-                    const auto remapXDiff = m.x - roiOpt->x;
-                    const auto remapYDiff = m.y - roiOpt->y;
+                    const auto remapXDiff = m.x - m.ro->x;
+                    const auto remapYDiff = m.y - m.ro->y;
 
                     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
                     const int maxX = rendererW - w();
@@ -467,5 +467,5 @@ void PlayerStateBoard::drawItemHoverText(int wltype) const
 
     g_sdlDevice->fillRectangle(colorf::RGBA(  0,   0,   0, 200), mousePX, mousePY, textBoxW, textBoxH, 5);
     g_sdlDevice->drawRectangle(colorf::RGBA(231, 231, 189, 200), mousePX, mousePY, textBoxW, textBoxH, 5);
-    hoverTextBoard.drawAt(DIR_UPLEFT, mousePX + 10, mousePY + 10);
+    hoverTextBoard.draw({.x=mousePX + 10, .y=mousePY + 10});
 }

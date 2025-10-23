@@ -22,18 +22,20 @@ ChatPreviewItem::ChatPreviewItem(
         bool   argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          std::move(argW),
-          ChatPreviewItem::HEIGHT,
+      {{
+          .dir = std::move(argDir),
 
-          {},
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::move(argW),
+          .h = ChatPreviewItem::HEIGHT,
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , cpid(argCPID)
 
@@ -102,25 +104,27 @@ ChatPreviewItem::ChatPreviewItem(
       }
 
     , messageClip
-      {
-          DIR_UPLEFT,
-          ChatPreviewItem::ITEM_MARGIN + ChatPreviewItem::AVATAR_WIDTH + ChatPreviewItem::GAP,
-          ChatPreviewItem::ITEM_MARGIN + ChatPreviewItem::NAME_HEIGHT,
+      {{
+          .x = ChatPreviewItem::ITEM_MARGIN + ChatPreviewItem::AVATAR_WIDTH + ChatPreviewItem::GAP,
+          .y = ChatPreviewItem::ITEM_MARGIN + ChatPreviewItem::NAME_HEIGHT,
 
-          [this](const Widget *)
+          .w = [this](const Widget *)
           {
               return w() - ChatPreviewItem::ITEM_MARGIN * 2 - ChatPreviewItem::AVATAR_WIDTH - ChatPreviewItem::GAP;
           },
 
-          ChatPreviewItem::HEIGHT - ChatPreviewItem::ITEM_MARGIN * 2 - ChatPreviewItem::NAME_HEIGHT,
+          .h = ChatPreviewItem::HEIGHT - ChatPreviewItem::ITEM_MARGIN * 2 - ChatPreviewItem::NAME_HEIGHT,
 
+          .childList
           {
               {&message, DIR_UPLEFT, 0, 0, false},
           },
 
-          this,
-          false,
-      }
+          .parent
+          {
+              .widget = this,
+          }
+      }}
 
     , selected
       {
@@ -133,7 +137,7 @@ ChatPreviewItem::ChatPreviewItem(
 
           [this](const Widget *, int drawDstX, int drawDstY)
           {
-              if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); in(mousePX, mousePY, drawDstX, drawDstY, roi())){
+              if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{roi()}}.in(SDLDeviceHelper::getMousePLoc())){
                   g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
                   g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
               }

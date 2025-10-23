@@ -12,19 +12,21 @@ NPCChatFrame::NPCChatFrame(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          std::move(argW),
-          std::move(argH),
+          .x = std::move(argX),
+          .y = std::move(argY),
 
-          {},
+          .w = std::move(argW),
+          .h = std::move(argH),
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_frame
       {

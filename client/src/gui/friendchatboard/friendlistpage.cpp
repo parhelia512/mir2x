@@ -19,32 +19,31 @@ FriendListPage::FriendListPage(Widget::VarDir argDir,
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          std::move(argW),
-          std::move(argH),
+      {{
+          .dir = std::move(argDir),
 
-          {},
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::move(argW),
+          .h = std::move(argH),
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , canvas
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this](const Widget *){ return w(); },
+          .h = {},
 
-          [this](const Widget *){ return w(); },
-          {},
-          {},
-
-          this,
-          false,
-      }
+          .parent
+          {
+              .widget = this,
+          }
+      }}
 {}
 
 void FriendListPage::append(const SDChatPeer &peer, std::function<void(FriendItem *)> argOnClick, std::pair<Widget *, bool> argFuncWidget)

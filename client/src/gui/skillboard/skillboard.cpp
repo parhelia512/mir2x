@@ -75,16 +75,18 @@ SkillBoard::MagicIconButton::MagicIconButton(
         bool    argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-          0,
-          0,
-          {},
-          argParent,
-          argAutoDelete,
-      }
+      {{
+          .dir = argDir,
+
+          .x = argX,
+          .y = argY,
+
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_magicID([argMagicID]() -> uint32_t
       {
@@ -138,7 +140,7 @@ SkillBoard::MagicIconButton::MagicIconButton(
     setH(m_icon.h() + 8);
 }
 
-void SkillBoard::MagicIconButton::draw(Widget::ROIMap) const
+void SkillBoard::MagicIconButton::draw(Widget::ROIMap m) const
 {
     const auto roiOpt = cropDrawROI(dstX, dstY, roi);
     if(!roiOpt.has_value()){

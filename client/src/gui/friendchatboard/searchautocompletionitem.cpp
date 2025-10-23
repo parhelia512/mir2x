@@ -21,19 +21,21 @@ SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          SearchAutoCompletionItem::WIDTH,
-          SearchAutoCompletionItem::HEIGHT,
+          .x = std::move(argX),
+          .y = std::move(argY),
 
-          {},
+          .w = SearchAutoCompletionItem::WIDTH,
+          .h = SearchAutoCompletionItem::HEIGHT,
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , byID(argByID)
     , candidate(std::move(argCandidate))
@@ -49,7 +51,7 @@ SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
 
           [this](const Widget *, int drawDstX, int drawDstY)
           {
-              if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); in(mousePX, mousePY, drawDstX, drawDstY, roi())){
+              if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{roi()}}.in(SDLDeviceHelper::getMousePLoc())){
                   g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
                   g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
               }
@@ -110,10 +112,9 @@ SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
     }
 }
 
-bool SearchAutoCompletionItem::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool SearchAutoCompletionItem::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -124,7 +125,7 @@ bool SearchAutoCompletionItem::processEventDefault(const SDL_Event &event, bool 
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(m.in(event.button.x, event.button.y)){
                     hasParent<SearchPage>()->candidates.setShow(true);
                     hasParent<SearchPage>()->autocompletes.setShow(false);
                     hasParent<SearchPage>()->input.input.setInput(byID ? std::to_string(candidate.id).c_str() : candidate.name.c_str());
@@ -134,7 +135,7 @@ bool SearchAutoCompletionItem::processEventDefault(const SDL_Event &event, bool 
             }
         default:
             {
-                return Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value());
+                return Widget::processEventDefault(event, valid, m);
             }
     }
 }

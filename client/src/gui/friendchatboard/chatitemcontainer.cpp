@@ -22,18 +22,20 @@ ChatItemContainer::ChatItemContainer(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          std::move(argW),
-          std::move(argH),
+      {{
+          .dir = std::move(argDir),
 
-          {},
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::move(argW),
+          .h = std::move(argH),
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , canvas
       {

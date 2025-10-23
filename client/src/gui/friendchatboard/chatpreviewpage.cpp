@@ -31,15 +31,15 @@ ChatPreviewPage::ChatPreviewPage(
       }}
 
     , canvas
-      {
-          .w = [this](const Widget *){ return w(); },
+      {{
+          .w = [this]{ return w(); },
           .h = {},
 
           .parent
           {
               .widget = this,
           }
-      }
+      }}
 {}
 
 void ChatPreviewPage::updateChatPreview(const SDChatPeerID &sdCPID, const std::string &argMsg)

@@ -32,18 +32,20 @@ ChatItem::ChatItem(
         bool argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          {},
-          {},
-          {},
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = {},
+          .h = {},
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , pending(argPending)
     , msgID(argMsgID)
@@ -275,10 +277,9 @@ void ChatItem::update(double fUpdateTime)
     accuTime += fUpdateTime;
 }
 
-bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -289,7 +290,7 @@ bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, int start
     if(true
             && event.type == SDL_MOUSEBUTTONUP
             && event.button.button == SDL_BUTTON_RIGHT
-            && background.in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+            && m.create(background.roi()).in(event.button.x, event.button.y)){
 
         if(auto chatPage = hasParent<ChatPage>()){
             if(chatPage->menu){
@@ -333,8 +334,8 @@ bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, int start
             }),
 
             DIR_UPLEFT,
-            event.button.x - (startDstX - roiOpt->x),
-            event.button.y - (startDstY - roiOpt->y),
+            event.button.x - (m.x - m.ro->x),
+            event.button.y - (m.y - m.ro->y),
             true);
 
             chatPage->menu->setShow(true);
@@ -345,7 +346,7 @@ bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, int start
         return true;
     }
 
-    if(Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value())){
+    if(Widget::processEventDefault(event, valid, m)){
         if(!focus()){
             setFocus(true);
         }

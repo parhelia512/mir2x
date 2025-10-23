@@ -17,19 +17,21 @@ SearchInputLine::SearchInputLine(Widget::VarDir argDir,
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          SearchInputLine::WIDTH,
-          SearchInputLine::HEIGHT,
+          .x = std::move(argX),
+          .y = std::move(argY),
 
-          {},
+          .w = SearchInputLine::WIDTH,
+          .h = SearchInputLine::HEIGHT,
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , image
       {

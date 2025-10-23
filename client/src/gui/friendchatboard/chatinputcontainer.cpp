@@ -21,21 +21,23 @@ ChatInputContainer::ChatInputContainer(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          std::move(argW),
-          [this](const Widget *)
+      {{
+          .dir = std::move(argDir),
+
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::move(argW),
+          .h = [this]()
           {
               return mathf::bound<int>(layout.h(), ChatPage::INPUT_MIN_HEIGHT, ChatPage::INPUT_MAX_HEIGHT);
           },
 
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , layout
       {

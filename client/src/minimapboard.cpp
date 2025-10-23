@@ -393,7 +393,7 @@ void MiniMapBoard::drawMiniMapTexture(int drawDstX, int drawDstY) const
     }
 
     const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-    if(in(mousePX, mousePY, drawDstX, drawDstY, roi())){
+    if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{roi()}}.in(mousePX, mousePY)){
         const auto onMapPX = std::lround((mousePX - drawDstX + srcX) * 1.0 * mapW / texW);
         const auto onMapPY = std::lround((mousePY - drawDstY + srcY) * 1.0 * mapH / texH);
 

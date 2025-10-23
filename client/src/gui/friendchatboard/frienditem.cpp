@@ -22,13 +22,15 @@ FriendItem::FriendItem(
         bool argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          std::move(argW),
-          FriendItem::HEIGHT,
+      {{
+          .dir = std::move(argDir),
 
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::move(argW),
+          .h = FriendItem::HEIGHT,
+
+          .childList
           {
               {
                   argFuncWidget.first,
@@ -39,9 +41,12 @@ FriendItem::FriendItem(
               },
           },
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , cpid(argCPID)
     , funcWidgetID(argFuncWidget.first ? argFuncWidget.first->id() : 0)
@@ -58,7 +63,7 @@ FriendItem::FriendItem(
 
           [this](const Widget *self, int drawDstX, int drawDstY)
           {
-              if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); in(mousePX, mousePY, drawDstX, drawDstY, self->roi())){
+              if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{self->roi()}}.in(SDLDeviceHelper::getMousePLoc())){
                   g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
                   g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
               }
@@ -121,10 +126,9 @@ void FriendItem::setFuncWidget(Widget *argFuncWidget, bool argAutoDelete)
     addChild(argFuncWidget, argAutoDelete);
 }
 
-bool FriendItem::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool FriendItem::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -135,10 +139,10 @@ bool FriendItem::processEventDefault(const SDL_Event &event, bool valid, int sta
     switch(event.type){
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value())){
+                if(Widget::processEventDefault(event, valid, m)){
                     return consumeFocus(true);
                 }
-                else if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                else if(m.in(event.button.x, event.button.y)){
                     if(onClick){
                         onClick(this);
                     }
@@ -150,7 +154,7 @@ bool FriendItem::processEventDefault(const SDL_Event &event, bool valid, int sta
             }
         default:
             {
-                return Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value());
+                return Widget::processEventDefault(event, valid, m);
             }
     }
 }

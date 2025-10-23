@@ -43,19 +43,18 @@ NPCChatBoard::NPCChatBoard(
         bool    argAutoDelete)
 
     : Widget
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
+      {{
+          .dir = std::move(argDir),
 
-          0, // need to reset
-          0, // need to reset
+          .x = std::move(argX),
+          .y = std::move(argY),
 
-          {},
-
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_margin(35)
     , m_processRun(argProc)

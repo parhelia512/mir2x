@@ -186,7 +186,7 @@ bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, Widget::R
     }
 
     if(showref()){
-        if(chatref->processParentEvent(event, valid, m)){
+        if(chatref->processEventParent(event, valid, m)){
             return true;
         }
     }
@@ -224,7 +224,7 @@ bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, Widget::R
                     return input.consumeFocus(true, std::addressof(input.layout));
                 }
 
-                if(chat.processParentEvent(event, true, m)){
+                if(chat.processEventParent(event, true, m)){
                     return true;
                 }
 

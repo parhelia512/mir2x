@@ -166,18 +166,20 @@ RuntimeConfigBoard::PullMenu::PullMenu(
         bool    argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
-          {},
-          {},
+      {{
+          .dir = argDir,
 
-          {},
+          .x = argX,
+          .y = argY,
+          .w = {},
+          .h = {},
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_label
       {
@@ -350,8 +352,12 @@ RuntimeConfigBoard::PullMenu::PullMenu(
 
     m_menuList.moveAt(DIR_UPLEFT, m_menuTitleBackground.dx() + 3, m_menuTitleBackground.dy() + m_menuTitleBackground.h() - 2);
 
-    m_menuTitleCrop.setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+    m_menuTitleCrop.setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
     {
+        if(!m.crop(self->roi())){
+            return false;
+        }
+
         if(!valid){
             return self->consumeFocus(false);
         }
@@ -359,8 +365,7 @@ RuntimeConfigBoard::PullMenu::PullMenu(
         switch(event.type){
             case SDL_MOUSEBUTTONUP:
                 {
-                    const auto [eventX, eventY] = SDLDeviceHelper::getEventPLoc(event).value();
-                    if(self->in(eventX, eventY, startDstX, startDstY, roi)){
+                    if(m.in(SDLDeviceHelper::getEventPLoc(event).value())){
                         m_menuList.setShow(true);
                         return self->consumeFocus(true);
                     }
