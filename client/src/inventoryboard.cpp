@@ -493,7 +493,7 @@ void InventoryBoard::drawGold() const
         colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
     };
     // goldBoard.drawAt(DIR_NONE, m.x + 132, m.y + 486);
-    goldBoard.drawAt(DIR_NONE, 132, 486);
+    goldBoard.draw({.dir=DIR_NONE, .x=132, .y=486});
 }
 
 void InventoryBoard::drawInvOpTitle() const

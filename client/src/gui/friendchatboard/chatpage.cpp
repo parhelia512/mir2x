@@ -175,10 +175,9 @@ void ChatPage::afterResizeDefault()
     enableChatRef(chatref->refer(), chatref->getXML());
 }
 
-bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, int startDstX, int startDstY, const Widget::ROIOpt &roi)
+bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    const auto roiOpt = cropDrawROI(startDstX, startDstY, roi);
-    if(!roiOpt.has_value()){
+    if(!m.crop(roi())){
         return false;
     }
 
@@ -187,13 +186,13 @@ bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, int start
     }
 
     if(showref()){
-        if(chatref->processParentEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+        if(chatref->processParentEvent(event, valid, m)){
             return true;
         }
     }
 
     if(showmenu()){
-        if(menu->processEvent(event, valid, startDstX, startDstY, roiOpt.value())){
+        if(menu->processEvent(event, valid, m)){
             return true;
         }
     }
@@ -205,7 +204,7 @@ bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, int start
                     case SDLK_RETURN:
                         {
                             if(input.focus()){
-                                return Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value());
+                                return Widget::processEventDefault(event, valid, m);
                             }
                             else{
                                 setFocus(false);
@@ -214,22 +213,22 @@ bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, int start
                         }
                     default:
                         {
-                            return Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value());
+                            return Widget::processEventDefault(event, valid, m);
                         }
                 }
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(input.parentIn(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(m.create(input.roi()).in(event.button.x, event.button.y)){
                     setFocus(false);
                     return input.consumeFocus(true, std::addressof(input.layout));
                 }
 
-                if(chat.processParentEvent(event, true, startDstX, startDstY, roiOpt.value())){
+                if(chat.processParentEvent(event, true, m)){
                     return true;
                 }
 
-                if(in(event.button.x, event.button.y, startDstX, startDstY, roiOpt.value())){
+                if(m.in(event.button.x, event.button.y)){
                     if(menu){
                         removeChild(menu, true);
                         menu = nullptr;
@@ -241,7 +240,7 @@ bool ChatPage::processEventDefault(const SDL_Event &event, bool valid, int start
             }
         default:
             {
-                return Widget::processEventDefault(event, valid, startDstX, startDstY, roiOpt.value());
+                return Widget::processEventDefault(event, valid, m);
             }
     }
 }

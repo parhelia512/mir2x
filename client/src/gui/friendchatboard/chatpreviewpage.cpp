@@ -32,16 +32,13 @@ ChatPreviewPage::ChatPreviewPage(
 
     , canvas
       {
-          DIR_UPLEFT,
-          0,
-          0,
+          .w = [this](const Widget *){ return w(); },
+          .h = {},
 
-          [this](const Widget *){ return w(); },
-          {},
-          {},
-
-          this,
-          false,
+          .parent
+          {
+              .widget = this,
+          }
       }
 {}
 

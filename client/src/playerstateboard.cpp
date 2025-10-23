@@ -350,7 +350,7 @@ void PlayerStateBoard::draw(Widget::ROIMap m) const
         }
     }
 
-    drawChild(&m_closeButton, m.x, m.y, roi);
+    drawChild(&m_closeButton, m);
 }
 
 bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)

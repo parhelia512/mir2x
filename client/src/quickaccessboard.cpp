@@ -130,18 +130,20 @@ QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
         bool    argAutoDelete)
 
     : Widget
-      {
-          argDir,
-          argX,
-          argY,
+      {{
+          .dir = argDir,
 
-          {},
-          {},
-          {},
+          .x = argX,
+          .y = argY,
+          .w = {},
+          .h = {},
 
-          argParent,
-          argAutoDelete,
-      }
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_processRun(argProc)
     , m_bg

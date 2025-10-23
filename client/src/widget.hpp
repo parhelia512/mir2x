@@ -277,7 +277,11 @@ class Widget: public WidgetTreeNode
         };
 
     public:
-        template<typename T> static Widget::ROI makeROI(const T &);
+        template<typename T            > static Widget::ROI makeROI(const T &);
+        template<typename U, typename V> static Widget::ROI makeROI(const U &, const V &);
+
+        template<typename T> static Widget::ROI makeROI( int, int, const T &);
+        template<typename T> static Widget::ROI makeROI(const T &, int, int );
 
     public:
         using WidgetTreeNode::ChildElement;
