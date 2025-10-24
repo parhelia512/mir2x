@@ -25,7 +25,7 @@ class LayoutBoard: public Widget
 
             // margin for par-node, not for the whole board
             // dynamic margin is not supported since which requires gfx-update
-            Widget::IntegerMargin margin {};
+            Widget::IntMargin margin {};
 
             bool canSelect  = false;
             bool canEdit    = false;
@@ -62,7 +62,7 @@ class LayoutBoard: public Widget
             // +---------+
 
             int startY {};
-            std::array<int, 4> margin {};
+            Widget::IntMargin margin {};
             std::unique_ptr<XMLTypeset> tpset {}; // no copy support for XMLTypeset
         };
 
@@ -76,7 +76,7 @@ class LayoutBoard: public Widget
             // may needed this to support theme
 
             int lineWidth;
-            std::array<int, 4> margin;
+            Widget::IntMargin margin;
 
             bool canThrough;
 
@@ -127,7 +127,7 @@ class LayoutBoard: public Widget
         void loadXML(const char *, size_t = 0);
 
     public:
-        void addParXML(int, const std::array<int, 4> &, const char *);
+        void addParXML(int, const Widget::IntMargin &, const char *);
 
     public:
         void update(double ms) override
@@ -217,7 +217,7 @@ class LayoutBoard: public Widget
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     private:
-        void addPar(int, const std::array<int, 4> &, const tinyxml2::XMLNode *);
+        void addPar(int, const Widget::IntMargin &, const tinyxml2::XMLNode *);
 
     private:
         void setupStartY(int);

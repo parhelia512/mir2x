@@ -209,8 +209,8 @@ class Widget: public WidgetTreeNode
             }
         };
 
-        using IntegerMargin = Widget::Margin<int>;
-        using     VarMargin = Widget::Margin<Widget::VarSize>;
+        using IntMargin = Widget::Margin<int>;
+        using VarMargin = Widget::Margin<Widget::VarSize>;
 
         struct FontConfig final
         {

@@ -192,13 +192,13 @@ void LayoutBoard::loadXML(const char *xmlString, size_t parLimit)
     }
 }
 
-void LayoutBoard::addPar(int loc, const std::array<int, 4> &parMargin, const tinyxml2::XMLNode *node)
+void LayoutBoard::addPar(int loc, const Widget::IntMargin &parMargin, const tinyxml2::XMLNode *node)
 {
     if(loc < 0 || loc > parCount()){
         throw fflerror("invalid location: %d", loc);
     }
 
-    if(!std::ranges::all_of(parMargin, [](int x){ return x >= 0; })){
+    if(!std::ranges::all_of(std::views::iota(0, 4), [&parMargin](auto i){ return parMargin[i] >= 0; })){
         throw fflerror("invalid margin: %d %d %d %d", parMargin[0], parMargin[1], parMargin[2], parMargin[3]);
     }
 
@@ -382,7 +382,7 @@ void LayoutBoard::setupStartY(int fromPar)
     }
 }
 
-void LayoutBoard::addParXML(int loc, const std::array<int, 4> &parMargin, const char *xmlString)
+void LayoutBoard::addParXML(int loc, const Widget::IntMargin &parMargin, const char *xmlString)
 {
     tinyxml2::XMLDocument xmlDoc(true, tinyxml2::PEDANTIC_WHITESPACE);
     if(xmlDoc.Parse(xmlString) != tinyxml2::XML_SUCCESS){
