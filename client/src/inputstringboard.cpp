@@ -44,43 +44,23 @@ InputStringBoard::InputStringBoard(
       }}
 
     , m_textInfo
-      {
-          DIR_NONE,
-          [this](){ return w() / 2; },
-          120,
-          250, // line width
+      {{
+          .dir = DIR_NONE,
 
-          nullptr,
-          0,
+          .x = [this](){ return w() / 2; },
+          .y = 120,
 
-          {},
+          .lineWidth = 250,
 
-          false,
-          false,
-          false,
-          false,
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
 
-          1,
-          12,
-          0,
-
-          colorf::WHITE_A255,
-          0U,
-
-          LALIGN_JUSTIFY,
-          0,
-          0,
-
-          0,
-          colorf::WHITE_A255,
-
-          nullptr,
-          nullptr,
-          nullptr,
-
-          this,
-          false,
-      }
+          .lineAlign = LALIGN_JUSTIFY,
+          .parent{this},
+      }}
 
     , m_inputBg
       {

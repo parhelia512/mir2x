@@ -48,40 +48,19 @@ SearchPage::SearchPage(Widget::VarDir argDir,
       }
 
     , clear
-      {
-          DIR_LEFT,
-          input.dx() + input.w() + SearchPage::CLEAR_GAP,
-          input.dy() + input.h() / 2,
+      {{
+          .dir = DIR_LEFT,
+          .x = input.dx() + input.w() + SearchPage::CLEAR_GAP,
+          .y = input.dy() + input.h() / 2,
 
-          0,
+          .initXML = R"###(<layout><par><event id="clear">清空</event></par></layout>)###",
+          .font
+          {
+              .id = 1,
+              .size = 15,
+          },
 
-          R"###(<layout><par><event id="clear">清空</event></par></layout>)###",
-          0,
-
-          {},
-
-          false,
-          false,
-          false,
-          false,
-
-          1,
-          15,
-          0,
-
-          colorf::WHITE_A255,
-          0U,
-
-          LALIGN_LEFT,
-          0,
-          0,
-
-          0,
-          0U,
-
-          nullptr,
-          nullptr,
-          [this](const std::unordered_map<std::string, std::string> &attrList, int event)
+          .onEvent = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
           {
               if(event == BEVENT_RELEASE){
                   if(const auto id = LayoutBoard::findAttrValue(attrList, "id", nullptr)){
@@ -90,9 +69,8 @@ SearchPage::SearchPage(Widget::VarDir argDir,
               }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , autocompletes
       {{
@@ -150,39 +128,15 @@ void SearchPage::appendFriendItem(const SDChatPeer &candidate)
 
         {
             (candidate.id == FriendChatBoard::getParentBoard(this)->m_processRun->getMyHero()->dbid()) ? nullptr : new LayoutBoard
-            {
-                DIR_UPLEFT,
-                0,
-                0,
-                0,
+            {{
+                .initXML = R"###(<layout><par><event id="add">添加</event></par></layout>)###",
+                .font
+                {
+                    .id = 1,
+                    .size = 12,
+                },
 
-                R"###(<layout><par><event id="add">添加</event></par></layout>)###",
-                0,
-
-                {},
-
-                false,
-                false,
-                false,
-                false,
-
-                1,
-                12,
-                0,
-
-                colorf::WHITE_A255,
-                0U,
-
-                LALIGN_LEFT,
-                0,
-                0,
-
-                0,
-                0U,
-
-                nullptr,
-                nullptr,
-                [candidate, this](const std::unordered_map<std::string, std::string> &attrList, int event)
+                .onEvent = [candidate, this](const std::unordered_map<std::string, std::string> &attrList, int event)
                 {
                     if(event == BEVENT_PRESS){
                         if(const auto id = LayoutBoard::findAttrValue(attrList, "id"); to_sv(id) == "add"){
@@ -190,7 +144,7 @@ void SearchPage::appendFriendItem(const SDChatPeer &candidate)
                         }
                     }
                 },
-            },
+            }},
 
             true,
         },

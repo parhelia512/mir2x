@@ -14,6 +14,7 @@
 #include <initializer_list>
 #include <SDL2/SDL.h>
 #include "mathf.hpp"
+#include "colorf.hpp"
 #include "lalign.hpp"
 #include "bevent.hpp"
 #include "fflerror.hpp"
@@ -187,6 +188,45 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarBool;
         using WidgetTreeNode::VarBlendMode;
         using WidgetTreeNode::VarTexLoadFunc;
+
+    public:
+        template<typename T> struct Margin final
+        {
+            T up    = 0;
+            T down  = 0;
+            T left  = 0;
+            T right = 0;
+
+            decltype(auto) operator[](this auto && self, size_t i)
+            {
+                switch(i){
+                    case 0 : return self.up;
+                    case 1 : return self.down;
+                    case 2 : return self.left;
+                    case 3 : return self.right;
+                    default: throw fflerror("invalid margin index: %zu", i);
+                }
+            }
+        };
+
+        using IntegerMargin = Widget::Margin<int>;
+        using     VarMargin = Widget::Margin<Widget::VarSize>;
+
+        struct FontConfig final
+        {
+            uint8_t id    =  0; // default font
+            uint8_t size  = 10;
+            uint8_t style =  0;
+
+            Widget::VarU32   color = colorf::WHITE_A255;
+            Widget::VarU32 bgColor = 0U;
+        };
+
+        struct CursorConfig final
+        {
+            int width = 2;
+            Widget::VarU32 color = colorf::WHITE_A255;
+        };
 
     public:
         struct ROI final

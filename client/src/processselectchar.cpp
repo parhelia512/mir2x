@@ -215,24 +215,15 @@ void ProcessSelectChar::drawCharName() const
         xmlStr += str_printf(u8R"###( </layout> )###""\n");
 
         const LayoutBoard charBoard
-        {
-            DIR_UPLEFT,
-            0,
-            0,
-            200,
-
-            to_cstr(xmlStr),
-            0,
-
-            {},
-            false,
-            false,
-            false,
-            false,
-
-            1,
-            15,
-        };
+        {{
+            .lineWidth = 200,
+            .initXML = to_cstr(xmlStr),
+            .font
+            {
+                .id = 1,
+                .size = 15,
+            },
+        }};
 
         const int drawBoardX = 120;
         const int drawBoardY = 260 - charBoard.h();

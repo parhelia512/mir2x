@@ -74,26 +74,17 @@ ChatPreviewItem::ChatPreviewItem(
       }
 
     , message
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          0, // line width
+      {{
+          .initXML = to_cstr(argChatXMLStr),
+          .parLimit = 1,
 
-          to_cstr(argChatXMLStr),
-          1,
-
-          {},
-          false,
-          false,
-          false,
-          false,
-
-          1,
-          12,
-          0,
-          colorf::GREY + colorf::A_SHF(255),
-      }
+          .font
+          {
+              .id = 1,
+              .size = 12,
+              .color = colorf::GREY_A255,
+          },
+      }}
 
     , messageClip
       {{

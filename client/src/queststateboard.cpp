@@ -49,40 +49,25 @@ QuestStateBoard::QuestStateBoard(
       }}
 
     , m_despBoard
-      {
-          DIR_UPLEFT,
+      {{
+          .x = m_despX,
+          .y = m_despY,
 
-          m_despX,
-          m_despY,
-          m_despW,
+          .lineWidth = m_despW,
+          .margin
+          {
+              .down = 5,
+          },
 
-          nullptr,
-          0,
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
 
-          {0, 5, 0, 0},
+          .lineAlign = LALIGN_JUSTIFY,
 
-          false,
-          false,
-          false,
-          false,
-
-          1,
-          12,
-          0,
-
-          colorf::WHITE_A255,
-          0U,
-
-          LALIGN_JUSTIFY,
-          0,
-          0,
-
-          2,
-          colorf::WHITE_A255,
-
-          nullptr,
-          nullptr,
-          [this](const std::unordered_map<std::string, std::string> &attrList, int event)
+          .onEvent = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
           {
               if(event == BEVENT_RELEASE){
                   if(const auto id = LayoutBoard::findAttrValue(attrList, "id", nullptr)){
@@ -91,8 +76,9 @@ QuestStateBoard::QuestStateBoard(
                   }
               }
           },
-          this,
-      }
+
+          .parent{this},
+      }}
 
     , m_slider
       {

@@ -40,38 +40,21 @@ ChatInputContainer::ChatInputContainer(
       }}
 
     , layout
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .lineWidth = this->w(),
 
-          this->w(),
+          .canEdit = true,
+          .enableIME = true,
 
-          nullptr,
-          0,
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
 
-          {},
-          false,
-          true,
-          true,
-          false,
+          .lineAlign = LALIGN_JUSTIFY,
 
-          1,
-          12,
-          0,
-
-          colorf::WHITE_A255,
-          0U,
-
-          LALIGN_JUSTIFY,
-          0,
-          0,
-
-          2,
-          colorf::WHITE_A255,
-
-          nullptr,
-          [this]()
+          .onCR = [this]()
           {
               if(!layout.hasToken()){
                   return;
@@ -124,11 +107,9 @@ ChatInputContainer::ChatInputContainer(
                   });
               });
           },
-          nullptr,
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     // there is mutual dependency
     // height of input container depends on height of layout

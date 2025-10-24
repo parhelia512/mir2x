@@ -699,40 +699,20 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
       }
 
     , m_leftMenu
-      {
-          DIR_NONE,
-          m_leftMenuBackground.dx() + m_leftMenuBackground.w() / 2,
-          m_leftMenuBackground.dy() + m_leftMenuBackground.h() / 2,
+      {{
+          .dir = DIR_NONE,
 
-          to_dround(m_leftMenuBackground.w() * 0.7),
+          .x = m_leftMenuBackground.dx() + m_leftMenuBackground.w() / 2,
+          .y = m_leftMenuBackground.dy() + m_leftMenuBackground.h() / 2,
 
-          nullptr,
-          0,
+          .lineWidth = to_dround(m_leftMenuBackground.w() * 0.7),
+          .font
+          {
+              .id = 1,
+              .size = 14,
+          },
 
-          {},
-
-          false,
-          false,
-          false,
-          false,
-
-          1,
-          14,
-          0,
-
-          colorf::WHITE_A255,
-          0U,
-
-          LALIGN_LEFT,
-          0,
-          0,
-
-          2,
-          colorf::WHITE_A255,
-
-          nullptr,
-          nullptr,
-          [this](const std::unordered_map<std::string, std::string> &attrList, int event)
+          .onEvent = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
           {
               if(event == BEVENT_RELEASE){
                   if(const auto id = LayoutBoard::findAttrValue(attrList, "id", nullptr)){
@@ -748,9 +728,8 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
               }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_pageSystem_resolution
       {

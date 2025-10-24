@@ -175,30 +175,18 @@ void ItemListBoard::drawGridHoverLayout(size_t index) const
     fflassert(index < itemCount());
 
     const LayoutBoard hoverTextBoard
-    {
-        DIR_UPLEFT,
-        0,
-        0,
-        200,
+    {{
+        .lineWidth = 200,
+        .initXML = to_cstr(getGridHoverLayout(index)),
 
-        to_cstr(getGridHoverLayout(index)),
-        0,
+        .font
+        {
+            .id = 1,
+            .size = 12,
+        },
 
-        {},
-        false,
-        false,
-        false,
-        false,
-
-        1,
-        12,
-        0,
-
-        colorf::WHITE_A255,
-        0U,
-
-        LALIGN_JUSTIFY,
-    };
+        .lineAlign = LALIGN_JUSTIFY,
+    }};
 
 
     const int margin = 20;

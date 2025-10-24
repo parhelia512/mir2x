@@ -489,31 +489,16 @@ void PurchaseBoard::drawt1GridHoverText(int itemIndex) const
     fflassert(DBCOM_ITEMRECORD(selectedItemID()));
 
     LayoutBoard hoverTextBoard
-    {
-        DIR_UPLEFT,
-        0,
-        0,
-        200,
+    {{
+        .lineWidth = 200,
+        .font
+        {
+            .id = 1,
+            .size = 12,
+        },
 
-        nullptr,
-        0,
-
-        {},
-
-        false,
-        false,
-        false,
-        false,
-
-        1,
-        12,
-        0,
-
-        colorf::WHITE_A255,
-        0U,
-
-        LALIGN_JUSTIFY,
-    };
+        .lineAlign = LALIGN_JUSTIFY,
+    }};
 
     const auto goldPrice = getItemPrice(itemIndex);
     hoverTextBoard.loadXML(to_cstr(m_sdSellItemList.list.at(itemIndex).item.getXMLLayout(

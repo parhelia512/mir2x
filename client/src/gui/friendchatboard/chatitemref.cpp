@@ -143,44 +143,22 @@ ChatItemRef::ChatItemRef(
     , m_refer(argRef)
 
     , m_message
-      {
-          DIR_UPLEFT,
-          ChatItemRef::MARGIN,
-          ChatItemRef::MARGIN,
+      {{
+          .x = ChatItemRef::MARGIN,
+          .y = ChatItemRef::MARGIN,
 
-          std::max<int>(1, argShowButton ? (argMaxWidth - ChatItemRef::MARGIN - ChatItemRef::BUTTON_MARGIN * 2 - ChatItemRef::BUTTON_D)
-                                         : (argMaxWidth - ChatItemRef::MARGIN * 2)),
-          argLayoutXML.c_str(),
-          0,
+          .lineWidth = std::max<int>(1, argShowButton ? (argMaxWidth - ChatItemRef::MARGIN - ChatItemRef::BUTTON_MARGIN * 2 - ChatItemRef::BUTTON_D)
+                                                      : (argMaxWidth - ChatItemRef::MARGIN * 2)),
+          .initXML = argLayoutXML.c_str(),
 
-          {},
+          .font
+          {
+              .id = 1,
+              .size = 10,
+          },
 
-          false,
-          false,
-          false,
-          false,
-
-          1,
-          10,
-          0,
-
-          colorf::WHITE_A255,
-          0U,
-
-          LALIGN_LEFT,
-          0,
-          0,
-
-          2,
-          colorf::WHITE_A255,
-
-          nullptr,
-          nullptr,
-          nullptr,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     m_crossButton.setShow(argShowButton);
 

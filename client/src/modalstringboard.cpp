@@ -62,32 +62,16 @@ class ModalStringBoardImpl: public Widget
               })
 
             , m_board
-              {
-                  DIR_UPLEFT, // ignore
-                  0,
-                  0,
+              {{
+                  .lineWidth = 300,
+                  .font
+                  {
+                      .id = 1,
+                      .size = 12,
+                  },
 
-                  300,
-
-                  nullptr,
-                  0,
-
-                  {},
-
-                  false,
-                  false,
-                  false,
-                  false,
-
-                  1,
-                  12,
-                  0,
-
-                  colorf::WHITE_A255,
-                  0U,
-
-                  LALIGN_JUSTIFY, // LALIGN_CENTER,
-              }
+                  .lineAlign = LALIGN_JUSTIFY, // LALIGN_CENTER,
+              }}
 
             , m_image
               {{

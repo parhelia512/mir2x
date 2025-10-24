@@ -20,50 +20,13 @@ extern IMEBoard *g_imeBoard;
 extern SDLDevice *g_sdlDevice;
 extern ClientArgParser *g_clientArgParser;
 
-LayoutBoard::LayoutBoard(
-        Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
-
-        int argLineWidth,
-
-        const char *argInitXML,
-        size_t argParLimit,
-
-        std::array<int, 4> argMargin,
-
-        bool argCanSelect,
-        bool argCanEdit,
-        bool argIMEEnabled,
-        bool argCanThrough,
-
-        uint8_t argFont,
-        uint8_t argFontSize,
-        uint8_t argFontStyle,
-
-        Widget::VarU32 argFontColor,
-        Widget::VarU32 argFontBGColor,
-
-        int argLineAlign,
-        int argLineSpace,
-        int argWordSpace,
-
-        int            argCursorWidth,
-        Widget::VarU32 argCursorColor,
-
-        std::function<void()> argOnTab,
-        std::function<void()> argOnCR,
-        std::function<void(const std::unordered_map<std::string, std::string> &, int)> argEventCB,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
+LayoutBoard::LayoutBoard(LayoutBoard::InitArgs args)
     : Widget
       {{
-          .dir = std::move(argDir),
+          .dir = std::move(args.dir),
 
-          .x = std::move(argX),
-          .y = std::move(argY),
+          .x = std::move(args.x),
+          .y = std::move(args.y),
 
           .w = [this]
           {
@@ -96,30 +59,26 @@ LayoutBoard::LayoutBoard(
               return backNode.startY + lastPerHeight + backNode.margin[1];
           },
 
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .parent = std::move(args.parent),
       }}
 
     , m_parNodeConfig
       {
-          fflcheck(argLineWidth, argLineWidth >= 0),
-          fflcheck(argMargin, std::ranges::all_of(argMargin, [](int x){ return x >= 0; })),
+          fflcheck(args.lineWidth, args.lineWidth >= 0),
+          fflcheck(args.margin, std::ranges::all_of(std::views::iota(0, 4), [&args](auto i){ return args.margin[i] >= 0; })),
 
-          argCanThrough,
+          args.canThrough,
 
-          argFont,
-          argFontSize,
-          argFontStyle,
+          args.font.id,
+          args.font.size,
+          args.font.style,
 
-          std::move(argFontColor),
-          std::move(argFontBGColor),
+          std::move(args.font.color),
+          std::move(args.font.bgColor),
 
-          fflcheck(argLineAlign, argLineAlign >= LALIGN_NONE && argLineAlign < LALIGN_END),
-          fflcheck(argLineSpace, argLineSpace >= 0),
-          fflcheck(argWordSpace, argWordSpace >= 0),
+          fflcheck(args.lineAlign, args.lineAlign >= LALIGN_NONE && args.lineAlign < LALIGN_END),
+          fflcheck(args.lineSpace, args.lineSpace >= 0),
+          fflcheck(args.wordSpace, args.wordSpace >= 0),
       }
 
     , m_cursorClip
@@ -140,21 +99,21 @@ LayoutBoard::LayoutBoard(
           false,
       }
 
-    , m_canSelect(argCanSelect)
-    , m_canEdit(argCanEdit)
-    , m_imeEnabled(argIMEEnabled)
+    , m_canSelect(args.canSelect)
+    , m_canEdit(args.canEdit)
+    , m_imeEnabled(args.enableIME)
 
-    , m_cursorWidth(argCursorWidth)
-    , m_cursorColor(std::move(argCursorColor))
+    , m_cursorWidth(args.cursor.width)
+    , m_cursorColor(std::move(args.cursor.color))
 
-    , m_onTab  (std::move(argOnTab))
-    , m_onCR   (std::move(argOnCR))
-    , m_eventCB(std::move(argEventCB))
+    , m_onTab  (std::move(args.onTab))
+    , m_onCR   (std::move(args.onCR))
+    , m_eventCB(std::move(args.onEvent))
 {
     disableSetSize();
 
-    if(str_haschar(argInitXML)){
-        loadXML(argInitXML, argParLimit);
+    if(str_haschar(args.initXML)){
+        loadXML(args.initXML, args.parLimit);
     }
 
     if(m_canEdit){

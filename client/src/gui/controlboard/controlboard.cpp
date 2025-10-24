@@ -38,78 +38,26 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
 
     , m_processRun(argProc)
     , m_logBoard
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          0, // need reset
+      {{
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
 
-          nullptr,
-          0,
-
-          {},
-
-          false,
-          false,
-          false,
-          false,
-
-          1,
-          12,
-          0,
-
-          colorf::WHITE_A255,
-          0U,
-
-          LALIGN_JUSTIFY,
-          0,
-          0,
-
-          2,
-          colorf::WHITE_A255,
-
-          nullptr,
-          nullptr,
-          nullptr,
-      }
+          .lineAlign = LALIGN_JUSTIFY,
+      }}
 
     , m_cmdLine
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          0, // need reset
-
-          nullptr,
-          0,
-
-          {},
-
-          false,
-          false,
-          false,
-          false,
-
-          1,
-          12,
-          0,
-
-          colorf::WHITE_A255,
-          0U,
-
-          LALIGN_JUSTIFY,
-          0,
-          0,
-
-          2,
-          colorf::WHITE_A255,
-
-          nullptr,
-          []()
+      {{
+          .font
           {
+              .id = 1,
+              .size = 12,
           },
-          nullptr,
-      }
+
+          .lineAlign = LALIGN_JUSTIFY,
+      }}
 
     , m_left
       {

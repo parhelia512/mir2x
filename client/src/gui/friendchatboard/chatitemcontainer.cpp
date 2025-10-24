@@ -79,40 +79,17 @@ ChatItemContainer::ChatItemContainer(
       }
 
     , ops
-      {
-          DIR_UPLEFT, // ignored
-          0,
-          0,
+      {{
+          .lineWidth = 300,
+          .initXML = "<layout><par>...</par></layout>",
 
-          300,
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
 
-          "<layout><par>...</par></layout>",
-          0,
-
-          {},
-
-          false,
-          false,
-          false,
-          false,
-
-          1,
-          12,
-          0,
-
-          colorf::WHITE_A255,
-          0U,
-
-          LALIGN_LEFT,
-          0,
-          0,
-
-          2,
-          colorf::WHITE_A255,
-
-          nullptr,
-          nullptr,
-          [this](const std::unordered_map<std::string, std::string> &attrList, int event)
+          .onEvent = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
           {
               if(event == BEVENT_RELEASE){
                   if(const auto id = LayoutBoard::findAttrValue(attrList, "id", nullptr)){
@@ -124,7 +101,7 @@ ChatItemContainer::ChatItemContainer(
                   }
               }
           },
-      }
+      }}
 
     , nomsgBox
       {

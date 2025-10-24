@@ -12,6 +12,42 @@
 class LayoutBoard: public Widget
 {
     private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            int lineWidth = 0; // line width
+
+            const char *initXML = nullptr;
+            size_t parLimit = 0;
+
+            // margin for par-node, not for the whole board
+            // dynamic margin is not supported since which requires gfx-update
+            Widget::IntegerMargin margin {};
+
+            bool canSelect  = false;
+            bool canEdit    = false;
+            bool enableIME  = false;
+            bool canThrough = false;
+
+            Widget::FontConfig font {};
+
+            int lineAlign = LALIGN_LEFT;
+            int lineSpace = 0;
+            int wordSpace = 0;
+
+            Widget::CursorConfig cursor {};
+
+            std::function<void()> onTab;
+            std::function<void()> onCR;
+            std::function<void(const std::unordered_map<std::string, std::string> &, int)> onEvent;
+
+            Widget::WADPair parent {};
+        };
+
+    private:
         struct ParNode
         {
             // margin[0]  up
@@ -84,45 +120,7 @@ class LayoutBoard: public Widget
         const std::function<void(const std::unordered_map<std::string, std::string> &, int)> m_eventCB;
 
     public:
-        LayoutBoard(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                int, // line width
-
-                const char * = nullptr,
-                size_t = 0,
-
-                // margin for par-node, not for the whole board
-                // dynamic margin is not supported since which requires gfx-update
-                std::array<int, 4> = {},
-
-                bool = false,
-                bool = false,
-                bool = false,
-                bool = false,
-
-                uint8_t =  0,
-                uint8_t = 10,
-                uint8_t =  0,
-
-                Widget::VarU32 = colorf::WHITE_A255,
-                Widget::VarU32 = 0U,
-
-                int = LALIGN_LEFT,
-                int = 0,
-                int = 0,
-
-                int            = 2,
-                Widget::VarU32 = colorf::WHITE_A255,
-
-                std::function<void()> = nullptr,
-                std::function<void()> = nullptr,
-                std::function<void(const std::unordered_map<std::string, std::string> &, int)> = nullptr,
-
-                Widget * = nullptr,
-                bool     = false);
+        LayoutBoard(LayoutBoard::InitArgs);
 
     public:
         void updateGfx();

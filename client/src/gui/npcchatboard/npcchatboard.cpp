@@ -74,8 +74,8 @@ NPCChatBoard::NPCChatBoard(
       }}
 
     , m_chatBoard
-      {
-          [this](const Widget *)
+      {{
+          .dir = [this](const Widget *)
           {
               if(g_progUseDB->retrieve(getNPCFaceKey())){
                   return DIR_LEFT;
@@ -85,7 +85,7 @@ NPCChatBoard::NPCChatBoard(
               }
           },
 
-          [this](const Widget *)
+          .x = [this](const Widget *)
           {
               if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
                   return m_margin * 2 + SDLDeviceHelper::getTextureWidth(texPtr);
@@ -95,40 +95,20 @@ NPCChatBoard::NPCChatBoard(
               }
           },
 
-          [this](const Widget *)
+          .y = [this](const Widget *)
           {
               return h() / 2;
           },
 
-          0, // line width, need reset
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
 
-          nullptr,
-          0,
+          .lineAlign = LALIGN_JUSTIFY,
 
-          {},
-
-          false,
-          false,
-          false,
-          false,
-
-          1,
-          12,
-          0,
-
-          colorf::WHITE_A255,
-          0U,
-
-          LALIGN_JUSTIFY,
-          0,
-          0,
-
-          2,
-          colorf::WHITE_A255,
-
-          nullptr,
-          nullptr,
-          [this](const std::unordered_map<std::string, std::string> &attrList, int event)
+          .onEvent = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
           {
               if(event == BEVENT_RELEASE){
                   if(const auto id = LayoutBoard::findAttrValue(attrList, "id", nullptr)){
@@ -141,9 +121,8 @@ NPCChatBoard::NPCChatBoard(
               }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonClose
       {{
