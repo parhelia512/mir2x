@@ -24,24 +24,19 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
 
     , m_processRun(argProc)
     , m_canvas
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this]{ return w(); },
+          .h = [this]{ return h(); },
 
-          [this]{ return w(); },
-          [this]{ return h(); },
-
-          [this](int drawDstX, int drawDstY)
+          .drawFunc = [this](int drawDstX, int drawDstY)
           {
               if(getMiniMapTexture()){
                   drawCanvas(drawDstX, drawDstY);
               }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_cornerUpLeft
       {{

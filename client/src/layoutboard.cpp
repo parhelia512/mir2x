@@ -82,22 +82,17 @@ LayoutBoard::LayoutBoard(LayoutBoard::InitArgs args)
       }
 
     , m_cursorClip
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this]{ return w(); },
+          .h = [this]{ return h(); },
 
-          [this]{ return w(); },
-          [this]{ return h(); },
-
-          [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               drawCursorBlink(drawDstX, drawDstY);
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_canSelect(args.canSelect)
     , m_canEdit(args.canEdit)

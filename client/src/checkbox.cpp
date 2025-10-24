@@ -57,15 +57,11 @@ CheckBox::CheckBox(dir8_t argDir,
       }}
 
     , m_box
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this](const Widget *){ return w(); },
+          .h = [this](const Widget *){ return h(); },
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               // +----1----+
               // |        ||
@@ -85,9 +81,8 @@ CheckBox::CheckBox(dir8_t argDir,
               g_sdlDevice->drawLine(shadowColor, drawDstX +       0, drawDstY + h() - 2, drawDstX + w() - 2, drawDstY + h() - 2); // 6
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     m_img.setShow([this](const Widget *){ return getter(); });
 }

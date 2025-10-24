@@ -35,22 +35,17 @@ HorseBoard::HorseBoard(
 
     , m_processRun(argProc)
     , m_greyBg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this](const Widget *){ return w(); },
+          .h = [this](const Widget *){ return h(); },
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          [](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [](const Widget *self, int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(colorf::GREY + colorf::A_SHF(255), drawDstX, drawDstY, self->w(), self->h());
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_imageBg
       {{

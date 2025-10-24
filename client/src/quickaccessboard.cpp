@@ -45,24 +45,19 @@ QuickAccessBoard::Grid::Grid(
     , proc(argProc)
 
     , bg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this](const Widget *){ return w(); },
+          .h = [this](const Widget *){ return h(); },
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          [this](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               if(Widget::ROIMap({.x = drawDstX, .y = drawDstY, .ro = self->roi()}).in(SDLDeviceHelper::getMousePLoc())){
                    g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(64), drawDstX, drawDstY, self->w(), self->h());
                }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , item
       {{

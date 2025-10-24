@@ -45,16 +45,12 @@ class MarginContainer: public Widget
             , m_widgetDir(std::move(argWidgetDir))
         {
             Widget::addChild(new ShapeCropBoard
-            {
-                DIR_UPLEFT,
-                0,
-                0,
+            {{
+                .w = [this]{ return w(); },
+                .h = [this]{ return h(); },
 
-                [this](const Widget *){ return w(); },
-                [this](const Widget *){ return h(); },
-
-                std::move(argDrawFunc),
-            },
+                .drawFunc = std::move(argDrawFunc),
+            }},
 
             true);
 

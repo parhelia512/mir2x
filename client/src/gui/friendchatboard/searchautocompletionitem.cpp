@@ -41,15 +41,11 @@ SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
     , candidate(std::move(argCandidate))
 
     , background
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = this->w(),
+          .h = this->h(),
 
-          this->w(),
-          this->h(),
-
-          [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{roi()}}.in(SDLDeviceHelper::getMousePLoc())){
                   g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
@@ -61,9 +57,8 @@ SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
               }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , icon
       {{

@@ -36,21 +36,17 @@ ChatItemRef::ChatItemRef(
 
     , m_crossBgColor(colorf::GREY + colorf::A_SHF(255))
     , m_background
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
+      {{
+          .w = [this](const Widget *){ return w(); },
+          .h = [this](const Widget *){ return h(); },
 
-          [](const Widget *self, int dstDrawX, int dstDrawY)
+          .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
           {
               g_sdlDevice->fillRectangle(colorf::GREY + colorf::A_SHF(200), dstDrawX, dstDrawY, self->w(), self->h(), ChatItemRef::CORNER);
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_cross
       {
@@ -68,15 +64,11 @@ ChatItemRef::ChatItemRef(
       }
 
     , m_crossBg
-      {
-          DIR_UPLEFT, // ignored
-          0,
-          0,
+      {{
+          .w = ChatItemRef::BUTTON_D,
+          .h = ChatItemRef::BUTTON_D,
 
-          ChatItemRef::BUTTON_D,
-          ChatItemRef::BUTTON_D,
-
-          [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               if(auto texPtr = g_sdlDevice->getCover(ChatItemRef::BUTTON_R, 360)){
                   const SDLDeviceHelper::EnableRenderBlendMode enableBlendMode(SDL_BLENDMODE_BLEND);
@@ -84,7 +76,7 @@ ChatItemRef::ChatItemRef(
                   g_sdlDevice->drawTexture(texPtr, drawDstX, drawDstY);
               }
           },
-      }
+      }}
 
     , m_crossButtonGfx
       {{

@@ -74,19 +74,15 @@ CBFace::CBFace(
       }}
 
     , m_drawBuffIDList
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this]{ return w(); },
+          .h = [this]{ return h(); },
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          [this](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               drawBuffIDList(drawDstX, drawDstY, self->w(), self->h());
-          }
-      }
+          },
+      }}
 {}
 
 double CBFace::getHPRatio() const

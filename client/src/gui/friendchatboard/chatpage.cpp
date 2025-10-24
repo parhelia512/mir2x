@@ -31,15 +31,11 @@ ChatPage::ChatPage(
       }}
 
     , background
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this](const Widget *){ return w(); },
+          .h = [this](const Widget *){ return h(); },
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               // ChatPage = top + sepLine + bottom
               const int bottomHeight = UIPage_MARGIN + ChatPage::SEP_MARGIN + ChatPage::INPUT_MARGIN * 2 + input.h() + (showref() ? (chatref->h() + ChatPage::CHATREF_GAP) : 0);
@@ -86,9 +82,8 @@ ChatPage::ChatPage(
                       ChatPage::INPUT_CORNER);
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , input
       {

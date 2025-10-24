@@ -63,22 +63,20 @@ InputStringBoard::InputStringBoard(
       }}
 
     , m_inputBg
-      {
-          DIR_UPLEFT,
-          22,
-          225,
+      {{
+          .x = 22,
+          .y = 225,
 
-          315,
-          23,
+          .w = 315,
+          .h = 23,
 
-          [](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [](const Widget *self, int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(32), drawDstX, drawDstY, self->w(), self->h());
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_input
       {

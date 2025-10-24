@@ -67,15 +67,11 @@ TexAniBoard::TexAniBoard(
     , m_loop(argLoop)
 
     , m_cropArea
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this](const Widget *){ return w(); },
+          .h = [this](const Widget *){ return h(); },
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               const auto [frame, alpha] = getDrawFrame();
               if(frame < 0){
@@ -96,9 +92,8 @@ TexAniBoard::TexAniBoard(
               }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {}
 
 std::tuple<int, uint8_t> TexAniBoard::getDrawFrame() const

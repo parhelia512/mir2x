@@ -576,14 +576,11 @@ RuntimeConfigBoard::MenuPage::MenuPage(
       }}
 
     , m_buttonMask
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          argSeperatorW,
-          0,
+      {{
+          .w = argSeperatorW,
+          .h = 0,
 
-          [this](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               if(m_selectedHeader){
                   g_sdlDevice->fillRectangle(colorf::RGBA(231, 231, 189, 100),
@@ -602,9 +599,8 @@ RuntimeConfigBoard::MenuPage::MenuPage(
               }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     TabHeader *lastHeader = nullptr;
     TabHeader *currHeader = nullptr;
@@ -681,22 +677,20 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
       }
 
     , m_leftMenuBackground
-      {
-          DIR_UPLEFT,
-          30,
-          30,
-          80,
-          argH - 30 * 2,
+      {{
+          .x = 30,
+          .y = 30,
+          .w = 80,
+          .h = argH - 30 * 2,
 
-          [](const Widget *widgetPtr, int drawDstX, int drawDstY)
+          .drawFunc = [](const Widget *widgetPtr, int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(                             colorf::A_SHF(128), drawDstX, drawDstY, widgetPtr->w(), widgetPtr->h(), 10);
               g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(100), drawDstX, drawDstY, widgetPtr->w(), widgetPtr->h(), 10);
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_leftMenu
       {{

@@ -53,15 +53,11 @@ FriendItem::FriendItem(
     , onClick(std::move(argOnClick))
 
     , hovered
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this]{ return w(); },
+          .h = [this]{ return h(); },
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          [this](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{self->roi()}}.in(SDLDeviceHelper::getMousePLoc())){
                   g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
@@ -72,9 +68,8 @@ FriendItem::FriendItem(
               }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , avatar
       {{

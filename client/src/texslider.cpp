@@ -108,15 +108,11 @@ TexSlider::TexSlider(
       }}
 
     , m_debugDraw
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this](const Widget *){ return w(); },
+          .h = [this](const Widget *){ return h(); },
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               if(g_clientArgParser->debugSlider){
                   g_sdlDevice->drawRectangle(colorf::GREEN + colorf::A_SHF(255), drawDstX, drawDstY, w(), h());
@@ -129,9 +125,8 @@ TexSlider::TexSlider(
               }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     fflassert(w() > 0);
     fflassert(h() > 0);

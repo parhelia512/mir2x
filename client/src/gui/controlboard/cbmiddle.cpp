@@ -49,22 +49,17 @@ CBMiddle::CBMiddle(
     , m_logBoard(hasParent<ControlBoard>()->m_logBoard)
 
     , m_bg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this]{ return w(); },
+          .h = [this]{ return h(); },
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          [this](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(colorf::A_SHF(0XFF), drawDstX, drawDstY, self->w(), self->h());
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_face
       {
