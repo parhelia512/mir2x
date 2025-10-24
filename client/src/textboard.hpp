@@ -11,65 +11,60 @@
 class TextBoard: public Widget
 {
     private:
-        using VarTextFunc = std::variant<std::function<std::string(              )>,
-                                         std::function<std::string(const Widget *)>>;
-    private:
-        uint8_t m_font;
-        uint8_t m_fontSize;
-        uint8_t m_fontStyle;
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            Widget::VarStrFunc textFunc {};
+            Widget::FontConfig font {};
+
+            Widget::VarBlendMode blendMode = SDL_BLENDMODE_BLEND;
+            Widget::WADPair parent {};
+        };
 
     private:
-        VarTextFunc m_textFunc;
+        Widget::FontConfig m_font;
+        Widget::VarStrFunc m_textFunc;
 
     private:
         ImageBoard m_image;
 
     public:
-        TextBoard(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                VarTextFunc,
-
-                uint8_t =  0,
-                uint8_t = 10,
-                uint8_t =  0,
-
-                Widget::VarU32       = colorf::WHITE_A255,
-                Widget::VarBlendMode = SDL_BLENDMODE_BLEND,
-
-                Widget * = nullptr,
-                bool     = false);
+        TextBoard(TextBoard::InitArgs);
 
     public:
         void setFont(uint8_t argFont)
         {
-            m_font = argFont;
+            m_font.id = argFont;
         }
 
         void setFontSize(uint8_t argFontSize)
         {
-            m_fontSize = argFontSize;
+            m_font.size = argFontSize;
         }
 
         void setFontStyle(uint8_t argFontStyle)
         {
-            m_fontStyle = argFontStyle;
+            m_font.style = argFontStyle;
         }
 
         void setFontColor(Widget::VarU32 argColor)
         {
-            m_image.setColor(std::move(argColor));
+            m_font.color = std::move(argColor);
         }
 
-        void setTextFunc(VarTextFunc argTextFunc)
+        void setTextFunc(Widget::VarStrFunc argTextFunc)
         {
             m_textFunc = std::move(argTextFunc);
         }
 
     public:
-        std::string getText() const;
+        std::string getText() const
+        {
+            return Widget::evalStrFunc(m_textFunc, this);
+        }
 
     public:
         bool empty() const

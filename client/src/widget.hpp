@@ -49,6 +49,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         using alias_VarSize        = VarTypeHelper<          int>;
         using alias_VarBool        = VarTypeHelper<         bool>;
         using alias_VarBlendMode   = VarTypeHelper<SDL_BlendMode>;
+        using alias_VarStrFunc     = VarTypeHelper<std::string  >;
         using alias_VarTexLoadFunc = VarTypeHelper<SDL_Texture *>;
 
     protected:
@@ -60,6 +61,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         struct VarSize       : public alias_VarSize       { using alias_VarSize       ::alias_VarSize       ; };
         struct VarBool       : public alias_VarBool       { using alias_VarBool       ::alias_VarBool       ; };
         struct VarBlendMode  : public alias_VarBlendMode  { using alias_VarBlendMode  ::alias_VarBlendMode  ; };
+        struct VarStrFunc    : public alias_VarStrFunc    { using alias_VarStrFunc    ::alias_VarStrFunc    ; };
         struct VarTexLoadFunc: public alias_VarTexLoadFunc{ using alias_VarTexLoadFunc::alias_VarTexLoadFunc; };
 
     protected:
@@ -187,6 +189,7 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarSizeOpt;
         using WidgetTreeNode::VarBool;
         using WidgetTreeNode::VarBlendMode;
+        using WidgetTreeNode::VarStrFunc;
         using WidgetTreeNode::VarTexLoadFunc;
 
     public:
@@ -344,6 +347,7 @@ class Widget: public WidgetTreeNode
         static int           evalSize       (const Widget::VarSize        &, const Widget *, const void * = nullptr);
         static bool          evalBool       (const Widget::VarBool        &, const Widget *, const void * = nullptr);
         static SDL_BlendMode evalBlendMode  (const Widget::VarBlendMode   &, const Widget *, const void * = nullptr);
+        static std::string   evalStrFunc    (const Widget::VarStrFunc     &, const Widget *, const void * = nullptr);
         static SDL_Texture * evalTexLoadFunc(const Widget::VarTexLoadFunc &, const Widget *, const void * = nullptr);
 
     public:

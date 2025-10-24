@@ -2,43 +2,21 @@
 #include "textboard.hpp"
 
 extern FontexDB *g_fontexDB;
-TextBoard::TextBoard(
-        Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
-
-        VarTextFunc argTextFunc,
-
-        uint8_t argFont,
-        uint8_t argFontSize,
-        uint8_t argFontStyle,
-
-        Widget::VarU32 argColor,
-        Widget::VarBlendMode argBlendMode,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
+TextBoard::TextBoard(TextBoard::InitArgs args)
     : Widget
       {{
-          .dir = std::move(argDir),
+          .dir = std::move(args.dir),
 
-          .x = std::move(argX),
-          .y = std::move(argY),
+          .x = std::move(args.x),
+          .y = std::move(args.y),
           .w = {},
           .h = {},
 
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .parent = std::move(args.parent),
       }}
 
-    , m_font(argFont)
-    , m_fontSize(argFontSize)
-    , m_fontStyle(argFontStyle)
-    , m_textFunc(std::move(argTextFunc))
+    , m_font(std::move(args.font))
+    , m_textFunc(std::move(args.textFunc))
 
     , m_image
       {{
@@ -48,25 +26,20 @@ TextBoard::TextBoard(
                   return nullptr;
               }
               else{
-                  return g_fontexDB->retrieve(m_font, m_fontSize, m_fontStyle, text.c_str());
+                  return g_fontexDB->retrieve(m_font.id, m_font.size, m_font.style, text.c_str());
               }
           },
 
-          .modColor = std::move(argColor),
-          .blendMode = std::move(argBlendMode),
+          .modColor = [this]
+          {
+              return Widget::evalU32(m_font.color, this);
+          },
+
+          .blendMode = std::move(args.blendMode),
           .parent{this},
       }}
 {
-    if(!g_fontexDB->hasFont(argFont)){
+    if(!g_fontexDB->hasFont(m_font.id)){
         throw fflerror("invalid font: %hhu", argFont);
-    }
-}
-
-std::string TextBoard::getText() const
-{
-    switch(m_textFunc.index()){
-        case 0 : if(auto &func = std::get<0>(m_textFunc); func){ return func(    ); } else{ return {}; }
-        case 1 : if(auto &func = std::get<1>(m_textFunc); func){ return func(this); } else{ return {}; }
-        default:                                                                          { return {}; }
     }
 }
