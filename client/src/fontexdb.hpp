@@ -42,7 +42,10 @@ class FontexDB: public innDB<uint64_t, FontexElement>
         std::unordered_map<uint8_t, std::vector<uint8_t>> m_fontDataCache;
 
     private:
-        uint32_t m_longTextCount = 0;
+        uint32_t m_longTextIndexMax = 0;
+        std::vector<uint32_t> m_longTextIndexList;
+
+    private:
         std::unordered_map<std::string, uint32_t > m_longText2Encode;
         std::unordered_map<uint32_t, const char *> m_encode2LongText;
 
@@ -141,7 +144,18 @@ class FontexDB: public innDB<uint64_t, FontexElement>
                 return p->second;
             }
 
-            const auto currIndex = ++m_longTextCount;
+            const auto currIndex = [this] -> uint32_t
+            {
+                if(m_longTextIndexList.empty()){
+                    return ++m_longTextIndexMax;
+                }
+                else{
+                    const auto index = m_longTextIndexList.back();
+                    m_longTextIndexList.pop_back();
+                    return index;
+                }
+            }();
+
             if(currIndex > 0X00FFFFFF){
                 throw fflerror("long text count exceeds limit: %llu", to_llu(currIndex));
             }

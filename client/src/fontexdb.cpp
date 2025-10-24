@@ -117,6 +117,7 @@ void FontexDB::freeResource(FontexElement &element)
 
         if((element.textEncode & 0XFF000000) == 0XFF000000){
             if(auto p = m_encode2LongText.find(element.textEncode); p != m_encode2LongText.end()){
+                m_longTextIndexList.push_back(to_u32(element.textEncode & 0X00FFFFFF));
                 m_longText2Encode.erase(p->second);
                 m_encode2LongText.erase(p);
             }
