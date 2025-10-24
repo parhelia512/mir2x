@@ -65,18 +65,15 @@ ChatItemContainer::ChatItemContainer(
       }
 
     , nomsg
-      {
-          DIR_UPLEFT, // ignored
-          0,
-          0,
-
-          u8"没有任何聊天记录，现在就开始聊天吧！",
-
-          1,
-          12,
-          0,
-          colorf::GREY + colorf::A_SHF(200),
-      }
+      {{
+          .label = u8"没有任何聊天记录，现在就开始聊天吧！",
+          .font
+          {
+              .id = 1,
+              .size = 12,
+              .color = colorf::GREY_A255,
+          },
+      }}
 
     , ops
       {{

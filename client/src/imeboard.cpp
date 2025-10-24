@@ -48,7 +48,7 @@ IMEBoard::IMEBoard(
 
     , m_fontTokenHeight([this]() -> size_t
       {
-          return LabelBoard(DIR_UPLEFT, 0, 0, u8" ", m_font, m_fontSize, m_fontStyle, m_fontColor).h();
+          return LabelBoard{{.label = u8" ", .font{.id = m_font, .size = m_fontSize, .style = m_fontStyle}}}.h();
       }())
 
     , m_inputWidget(nullptr)
@@ -118,21 +118,17 @@ void IMEBoard::prepareLabelBoardList()
 
         if(!m_labelBoardList[i]){
             m_labelBoardList[i] = std::unique_ptr<LabelBoard>(new LabelBoard
-            {
-                DIR_UPLEFT,
-                0,
-                0,
-
-                str_printf(u8"%zu. %s", i + 1 - m_startIndex, m_candidateList[i].c_str()).c_str(),
-
-                m_font,
-                m_fontSize,
-                m_fontStyle,
-                m_fontColor,
-
-                this,
-                false,
-            });
+            {{
+                .label = str_printf(u8"%zu. %s", i + 1 - m_startIndex, m_candidateList[i].c_str()).c_str(),
+                .font
+                {
+                    .id = m_font,
+                    .size = m_fontSize,
+                    .style = m_fontStyle,
+                    .color = m_fontColor,
+                },
+                .parent{this},
+            }});
         }
 
         m_labelBoardList[i]->moveTo(startX, startY);
@@ -376,17 +372,18 @@ void IMEBoard::draw(Widget::ROIMap m) const
         }
     }
 
-    LabelBoard(
-            DIR_UPLEFT,
-            m.x + to_d(m_startX),
-            m.y + to_d(m_startY),
+    LabelBoard{{
+            .x = m.x + to_d(m_startX),
+            .y = m.y + to_d(m_startY),
 
-            to_u8cstr(m_ime.result()),
-
-            m_font,
-            m_fontSize,
-            m_fontStyle,
-            m_fontColor).drawRoot({});
+            .label = to_u8cstr(m_ime.result()),
+            .font
+            {
+                .id = m_font,
+                .size = m_fontSize,
+                .style = m_fontStyle,
+                .color = m_fontColor,
+            }}}.drawRoot({});
 
     g_sdlDevice->drawLine(m_separatorColor,
             m.x      , m.y + m_startY + m_fontTokenHeight + m_separatorSpace / 2,

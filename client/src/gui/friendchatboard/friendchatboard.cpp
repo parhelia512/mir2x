@@ -123,19 +123,20 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
           UIPage // UIPage_CHAT
           {
               .title = new LabelBoard
-              {
-                  DIR_NONE,
-                  [this]{ return 45 + (w() - 45 - 190) / 2; },
-                  [    ]{ return 29; },
+              {{
+                  .dir = DIR_NONE,
+                  .x = [this]{ return 45 + (w() - 45 - 190) / 2; },
+                  .y = [    ]{ return 29; },
 
-                  u8"好友名称",
-                  1,
-                  14,
-                  0,colorf::WHITE_A255,
+                  .label = u8"好友名称",
+                  .font
+                  {
+                      .id = 1,
+                      .size = 14,
+                  },
 
-                  this,
-                  true,
-              },
+                  .parent{this},
+              }},
 
               .control = new PageControl
               {
@@ -273,19 +274,20 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
           UIPage // UIPage_CHATPREVIEW
           {
               .title = new LabelBoard
-              {
-                  DIR_NONE,
-                  [this]{ return 45 + (w() - 45 - 190) / 2; },
-                  29,
+              {{
+                  .dir = DIR_NONE,
+                  .x = [this]{ return 45 + (w() - 45 - 190) / 2; },
+                  .y = 29,
 
-                  u8"【聊天记录】",
-                  1,
-                  14,
-                  0,colorf::WHITE_A255,
+                  .label = u8"【聊天记录】",
+                  .font
+                  {
+                      .id = 1,
+                      .size = 14,
+                  },
 
-                  this,
-                  true,
-              },
+                  .parent{this},
+              }},
 
               .control = new PageControl
               {
@@ -352,19 +354,21 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
           UIPage // UIPage_FRIENDLIST
           {
               .title = new LabelBoard
-              {
-                  DIR_NONE,
-                  [this]{ return 45 + (w() - 45 - 190) / 2; },
-                  29,
+              {{
+                  .dir = DIR_NONE,
+                  .x = [this]{ return 45 + (w() - 45 - 190) / 2; },
+                  .y = 29,
 
-                  u8"【好友列表】",
-                  1,
-                  14,
-                  0,colorf::WHITE_A255,
+                  .label = u8"【好友列表】",
+                  .font
+                  {
+                      .id = 1,
+                      .size = 14,
+                      .color = colorf::WHITE_A255,
+                  },
 
-                  this,
-                  true,
-              },
+                  .parent{this},
+              }},
 
               .control = new PageControl
               {
@@ -469,19 +473,20 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
           UIPage // UIPage_FRIENDSEARCH
           {
               .title = new LabelBoard
-              {
-                  DIR_NONE,
-                  [this]{ return 45 + (w() - 45 - 190) / 2; },
-                  29,
+              {{
+                  .dir = DIR_NONE,
+                  .x = [this]{ return 45 + (w() - 45 - 190) / 2; },
+                  .y = 29,
 
-                  u8"【查找用户】",
-                  1,
-                  14,
-                  0,colorf::WHITE_A255,
+                  .label = u8"【查找用户】",
+                  .font
+                  {
+                      .id = 1,
+                      .size = 14,
+                  },
 
-                  this,
-                  true,
-              },
+                  .parent{this},
+              }},
 
               .control = new PageControl
               {
@@ -545,19 +550,20 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
           UIPage // UIPage_CREATEGROUP
           {
               .title = new LabelBoard
-              {
-                  DIR_NONE,
-                  [this]{ return 45 + (w() - 45 - 190) / 2; },
-                  29,
+              {{
+                  .dir = DIR_NONE,
+                  .x = [this]{ return 45 + (w() - 45 - 190) / 2; },
+                  .y = 29,
 
-                  u8"【创建群聊】",
-                  1,
-                  14,
-                  0,colorf::WHITE_A255,
+                  .label = u8"【创建群聊】",
+                  .font
+                  {
+                      .id = 1,
+                      .size = 14,
+                  },
 
-                  this,
-                  true,
-              },
+                  .parent{this},
+              }},
 
               .control = new PageControl
               {

@@ -51,36 +51,26 @@ RuntimeConfigBoard::TextInput::TextInput(
       }}
 
     , m_labelFirst
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          argLabelFirst,
-          1,
-          12,
-          0,
-          colorf::WHITE_A255,
-
-          this,
-          false,
-      }
+      {{
+          .label = argLabelFirst,
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
+          .parent{this},
+      }}
 
     , m_labelSecond
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          argLabelSecond,
-          1,
-          12,
-          0,
-          colorf::WHITE_A255,
-
-          this,
-          false,
-      }
+      {{
+          .label = argLabelSecond,
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
+          .parent{this},
+      }}
 
     , m_image
       {{
@@ -177,17 +167,14 @@ RuntimeConfigBoard::PullMenu::PullMenu(
       }}
 
     , m_label
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          argLabel,
-          1,
-          12,
-          0,
-          colorf::WHITE_A255,
-      }
+      {{
+          .label = argLabel,
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
+      }}
 
     , m_labelCrop
       {
@@ -234,17 +221,14 @@ RuntimeConfigBoard::PullMenu::PullMenu(
       }
 
     , m_menuTitle
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          u8"NA",
-          1,
-          12,
-          0,
-          colorf::WHITE_A255,
-      }
+      {{
+          .label = u8"NA",
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
+      }}
 
     , m_menuTitleCrop
       {
@@ -380,17 +364,14 @@ RuntimeConfigBoard::LabelSliderBar::LabelSliderBar(
       }}
 
     , m_label
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          argLabel,
-          1,
-          12,
-          0,
-          colorf::WHITE_A255,
-      }
+      {{
+          .label = argLabel,
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
+      }}
 
     , m_labelCrop
       {
@@ -516,17 +497,14 @@ RuntimeConfigBoard::MenuPage::TabHeader::TabHeader(
       }}
 
     , m_label
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          argLabel,
-          1,
-          14,
-          0,
-          colorf::WHITE_A255,
-      }
+      {{
+          .label = argLabel,
+          .font
+          {
+              .id = 1,
+              .size = 14,
+          },
+      }}
 
     , m_button
       {{
@@ -738,12 +716,12 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
           24,
 
           {
-              {(new LabelBoard(DIR_UPLEFT, 0, 0, u8"800×600" , 1, 12, 0, colorf::WHITE_A255))->setData(std::make_any<std::pair<int, int>>( 800, 600)), false, true},
-              {(new LabelBoard(DIR_UPLEFT, 0, 0, u8"960×600" , 1, 12, 0, colorf::WHITE_A255))->setData(std::make_any<std::pair<int, int>>( 960, 600)), false, true},
-              {(new LabelBoard(DIR_UPLEFT, 0, 0, u8"1024×768", 1, 12, 0, colorf::WHITE_A255))->setData(std::make_any<std::pair<int, int>>(1024, 768)), false, true},
-              {(new LabelBoard(DIR_UPLEFT, 0, 0, u8"1280×720", 1, 12, 0, colorf::WHITE_A255))->setData(std::make_any<std::pair<int, int>>(1280, 720)), false, true},
-              {(new LabelBoard(DIR_UPLEFT, 0, 0, u8"1280×768", 1, 12, 0, colorf::WHITE_A255))->setData(std::make_any<std::pair<int, int>>(1280, 768)), false, true},
-              {(new LabelBoard(DIR_UPLEFT, 0, 0, u8"1280×800", 1, 12, 0, colorf::WHITE_A255))->setData(std::make_any<std::pair<int, int>>(1280, 800)), false, true},
+              {(new LabelBoard{{.label = u8"800×600" , .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>( 800, 600)), false, true},
+              {(new LabelBoard{{.label = u8"960×600" , .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>( 960, 600)), false, true},
+              {(new LabelBoard{{.label = u8"1024×768", .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>(1024, 768)), false, true},
+              {(new LabelBoard{{.label = u8"1280×720", .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>(1280, 720)), false, true},
+              {(new LabelBoard{{.label = u8"1280×768", .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>(1280, 768)), false, true},
+              {(new LabelBoard{{.label = u8"1280×800", .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>(1280, 800)), false, true},
           },
 
           [this](Widget *widgetPtr)
@@ -952,17 +930,15 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
                       .childList
                       {
                           {new LabelBoard
-                          {
-                              DIR_UPLEFT, // ignored
-                              0,
-                              0,
+                          {{
+                              .label = u8"当加我为好友时：",
+                              .font
+                              {
+                                  .id = 1,
+                                  .size = 12,
+                              },
 
-                              u8"当加我为好友时：",
-
-                              1,
-                              12,
-                              0
-                          }, DIR_UPLEFT, 0, 0, true},
+                          }}, DIR_UPLEFT, 0, 0, true},
 
                           {new RadioSelector
                           {
@@ -974,9 +950,9 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
                               5,
 
                               {
-                                  {(new LabelBoard{DIR_UPLEFT, 0, 0, u8"允许任何人加我微好友", 1, 12, 0})->setData(to_d(FR_ACCEPT)), true},
-                                  {(new LabelBoard{DIR_UPLEFT, 0, 0, u8"拒绝任何人加我为好友", 1, 12, 0})->setData(to_d(FR_REJECT)), true},
-                                  {(new LabelBoard{DIR_UPLEFT, 0, 0, u8"好友申请验证"        , 1, 12, 0})->setData(to_d(FR_VERIFY)), true},
+                                  {(new LabelBoard{{.label = u8"允许任何人加我微好友", .font{.id = 1, .size = 12}}})->setData(to_d(FR_ACCEPT)), true},
+                                  {(new LabelBoard{{.label = u8"拒绝任何人加我为好友", .font{.id = 1, .size = 12}}})->setData(to_d(FR_REJECT)), true},
+                                  {(new LabelBoard{{.label = u8"好友申请验证"        , .font{.id = 1, .size = 12}}})->setData(to_d(FR_VERIFY)), true},
                               },
 
                               [this](const Widget *radioSelector)

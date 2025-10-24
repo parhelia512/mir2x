@@ -76,21 +76,18 @@ SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
       }}
 
     , label
-      {
-          DIR_UPLEFT,
-          3 + SearchAutoCompletionItem::ICON_MARGIN + SearchAutoCompletionItem::ICON_WIDTH + SearchAutoCompletionItem::GAP,
-          3,
+      {{
+          .x = 3 + SearchAutoCompletionItem::ICON_MARGIN + SearchAutoCompletionItem::ICON_WIDTH + SearchAutoCompletionItem::GAP,
+          .y = 3,
 
-          u8"",
+          .font
+          {
+              .id = 1,
+              .size = 14,
+          },
 
-          1,
-          14,
-          0,
-          colorf::WHITE_A255,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     if(str_haschar(argLabelXMLStr)){
         label.loadXML(argLabelXMLStr);

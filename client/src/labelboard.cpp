@@ -4,30 +4,13 @@
 #include "xmltypeset.hpp"
 #include "labelboard.hpp"
 
-LabelBoard::LabelBoard(
-        Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
-
-        const char8_t *argContent,
-        uint8_t        argFont,
-        uint8_t        argFontSize,
-        uint8_t        argFontStyle,
-        uint32_t       argFontColor,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
+LabelBoard::LabelBoard(LabelBoard::InitArgs args)
     : Widget
       {{
-          .dir = std::move(argDir),
-          .x = std::move(argX),
-          .y = std::move(argY),
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .dir = std::move(args.dir),
+          .x = std::move(args.x),
+          .y = std::move(args.y),
+          .parent = std::move(args.parent),
       }}
 
     , m_tpset
@@ -35,13 +18,13 @@ LabelBoard::LabelBoard(
           0,
           LALIGN_LEFT,
           false,
-          argFont,
-          argFontSize,
-          argFontStyle,
-          argFontColor,
+          args.font.id,
+          args.font.size,
+          args.font.style,
+          std::move(args.font.color),
       }
 {
-    setText(u8"%s", argContent ? argContent : u8"");
+    setText(u8"%s", args.label ? args.label : u8"");
     setSize([this](const Widget *){ return m_tpset.px() + m_tpset.pw(); },
             [this](const Widget *){ return m_tpset.py() + m_tpset.ph(); });
 

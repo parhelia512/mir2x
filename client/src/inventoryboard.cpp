@@ -166,18 +166,15 @@ void InventoryBoard::drawItem(int dstX, int dstY, size_t startRow, const PackBin
 
                 if(bin.item.count > 1){
                     const LabelBoard itemCount
-                    {
-                        DIR_UPLEFT,
-                        0, // reset by new width
-                        0,
-                        to_u8cstr(std::to_string(bin.item.count)),
-
-                        1,
-                        10,
-                        0,
-
-                        colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-                    };
+                    {{
+                        .label = to_u8cstr(std::to_string(bin.item.count)),
+                        .font
+                        {
+                            .id = 1,
+                            .size = 10,
+                            .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+                        },
+                    }};
                     itemCount.draw({.dir=DIR_UPRIGHT, .x{startX + (binGridX + binGridW) * SYS_INVGRIDPW}, .y{startY + binGridY * SYS_INVGRIDPH - 2 /* pixel adjust */}});
                 }
             }
@@ -437,18 +434,15 @@ size_t InventoryBoard::getStartRow() const
 void InventoryBoard::drawGold() const
 {
     const LabelBoard goldBoard
-    {
-        DIR_UPLEFT,
-        0, // reset by new width
-        0,
-        to_u8cstr(getGoldStr()),
-
-        1,
-        12,
-        0,
-
-        colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-    };
+    {{
+        .label = to_u8cstr(getGoldStr()),
+        .font
+        {
+            .id = 1,
+            .size = 12,
+            .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+        },
+    }};
     // goldBoard.drawAt(DIR_NONE, m.x + 132, m.y + 486);
     goldBoard.draw({.dir=DIR_NONE, .x=132, .y=486});
 }
@@ -456,11 +450,8 @@ void InventoryBoard::drawGold() const
 void InventoryBoard::drawInvOpTitle() const
 {
     const LabelBoard title
-    {
-        DIR_UPLEFT,
-        0,
-        0,
-        [this]() -> const char8_t *
+    {{
+        .label = [this]() -> const char8_t *
         {
             switch(m_sdInvOp.invOp){
                 case INVOP_NONE  : return u8"【背包】";
@@ -471,12 +462,12 @@ void InventoryBoard::drawInvOpTitle() const
             }
         }(),
 
-        1,
-        12,
-        0,
-
-        colorf::WHITE_A255,
-    };
+        .font
+        {
+            .id = 1,
+            .size = 12,
+        },
+    }};
     // title.drawAt(DIR_NONE, m.x + 238, m.y + 25);
     title.draw({.dir=DIR_NONE, .x=238, .y=25});
 }
@@ -488,18 +479,15 @@ void InventoryBoard::drawInvOpCost() const
     }
 
     const LabelBoard queryResultBoard
-    {
-        DIR_UPLEFT,
-        0, // reset by new width
-        0,
-        to_u8cstr(str_ksep(m_invOpCost, ',')),
-
-        1,
-        12,
-        0,
-
-        colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-    };
+    {{
+        .label = to_u8cstr(str_ksep(m_invOpCost, ',')),
+        .font
+        {
+            .id = 1,
+            .size = 12,
+            .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+        },
+    }};
     // queryResultBoard.drawAt(DIR_NONE, m.x + 132, m.y + 503);
     queryResultBoard.draw({.dir=DIR_NONE, .x=132, .y=503});
 }

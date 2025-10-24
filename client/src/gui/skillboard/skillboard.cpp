@@ -128,18 +128,15 @@ void SkillBoard::MagicIconButton::draw(Widget::ROIMap m) const
         Widget::draw(m);
 
         const LabelBoard magicLevel
-        {
-            DIR_UPLEFT,
-            0,
-            0,
-            str_printf(u8"%d", levelOpt.value()).c_str(),
-
-            3,
-            12,
-            0,
-
-            colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-        };
+        {{
+            .label = str_printf(u8"%d", levelOpt.value()).c_str(),
+            .font
+            {
+                .id = 3,
+                .size = 12,
+                .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+            },
+        }};
         magicLevel.draw({.x=(m.x - m.ro->x) + (m_icon.w() - 2), .y=(m.y - m.ro->y) + (m_icon.h() - 1), .ro{m.ro}});
 
         if(const auto keyOpt = m_config->getMagicKey(magicID()); keyOpt.has_value()){
@@ -517,12 +514,8 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget:
 void SkillBoard::drawTabName() const
 {
     const LabelBoard tabName
-    {
-        DIR_UPLEFT,
-        0,
-        0,
-
-        to_u8cstr([this]() -> std::u8string
+    {{
+        .label = to_u8cstr([this]() -> std::u8string
         {
             if(m_cursorOnTabIndex >= 0){
                 return str_printf(u8"元素【%s】", to_cstr(magicElemName(cursorOnElem())));
@@ -547,12 +540,12 @@ void SkillBoard::drawTabName() const
             return str_printf(u8"元素【无】");
         }()),
 
-        1,
-        12,
-        0,
-
-        colorf::WHITE_A255,
-    };
+        .font
+        {
+            .id = 1,
+            .size = 12,
+        },
+    }};
     // tabName.drawAt(DIR_UPLEFT, x() + 30, y() + 400);
     tabName.draw({.x=30, .y=400});
 }

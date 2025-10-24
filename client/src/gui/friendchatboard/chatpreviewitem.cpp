@@ -57,21 +57,20 @@ ChatPreviewItem::ChatPreviewItem(
       }}
 
     , name
-      {
-          DIR_LEFT,
-          ChatPreviewItem::ITEM_MARGIN + ChatPreviewItem::AVATAR_WIDTH + ChatPreviewItem::GAP,
-          ChatPreviewItem::ITEM_MARGIN + ChatPreviewItem::NAME_HEIGHT / 2,
+      {{
+          .dir = DIR_LEFT,
+          .x = ChatPreviewItem::ITEM_MARGIN + ChatPreviewItem::AVATAR_WIDTH + ChatPreviewItem::GAP,
+          .y = ChatPreviewItem::ITEM_MARGIN + ChatPreviewItem::NAME_HEIGHT / 2,
 
-          u8"未知用户",
+          .label = u8"未知用户",
+          .font
+          {
+              .id = 1,
+              .size = 14,
+          },
 
-          1,
-          14,
-          0,
-          colorf::WHITE_A255,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , message
       {{

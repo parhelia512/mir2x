@@ -35,19 +35,16 @@ ACButton::ACButton(ACButton::InitArgs args)
     , m_currButtonName(0)
     , m_buttonNameList(std::move(fflcheck(args.names, !args.names.empty())))
     , m_labelBoard
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          u8"0-0",
-
-          1,
-          12,
-          0,
-
-          colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-          this,
-      }
+      {{
+          .label = u8"0-0",
+          .font
+          {
+              .id = 1,
+              .size = 12,
+              .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+          },
+          .parent{this},
+      }}
 {
     bool inited = false;
     for(auto &p: m_texMap){

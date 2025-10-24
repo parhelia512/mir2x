@@ -14,28 +14,21 @@ class LabelBoard: public Widget
     private:
         struct InitArgs final
         {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
 
+            const char8_t *label = nullptr;
+
+            Widget::FontConfig font {};
+            Widget::WADPair parent {};
         };
 
     private:
         XMLTypeset m_tpset;
 
     public:
-        LabelBoard(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                const char8_t * = nullptr,
-
-                uint8_t =  0,
-                uint8_t = 10,
-                uint8_t =  0,
-
-                uint32_t = colorf::WHITE_A255,
-
-                Widget * = nullptr,
-                bool     = false);
+        LabelBoard(LabelBoard::InitArgs);
 
     public:
         ~LabelBoard() = default;

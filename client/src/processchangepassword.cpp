@@ -16,10 +16,10 @@ extern SDLDevice *g_sdlDevice;
 
 ProcessChangePassword::ProcessChangePassword()
 	: Process()
-    , m_LBID           (DIR_UPLEFT, 0, 0, u8"账号"    , 1, 15, 0, colorf::WHITE_A255)
-    , m_LBPwd          (DIR_UPLEFT, 0, 0, u8"密码"    , 1, 15, 0, colorf::WHITE_A255)
-    , m_LBNewPwd       (DIR_UPLEFT, 0, 0, u8"新密码"  , 1, 15, 0, colorf::WHITE_A255)
-    , m_LBNewPwdConfirm(DIR_UPLEFT, 0, 0, u8"确认密码", 1, 15, 0, colorf::WHITE_A255)
+    , m_LBID           {{.label = u8"账号"    , .font{.id = 1, .size = 15}}}
+    , m_LBPwd          {{.label = u8"密码"    , .font{.id = 1, .size = 15}}}
+    , m_LBNewPwd       {{.label = u8"新密码"  , .font{.id = 1, .size = 15}}}
+    , m_LBNewPwdConfirm{{.label = u8"确认密码", .font{.id = 1, .size = 15}}}
     , m_boxID
       {
           DIR_LEFT,
@@ -138,10 +138,10 @@ ProcessChangePassword::ProcessChangePassword()
           },
       }
 
-    , m_LBCheckID           (DIR_UPLEFT, 0, 0, u8"", 0, 15, 0, colorf::RGBA(0xFF, 0X00, 0X00, 0XFF))
-    , m_LBCheckPwd          (DIR_UPLEFT, 0, 0, u8"", 0, 15, 0, colorf::RGBA(0xFF, 0X00, 0X00, 0XFF))
-    , m_LBCheckNewPwd       (DIR_UPLEFT, 0, 0, u8"", 0, 15, 0, colorf::RGBA(0xFF, 0X00, 0X00, 0XFF))
-    , m_LBCheckNewPwdConfirm(DIR_UPLEFT, 0, 0, u8"", 0, 15, 0, colorf::RGBA(0xFF, 0X00, 0X00, 0XFF))
+    , m_LBCheckID           {{.font{.id = 0, .size = 15, .color = colorf::RGBA(0xFF, 0X00, 0X00, 0XFF)}}}
+    , m_LBCheckPwd          {{.font{.id = 0, .size = 15, .color = colorf::RGBA(0xFF, 0X00, 0X00, 0XFF)}}}
+    , m_LBCheckNewPwd       {{.font{.id = 0, .size = 15, .color = colorf::RGBA(0xFF, 0X00, 0X00, 0XFF)}}}
+    , m_LBCheckNewPwdConfirm{{.font{.id = 0, .size = 15, .color = colorf::RGBA(0xFF, 0X00, 0X00, 0XFF)}}}
 
     , m_submit
       {{
@@ -182,17 +182,18 @@ ProcessChangePassword::ProcessChangePassword()
       }}
 
     , m_infoStr
-      {
-          DIR_NONE,
-          400,
-          190,
+      {{
+          .dir = DIR_NONE,
+          .x = 400,
+          .y = 190,
 
-          u8"",
-          1,
-          15,
-          0,
-          colorf::YELLOW + colorf::A_SHF(255)
-      }
+          .font
+          {
+              .id = 1,
+              .size = 15,
+              .color = colorf::YELLOW_A255,
+          },
+      }}
 {
     m_boxID.setFocus(true);
     m_boxPwd.setFocus(false);

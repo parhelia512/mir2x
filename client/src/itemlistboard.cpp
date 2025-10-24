@@ -215,18 +215,16 @@ void ItemListBoard::draw(Widget::ROIMap m) const
     const auto fnDrawTitle = [this](const std::u8string &title)
     {
         LabelBoard
-        {
-            DIR_UPLEFT,
-            0,
-            0,
-            title.c_str(),
+        {{
+            .label = title.c_str(),
+            .font
+            {
+                .id = 1,
+                .size = 12,
+                .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+            },
 
-            1,
-            12,
-            0,
-
-            colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-        }.draw({.dir=DIR_NONE, .x=99, .y=18}); // (DIR_NONE, x() + 99, y() + 18);
+        }}.draw({.dir=DIR_NONE, .x=99, .y=18}); // (DIR_NONE, x() + 99, y() + 18);
     };
 
     if(pageCount() > 0){
@@ -268,18 +266,15 @@ void ItemListBoard::draw(Widget::ROIMap m) const
 
             if(const auto header = getGridHeader(i); !header.empty()){
                 LabelBoard
-                {
-                    DIR_UPLEFT,
-                    0,
-                    0,
-                    to_u8cstr(header),
-
-                    1,
-                    10,
-                    0,
-
-                    colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-                }.draw({.x=remapXDiff + rightBoxX, .y=remapYDiff + rightBoxY});
+                {{
+                    .label = to_u8cstr(header),
+                    .font
+                    {
+                        .id = 1,
+                        .size = 10,
+                        .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+                    },
+                }}.draw({.x=remapXDiff + rightBoxX, .y=remapYDiff + rightBoxY});
             }
 
             const bool gridSelected = m_selectedPageGrid.has_value() && (m_selectedPageGrid.value() == i);

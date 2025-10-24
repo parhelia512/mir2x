@@ -155,19 +155,19 @@ SearchInputLine::SearchInputLine(Widget::VarDir argDir,
       }
 
     , hint
-      {
-          this->input.dir(),
-          this->input.dx(),
-          this->input.dy(),
+      {{
+          .dir = this->input.dir(),
+          .x = this->input.dx(),
+          .y = this->input.dy(),
 
-          u8"输入用户ID或角色名",
-          1,
-          14,
-          0,
+          .label = u8"输入用户ID或角色名",
+          .font
+          {
+              .id = 1,
+              .size = 14,
+              .color = colorf::GREY_A255,
+          },
 
-          colorf::GREY + colorf::A_SHF(255),
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {}

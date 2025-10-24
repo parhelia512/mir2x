@@ -86,21 +86,21 @@ FriendItem::FriendItem(
       }}
 
     , name
-      {
-          DIR_LEFT,
-          FriendItem::ITEM_MARGIN + FriendItem::AVATAR_WIDTH + FriendItem::GAP,
-          FriendItem::HEIGHT / 2,
+      {{
+          .dir = DIR_LEFT,
+          .x = FriendItem::ITEM_MARGIN + FriendItem::AVATAR_WIDTH + FriendItem::GAP,
+          .y = FriendItem::HEIGHT / 2,
 
-          argNameStr,
+          .label = argNameStr,
+          .font
+          {
+              .id = 1,
+              .size = 14,
+              .color = colorf::WHITE_A255,
+          },
 
-          1,
-          14,
-          0,
-          colorf::WHITE_A255,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {}
 
 void FriendItem::setFuncWidget(Widget *argFuncWidget, bool argAutoDelete)

@@ -254,18 +254,14 @@ void PurchaseBoard::draw(Widget::ROIMap m) const
 
     int startY = m_startY;
     LabelBoard label
-    {
-        DIR_UPLEFT,
-        0, // reset when drawing item
-        0,
-        u8"",
-
-        1,
-        12,
-        0,
-
-        colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-    };
+    {{
+        .font
+        {
+            .id = 1,
+            .size = 12,
+            .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+        },
+    }};
 
     for(size_t startIndex = getStartIndex(), i = startIndex; i < std::min<size_t>(m_itemList.size(), startIndex + 4); ++i){
         if(const auto &ir = DBCOM_ITEMRECORD(m_itemList[i])){
@@ -556,18 +552,15 @@ void PurchaseBoard::drawt1(Widget::ROIMap m) const
 
             drawItemInGrid(ir.type, ir.pkgGfxID, remapX + rightBoxX, remapY + rightBoxY);
             LabelBoard
-            {
-                DIR_UPLEFT,
-                0,
-                0,
-                to_u8cstr(str_ksep(getItemPrice(i))),
-
-                1,
-                10,
-                0,
-
-                colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-            }.draw({.x=remapX + rightBoxX, .y=remapY + rightBoxY});
+            {{
+                .label = to_u8cstr(str_ksep(getItemPrice(i))),
+                .font
+                {
+                    .id = 1,
+                    .size = 10,
+                    .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+                },
+            }}.draw({.x=remapX + rightBoxX, .y=remapY + rightBoxY});
 
             const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
             const bool gridSelected = (m_ext1PageGridSelected >= 0) && ((size_t)(m_ext1PageGridSelected) == i);
@@ -588,18 +581,15 @@ void PurchaseBoard::drawt1(Widget::ROIMap m) const
     }
 
     LabelBoard
-    {
-        DIR_UPLEFT,
-        0,
-        0,
-        str_printf(u8"第%d/%d页", m_ext1Page + 1, ext1PageCount).c_str(),
-
-        1,
-        12,
-        0,
-
-        colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-    }.draw({.dir=DIR_NONE, .x=remapX + 389, .y=remapY + 18});
+    {{
+        .label = str_printf(u8"第%d/%d页", m_ext1Page + 1, ext1PageCount).c_str(),
+        .font
+        {
+            .id = 1,
+            .size = 12,
+            .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+        },
+    }}.draw({.dir=DIR_NONE, .x=remapX + 389, .y=remapY + 18});
 
     if(cursorOnGridIndex >= 0){
         drawt1GridHoverText(cursorOnGridIndex);
@@ -638,18 +628,15 @@ void PurchaseBoard::drawt2(Widget::ROIMap m) const
     drawItemInGrid(ir.type, ir.pkgGfxID, remapX + rightStartX, remapY + rightStartY);
 
     LabelBoard
-    {
-        DIR_UPLEFT,
-        0,
-        0,
-        to_u8cstr(str_ksep(getItemPrice(0)) + to_cstr(u8" 金币")),
-
-        1,
-        13,
-        0,
-
-        colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-    }.draw({.dir=DIR_LEFT, .x=remapX + 350 + 3, .y=remapY + 35});
+    {{
+        .label = to_u8cstr(str_ksep(getItemPrice(0)) + to_cstr(u8" 金币")),
+        .font
+        {
+            .id = 1,
+            .size = 13,
+            .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+        },
+    }}.draw({.dir=DIR_LEFT, .x=remapX + 350 + 3, .y=remapY + 35});
 }
 
 std::tuple<uint32_t, uint32_t> PurchaseBoard::getExtSelectedItemSeqID() const

@@ -88,8 +88,8 @@ ProcessRun::ProcessRun(const SMOnlineOK &smOOK)
           return coList;
       }())
 
-    , m_mousePixlLoc(DIR_UPLEFT, 0, 0, u8"", 0, 15, 0, colorf::RGBA(0XFF, 0X00, 0X00, 0X00))
-    , m_mouseGridLoc(DIR_UPLEFT, 0, 0, u8"", 0, 15, 0, colorf::RGBA(0XFF, 0X00, 0X00, 0X00))
+    , m_mousePixlLoc{{.font{.id = 0, .size = 15, .color = colorf::RGBA(0XFF, 0X00, 0X00, 0X00)}}}
+    , m_mouseGridLoc{{.font{.id = 0, .size = 15, .color = colorf::RGBA(0XFF, 0X00, 0X00, 0X00)}}}
     , m_teamFlag(5)
     , m_guiManager(this)
 {
@@ -2001,7 +2001,7 @@ void ProcessRun::drawGroundItem(int x0, int y0, int x1, int y1) const
             g_sdlDevice->drawTexture(texPtr, drawPX, drawPY);
 
             if(mouseOver){
-                LabelBoard itemName(DIR_UPLEFT, 0, 0, ir.name, 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF));
+                LabelBoard itemName{{.label = ir.name, .font{.id = 1, .size = 12, .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF)}}};
                 const int drawNameX = x * SYS_MAPGRIDXP - m_viewX + SYS_MAPGRIDXP / 2 - itemName.w() / 2;
                 const int drawNameY = y * SYS_MAPGRIDYP - m_viewY + SYS_MAPGRIDYP / 2 - itemName.h() / 2 - 20;
                 itemName.draw({.x=drawNameX, .y=drawNameY});
@@ -2140,8 +2140,8 @@ void ProcessRun::drawMouseLocation() const
     const auto locPixel = str_printf(u8"Pixel: %d, %d", mouseX, mouseY);
     const auto locGrid  = str_printf(u8"Grid: %d, %d", (mouseX + m_viewX) / SYS_MAPGRIDXP, (mouseY + m_viewY) / SYS_MAPGRIDYP);
 
-    LabelBoard locPixelBoard(DIR_UPLEFT, 10, 10, locPixel.c_str(), 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0X00));
-    LabelBoard locGridBoard (DIR_UPLEFT, 10, 30, locGrid .c_str(), 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0X00));
+    LabelBoard locPixelBoard{{.x = 10, .y = 10, .label = locPixel.c_str(), .font{.id = 1, .size = 12, .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0X00)}}};
+    LabelBoard locGridBoard {{.x = 10, .y = 30, .label = locGrid .c_str(), .font{.id = 1, .size = 12, .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0X00)}}};
 
     locPixelBoard.drawRoot({});
     locGridBoard .drawRoot({});
@@ -2150,7 +2150,7 @@ void ProcessRun::drawMouseLocation() const
 void ProcessRun::drawFPS() const
 {
     const auto fpsStr = std::to_string(g_sdlDevice->getFPS());
-    LabelBoard fpsBoard(DIR_UPLEFT, 0, 0, to_u8cstr(fpsStr), 1, 12, 0, colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF));
+    LabelBoard fpsBoard{{.label = to_u8cstr(fpsStr), .font{.id = 1, .size = 12, .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF)}}};
 
     const int winWidth = g_sdlDevice->getRendererWidth();
     fpsBoard.moveTo(winWidth - fpsBoard.w(), 0);

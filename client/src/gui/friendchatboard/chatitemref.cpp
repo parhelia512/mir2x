@@ -49,19 +49,14 @@ ChatItemRef::ChatItemRef(
       }}
 
     , m_cross
-      {
-          DIR_UPLEFT, // ignored
-          0,
-          0,
-
-          u8"×", // multiplication sign for better symmetry
-
-          1,
-          ChatItemRef::CROSS_FONT_SIZES[0],
-          0,
-
-          colorf::WHITE_A255,
-      }
+      {{
+          .label = u8"×", // multiplication sign for better symmetry
+          .font
+          {
+              .id = 1,
+              .size = ChatItemRef::CROSS_FONT_SIZES[0],
+          },
+      }}
 
     , m_crossBg
       {{

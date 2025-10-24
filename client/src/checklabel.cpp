@@ -94,20 +94,17 @@ CheckLabel::CheckLabel(
       }
 
     , m_labelBoard
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          argLabel,
-          argFont,
-          argFontSize,
-          argFontStyle,
-          argFontColor,
-
-          this,
-          false,
-      }
+      {{
+          .label = argLabel,
+          .font
+          {
+              .id = argFont,
+              .size = argFontSize,
+              .style = argFontStyle,
+              .color = std::move(argFontColor),
+          },
+          .parent{this},
+      }}
 {
     setW(m_checkBox.w() + std::max<int>(argGap, 0) + m_labelBoard.w());
     setH(std::max<int>(m_checkBox.h(), m_labelBoard.h()));
