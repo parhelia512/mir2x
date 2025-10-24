@@ -40,6 +40,6 @@ TextBoard::TextBoard(TextBoard::InitArgs args)
       }}
 {
     if(!g_fontexDB->hasFont(m_font.id)){
-        throw fflerror("invalid font: %hhu", argFont);
+        throw fflerror("invalid font: %hhu", m_font.id);
     }
 }

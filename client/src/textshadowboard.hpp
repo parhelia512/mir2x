@@ -43,41 +43,36 @@ class TextShadowBoard: public Widget
               }}
 
             , m_textShadow
-              {
-                  DIR_UPLEFT,
-                  std::max<int>(0, argXShadowOff),
-                  std::max<int>(0, argYShadowOff),
+              {{
+                  .x = std::max<int>(0, argXShadowOff),
+                  .y = std::max<int>(0, argYShadowOff),
 
-                  std::move(argTextFunc),
+                  .textFunc = std::move(argTextFunc),
+                  .font
+                  {
+                      .id = argFont,
+                      .size = argFontSize,
+                      .style = argFontStyle,
+                      .color = std::move(argFontShadowColor),
+                  },
 
-                  argFont,
-                  argFontSize,
-                  argFontStyle,
-
-                  std::move(argFontShadowColor),
-                  SDL_BLENDMODE_NONE,
-
-                  this,
-                  false,
-              }
+                  .blendMode = SDL_BLENDMODE_NONE,
+                  .parent{this},
+              }}
 
             , m_text
-              {
-                  DIR_UPLEFT,
-                  0,
-                  0,
+              {{
+                  .textFunc = std::move(argTextFunc),
+                  .font
+                  {
+                      .id = argFont,
+                      .size = argFontSize,
+                      .style = argFontStyle,
+                      .color = std::move(argFontColor),
+                  },
 
-                  std::move(argTextFunc),
-
-                  argFont,
-                  argFontSize,
-                  argFontStyle,
-
-                  std::move(argFontColor),
-                  SDL_BLENDMODE_NONE,
-
-                  this,
-                  false,
-              }
+                  .blendMode = SDL_BLENDMODE_NONE,
+                  .parent{this},
+              }}
         {}
 };

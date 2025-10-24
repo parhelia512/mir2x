@@ -145,20 +145,15 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           0,
 
           new TextBoard
-          {
-              DIR_UPLEFT,
-              0,
-              0,
-
-              []{ return "LOC"; },
-
-              1,
-              12,
-              0,
-
-              colorf::YELLOW_A255,
-              SDL_BLENDMODE_BLEND,
-          },
+          {{
+              .textFunc = "LOC",
+              .font
+              {
+                  .id = 1,
+                  .size = 12,
+                  .color = colorf::YELLOW_A255,
+              },
+          }},
 
           true,
 

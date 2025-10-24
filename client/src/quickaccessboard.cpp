@@ -84,12 +84,12 @@ QuickAccessBoard::Grid::Grid(
       }}
 
     , count
-      {
-          DIR_UPRIGHT,
-          [this](const Widget *){ return w() - 1; },
-          0,
+      {{
+          .dir = DIR_UPRIGHT,
+          .x = [this](const Widget *){ return w() - 1; },
+          .y = 0,
 
-          [this](const Widget *) -> std::string
+          .textFunc = [this](const Widget *) -> std::string
           {
               if(const auto &item = proc->getMyHero()->getBelt(slot); item && (item.count > 1)){
                   return std::to_string(item.count);
@@ -97,16 +97,15 @@ QuickAccessBoard::Grid::Grid(
               return {};
           },
 
-          1,
-          10,
-          0,
+          .font
+          {
+              .id = 1,
+              .size = 10,
+          },
 
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 {}
 
 QuickAccessBoard::QuickAccessBoard(dir8_t argDir,

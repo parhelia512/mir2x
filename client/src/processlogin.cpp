@@ -106,26 +106,21 @@ ProcessLogin::ProcessLogin()
           }
 
     , m_buildSignature
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          [](const Widget *)
+      {{
+          .textFunc = [](const Widget *)
           {
               return str_printf("编译版本号:%s", getBuildSignature());
           },
 
-          1,
-          14,
-          0,
+          .font
+          {
+              .id = 1,
+              .size = 14,
+              .color = colorf::YELLOW_A255,
+          },
 
-          colorf::YELLOW_A255,
-          SDL_BLENDMODE_BLEND,
-
-          &m_canvas,
-          false,
-      }
+          .parent{&m_canvas},
+      }}
 
     , m_notifyBoardBg
       {

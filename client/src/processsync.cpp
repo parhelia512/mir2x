@@ -48,23 +48,19 @@ ProcessSync::ProcessSync()
       }}
 
     , m_barText
-      {
-          DIR_NONE,
-          400,
-          536,
+      {{
+          .x = 400,
+          .y = 536,
 
-          [](const Widget *){ return "Connecting..."; },
+          .textFunc = "Connecting...",
+          .font
+          {
+              .id = 1,
+              .size = 10,
+          },
 
-          1,
-          10,
-          0,
-
-          colorf::WHITE_A255,
-          SDL_BLENDMODE_BLEND,
-
-          &m_canvas,
-          false,
-      }
+          .parent{&m_canvas},
+      }}
 {}
 
 void ProcessSync::processEvent(const SDL_Event &event)

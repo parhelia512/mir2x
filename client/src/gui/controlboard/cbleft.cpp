@@ -270,22 +270,18 @@ CBLeft::CBLeft(
       }}
 
     , m_mapGLocFull
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          [this](const Widget *)
+      {{
+          .textFunc = [this](const Widget *)
           {
               return getMapGLocStr();
           },
 
-          1,
-          12,
-          0,
-
-          colorf::WHITE_A255,
-      }
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
+      }}
 
     , m_mapGLoc
       {

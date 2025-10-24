@@ -60,24 +60,25 @@ CBLevel::CBLevel(
       }}
 
     , m_level
-      {
-          DIR_NONE,
-          [this](const Widget *){ return w() / 2; },
-          [this](const Widget *){ return h() / 2; },
+      {{
+          .dir = DIR_NONE,
 
-          [this](const Widget *) -> std::string
+          .x = [this](const Widget *){ return w() / 2; },
+          .y = [this](const Widget *){ return h() / 2; },
+
+          .textFunc = [this](const Widget *) -> std::string
           {
               return std::to_string(m_processRun->getMyHero()->getLevel());
           },
 
-          0,
-          12,
-          0,
+          .font
+          {
+              .id = 0,
+              .size = 12,
+              .color = colorf::YELLOW + colorf::A_SHF(255),
+          },
 
-          colorf::YELLOW + colorf::A_SHF(255),
-          SDL_BLENDMODE_NONE,
-
-          this,
-          false,
-      }
+          .blendMode = SDL_BLENDMODE_NONE,
+          .parent{this},
+      }}
 {}
