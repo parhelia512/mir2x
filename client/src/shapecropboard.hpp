@@ -10,21 +10,24 @@ class ShapeCropBoard: public Widget
                                          std::function<void(const Widget *, int, int)>>;
 
     private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            Widget::VarSizeOpt w = 0;
+            Widget::VarSizeOpt h = 0;
+
+            VarDrawFunc drawFunc {};
+            Widget::WADPair parent {};
+        };
+
+    private:
         VarDrawFunc m_drawFunc;
 
     public:
-        ShapeCropBoard(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                Widget::VarSizeOpt,
-                Widget::VarSizeOpt,
-
-                VarDrawFunc,
-
-                Widget * = nullptr,
-                bool     = false);
+        ShapeCropBoard(ShapeCropBoard::InitArgs);
 
     public:
         void draw(Widget::ROIMap) const override;

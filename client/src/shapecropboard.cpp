@@ -1,35 +1,20 @@
 #include "sdldevice.hpp"
 #include "shapecropboard.hpp"
 
-ShapeCropBoard::ShapeCropBoard(Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
-
-        Widget::VarSizeOpt argW,
-        Widget::VarSizeOpt argH,
-
-        VarDrawFunc argDrawFunc,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
+ShapeCropBoard::ShapeCropBoard(ShapeCropBoard::InitArgs args)
     : Widget
       {{
-          .dir = std::move(argDir),
+          .dir = std::move(args.dir),
 
-          .x = std::move(argX),
-          .y = std::move(argY),
-          .w = std::move(argW),
-          .h = std::move(argH),
+          .x = std::move(args.x),
+          .y = std::move(args.y),
+          .w = std::move(args.w),
+          .h = std::move(args.h),
 
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .parent = std::move(args.parent),
       }}
 
-    , m_drawFunc(std::move(argDrawFunc))
+    , m_drawFunc(std::move(args.drawFunc))
 {}
 
 void ShapeCropBoard::draw(Widget::ROIMap m) const
