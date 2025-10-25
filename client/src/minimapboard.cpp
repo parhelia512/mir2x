@@ -114,27 +114,24 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
       }}
 
     , m_buttonFlex
-      {
-          DIR_DOWNRIGHT,
-          [this]{ return w() - 1; },
-          [this]{ return h() - 1; },
+      {{
+          .dir = DIR_DOWNRIGHT,
 
-          {},
+          .x = [this]{ return w() - 1; },
+          .y = [this]{ return h() - 1; },
 
-          true,
-          1,
-
+          .itemSpace = 1,
+          .childList
           {
               {&m_buttonAlpha , false},
               {&m_buttonExtend, false},
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_mouseLoc
-      ({
+      {{
           DIR_UPLEFT,
           0,
           0,
@@ -164,7 +161,7 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           {
               // g_sdlDevice->fillRectangle((m_processRun->canMove(true, 0, onMapPX, onMapPY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200), mousePX, mousePY, locBoard.w(), locBoard.h());
           }
-      })
+      }}
 {
     setShow([this] -> bool { return getMiniMapTexture(); });
 }

@@ -7,6 +7,22 @@
 class ItemFlex: public Widget
 {
     private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            Widget::VarSizeOpt length;
+
+            bool hbox = true;
+            Widget::VarSize itemSpace = 0;
+
+            std::initializer_list<std::pair<Widget *, bool>> childList = {};
+            Widget::WADPair parent {};
+        };
+
+    private:
         const bool m_hbox;
 
     private:
@@ -14,41 +30,24 @@ class ItemFlex: public Widget
         std::vector<Widget *> m_origChildList;
 
     public:
-        ItemFlex(
-                Widget::VarDir argDir,
-                Widget::VarOff argX,
-                Widget::VarOff argY,
-
-                Widget::VarSizeOpt argVarSizeOpt,
-
-                bool argHBox,
-                Widget::VarSize argItemSpace = 0,
-
-                std::initializer_list<std::pair<Widget *, bool>> argChildList = {},
-
-                Widget *argParent     = nullptr,
-                bool    argAutoDelete = false)
-
+        ItemFlex(ItemFlex::InitArgs args)
             : Widget
-              ({
-                  .dir = std::move(argDir),
-                  .x = std::move(argX),
-                  .y = std::move(argY),
+              {{
+                  .dir = std::move(args.dir),
 
-                  .w =  argHBox ? Widget::VarSizeOpt{} : std::move(argVarSizeOpt),
-                  .h = !argHBox ? Widget::VarSizeOpt{} : std::move(argVarSizeOpt),
+                  .x = std::move(args.x),
+                  .y = std::move(args.y),
 
-                  .parent
-                  {
-                      .widget = argParent,
-                      .autoDelete = argAutoDelete,
-                  }
-              })
+                  .w =  args.hbox ? Widget::VarSizeOpt{} : std::move(args.length),
+                  .h = !args.hbox ? Widget::VarSizeOpt{} : std::move(args.length),
 
-            , m_hbox(argHBox)
-            , m_itemSpace(std::move(argItemSpace))
+                  .parent = std::move(args.parent),
+              }}
+
+            , m_hbox(args.hbox)
+            , m_itemSpace(std::move(args.itemSpace))
         {
-            for(auto [widget, autoDelete]: argChildList){
+            for(auto [widget, autoDelete]: args.childList){
                 addChild(widget, autoDelete);
             }
         }

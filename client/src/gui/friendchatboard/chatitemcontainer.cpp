@@ -38,10 +38,8 @@ ChatItemContainer::ChatItemContainer(
       }}
 
     , canvas
-      {
-          DIR_UPLEFT,
-          0,
-          [this](const Widget *self)
+      {{
+          .y = [this](const Widget *self)
           {
               if(self->h() < this->h()){
                   return 0;
@@ -50,19 +48,15 @@ ChatItemContainer::ChatItemContainer(
               return -1 * to_dround((self->h() - this->h()) * FriendChatBoard::getParentBoard(this)->m_uiPageList[UIPage_CHAT].slider->getValue());
           },
 
-          [this](const Widget *)
+          .length = [this](const Widget *)
           {
               return w();
           },
 
-          false,
-          ChatItemContainer::ITEM_SPACE,
-
-          {},
-
-          this,
-          false,
-      }
+          .hbox = false,
+          .itemSpace = ChatItemContainer::ITEM_SPACE,
+          .parent{this},
+      }}
 
     , nomsg
       {{

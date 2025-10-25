@@ -43,18 +43,14 @@ MenuBoard::MenuBoard(
     , m_onClickMenu(std::move(argOnClickMenu))
 
     , m_canvas
-      {
-          DIR_UPLEFT, // ignored
-          0,
-          0,
-
-          Widget::transform(std::move(argVarW), [argMargin, this](int w)
+      {{
+          .length = Widget::transform(std::move(argVarW), [argMargin, this](int w)
           {
               return std::max<int>(0, w - Widget::evalSize(argMargin[2], this) - Widget::evalSize(argMargin[3], this));
           }),
 
-          false,
-      }
+          .hbox = false,
+      }}
 
     , m_wrapper(MarginWrapperInitArgs
       {
