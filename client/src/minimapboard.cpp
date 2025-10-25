@@ -210,7 +210,6 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
 void MiniMapBoard::flipExtended()
 {
     m_extended = !m_extended;
-    setPLoc();
     m_buttonAlpha .setOff();
     m_buttonExtend.setOff();
 }
@@ -351,7 +350,6 @@ SDL_Texture *MiniMapBoard::getMiniMapTexture() const
 void MiniMapBoard::flipMiniMapShow()
 {
     flipShow();
-    setPLoc();
 }
 
 std::tuple<int, int> MiniMapBoard::mouseOnMapGLoc(int xOff, int yOff) const
@@ -380,6 +378,3 @@ std::tuple<int, int> MiniMapBoard::mouseOnMapGLoc(int xOff, int yOff) const
         std::lround((yOff + srcY) * 1.0 * mapH / texH),
     };
 }
-
-void MiniMapBoard::setPLoc()
-{}

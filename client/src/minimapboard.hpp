@@ -52,7 +52,7 @@ class MiniMapBoard: public Widget
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     public:
-        void setPLoc();
+        void setPLoc(){}
         void flipExtended();
         void flipMiniMapShow();
 
