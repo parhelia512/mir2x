@@ -10,6 +10,17 @@ class ProcessRun;
 class MiniMapBoard: public Widget
 {
     private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            ProcessRun *proc {};
+            Widget::WADPair parent {};
+        };
+
+    private:
         bool m_alphaOn  = false;
         bool m_extended = false;
 
@@ -35,7 +46,7 @@ class MiniMapBoard: public Widget
         MarginWrapper m_mouseLoc;
 
     public:
-        MiniMapBoard(ProcessRun *, Widget * = nullptr, bool = false);
+        MiniMapBoard(MiniMapBoard::InitArgs);
 
     public:
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;

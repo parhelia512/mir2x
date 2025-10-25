@@ -9,20 +9,21 @@
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoDelete)
+MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
     : Widget
       {{
+          .dir = std::move(args.dir),
+
+          .x = std::move(args.x),
+          .y = std::move(args.y),
+
           .w = [this]{ return getFrameSize(); },
           .h = [this]{ return getFrameSize(); },
 
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .parent = std::move(args.parent),
       }}
 
-    , m_processRun(argProc)
+    , m_processRun(args.proc)
     , m_canvas
       {{
           .w = [this]{ return w(); },
@@ -132,35 +133,34 @@ MiniMapBoard::MiniMapBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
 
     , m_mouseLoc
       {{
-          DIR_UPLEFT,
-          0,
-          0,
+          .wrapped
+          {
+              .widget = new TextBoard
+              {{
+                  .textFunc = "LOC",
+                  .font
+                  {
+                      .id = 1,
+                      .size = 12,
+                      .color = colorf::YELLOW_A255,
+                  },
+              }},
 
-          new TextBoard
-          {{
-              .textFunc = "LOC",
-              .font
-              {
-                  .id = 1,
-                  .size = 12,
-                  .color = colorf::YELLOW_A255,
-              },
-          }},
-
-          true,
-
-          { // margin
-              2,
-              2,
-              2,
-              2,
+              .autoDelete = true,
           },
 
-          // [this](const Widget *self, int drawDstX, int drawDstY)
-          [this](const Widget *, int, int)
+          .margin
           {
-              // g_sdlDevice->fillRectangle((m_processRun->canMove(true, 0, onMapPX, onMapPY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200), mousePX, mousePY, locBoard.w(), locBoard.h());
-          }
+              .up    = 2,
+              .down  = 2,
+              .left  = 2,
+              .right = 2,
+          },
+
+          // .bgDrawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
+          // {
+          //     g_sdlDevice->fillRectangle((m_processRun->canMove(true, 0, onMapPX, onMapPY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200), mousePX, mousePY, locBoard.w(), locBoard.h());
+          // }
       }}
 {
     setShow([this] -> bool { return getMiniMapTexture(); });

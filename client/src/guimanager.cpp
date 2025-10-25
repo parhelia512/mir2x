@@ -64,9 +64,9 @@ GUIManager::GUIManager(ProcessRun *argProc)
       }
 
     , m_miniMapBoard
-      {
-          argProc,
-      }
+      {{
+          .proc = argProc,
+      }}
 
     , m_acutionBoard
       {
