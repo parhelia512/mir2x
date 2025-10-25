@@ -347,11 +347,6 @@ SDL_Texture *MiniMapBoard::getMiniMapTexture() const
     return nullptr;
 }
 
-void MiniMapBoard::flipMiniMapShow()
-{
-    flipShow();
-}
-
 std::tuple<int, int> MiniMapBoard::mouseOnMapGLoc(int xOff, int yOff) const
 {
     auto mapTexPtr = getMiniMapTexture();

@@ -54,7 +54,6 @@ class MiniMapBoard: public Widget
     public:
         void setPLoc(){}
         void flipExtended();
-        void flipMiniMapShow();
 
     public:
         SDL_Texture *getMiniMapTexture() const;

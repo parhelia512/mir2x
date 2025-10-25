@@ -109,7 +109,7 @@ CBRight::CBRight(
           {
               if(auto p = dynamic_cast<MiniMapBoard *>(m_processRun->getWidget("MiniMapBoard"))){
                   if(p->getMiniMapTexture()){
-                      p->flipMiniMapShow();
+                      p->flipShow();
                   }
                   else{
                       if(auto cb = hasParent<ControlBoard>()){
