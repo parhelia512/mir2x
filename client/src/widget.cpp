@@ -520,6 +520,48 @@ SDL_Texture *Widget::evalTexLoadFunc(const Widget::VarTexLoadFunc &varTexLoadFun
     varTexLoadFunc);
 }
 
+bool Widget::hasDrawFunc(const Widget::VarDrawFunc &varDrawFunc)
+{
+    return std::visit(VarDispatcher
+    {
+        [](const std::function<void(                        int, int)> &varg) -> bool { return !!varg; },
+        [](const std::function<void(const Widget *,         int, int)> &varg) -> bool { return !!varg; },
+        [](const std::function<void(const Widget *, void *, int, int)> &varg) -> bool { return !!varg; },
+
+        [](std::nullptr_t){ return false; },
+    },
+
+    varDrawFunc);
+}
+
+void Widget::execDrawFunc(const Widget::VarDrawFunc &varDrawFunc, const Widget *widget, int argX, int argY)
+{
+    std::visit(VarDispatcher
+    {
+        [        argX, argY](const std::function<void(                        int, int)> &varg) { if(varg){ varg(                 argX, argY); }},
+        [widget, argX, argY](const std::function<void(const Widget *,         int, int)> &varg) { if(varg){ varg(widget,          argX, argY); }},
+        [widget, argX, argY](const std::function<void(const Widget *, void *, int, int)> &varg) { if(varg){ varg(widget, nullptr, argX, argY); }},
+
+        [](std::nullptr_t){},
+    },
+
+    varDrawFunc);
+}
+
+void Widget::execDrawFunc(const Widget::VarDrawFunc &varDrawFunc, const Widget *widget, void *argPtr, int argX, int argY)
+{
+    std::visit(VarDispatcher
+    {
+        [                argX, argY](const std::function<void(                        int, int)> &varg) { if(varg){ varg(                argX, argY); }},
+        [widget,         argX, argY](const std::function<void(const Widget *,         int, int)> &varg) { if(varg){ varg(widget,         argX, argY); }},
+        [widget, argPtr, argX, argY](const std::function<void(const Widget *, void *, int, int)> &varg) { if(varg){ varg(widget, argPtr, argX, argY); }},
+
+        [](std::nullptr_t){},
+    },
+
+    varDrawFunc);
+}
+
 Widget::Widget(Widget::InitArgs args)
     : WidgetTreeNode(args.parent.widget, args.parent.autoDelete)
     , m_dir(std::move(args.dir))

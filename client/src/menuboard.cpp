@@ -52,16 +52,18 @@ MenuBoard::MenuBoard(
           .hbox = false,
       }}
 
-    , m_wrapper(MarginWrapperInitArgs
-      {
-          .wrapped = &m_canvas,
-          .wrappedAutoDelete = false,
-
-          .margin = argMargin,
-
-          .parent = this,
-          .autoDelete = false,
-      })
+    , m_wrapper
+      {{
+          .wrapped{&m_canvas},
+          .margin
+          {
+              .up = argMargin[0],
+              .down = argMargin[1],
+              .left = argMargin[2],
+              .right = argMargin[3],
+          },
+          .parent{this},
+      }}
 
     , m_background
       {{

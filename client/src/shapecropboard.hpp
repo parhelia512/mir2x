@@ -6,10 +6,6 @@
 class ShapeCropBoard: public Widget
 {
     private:
-        using VarDrawFunc = std::variant<std::function<void(                int, int)>,
-                                         std::function<void(const Widget *, int, int)>>;
-
-    private:
         struct InitArgs final
         {
             Widget::VarDir dir = DIR_UPLEFT;
@@ -19,12 +15,12 @@ class ShapeCropBoard: public Widget
             Widget::VarSizeOpt w = 0;
             Widget::VarSizeOpt h = 0;
 
-            VarDrawFunc drawFunc {};
+            Widget::VarDrawFunc drawFunc = nullptr;
             Widget::WADPair parent {};
         };
 
     private:
-        VarDrawFunc m_drawFunc;
+        Widget::VarDrawFunc m_drawFunc;
 
     public:
         ShapeCropBoard(ShapeCropBoard::InitArgs);

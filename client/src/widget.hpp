@@ -193,6 +193,12 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarTexLoadFunc;
 
     public:
+        using VarDrawFunc = std::variant<std::nullptr_t,
+                                         std::function<void(                        int, int)>,
+                                         std::function<void(const Widget *,         int, int)>,
+                                         std::function<void(const Widget *, void *, int, int)>>;
+
+    public:
         template<typename T> struct Margin final
         {
             T up    = 0;
@@ -357,6 +363,11 @@ class Widget: public WidgetTreeNode
     public:
         template<typename Func> static VarSize    transform(VarSize   , Func &&);
         template<typename Func> static VarSizeOpt transform(VarSizeOpt, Func &&);
+
+    public:
+        static bool  hasDrawFunc(const Widget::VarDrawFunc &);
+        static void execDrawFunc(const Widget::VarDrawFunc &, const Widget *,         int, int);
+        static void execDrawFunc(const Widget::VarDrawFunc &, const Widget *, void *, int, int);
 
     private:
         class RecursionDetector final

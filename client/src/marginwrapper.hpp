@@ -6,66 +6,68 @@
 #include "widget.hpp"
 #include "shapecropboard.hpp"
 
-struct MarginWrapperInitArgs final
-{
-    Widget::VarDir dir = DIR_UPLEFT;
-    Widget::VarOff x   = 0;
-    Widget::VarOff y   = 0;
-
-    Widget *wrapped           = nullptr;
-    bool    wrappedAutoDelete = false;
-
-    std::array<Widget::VarSize, 4> margin;
-
-    std::variant<std::nullptr_t,
-                 std::function<void(int, int)>,
-                 std::function<void(const Widget *, int, int)>> bgDrawFunc = nullptr;
-
-    std::variant<std::nullptr_t,
-                 std::function<void(int, int)>,
-                 std::function<void(const Widget *, int, int)>> fgDrawFunc = nullptr;
-
-    std::variant<bool,
-                 std::function<bool(const Widget::ROIMap &)>,
-                 std::function<bool(const Widget *, const Widget::ROIMap &)>> show = true;
-
-    Widget *parent     = nullptr;
-    bool    autoDelete = false;
-};
-
 class MarginWrapper: public Widget
 {
+    private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x   = 0;
+            Widget::VarOff y   = 0;
+
+            Widget::WADPair wrapped {};
+            Widget::VarMargin margin {};
+
+            Widget::VarDrawFunc bgDrawFunc = nullptr;
+            Widget::VarDrawFunc fgDrawFunc = nullptr;
+
+            Widget::WADPair parent {};
+        };
+
     public:
-        explicit MarginWrapper(MarginWrapperInitArgs args)
+        explicit MarginWrapper(MarginWrapper::InitArgs args)
             : Widget
               {{
                   .dir = std::move(args.dir),
-                  .x   = std::move(args.x),
-                  .y   = std::move(args.y),
 
-                  .w = [wrapped = args.wrapped, margin = args.margin, this]{ return wrapped->w() + Widget::evalSize(margin[2], this) + Widget::evalSize(margin[3], this); },
-                  .h = [wrapped = args.wrapped, margin = args.margin, this]{ return wrapped->h() + Widget::evalSize(margin[0], this) + Widget::evalSize(margin[1], this); },
+                  .x = std::move(args.x),
+                  .y = std::move(args.y),
 
-                  .parent
-                  {
-                      .widget = args.parent,
-                      .autoDelete = args.autoDelete,
-                  }
+                  .w = [wrapped = args.wrapped.widget, margin = args.margin, this]{ return wrapped->w() + Widget::evalSize(margin[2], this) + Widget::evalSize(margin[3], this); },
+                  .h = [wrapped = args.wrapped.widget, margin = args.margin, this]{ return wrapped->h() + Widget::evalSize(margin[0], this) + Widget::evalSize(margin[1], this); },
+
+                  .parent = std::move(args.parent),
               }}
         {
-            // switch(argDrawFunc.index()){
-            //     case 1 : Widget::addChild(new ShapeCropBoard{DIR_UPLEFT, 0, 0, [this]{ return w(); }, [this]{ return h(); }, std::move(std::get<1>(argDrawFunc)), }, true); break;
-            //     case 2 : Widget::addChild(new ShapeCropBoard{DIR_UPLEFT, 0, 0, [this]{ return w(); }, [this]{ return h(); }, std::move(std::get<2>(argDrawFunc)), }, true); break;
-            //     default:                                                                                                                                                    break;
-            // }
+            if(Widget::hasDrawFunc(args.bgDrawFunc)){
+                Widget::addChild(new ShapeCropBoard
+                {{
+                    .w = [this]{ return w(); },
+                    .h = [this]{ return h(); },
 
-            Widget::addChildAt(args.wrapped,
+                    .drawFunc = std::move(args.bgDrawFunc),
+
+                }}, true);
+            }
+
+            Widget::addChildAt(args.wrapped.widget,
                     DIR_UPLEFT,
 
-                    0, // argMargin[2],
-                    0, // argMargin[0],
+                    [dx = args.margin[2], this]{ return Widget::evalSize(dx, this); },
+                    [dy = args.margin[0], this]{ return Widget::evalSize(dy, this); },
 
-                    args.wrappedAutoDelete);
+                    args.wrapped.autoDelete);
+
+            if(Widget::hasDrawFunc(args.fgDrawFunc)){
+                Widget::addChild(new ShapeCropBoard
+                {{
+                    .w = [this]{ return w(); },
+                    .h = [this]{ return h(); },
+
+                    .drawFunc = std::move(args.fgDrawFunc),
+
+                }}, true);
+            }
         }
 
     public:
