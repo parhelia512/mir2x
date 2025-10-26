@@ -12,13 +12,6 @@ class MiniMapBoard: public Widget
     private:
         struct InitArgs final
         {
-            Widget::VarDir dir = DIR_UPLEFT;
-            Widget::VarOff x = 0;
-            Widget::VarOff y = 0;
-
-            Widget::VarSizeOpt w = 0;
-            Widget::VarSizeOpt h = 0;
-
             ProcessRun *proc {};
             Widget::WADPair parent {};
         };

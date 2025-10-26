@@ -13,12 +13,13 @@ extern SDLDevice *g_sdlDevice;
 MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
     : Widget
       {{
-          .dir = std::move(args.dir),
+          .dir = DIR_UPRIGHT,
 
-          .x = std::move(args.x),
-          .y = std::move(args.y),
-          .w = std::move(args.w),
-          .h = std::move(args.h),
+          .x = []{ return g_sdlDevice->getRendererWidth() - 1; },
+          .y = 0,
+
+          .w = 200,
+          .h = 200,
 
           .parent = std::move(args.parent),
       }}
