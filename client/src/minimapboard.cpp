@@ -205,7 +205,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
         }
 
         const auto [ heroGX,  heroGY] = m_processRun->getMyHero()->location();
-        const auto [onImgPX, onImgPY] = mapGLocOnImage(heroGX, heroGY);
+        const auto [onImgPX, onImgPY] = onMapImagePLoc_from_onMapGLoc(heroGX, heroGY);
 
         return std::clamp<int>(w() / 2 - onImgPX, w() - m_mapImage.w(), 0); // never positive
     },
@@ -225,7 +225,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
         }
 
         const auto [ heroGX,  heroGY] = m_processRun->getMyHero()->location();
-        const auto [onImgPX, onImgPY] = mapGLocOnImage(heroGX, heroGY);
+        const auto [onImgPX, onImgPY] = onMapImagePLoc_from_onMapGLoc(heroGX, heroGY);
 
         return std::clamp<int>(h() / 2 - onImgPY, h() - m_mapImage.h(), 0); // never positive
     });
@@ -260,7 +260,7 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
                     if(m.in(event.button.x, event.button.y)){
                         const auto remapXDiff = m.x - m.ro->x;
                         const auto remapYDiff = m.y - m.ro->y;
-                        const auto [onMapPX, onMapPY] = canvasPLocOnMap(event.button.x - remapXDiff, event.button.y - remapYDiff);
+                        const auto [onMapPX, onMapPY] = onMapGLoc_from_onCanvasPLoc(event.button.x - remapXDiff, event.button.y - remapYDiff);
                         m_processRun->requestSpaceMove(std::get<0>(m_processRun->getMap()), onMapPX, onMapPY);
                         return true;
                     }
@@ -319,18 +319,15 @@ void MiniMapBoard::drawCanvas(int drawDstX, int drawDstY)
         }(p.first);
 
         if(colorf::A(color)){
-            if(const auto [onCanvasPX, onCanvasPY] = mapGLocOnCanvas(mapGLocX, mapGLocY); m_canvas.roi().in(onCanvasPX, onCanvasPY)){
+            if(const auto [onCanvasPX, onCanvasPY] = onCanvasPLoc_from_onMapGLoc(mapGLocX, mapGLocY); m_canvas.roi().in(onCanvasPX, onCanvasPY)){
                 g_sdlDevice->fillCircle(color, drawDstX + onCanvasPX, drawDstY + onCanvasPY, r);
             }
         }
     }
 
-    if(Widget::ROIMap m{.x{drawDstX}, .y{drawDstY}, .ro{m_canvas.roi()}}; m.crop(m_mapImage.roi())){
+    if(Widget::ROIMap m{.x{drawDstX}, .y{drawDstY}, .ro{m_canvas.roi()}}; m.crop({m_mapImage.dx(), m_mapImage.dy(), m_mapImage.w(), m_mapImage.h()})){
         if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); m.in(mousePX, mousePY)){
-
-            const auto [onMapGX, onMapGY] = canvasPLocOnMap(mousePX - drawDstX - (m_mapImage.dx() - m_canvas.dx()),
-                                                            mousePY - drawDstY - (m_mapImage.dy() - m_canvas.dy()));
-
+            const auto [onMapGX, onMapGY] = onMapGLoc_from_onCanvasPLoc(mousePX - drawDstX, mousePY - drawDstY);
             const TextBoard locBoard
             {{
                 .textFunc = str_printf("[%d,%d]", onMapGX, onMapGY),
@@ -359,29 +356,26 @@ SDL_Texture *MiniMapBoard::getMiniMapTexture() const
     return nullptr;
 }
 
-std::tuple<int, int> MiniMapBoard::canvasPLocOnMap(int offX, int offY) const // return onMapGLoc
+std::tuple<int, int> MiniMapBoard::onMapGLoc_from_onCanvasPLoc(int offX, int offY) const // return onMapGLoc
 {
     fflassert(getMiniMapTexture());
 
-    offX -= m_mapImage.dx(); // onCanvas -> onMapImage
-    offY -= m_mapImage.dy();
-
-    const auto offXRatio = offX * 1.0 / m_mapImage.w();
-    const auto offYRatio = offY * 1.0 / m_mapImage.h();
+    offX -= (m_mapImage.dx() - m_canvas.dx()); // onCanvas -> onMapImage
+    offY -= (m_mapImage.dy() - m_canvas.dy());
 
     const auto [mapUID, mapW, mapH] = m_processRun->getMap();
     return
     {
-        std::lround(offXRatio * mapW),
-        std::lround(offYRatio * mapH),
+        std::lround(offX * 1.0 * mapW / m_mapImage.w()),
+        std::lround(offY * 1.0 * mapH / m_mapImage.h()),
     };
 }
 
-std::tuple<int, int> MiniMapBoard::mapGLocOnCanvas(int mapGLocX, int mapGLocY) const
+std::tuple<int, int> MiniMapBoard::onCanvasPLoc_from_onMapGLoc(int mapGLocX, int mapGLocY) const
 {
     fflassert(getMiniMapTexture());
 
-    const auto [onImgPX, onImgPY] = mapGLocOnImage(mapGLocX, mapGLocY);
+    const auto [onImgPX, onImgPY] = onMapImagePLoc_from_onMapGLoc(mapGLocX, mapGLocY);
     return
     {
         onImgPX + (m_mapImage.dx() - m_canvas.dx()),
@@ -389,17 +383,14 @@ std::tuple<int, int> MiniMapBoard::mapGLocOnCanvas(int mapGLocX, int mapGLocY) c
     };
 }
 
-std::tuple<int, int> MiniMapBoard::mapGLocOnImage(int mapGLocX, int mapGLocY) const
+std::tuple<int, int> MiniMapBoard::onMapImagePLoc_from_onMapGLoc(int mapGLocX, int mapGLocY) const
 {
     fflassert(getMiniMapTexture());
 
     const auto [mapUID, mapW, mapH] = m_processRun->getMap();
-    const auto onImgX = to_dround(mapGLocX * 1.0 * m_mapImage.w() / mapW);
-    const auto onImgY = to_dround(mapGLocY * 1.0 * m_mapImage.h() / mapH);
-
     return
     {
-        onImgX,
-        onImgY,
+        to_dround(mapGLocX * 1.0 * m_mapImage.w() / mapW),
+        to_dround(mapGLocY * 1.0 * m_mapImage.h() / mapH),
     };
 }
