@@ -2,6 +2,7 @@
 #include "client.hpp"
 #include "pngtexdb.hpp"
 #include "sdldevice.hpp"
+#include "textboard.hpp"
 #include "minimapboard.hpp"
 #include "maprecord.hpp"
 #include "processrun.hpp"
@@ -16,14 +17,32 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
 
           .x = std::move(args.x),
           .y = std::move(args.y),
-
-          .w = [this]{ return getFrameSize(); },
-          .h = [this]{ return getFrameSize(); },
+          .w = std::move(args.w),
+          .h = std::move(args.h),
 
           .parent = std::move(args.parent),
       }}
 
     , m_processRun(args.proc)
+    , m_bg
+      {{
+          .w = [this]{ return w(); },
+          .h = [this]{ return h(); },
+
+          .drawFunc = [this](int drawDstX, int drawDstY)
+          {
+              g_sdlDevice->fillRectangle(colorf::BLACK_A255, drawDstX, drawDstY, w(), h());
+          },
+
+          .parent{this},
+      }}
+
+    , m_mapImage
+      {{
+          .texLoadFunc = [this]{ return getMiniMapTexture(); },
+          .parent{this},
+      }}
+
     , m_canvas
       {{
           .w = [this]{ return w(); },
@@ -42,8 +61,6 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
     , m_cornerUpLeft
       {{
           .texLoadFunc = []{ return g_progUseDB->retrieve(0X09000006); },
-
-          .blendMode = SDL_BLENDMODE_BLEND,
           .parent{this},
       }}
 
@@ -114,6 +131,30 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
           },
       }}
 
+    , m_buttonAutoCenter
+      {{
+          .texIDList
+          {
+              .off  = 0X09000004,
+              .on   = 0X09000004,
+              .down = 0X09000004,
+          },
+
+          .onTrigger = [this](Widget *, int)
+          {
+              if(getMiniMapTexture()){
+                  flipAutoCenter();
+              }
+
+              if(m_autoCenter){
+                  m_buttonExtend.setTexID({0X09000005, 0X09000005, 0X09000005});
+              }
+              else{
+                  m_buttonExtend.setTexID({0X09000004, 0X09000004, 0X09000004});
+              }
+          },
+      }}
+
     , m_buttonFlex
       {{
           .dir = DIR_DOWNRIGHT,
@@ -124,45 +165,70 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
           .itemSpace = 1,
           .childList
           {
-              {&m_buttonAlpha , false},
+              {&m_buttonAlpha, false},
               {&m_buttonExtend, false},
+              {&m_buttonAutoCenter, false},
           },
 
           .parent{this},
       }}
-
-    , m_mouseLoc
-      {{
-          .wrapped
-          {
-              .widget = new TextBoard
-              {{
-                  .textFunc = "LOC",
-                  .font
-                  {
-                      .id = 1,
-                      .size = 12,
-                      .color = colorf::YELLOW_A255,
-                  },
-              }},
-
-              .autoDelete = true,
-          },
-
-          .margin
-          {
-              .up    = 2,
-              .down  = 2,
-              .left  = 2,
-              .right = 2,
-          },
-
-          // .bgDrawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
-          // {
-          //     g_sdlDevice->fillRectangle((m_processRun->canMove(true, 0, onMapPX, onMapPY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200), mousePX, mousePY, locBoard.w(), locBoard.h());
-          // }
-      }}
 {
+    m_mapImage.setSize([this]
+    {
+        if(auto texPtr = getMiniMapTexture()){
+            return to_dround(SDLDeviceHelper::getTextureWidth(texPtr) * m_zoomFactor);
+        }
+        return 0;
+    },
+
+    [this]
+    {
+        if(auto texPtr = getMiniMapTexture()){
+            return to_dround(SDLDeviceHelper::getTextureHeight(texPtr) * m_zoomFactor);
+        }
+        return 0;
+    });
+
+    m_mapImage.moveAt(DIR_UPLEFT, [this]
+    {
+        if(!getMiniMapTexture()){
+            return 0;
+        }
+
+        if(!m_autoCenter){
+            return 0;
+        }
+
+        if(m_mapImage.w() <= w()){
+            return 0;
+        }
+
+        const auto [ heroGX,  heroGY] = m_processRun->getMyHero()->location();
+        const auto [onImgPX, onImgPY] = mapGLocOnImage(heroGX, heroGY);
+
+        return std::clamp<int>(onImgPX - w() / 2, 0, m_mapImage.w() - w());
+    },
+
+    [this]
+    {
+        if(!getMiniMapTexture()){
+            return 0;
+        }
+
+        if(!m_autoCenter){
+            return 0;
+        }
+
+        if(m_mapImage.h() <= h()){
+            return 0;
+        }
+
+        const auto [ heroGX,  heroGY] = m_processRun->getMyHero()->location();
+        const auto [onImgPX, onImgPY] = mapGLocOnImage(heroGX, heroGY);
+
+        return std::clamp<int>(onImgPY - h() / 2, 0, m_mapImage.h() - h());
+    });
+
     setShow([this] -> bool { return getMiniMapTexture(); });
 }
 
@@ -193,7 +259,7 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
                     if(m.in(event.button.x, event.button.y)){
                         const auto remapXDiff = m.x - m.ro->x;
                         const auto remapYDiff = m.y - m.ro->y;
-                        const auto [onMapPX, onMapPY] = mouseOnMapGLoc(event.button.x - remapXDiff, event.button.y - remapYDiff);
+                        const auto [onMapPX, onMapPY] = canvasPLocOnMap(event.button.x - remapXDiff, event.button.y - remapYDiff);
                         m_processRun->requestSpaceMove(std::get<0>(m_processRun->getMap()), onMapPX, onMapPY);
                         return true;
                     }
@@ -214,51 +280,16 @@ void MiniMapBoard::flipExtended()
     m_buttonExtend.setOff();
 }
 
-void MiniMapBoard::drawCanvas(int drawDstX, int drawDstY)
+void MiniMapBoard::flipAutoCenter()
 {
-    auto mapTexPtr = getMiniMapTexture();
-    if(!mapTexPtr){
-        return;
-    }
-
-    if(!m_alphaOn){
-        g_sdlDevice->fillRectangle(colorf::BLACK_A255, drawDstX, drawDstY, w(), h());
-    }
-
+    m_autoCenter = !m_autoCenter;
 }
 
-void MiniMapBoard::drawMiniMapTexture(int drawDstX, int drawDstY) const
+void MiniMapBoard::drawCanvas(int drawDstX, int drawDstY)
 {
-    auto mapTexPtr = getMiniMapTexture();
-    if(!mapTexPtr){
-        return;
-    }
-
-    const auto [mapUID, mapW, mapH] = m_processRun->getMap();
-    const auto [texW, texH] = SDLDeviceHelper::getTextureSize(mapTexPtr);
-    const auto fnGetMPLoc = [mapW, mapH, texW, texH](const std::tuple<int, int> &loc) -> std::tuple<int, int>
-    {
-        return
-        {
-            to_d(std::lround((std::get<0>(loc) * 1.0 / mapW) * texW)),
-            to_d(std::lround((std::get<1>(loc) * 1.0 / mapH) * texH)),
-        };
-    };
-
-    if(!m_alphaOn){
-        g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(255), drawDstX, drawDstY, w(), h());
-    }
-
-    const auto [heroMPX, heroMPY] = fnGetMPLoc(m_processRun->getMyHero()->location());
-    const int srcX = std::min<int>(std::max<int>(0, heroMPX - w() / 2), texW - w());
-    const int srcY = std::min<int>(std::max<int>(0, heroMPY - h() / 2), texH - h());
-    {
-        SDLDeviceHelper::EnableTextureModColor enableModColor(mapTexPtr, colorf::WHITE + colorf::A_SHF(m_alphaOn ? 128 : 255));
-        g_sdlDevice->drawTexture(mapTexPtr, drawDstX, drawDstY, srcX, srcY, w(), h());
-    }
-
+    fflassert(getMiniMapTexture());
     for(const auto &p: m_processRun->getCOList()){
-        const auto [coMPX, coMPY] = fnGetMPLoc(p.second->location());
+        const auto [mapGLocX, mapGLocY] = p.second->location();
         const auto [color, r] = [this](uint64_t uid) -> std::tuple<uint32_t, int>
         {
             switch(uidf::getUIDType(uid)){
@@ -287,55 +318,35 @@ void MiniMapBoard::drawMiniMapTexture(int drawDstX, int drawDstY) const
         }(p.first);
 
         if(colorf::A(color)){
-            g_sdlDevice->fillRectangle(color, drawDstX + (coMPX - srcX) - r, drawDstY + (coMPY - srcY) - r, 2 * r + 1, 2 * r + 1);
+            if(const auto [onCanvasPX, onCanvasPY] = mapGLocOnCanvas(mapGLocX, mapGLocY); m_canvas.roi().in(onCanvasPX, onCanvasPY)){
+                g_sdlDevice->fillCircle(color, drawDstX + onCanvasPX, drawDstY + onCanvasPY, r);
+            }
         }
     }
 
-    g_sdlDevice->drawRectangle(colorf::RGBA(60, 60, 60, 255), drawDstX, drawDstY, w(), h());
-    if(auto frameTexPtr = g_progUseDB->retrieve(0X09000006); frameTexPtr){
-        g_sdlDevice->drawTexture(frameTexPtr, drawDstX, drawDstY);
-    }
+    if(Widget::ROIMap m{.x{drawDstX}, .y{drawDstY}, .ro{m_canvas.roi()}}; m.crop(m_mapImage.roi())){
+        if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); m.in(mousePX, mousePY)){
 
-    if(auto frameTexPtr = g_progUseDB->retrieve(0X09000007); frameTexPtr){
-        g_sdlDevice->drawTexture(frameTexPtr, drawDstX + w() - SDLDeviceHelper::getTextureWidth(frameTexPtr), drawDstY);
-    }
+            const auto [onMapGX, onMapGY] = canvasPLocOnMap(mousePX - drawDstX - (m_mapImage.dx() - m_canvas.dx()),
+                                                            mousePY - drawDstY - (m_mapImage.dy() - m_canvas.dy()));
 
-    if(auto frameTexPtr = g_progUseDB->retrieve(0X09000008); frameTexPtr){
-        g_sdlDevice->drawTexture(frameTexPtr, drawDstX, drawDstY + h() - SDLDeviceHelper::getTextureHeight(frameTexPtr));
-    }
+            const TextBoard locBoard
+            {{
+                .textFunc = str_printf("[%d,%d]", onMapGX, onMapGY),
+                .font
+                {
+                    .id = 1,
+                    .size = 12,
+                    .color = colorf::YELLOW_A255,
+                },
+            }};
 
-    const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-    if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{roi()}}.in(mousePX, mousePY)){
-        const auto onMapPX = std::lround((mousePX - drawDstX + srcX) * 1.0 * mapW / texW);
-        const auto onMapPY = std::lround((mousePY - drawDstY + srcY) * 1.0 * mapH / texH);
+            const auto margin = 2;
+            const auto bgColor = (m_processRun->canMove(true, 0, onMapGX, onMapGY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200);
 
-        const auto locStr = str_printf(u8"[%ld,%ld]", onMapPX, onMapPY);
-        LabelBoard locBoard
-        {{
-            .dir = DIR_DOWNRIGHT,
-            .x = mousePX,
-            .y = mousePY,
-
-            .label = locStr.c_str(),
-            .font
-            {
-                .id = 1,
-                .size = 12,
-                .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-            },
-        }};
-        g_sdlDevice->fillRectangle((m_processRun->canMove(true, 0, onMapPX, onMapPY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200), mousePX, mousePY, locBoard.w(), locBoard.h());
-        locBoard.drawRoot({});
-    }
-}
-
-int MiniMapBoard::getFrameSize() const
-{
-    const auto [texW, texH] = SDLDeviceHelper::getTextureSize(getMiniMapTexture());
-    if(m_extended){
-        return std::min<int>({texW, texH, 300}); // setup window size here
-    }else{
-        return std::min<int>({texW, texH, 128});
+            g_sdlDevice->fillRectangle(bgColor, mousePX - margin, mousePY - margin, locBoard.w() + 2 * margin, locBoard.h() + 2 * margin);
+            locBoard.draw({.dir{DIR_DOWNRIGHT}, .x{mousePX}, .y{mousePY}});
+        }
     }
 }
 
@@ -347,29 +358,47 @@ SDL_Texture *MiniMapBoard::getMiniMapTexture() const
     return nullptr;
 }
 
-std::tuple<int, int> MiniMapBoard::mouseOnMapGLoc(int xOff, int yOff) const
+std::tuple<int, int> MiniMapBoard::canvasPLocOnMap(int offX, int offY) const // return onMapGLoc
 {
-    auto mapTexPtr = getMiniMapTexture();
-    fflassert(mapTexPtr);
+    fflassert(getMiniMapTexture());
+
+    offX -= m_mapImage.dx(); // onCanvas -> onMapImage
+    offY -= m_mapImage.dy();
+
+    const auto offXRatio = offX * 1.0 / m_mapImage.w();
+    const auto offYRatio = offY * 1.0 / m_mapImage.h();
 
     const auto [mapUID, mapW, mapH] = m_processRun->getMap();
-    const auto [texW, texH] = SDLDeviceHelper::getTextureSize(mapTexPtr);
-    const auto fnGetMPLoc = [mapW, mapH, texW, texH](const std::tuple<int, int> &loc) -> std::tuple<int, int>
+    return
     {
-        return
-        {
-            to_d(std::lround((std::get<0>(loc) * 1.0 / mapW) * texW)),
-            to_d(std::lround((std::get<1>(loc) * 1.0 / mapH) * texH)),
-        };
+        std::lround(offXRatio * mapW),
+        std::lround(offYRatio * mapH),
     };
+}
 
-    const auto [heroMPX, heroMPY] = fnGetMPLoc(m_processRun->getMyHero()->location());
-    const int srcX = std::min<int>(std::max<int>(0, heroMPX - w() / 2), texW - w());
-    const int srcY = std::min<int>(std::max<int>(0, heroMPY - h() / 2), texH - h());
+std::tuple<int, int> MiniMapBoard::mapGLocOnCanvas(int mapGLocX, int mapGLocY) const
+{
+    fflassert(getMiniMapTexture());
+
+    const auto [onImgPX, onImgPY] = mapGLocOnImage(mapGLocX, mapGLocY);
+    return
+    {
+        onImgPX + (m_mapImage.dx() - m_canvas.dx()),
+        onImgPY + (m_mapImage.dy() - m_canvas.dy()),
+    };
+}
+
+std::tuple<int, int> MiniMapBoard::mapGLocOnImage(int mapGLocX, int mapGLocY) const
+{
+    fflassert(getMiniMapTexture());
+
+    const auto [mapUID, mapW, mapH] = m_processRun->getMap();
+    const auto onImgX = to_dround(mapGLocX * 1.0 * m_mapImage.w() / mapW);
+    const auto onImgY = to_dround(mapGLocY * 1.0 * m_mapImage.h() / mapH);
 
     return
     {
-        std::lround((xOff + srcX) * 1.0 * mapW / texW),
-        std::lround((yOff + srcY) * 1.0 * mapH / texH),
+        onImgX,
+        onImgY,
     };
 }

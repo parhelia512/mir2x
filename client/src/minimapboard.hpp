@@ -16,16 +16,30 @@ class MiniMapBoard: public Widget
             Widget::VarOff x = 0;
             Widget::VarOff y = 0;
 
+            Widget::VarSizeOpt w = 0;
+            Widget::VarSizeOpt h = 0;
+
             ProcessRun *proc {};
             Widget::WADPair parent {};
         };
 
     private:
-        bool m_alphaOn  = false;
+        bool m_alphaOn = false;
         bool m_extended = false;
+        bool m_autoCenter = true;
+
+    private:
+        double m_zoomFactor = 1.0;
+
+    private:
+        const int m_defaultSize = 300;
 
     private:
         ProcessRun *m_processRun;
+
+    private:
+        ShapeCropBoard m_bg;
+        ImageBoard m_mapImage;
 
     private:
         ShapeCropBoard m_canvas;
@@ -38,12 +52,10 @@ class MiniMapBoard: public Widget
     private:
         TritexButton m_buttonAlpha;
         TritexButton m_buttonExtend;
+        TritexButton m_buttonAutoCenter;
 
     private:
         ItemFlex m_buttonFlex;
-
-    private:
-        MarginWrapper m_mouseLoc;
 
     public:
         MiniMapBoard(MiniMapBoard::InitArgs);
@@ -54,6 +66,7 @@ class MiniMapBoard: public Widget
     public:
         void setPLoc(){}
         void flipExtended();
+        void flipAutoCenter();
 
     public:
         SDL_Texture *getMiniMapTexture() const;
@@ -69,4 +82,9 @@ class MiniMapBoard: public Widget
 
     private:
         void drawCanvas(int, int);
+
+    private:
+        std::tuple<int, int> canvasPLocOnMap(int, int) const;
+        std::tuple<int, int> mapGLocOnCanvas(int, int) const;
+        std::tuple<int, int> mapGLocOnImage (int, int) const;
 };
