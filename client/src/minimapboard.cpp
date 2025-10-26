@@ -201,13 +201,13 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
         }
 
         if(m_mapImage.w() <= w()){
-            return 0;
+            return (w() - m_mapImage.w()) / 2;
         }
 
         const auto [ heroGX,  heroGY] = m_processRun->getMyHero()->location();
         const auto [onImgPX, onImgPY] = mapGLocOnImage(heroGX, heroGY);
 
-        return std::clamp<int>(onImgPX - w() / 2, 0, m_mapImage.w() - w());
+        return std::clamp<int>(w() / 2 - onImgPX, w() - m_mapImage.w(), 0); // never positive
     },
 
     [this]
@@ -221,13 +221,13 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
         }
 
         if(m_mapImage.h() <= h()){
-            return 0;
+            return (h() - m_mapImage.h()) / 2;
         }
 
         const auto [ heroGX,  heroGY] = m_processRun->getMyHero()->location();
         const auto [onImgPX, onImgPY] = mapGLocOnImage(heroGX, heroGY);
 
-        return std::clamp<int>(onImgPY - h() / 2, 0, m_mapImage.h() - h());
+        return std::clamp<int>(h() / 2 - onImgPY, h() - m_mapImage.h(), 0); // never positive
     });
 
     setShow([this] -> bool { return getMiniMapTexture(); });
