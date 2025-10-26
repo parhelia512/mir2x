@@ -65,6 +65,11 @@ GUIManager::GUIManager(ProcessRun *argProc)
 
     , m_miniMapBoard
       {{
+          .dir = DIR_UPRIGHT,
+          .x   = [this]{ return w() - 1; },
+          .y   = 0,
+          .w   = 200,
+          .h   = 200,
           .proc = argProc,
       }}
 
