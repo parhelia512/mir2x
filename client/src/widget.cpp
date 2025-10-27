@@ -267,7 +267,7 @@ bool Widget::ROIMap::empty() const
 bool Widget::ROIMap::in(int pixelX, int pixelY) const
 {
     if(ro.has_value()){
-        return ro->in(pixelX - x, pixelY - y);
+        return Widget::ROI{x, y, ro->w, ro->h}.in(pixelX, pixelY);
     }
     else{
         throw fflerror("ro empty");
