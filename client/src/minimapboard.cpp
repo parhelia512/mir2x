@@ -294,6 +294,15 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
                 }
                 return false;
             }
+        case SDL_MOUSEWHEEL:
+            {
+                if(m.in(event.wheel.mouseX, event.wheel.mouseY)){
+                    if     (event.wheel.y > 0){ m_zoomFactor = std::min<double>(m_zoomFactor * std::pow(1.1,  event.wheel.y), 10.0); }
+                    else if(event.wheel.y < 0){ m_zoomFactor = std::max<double>(m_zoomFactor / std::pow(1.1, -event.wheel.y),  0.1); }
+                    return true;
+                }
+                return false;
+            }
         default:
             {
                 return false;
