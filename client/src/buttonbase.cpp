@@ -69,7 +69,7 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
         return consumeFocus(false);
     }
 
-    if(m.calibrate(this)){
+    if(!m.calibrate(this)){
         return false;
     }
 
