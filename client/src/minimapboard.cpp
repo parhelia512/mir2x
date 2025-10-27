@@ -326,7 +326,7 @@ void MiniMapBoard::drawCanvas(int drawDstX, int drawDstY)
         }
     }
 
-    if(Widget::ROIMap m{.x{drawDstX}, .y{drawDstY}, .ro{m_canvas.roi()}}; m.crop(m_mapImage.roi(1))){
+    if(Widget::ROIMap m{.x{drawDstX}, .y{drawDstY}, .ro{m_canvas.roi()}}; m.crop(m_mapImage.roi(this))){
         if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); m.in(mousePX, mousePY)){
 
             const auto [onMapGX, onMapGY] = onMapGLoc_from_onCanvasPLoc(mousePX - drawDstX, mousePY - drawDstY);
@@ -348,10 +348,9 @@ void MiniMapBoard::drawCanvas(int drawDstX, int drawDstY)
                 .wrapped{const_cast<TextBoard *>(&locBoard)},
                 .margin
                 {
-                    .up = 2,
-                    .down = 2,
-                    .left = 2,
-                    .right = 2,
+                    .down = 1,
+                    .left = 1,
+                    .right = 1,
                 },
 
                 .bgDrawFunc = [bgColor](const Widget *self, int drawDstX, int drawDstY)

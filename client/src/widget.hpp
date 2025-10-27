@@ -506,15 +506,10 @@ class Widget: public WidgetTreeNode
         virtual int rdy(const Widget * = nullptr) const final;
 
     public:
-        Widget::ROI roi(unsigned level = 0) const
+        Widget::ROI roi(const Widget *widget = nullptr) const
         {
-            if(level){
-                if(const auto par = parent(level)){
-                    return {rdx(par), rdy(par), w(), h()};
-                }
-                else{
-                    throw fflerror("invalid parent level %u", level);
-                }
+            if(widget){
+                return {rdx(widget), rdy(widget), w(), h()};
             }
             else{
                 return {0, 0, w(), h()};
