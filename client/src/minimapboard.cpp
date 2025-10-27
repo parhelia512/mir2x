@@ -42,6 +42,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
     , m_mapImage
       {{
           .texLoadFunc = [this]{ return getMiniMapTexture(); },
+          .modColor    = [this]{ return m_alphaOn ? (colorf::WHITE + color::A_SHF(128)) : colorf::WHITE_A255; },
           .parent{this},
       }}
 
@@ -100,7 +101,12 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
 
           .onTrigger = [this](Widget *, int)
           {
-              m_alphaOn = !m_alphaOn;
+              if(!getMiniMapTexture()){
+                  return;
+              }
+
+              flipAlpha();
+
               if(m_alphaOn){
                   m_buttonAlpha.setTexID({0X09000003, 0X09000003, 0X09000003});
               }
@@ -121,9 +127,11 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
 
           .onTrigger = [this](Widget *, int)
           {
-              if(getMiniMapTexture()){
-                  flipExtended();
+              if(!getMiniMapTexture()){
+                  return;
               }
+
+              flipExtended();
 
               if(m_extended){
                   m_buttonExtend.setTexID({0X09000005, 0X09000005, 0X09000005});
@@ -145,9 +153,11 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
 
           .onTrigger = [this](Widget *, int)
           {
-              if(getMiniMapTexture()){
-                  flipAutoCenter();
+              if(!getMiniMapTexture()){
+                  return;
               }
+
+              flipAutoCenter();
 
               if(m_autoCenter){
                   m_buttonExtend.setTexID({0X09000005, 0X09000005, 0X09000005});
@@ -277,16 +287,28 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
     }
 }
 
+void MiniMapBoard::flipAlpha()
+{
+    m_alphaOn = !m_alphaOn;
+    m_buttonAlpha     .setOff();
+    m_buttonExtend    .setOff();
+    m_buttonAutoCenter.setOff();
+}
+
 void MiniMapBoard::flipExtended()
 {
     m_extended = !m_extended;
-    m_buttonAlpha .setOff();
-    m_buttonExtend.setOff();
+    m_buttonAlpha     .setOff();
+    m_buttonExtend    .setOff();
+    m_buttonAutoCenter.setOff();
 }
 
 void MiniMapBoard::flipAutoCenter()
 {
     m_autoCenter = !m_autoCenter;
+    m_buttonAlpha     .setOff();
+    m_buttonExtend    .setOff();
+    m_buttonAutoCenter.setOff();
 }
 
 void MiniMapBoard::drawCanvas(int drawDstX, int drawDstY)
