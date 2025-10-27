@@ -248,8 +248,9 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
     }
 
     bool took = false;
-    took |= m_buttonAlpha .processEventParent(event, valid && !took, m);
-    took |= m_buttonExtend.processEventParent(event, valid && !took, m);
+    took |= m_buttonAlpha     .processEvent(event, valid && !took, m.create(m_buttonAlpha     .roi(this)));
+    took |= m_buttonExtend    .processEvent(event, valid && !took, m.create(m_buttonExtend    .roi(this)));
+    took |= m_buttonAutoCenter.processEvent(event, valid && !took, m.create(m_buttonAutoCenter.roi(this)));
 
     if(took){
         return true;
