@@ -51,7 +51,7 @@ ImageBoard::ImageBoard(ImageBoard::InitArgs args)
 
 void ImageBoard::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 

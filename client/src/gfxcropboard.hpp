@@ -78,7 +78,7 @@ class GfxCropBoard: public Widget
     public:
         void draw(Widget::ROIMap m) const override
         {
-            if(!m.crop(roi())){
+            if(!m.calibrate(this)){
                 return;
             }
 

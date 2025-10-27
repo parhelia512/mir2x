@@ -120,7 +120,7 @@ SkillBoard::MagicIconButton::MagicIconButton(
 
 void SkillBoard::MagicIconButton::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 
@@ -192,7 +192,7 @@ SkillBoard::SkillPage::SkillPage(uint32_t pageImage, SkillBoardConfig *configPtr
 
 void SkillBoard::SkillPage::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 
@@ -401,7 +401,7 @@ bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bo
         return false;
     }
 
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 
@@ -425,7 +425,7 @@ bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bo
 
 bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(m.crop(roi())){
+    if(m.calibrate(this)){
         return false;
     }
 

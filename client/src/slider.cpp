@@ -24,7 +24,7 @@ std::tuple<int, int, int, int> Slider::getSliderRectangle(int startDstX, int sta
 
 bool Slider::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return consumeFocus(false);
     }
 
@@ -110,7 +110,7 @@ bool Slider::processEventDefault(const SDL_Event &event, bool valid, Widget::ROI
 
 bool Slider::inSlider(int eventX, int eventY, Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 

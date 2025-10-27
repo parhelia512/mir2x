@@ -113,7 +113,7 @@ ItemListBoard::ItemListBoard(int argX, int argY, Widget *argParent, bool argAuto
 
 bool ItemListBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 
@@ -199,7 +199,7 @@ void ItemListBoard::drawGridHoverLayout(size_t index) const
 
 void ItemListBoard::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 

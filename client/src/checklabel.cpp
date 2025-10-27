@@ -125,7 +125,7 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid, Widget:
         return false;
     }
 
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 

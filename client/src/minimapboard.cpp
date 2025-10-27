@@ -235,7 +235,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
 
 bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 
@@ -325,7 +325,7 @@ void MiniMapBoard::drawCanvas(int drawDstX, int drawDstY)
         }
     }
 
-    if(Widget::ROIMap m{.x{drawDstX}, .y{drawDstY}, .ro{m_canvas.roi()}}; m.crop({m_mapImage.dx(), m_mapImage.dy(), m_mapImage.w(), m_mapImage.h()})){
+    if(Widget::ROIMap m{.x{drawDstX}, .y{drawDstY}, .ro{m_canvas.roi()}}; m.crop(m_mapImage.roi(1))){
         if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); m.in(mousePX, mousePY)){
             const auto [onMapGX, onMapGY] = onMapGLoc_from_onCanvasPLoc(mousePX - drawDstX, mousePY - drawDstY);
             const TextBoard locBoard

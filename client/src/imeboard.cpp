@@ -154,7 +154,7 @@ size_t IMEBoard::totalLabelWidth() const
 
 bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 
@@ -328,7 +328,7 @@ void IMEBoard::draw(Widget::ROIMap m) const
     // +----------------------------------------------------------------------+----------+
     //            -->| |<-- m_candidateSpace
 
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 

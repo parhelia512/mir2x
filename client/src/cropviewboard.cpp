@@ -64,7 +64,7 @@ void CropViewBoard::draw(Widget::ROIMap m) const
         return;
     }
 
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 
@@ -109,7 +109,7 @@ bool CropViewBoard::processEventDefault(const SDL_Event &event, bool valid, Widg
         return false;
     }
 
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 

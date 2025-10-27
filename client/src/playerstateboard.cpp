@@ -116,7 +116,7 @@ void PlayerStateBoard::update(double)
 
 void PlayerStateBoard::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 
@@ -341,7 +341,7 @@ void PlayerStateBoard::draw(Widget::ROIMap m) const
 
 bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 

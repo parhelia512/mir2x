@@ -82,7 +82,7 @@ ResizableFrameBoard::ResizableFrameBoard(
 
 void ResizableFrameBoard::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 

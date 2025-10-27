@@ -194,7 +194,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
         },
     }})->setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
     {
-        if(!m.crop(self->roi())){
+        if(!m.calibrate(self)){
             return false;
         }
 

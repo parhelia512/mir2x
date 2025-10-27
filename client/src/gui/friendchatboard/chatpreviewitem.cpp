@@ -149,7 +149,7 @@ ChatPreviewItem::ChatPreviewItem(
 
 bool ChatPreviewItem::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 

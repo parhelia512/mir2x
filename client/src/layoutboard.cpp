@@ -389,7 +389,7 @@ void LayoutBoard::addParXML(int loc, const Widget::IntMargin &parMargin, const c
 
 void LayoutBoard::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 
@@ -467,7 +467,7 @@ void LayoutBoard::setLineWidth(int argLineWidth)
 
 bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 

@@ -36,7 +36,7 @@ TrigfxButton::TrigfxButton(TrigfxButton::InitArgs args)
 
 void TrigfxButton::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 

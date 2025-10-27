@@ -75,7 +75,7 @@ InputLine::InputLine(
 
 bool InputLine::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 
@@ -203,7 +203,7 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, Widget::
 
 void InputLine::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 

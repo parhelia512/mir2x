@@ -97,7 +97,7 @@ bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, Widget::R
         return consumeFocus(false);
     }
 
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return consumeFocus(false);
     }
 
@@ -108,7 +108,7 @@ bool CheckBox::processEventDefault(const SDL_Event &event, bool valid, Widget::R
             }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(m.in(event.button.x, event.button.y, roi())){
+                if(m.in(event.button.x, event.button.y)){
                     toggle();
                     return consumeFocus(true);
                 }

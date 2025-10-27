@@ -307,7 +307,7 @@ RuntimeConfigBoard::PullMenu::PullMenu(
 
     m_menuTitleCrop.setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
     {
-        if(!m.crop(self->roi())){
+        if(!m.calibrate(self)){
             return false;
         }
 
@@ -432,7 +432,7 @@ void RuntimeConfigBoard::PullMenu::draw(Widget::ROIMap m) const
 
 bool RuntimeConfigBoard::PullMenu::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 
@@ -1118,7 +1118,7 @@ void RuntimeConfigBoard::draw(Widget::ROIMap m) const
 
 bool RuntimeConfigBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 

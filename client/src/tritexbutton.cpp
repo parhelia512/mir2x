@@ -63,7 +63,7 @@ TritexButton::TritexButton(TritexButton::InitArgs args)
 
 void TritexButton::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 

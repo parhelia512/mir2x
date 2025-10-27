@@ -173,7 +173,7 @@ bool Widget::ROI::overlap(const Widget::ROI &r) const
 }
 
 Widget::ROIOpt::ROIOpt(int argW, int argH)
-    : m_roiOpt(0, 0, argW, argH)
+    : Widget::ROIOpt::ROIOpt(0, 0, argW, argH)
 {}
 
 Widget::ROIOpt::ROIOpt(int argX, int argY, int argW, int argH)
@@ -235,7 +235,7 @@ bool Widget::ROIMap::crop(const Widget::ROI &r)
     const auto oldX = ro->x;
     const auto oldY = ro->y;
 
-    ro.crop(r);
+    ro->crop(r);
 
     x += (ro->x - oldX);
     y += (ro->y - oldY);
@@ -683,7 +683,7 @@ bool Widget::processEventParent(const SDL_Event &event, bool valid, Widget::ROIM
     const auto par = parent();
     fflassert(par);
 
-    if(!m.crop(this->roi(), par->roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 

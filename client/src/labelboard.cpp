@@ -76,7 +76,7 @@ void LabelBoard::setImageMaskColor(uint32_t argColor)
 
 void LabelBoard::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
     m_tpset.draw(m);

@@ -74,7 +74,7 @@ void MenuButton::updateMenuButtonSize()
 
 void MenuButton::draw(Widget::ROIMap m) const
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 
@@ -118,7 +118,7 @@ void MenuButton::draw(Widget::ROIMap m) const
 
 bool MenuButton::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return false;
     }
 

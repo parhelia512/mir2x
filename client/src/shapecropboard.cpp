@@ -23,7 +23,7 @@ void ShapeCropBoard::draw(Widget::ROIMap m) const
         return;
     }
 
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 
