@@ -4,6 +4,7 @@
 #include "sdldevice.hpp"
 #include "textboard.hpp"
 #include "minimapboard.hpp"
+#include "marginwrapper.hpp"
 #include "maprecord.hpp"
 #include "processrun.hpp"
 
@@ -327,7 +328,10 @@ void MiniMapBoard::drawCanvas(int drawDstX, int drawDstY)
 
     if(Widget::ROIMap m{.x{drawDstX}, .y{drawDstY}, .ro{m_canvas.roi()}}; m.crop(m_mapImage.roi(1))){
         if(const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc(); m.in(mousePX, mousePY)){
+
             const auto [onMapGX, onMapGY] = onMapGLoc_from_onCanvasPLoc(mousePX - drawDstX, mousePY - drawDstY);
+            const auto bgColor = (m_processRun->canMove(true, 0, onMapGX, onMapGY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200);
+
             const TextBoard locBoard
             {{
                 .textFunc = str_printf("[%d,%d]", onMapGX, onMapGY),
@@ -339,11 +343,24 @@ void MiniMapBoard::drawCanvas(int drawDstX, int drawDstY)
                 },
             }};
 
-            const auto margin = 2;
-            const auto bgColor = (m_processRun->canMove(true, 0, onMapGX, onMapGY) ? colorf::BLACK : colorf::RED) + colorf::A_SHF(200);
+            const MarginWrapper textWrapper
+            {{
+                .wrapped{const_cast<TextBoard *>(&locBoard)},
+                .margin
+                {
+                    .up = 2,
+                    .down = 2,
+                    .left = 2,
+                    .right = 2,
+                },
 
-            g_sdlDevice->fillRectangle(bgColor, mousePX - margin, mousePY - margin, locBoard.w() + 2 * margin, locBoard.h() + 2 * margin);
-            locBoard.draw({.dir{DIR_DOWNRIGHT}, .x{mousePX}, .y{mousePY}});
+                .bgDrawFunc = [bgColor](const Widget *self, int drawDstX, int drawDstY)
+                {
+                    g_sdlDevice->fillRectangle(bgColor, drawDstX, drawDstY, self->w(), self->h());
+                },
+            }};
+
+            textWrapper.draw({.dir{DIR_DOWNRIGHT}, .x{mousePX}, .y{mousePY}});
         }
     }
 }
