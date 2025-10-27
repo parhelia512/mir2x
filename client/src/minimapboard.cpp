@@ -248,8 +248,8 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
     }
 
     bool took = false;
-    took |= m_buttonAlpha .processEvent(event, valid && !took, m);
-    took |= m_buttonExtend.processEvent(event, valid && !took, m);
+    took |= m_buttonAlpha .processEventParent(event, valid && !took, m);
+    took |= m_buttonExtend.processEventParent(event, valid && !took, m);
 
     if(took){
         return true;
@@ -260,9 +260,9 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
             {
                 if(event.button.button == SDL_BUTTON_RIGHT){
                     if(m.in(event.button.x, event.button.y)){
-                        const auto remapXDiff = m.x - m.ro->x;
-                        const auto remapYDiff = m.y - m.ro->y;
-                        const auto [onMapPX, onMapPY] = onMapGLoc_from_onCanvasPLoc(event.button.x - remapXDiff, event.button.y - remapYDiff);
+                        const auto onCanvasPX = event.button.x - m.x + m.ro->x;
+                        const auto onCanvasPY = event.button.y - m.y + m.ro->y;
+                        const auto [onMapPX, onMapPY] = onMapGLoc_from_onCanvasPLoc(onCanvasPX, onCanvasPY);
                         m_processRun->requestSpaceMove(std::get<0>(m_processRun->getMap()), onMapPX, onMapPY);
                         return true;
                     }
