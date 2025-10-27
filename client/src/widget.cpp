@@ -816,44 +816,54 @@ int Widget::dy() const
     return Widget::evalInt(m_y.first, this) + m_y.second - ySizeOff(dir(), h());
 }
 
-int Widget::rdx(const Widget *widget) const
+static int _rd_helper(const Widget *a, const Widget *b, const auto func)
 {
-    if(widget){
-        if(const auto parptr = parent()){
-            if(widget == parptr){
-                return dx();
+    const auto fnTraverse = [&func](const Widget *w) -> std::tuple<const Widget *, int>
+    {
+        const Widget *root= nullptr;
+        int off = 0;
+
+        while(w){
+            off += func(w);
+            if(const auto par = w->parent()){
+                w = par;
             }
             else{
-                return dx() + parptr->rdx(widget);
+                root = w;
+                break;
             }
         }
-        else{
-            throw fflerror("invalid parent");
-        }
+
+        return {root, off};
+    };
+
+    const auto [ra, offa] = fnTraverse(a);
+    const auto [rb, offb] = fnTraverse(b);
+
+    if(ra == rb){
+        return offa - offb;
     }
-    else{
-        return dx();
-    }
+
+    throw fflerror("widgets from different trees: %p vs %p", to_cvptr(a), to_cvptr(b));
 }
 
-int Widget::rdy(const Widget *widget) const
+
+int Widget::rdx(const Widget* other) const
 {
-    if(widget){
-        if(const auto par = parent()){
-            if(widget == par){
-                return dy();
-            }
-            else{
-                return dy() + par->rdy(widget);
-            }
-        }
-        else{
-            throw fflerror("invalid parent");
-        }
+    if(!other || (other == this)){
+        return 0;
     }
-    else{
-        return dy();
+
+    return _rd_helper(this, other, [](const Widget *w) { return w->dx(); });
+}
+
+int Widget::rdy(const Widget* other) const
+{
+    if(!other || (other == this)){
+        return 0;
     }
+
+    return _rd_helper(this, other, [](const Widget *w) { return w->dy(); });
 }
 
 Widget *Widget::setData(std::any argData)
