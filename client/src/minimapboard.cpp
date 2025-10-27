@@ -315,7 +315,7 @@ void MiniMapBoard::drawCanvas(int drawDstX, int drawDstY)
                 case UID_PLY:
                     {
                         if(uid == m_processRun->getMyHeroUID()){
-                            return {colorf::RGBA(255, 0, 255, 255), 2};
+                            return {colorf::RGBA(255, 0, 255, 255), 3};
                         }
                         else{
                             return {colorf::RGBA(200, 0, 200, 255), 2};
