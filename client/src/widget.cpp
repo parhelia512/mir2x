@@ -584,7 +584,7 @@ void Widget::drawAsChild(const Widget *gfxWidget, dir8_t gfxDir, int gfxDx, int 
         return;
     }
 
-    if(!m.crop(roi())){
+    if(!m.calibrate(this)){
         return;
     }
 
@@ -601,9 +601,6 @@ void Widget::drawAsChild(const Widget *gfxWidget, dir8_t gfxDir, int gfxDx, int 
 void Widget::drawRoot(Widget::ROIMap m) const
 {
     fflassert(!parent());
-    if(!m.crop(roi())){
-        return;
-    }
 
     m.x += dx();
     m.y += dy();
