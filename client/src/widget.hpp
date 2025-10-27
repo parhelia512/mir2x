@@ -508,7 +508,7 @@ class Widget: public WidgetTreeNode
     public:
         Widget::ROI roi(const Widget *widget = nullptr) const
         {
-            if(widget){
+            if(widget && (widget != this)){
                 return {rdx(widget), rdy(widget), w(), h()};
             }
             else{
