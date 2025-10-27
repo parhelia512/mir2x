@@ -78,9 +78,9 @@ class MiniMapBoard: public Widget
         void drawCanvas(int, int);
 
     private:
-        std::tuple<int, int>      onMapGLoc_from_onCanvasPLoc  (int, int) const;
-        std::tuple<int, int>   onCanvasPLoc_from_onMapGLoc     (int, int) const;
-        std::tuple<int, int> onMapImagePLoc_from_onMapGLoc     (int, int) const;
-        std::tuple<int, int> onMapImagePLoc_from_onCanvasPLoc  (int, int) const;
-        std::tuple<int, int>   onCanvasPLoc_from_onMapImagePLoc(int, int) const;
+        std::tuple<int, int>      onMapGLoc_from_onCanvasPLoc  (const std::tuple<int, int> &) const;
+        std::tuple<int, int>   onCanvasPLoc_from_onMapGLoc     (const std::tuple<int, int> &) const;
+        std::tuple<int, int> onMapImagePLoc_from_onMapGLoc     (const std::tuple<int, int> &) const;
+        std::tuple<int, int> onMapImagePLoc_from_onCanvasPLoc  (const std::tuple<int, int> &) const;
+        std::tuple<int, int>   onCanvasPLoc_from_onMapImagePLoc(const std::tuple<int, int> &) const;
 };
