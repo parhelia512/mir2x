@@ -42,7 +42,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
     , m_mapImage
       {{
           .texLoadFunc = [this]{ return getMiniMapTexture(); },
-          .modColor    = [this]{ return m_alphaOn ? (colorf::WHITE + color::A_SHF(128)) : colorf::WHITE_A255; },
+          .modColor    = [this]{ return m_alphaOn ? (colorf::WHITE + colorf::A_SHF(128)) : colorf::WHITE_A255; },
           .parent{this},
       }}
 
