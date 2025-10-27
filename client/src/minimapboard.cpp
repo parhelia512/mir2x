@@ -434,3 +434,25 @@ std::tuple<int, int> MiniMapBoard::onMapImagePLoc_from_onMapGLoc(int mapGLocX, i
         to_dround(mapGLocY * 1.0 * m_mapImage.h() / mapH),
     };
 }
+
+std::tuple<int, int> MinMapBoard::onMapImagePLoc_from_onCanvasPLoc(int onCanvasPX, int onCanvasPY) const
+{
+    fflassert(getMiniMapTexture());
+
+    return
+    {
+        onCanvasPX - (m_mapImage.dx() - m_canvas.dx()),
+        onCanvasPY - (m_mapImage.dy() - m_canvas.dy()),
+    };
+}
+
+std::tuple<int, int> MiniMapBoard::onCanvasPLoc_from_onMapImagePLoc(int onImgPX, int onImgPY) const
+{
+    fflassert(getMiniMapTexture());
+
+    return
+    {
+        onImgPX + (m_mapImage.dx() - m_canvas.dx()),
+        onImgPY + (m_mapImage.dy() - m_canvas.dy()),
+    };
+}
