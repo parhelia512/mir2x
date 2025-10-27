@@ -40,7 +40,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
           },
 
           .w = [this]{ return m_extended ? to_dround(g_sdlDevice->getRendererWidth () * 0.8) : 200; },
-          .h = [this]{ return m_extended ? to_dround(g_sdlDevice->getRendererHeight() * 0.8) : 200; },
+          .h = [this]{ return m_extended ? to_dround(g_sdlDevice->getRendererHeight() * 0.5) : 200; },
 
           .parent = std::move(args.parent),
       }}
