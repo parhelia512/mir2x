@@ -161,16 +161,20 @@ bool Widget::ROI::in(int argX, int argY) const
     return mathf::pointInRectangle<int>(argX, argY, x, y, w, h);
 }
 
+bool Widget::ROI::crop(const Widget::ROI &r)
+{
+    /**/   mathf::cropSegment<int>(x, w, r.x, r.w);
+    return mathf::cropSegment<int>(y, h, r.y, r.h);
+}
+
 bool Widget::ROI::overlap(const Widget::ROI &r) const
 {
     return mathf::rectangleOverlap(x, y, w, h, r.x, r.y, r.w, r.h);
 }
 
-bool Widget::ROI::crop(const Widget::ROI &r)
-{
-    /**/   mathf::cropSegment<int>(this->x, this->w, r.x, r.w);
-    return mathf::cropSegment<int>(this->y, this->h, r.y, r.h);
-}
+Widget::ROIOpt::ROIOpt(int argW, int argH)
+    : m_roiOpt(0, 0, argW, argH)
+{}
 
 Widget::ROIOpt::ROIOpt(int argX, int argY, int argW, int argH)
     : m_roiOpt(Widget::ROI{argX, argY, argW, argH})
@@ -180,104 +184,94 @@ Widget::ROIOpt::ROIOpt(const Widget::ROI &roi)
     : m_roiOpt(roi)
 {}
 
-bool Widget::ROIOpt::crop(const Widget::ROI &r)
+bool Widget::ROIMap::calibrate(const Widget *widget)
 {
-    if(m_roiOpt.has_value()){
-        return m_roiOpt->crop(r);
-    }
-    else{
-        m_roiOpt = r;
-        return !m_roiOpt->empty();
-    }
-}
-
-bool Widget::ROIOpt::crop(const Widget::ROIOpt &r)
-{
-    if(r.has_value()){
-        if(m_roiOpt.has_value()){
-            return m_roiOpt->crop(r.m_roiOpt.value());
+    if(!ro.has_value()){
+        if(widget){
+            ro = widget->roi();
         }
         else{
-            m_roiOpt = r.m_roiOpt;
+            throw fflerror("invalid widget");
         }
     }
-    return !m_roiOpt->empty();
+
+    if(dir != DIR_UPLEFT){
+        x  -= xSizeOff(dir, ro->w);
+        y  -= ySizeOff(dir, ro->h);
+        dir = DIR_UPLEFT;
+    }
+
+    if(widget){
+        crop(widget->roi());
+    }
+
+    if(x < 0){
+        ro->x -= x;
+        ro->w  = std::max<int>(ro->w + x, 0);
+        x = 0;
+    }
+
+    if(y < 0){
+        ro->y -= y;
+        ro->h  = std::max<int>(ro->h + y, 0);
+        y = 0;
+    }
+
+    return !ro->empty();
 }
 
-bool Widget::ROIMap::empty(const std::optional<Widget::ROI> &roiOpt) const
+bool Widget::ROIMap::crop(const Widget::ROI &r)
 {
-    if(this->ro.has_value()){
-        return this->ro->empty();
+    if(!ro.has_value()){
+        throw fflerror("ro empty");
     }
-    else if(roiOpt.has_value()){
-        return roiOpt->empty();
+
+    if(dir != DIR_UPLEFT){
+        x  -= xSizeOff(dir, ro->w);
+        y  -= ySizeOff(dir, ro->h);
+        dir = DIR_UPLEFT;
     }
-    else{
-        throw fflerror("invalid ROIMap state");
-    }
+
+    const auto oldX = ro->x;
+    const auto oldY = ro->y;
+
+    ro.crop(r);
+
+    x += (ro->x - oldX);
+    y += (ro->y - oldY);
+
+    return !empty();
 }
 
-bool Widget::ROIMap::in(int pixelX, int pixelY, const std::optional<Widget::ROI> &roiOpt) const
-{
-    if(this->ro.has_value()){
-        return this->ro->in(pixelX - this->x, pixelY - this->y);
-    }
-    else if(roiOpt.has_value()){
-        return roiOpt->in(pixelX - this->x, pixelY - this->y);
-    }
-    else{
-        throw fflerror("invalid ROIMap state");
-    }
-}
-
-bool Widget::ROIMap::crop(const Widget::ROI &r, const std::optional<Widget::ROI> &roiOpt)
-{
-    if(this->ro.has_value()){
-        if(this->dir != DIR_UPLEFT){
-            this->x  -= xSizeOff(this->dir, this->ro->w);
-            this->y  -= ySizeOff(this->dir, this->ro->h);
-            this->dir = DIR_UPLEFT;
-        }
-
-        const auto oldX = this->ro->x;
-        const auto oldY = this->ro->y;
-
-        this->ro.crop(r);
-
-        this->x += (this->ro->x - oldX);
-        this->y += (this->ro->y - oldY);
-
-        return !this->empty();
-    }
-
-    else if(this->dir == DIR_UPLEFT){
-        this->ro.crop(r);
-
-        this->x += r.x;
-        this->y += r.y;
-
-        return !this->empty();
-    }
-
-    else if(roiOpt.has_value()){
-        this->ro.crop(roiOpt.value());
-        return this->crop(r);
-    }
-
-    else{
-        throw fflerror("invalid ROIMap state");
-    }
-}
-
-Widget::ROIMap Widget::ROIMap::create(const Widget::ROI &childROI, const std::optional<Widget::ROI> &roiOpt) const
+Widget::ROIMap Widget::ROIMap::create(const Widget::ROI &cr /* child ROI */) const
 {
     auto r = *this;
-    r.crop(childROI, roiOpt);
+    r.crop(cr);
 
-    r.ro->x -= childROI.x;
-    r.ro->y -= childROI.y;
+    r.ro->x -= cr.x;
+    r.ro->y -= cr.y;
 
     return r;
+}
+
+bool Widget::ROIMap::empty() const
+{
+    if(ro.has_value()){
+        return ro->empty();
+    }
+    else{
+        throw fflerror("ro empty");
+    }
+}
+
+bool Widget::ROIMap::in(int pixelX, int pixelY) const
+{
+    if(ro.has_value()){
+        return ro->in(pixelX - x, pixelY - y);
+    }
+    else{
+        throw fflerror("ro empty");
+    }
 }
 
 dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widget, const void *arg)

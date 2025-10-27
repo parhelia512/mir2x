@@ -262,20 +262,11 @@ class Widget: public WidgetTreeNode
                 ROIOpt(std::nullopt_t): ROIOpt() {};
 
             public:
+                ROIOpt(int, int);
                 ROIOpt(int, int, int, int);
 
             public:
                 ROIOpt(const Widget::ROI &);
-
-            public:
-                template<std::invocable<const Widget::ROI &> Func> auto get(Func && func, std::invoke_result_t<Func, const ROI &> def) const
-                {
-                    return m_roiOpt.has_value() ? func(m_roiOpt.value()) : def;
-                }
-
-            public:
-                bool crop(const Widget::ROI    &);
-                bool crop(const Widget::ROIOpt &);
 
             public:
                 auto operator -> (this auto && self)
@@ -309,13 +300,15 @@ class Widget: public WidgetTreeNode
 
             Widget::ROIOpt ro = std::nullopt;
 
-            bool   crop  (const Widget::ROI &, const std::optional<Widget::ROI> & = std::nullopt);
-            ROIMap create(const Widget::ROI &, const std::optional<Widget::ROI> & = std::nullopt) const; // create ROIMap for child
+            bool calibrate(const Widget *);
 
-            bool empty(const std::optional<Widget::ROI> & = std::nullopt) const;
+            bool   crop  (const Widget::ROI &);
+            ROIMap create(const Widget::ROI &) const; // create ROIMap for child
 
-            /**/                 bool in(int, int,  const std::optional<Widget::ROI> & = std::nullopt) const;
-            template<typename T> bool in(const T &, const std::optional<Widget::ROI> & = std::nullopt) const;
+            bool empty() const;
+
+            /**/                 bool in(int, int ) const;
+            template<typename T> bool in(const T &) const;
         };
 
     private:
@@ -513,9 +506,19 @@ class Widget: public WidgetTreeNode
         virtual int rdy(const Widget * = nullptr) const final;
 
     public:
-        Widget::ROI roi() const
+        Widget::ROI roi(unsigned level = 0) const
         {
-            return {0, 0, w(), h()};
+            if(level){
+                if(const auto par = parent(level)){
+                    return {rdx(par), rdy(par), w(), h()};
+                }
+                else{
+                    throw fflerror("invalid parent level %u", level);
+                }
+            }
+            else{
+                return {0, 0, w(), h()};
+            }
         }
 
     public:
