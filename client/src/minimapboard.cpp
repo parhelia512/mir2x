@@ -16,7 +16,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
       {{
           .dir = [this]
           {
-              return m_extended ? DIR_UPRIGHT : DIR_NONE;
+              return m_extended ? DIR_NONE : DIR_UPRIGHT;
           },
 
           .x = [this]
@@ -39,8 +39,8 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
               }
           },
 
-          .w = [this]{ return m_exteneded ? to_dround(g_sdlDevice->getRendererWidth () * 0.8) : 200; },
-          .h = [this]{ return m_exteneded ? to_dround(g_sdlDevice->getRendererHeight() * 0.8) : 200; },
+          .w = [this]{ return m_extended ? to_dround(g_sdlDevice->getRendererWidth () * 0.8) : 200; },
+          .h = [this]{ return m_extended ? to_dround(g_sdlDevice->getRendererHeight() * 0.8) : 200; },
 
           .parent = std::move(args.parent),
       }}
