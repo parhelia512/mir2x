@@ -458,12 +458,17 @@ void MiniMapBoard::zoomOnCanvasAt(int onCanvasPX, int onCanvasPY, double zoomFac
     const auto oldDY = m_mapImage.dy();
     const auto onImgOldPLoc = onMapImagePLoc_from_onCanvasPLoc({onCanvasPX, onCanvasPY});
 
+    const auto onImgOldXRatio = std::get<0>(onImgOldPLoc) * 1.0 / m_mapImage.w();
+    const auto onImgOldYRatio = std::get<1>(onImgOldPLoc) * 1.0 / m_mapImage.h();
+
     m_zoomFactor = std::clamp<double>(zoomFactor, 0.1, 10.0);
-    const auto onImgNewPLoc = onMapImagePLoc_from_onCanvasPLoc({onCanvasPX, onCanvasPY});
+
+    const auto onImgNewPX = to_dround(m_mapImage.w() * onImgOldXRatio);
+    const auto onImgNewPY = to_dround(m_mapImage.h() * onImgOldYRatio);
 
     m_autoCenter = false;
-    m_mapImage_dx = oldDX + (std::get<0>(onImgOldPLoc) - std::get<0>(onImgNewPLoc));
-    m_mapImage_dy = oldDY + (std::get<1>(onImgOldPLoc) - std::get<1>(onImgNewPLoc));
+    m_mapImage_dx = oldDX + (std::get<0>(onImgOldPLoc) - onImgNewPX);
+    m_mapImage_dy = oldDY + (std::get<1>(onImgOldPLoc) - onImgNewPY);
 }
 
 std::tuple<int, int> MiniMapBoard::onMapGLoc_from_onCanvasPLoc(const std::tuple<int, int> &onCanvasPLoc) const
