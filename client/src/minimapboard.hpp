@@ -25,7 +25,8 @@ class MiniMapBoard: public Widget
         double m_zoomFactor = 1.0;
 
     private:
-        const int m_defaultSize = 300;
+        int m_mapImage_dx = 0; // used if autoCenter is disabled
+        int m_mapImage_dy = 0;
 
     private:
         ProcessRun *m_processRun;

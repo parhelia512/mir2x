@@ -260,7 +260,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
         }
 
         if(!m_autoCenter){
-            return 0;
+            return m_mapImage_dx;
         }
 
         if(m_mapImage.w() <= w()){
@@ -277,7 +277,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
         }
 
         if(!m_autoCenter){
-            return 0;
+            return m_mapImage_dy;
         }
 
         if(m_mapImage.h() <= h()){
@@ -328,7 +328,9 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
         case SDL_MOUSEWHEEL:
             {
                 if(m.in(event.wheel.mouseX, event.wheel.mouseY)){
-                    m_zoomFactor = std::clamp<double>(m_zoomFactor * std::pow(1.1,  event.wheel.y), 0.1, 10.0);
+                    const auto onCanvasPX = event.wheel.mouseX - m.x + m.ro->x;
+                    const auto onCanvasPY = event.wheel.mouseY - m.y + m.ro->y;
+                    zoomOnCanvasAt(onCanvasPX, onCanvasPY, m_zoomFactor * std::pow(1.1,  event.wheel.y));
                     return true;
                 }
                 return false;
@@ -451,29 +453,17 @@ SDL_Texture *MiniMapBoard::getMiniMapTexture() const
 void MiniMapBoard::zoomOnCanvasAt(int onCanvasPX, int onCanvasPY, double zoomFactor)
 {
     fflassert(getMiniMapTexture());
-    const auto beforeZoomOnMapImgPLoc = onMapImagePLoc_from_onCanvasPLoc({onCanvasPX, onCanvasPY});
-    m_zoomFactor = zoomFactor;
-    m_mapImage.setSize([this]
-    {
-        return to_dround(SDLDeviceHelper::getTextureWidth(getMiniMapTexture()) * m_zoomFactor);
-    },
 
-    [this]
-    {
-        return to_dround(SDLDeviceHelper::getTextureHeight(getMiniMapTexture()) * m_zoomFactor);
-    });
+    const auto oldDX = m_mapImage.dx();
+    const auto oldDY = m_mapImage.dy();
+    const auto onImgOldPLoc = onMapImagePLoc_from_onCanvasPLoc({onCanvasPX, onCanvasPY});
 
-    const auto afterZoomOnMapImgPLoc = onMapImagePLoc_from_onCanvasPLoc({onCanvasPX, onCanvasPY});
-    m_mapImage.moveAt(DIR_UPLEFT,
-    [this, beforeZoomOnMapImgPLoc, afterZoomOnMapImgPLoc]()
-    {
-        return m_mapImage.x() + (std::get<0>(beforeZoomOnMapImgPLoc) - std::get<0>(afterZoomOnMapImgPLoc));
-    },
+    m_zoomFactor = std::clamp<double>(zoomFactor, 0.1, 10.0);
+    const auto onImgNewPLoc = onMapImagePLoc_from_onCanvasPLoc({onCanvasPX, onCanvasPY});
 
-    [this, beforeZoomOnMapImgPLoc, afterZoomOnMapImgPLoc]()
-    {
-        return m_mapImage.y() + (std::get<1>(beforeZoomOnMapImgPLoc) - std::get<1>(afterZoomOnMapImgPLoc));
-    });
+    m_autoCenter = false;
+    m_mapImage_dx = oldDX + (std::get<0>(onImgOldPLoc) - std::get<0>(onImgNewPLoc));
+    m_mapImage_dy = oldDY + (std::get<1>(onImgOldPLoc) - std::get<1>(onImgNewPLoc));
 }
 
 std::tuple<int, int> MiniMapBoard::onMapGLoc_from_onCanvasPLoc(const std::tuple<int, int> &onCanvasPLoc) const
