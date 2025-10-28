@@ -110,6 +110,36 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
           .parent{this},
       }}
 
+    , m_zoomFactorBoard
+      {{
+          .wrapped
+          {
+              .widget = new TextBoard
+              {{
+                  .textFunc = [this]{ return str_printf("%d%%", to_dround(m_zoomFactor * 100)); },
+                  .font
+                  {
+                      .id = 1,
+                      .size = 12,
+                      .color = colorf::YELLOW_A255,
+                  },
+              }},
+
+              .autoDelete = true,
+          },
+
+          .margin
+          {
+              .left = 2,
+              .right = 2,
+          },
+
+          .bgDrawFunc = [](const Widget *self, int drawDstX, int drawDstY)
+          {
+              g_sdlDevice->fillRectangle(colorf::BLACK_A255, drawDstX, drawDstY, self->w(), self->h());
+          },
+      }}
+
     , m_buttonAlpha
       {{
           .texIDList
@@ -198,8 +228,9 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
           .itemSpace = 1,
           .childList
           {
-              {&m_buttonAlpha, false},
-              {&m_buttonExtend, false},
+              {&m_zoomFactorBoard , false},
+              {&m_buttonAlpha     , false},
+              {&m_buttonExtend    , false},
               {&m_buttonAutoCenter, false},
           },
 
@@ -297,8 +328,7 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
         case SDL_MOUSEWHEEL:
             {
                 if(m.in(event.wheel.mouseX, event.wheel.mouseY)){
-                    if     (event.wheel.y > 0){ m_zoomFactor = std::min<double>(m_zoomFactor * std::pow(1.1,  event.wheel.y), 10.0); }
-                    else if(event.wheel.y < 0){ m_zoomFactor = std::max<double>(m_zoomFactor / std::pow(1.1, -event.wheel.y),  0.1); }
+                    m_zoomFactor = std::clamp<double>(m_zoomFactor * std::pow(1.1,  event.wheel.y), 0.1, 10.0);
                     return true;
                 }
                 return false;
@@ -416,6 +446,34 @@ SDL_Texture *MiniMapBoard::getMiniMapTexture() const
         return g_progUseDB->retrieve(miniMapIDOpt.value());
     }
     return nullptr;
+}
+
+void MiniMapBoard::zoomOnCanvasAt(int onCanvasPX, int onCanvasPY, double zoomFactor)
+{
+    fflassert(getMiniMapTexture());
+    const auto beforeZoomOnMapImgPLoc = onMapImagePLoc_from_onCanvasPLoc({onCanvasPX, onCanvasPY});
+    m_zoomFactor = zoomFactor;
+    m_mapImage.setSize([this]
+    {
+        return to_dround(SDLDeviceHelper::getTextureWidth(getMiniMapTexture()) * m_zoomFactor);
+    },
+
+    [this]
+    {
+        return to_dround(SDLDeviceHelper::getTextureHeight(getMiniMapTexture()) * m_zoomFactor);
+    });
+
+    const auto afterZoomOnMapImgPLoc = onMapImagePLoc_from_onCanvasPLoc({onCanvasPX, onCanvasPY});
+    m_mapImage.moveAt(DIR_UPLEFT,
+    [this, beforeZoomOnMapImgPLoc, afterZoomOnMapImgPLoc]()
+    {
+        return m_mapImage.x() + (std::get<0>(beforeZoomOnMapImgPLoc) - std::get<0>(afterZoomOnMapImgPLoc));
+    },
+
+    [this, beforeZoomOnMapImgPLoc, afterZoomOnMapImgPLoc]()
+    {
+        return m_mapImage.y() + (std::get<1>(beforeZoomOnMapImgPLoc) - std::get<1>(afterZoomOnMapImgPLoc));
+    });
 }
 
 std::tuple<int, int> MiniMapBoard::onMapGLoc_from_onCanvasPLoc(const std::tuple<int, int> &onCanvasPLoc) const

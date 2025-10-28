@@ -43,9 +43,10 @@ class MiniMapBoard: public Widget
         ImageBoard m_cornerDownLeft;
 
     private:
-        TritexButton m_buttonAlpha;
-        TritexButton m_buttonExtend;
-        TritexButton m_buttonAutoCenter;
+        MarginWrapper m_zoomFactorBoard;
+        TritexButton  m_buttonAlpha;
+        TritexButton  m_buttonExtend;
+        TritexButton  m_buttonAutoCenter;
 
     private:
         ItemFlex m_buttonFlex;
@@ -66,13 +67,7 @@ class MiniMapBoard: public Widget
         SDL_Texture *getMiniMapTexture() const;
 
     private:
-        void drawMiniMapTexture(int, int) const;
-
-    private:
-        int getFrameSize() const;
-
-    private:
-        std::tuple<int, int> mouseOnMapGLoc(int, int) const;
+        void zoomOnCanvasAt(int, int, double);
 
     private:
         void drawCanvas(int, int);
