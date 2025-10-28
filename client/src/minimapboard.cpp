@@ -360,6 +360,11 @@ void MiniMapBoard::flipExtended()
 
 void MiniMapBoard::flipAutoCenter()
 {
+    if(m_autoCenter){
+        m_mapImage_dx = m_mapImage.dx();
+        m_mapImage_dy = m_mapImage.dy();
+    }
+
     m_autoCenter = !m_autoCenter;
     m_buttonAlpha     .setOff();
     m_buttonExtend    .setOff();
