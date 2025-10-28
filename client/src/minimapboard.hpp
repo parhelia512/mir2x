@@ -29,6 +29,9 @@ class MiniMapBoard: public Widget
         int m_mapImage_dy = 0;
 
     private:
+        bool m_dragStarted = false;
+
+    private:
         ProcessRun *m_processRun;
 
     private:

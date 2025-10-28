@@ -312,9 +312,26 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
     }
 
     switch(event.type){
+        case SDL_MOUSEBUTTONUP:
+            {
+                if(event.button.button == SDL_BUTTON_LEFT){
+                    if(m_dragStarted){
+                        m_dragStarted = false;
+                        return true;
+                    }
+                }
+                return false;
+            }
         case SDL_MOUSEBUTTONDOWN:
             {
-                if(event.button.button == SDL_BUTTON_RIGHT){
+                if(event.button.button == SDL_BUTTON_LEFT){
+                    if(m.in(event.button.x, event.button.y)){
+                        m_dragStarted = true;
+                        return true;
+                    }
+                }
+
+                else if(event.button.button == SDL_BUTTON_RIGHT){
                     if(m.in(event.button.x, event.button.y)){
                         const auto onCanvasPX = event.button.x - m.x + m.ro->x;
                         const auto onCanvasPY = event.button.y - m.y + m.ro->y;
@@ -334,6 +351,25 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
                     return true;
                 }
                 return false;
+            }
+        case SDL_MOUSEMOTION:
+            {
+                if(event.motion.state & SDL_BUTTON_LMASK){
+                    if(m.in(event.motion.x, event.motion.y)){
+                        if(m_dragStarted){
+                            if(m_autoCenter){
+                                m_autoCenter = false;
+                                m_mapImage_dx = m_mapImage.dx();
+                                m_mapImage_dy = m_mapImage.dy();
+                            }
+
+                            m_mapImage_dx += event.motion.xrel;
+                            m_mapImage_dy += event.motion.yrel;
+                            return consumeFocus(true);
+                        }
+                    }
+                }
+                return consumeFocus(false);
             }
         default:
             {
