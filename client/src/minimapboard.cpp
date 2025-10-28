@@ -461,7 +461,7 @@ void MiniMapBoard::zoomOnCanvasAt(int onCanvasPX, int onCanvasPY, double zoomFac
     const auto onImgOldXRatio = std::get<0>(onImgOldPLoc) * 1.0 / m_mapImage.w();
     const auto onImgOldYRatio = std::get<1>(onImgOldPLoc) * 1.0 / m_mapImage.h();
 
-    m_zoomFactor = std::clamp<double>(zoomFactor, 0.1, 10.0);
+    m_zoomFactor = std::clamp<double>(zoomFactor, 0.1, 10.0); // in autoCenter mode, mapImage-resizing changes its position
 
     const auto onImgNewPX = to_dround(m_mapImage.w() * onImgOldXRatio);
     const auto onImgNewPY = to_dround(m_mapImage.h() * onImgOldYRatio);
