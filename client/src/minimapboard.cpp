@@ -358,9 +358,9 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
                     if(m.in(event.motion.x, event.motion.y)){
                         if(m_dragStarted){
                             if(m_autoCenter){
-                                m_autoCenter = false;
                                 m_mapImage_dx = m_mapImage.dx();
                                 m_mapImage_dy = m_mapImage.dy();
+                                m_autoCenter = false;
                             }
 
                             m_mapImage_dx += event.motion.xrel;
