@@ -549,9 +549,12 @@ class Widget: public WidgetTreeNode
         void moveXTo(Widget::VarOff);
         void moveYTo(Widget::VarOff);
 
+
         void moveTo(                Widget::VarOff, Widget::VarOff);
         void moveBy(                Widget::VarOff, Widget::VarOff);
+        void moveBy(                Widget::VarOff, Widget::VarOff, const Widget::ROI &);
         void moveAt(Widget::VarDir, Widget::VarOff, Widget::VarOff);
+
 
     public:
         Widget *disableSetSize();

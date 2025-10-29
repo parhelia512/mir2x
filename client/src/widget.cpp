@@ -1038,7 +1038,7 @@ void Widget::moveTo(Widget::VarOff argX, Widget::VarOff argY)
     moveYTo(std::move(argY));
 }
 
-void Widget::moveBy(Widget::VarOff dx, Widget::VarOff dy)
+void Widget::moveBy(Widget::VarOff argDX, Widget::VarOff argDY)
 {
     const auto fnOp = [](std::pair<Widget::VarOff, int> &offset, Widget::VarOff update)
     {
@@ -1058,8 +1058,28 @@ void Widget::moveBy(Widget::VarOff dx, Widget::VarOff dy)
         }
     };
 
-    fnOp(m_x, std::move(dx));
-    fnOp(m_y, std::move(dy));
+    fnOp(m_x, std::move(argDX));
+    fnOp(m_y, std::move(argDY));
+}
+
+void Widget::moveBy(Widget::VarOff argDX, Widget::VarOff argDY, const Widget::ROI &r)
+{
+    moveBy(std::move(argDX), std::move(argDY));
+    if(const auto t = dx(); r.x > t){
+        m_x.second += (r.x - t);
+    }
+
+    if(const auto t = dx() + w(); t > r.x + r.w){
+        m_x.second -= (t - (r.x + r.w));
+    }
+
+    if(const auto t = dy(); r.y > t){
+        m_y.second += (r.y - t);
+    }
+
+    if(const auto t = dy() + h(); t > r.y + r.h){
+        m_y.second -= (t - (r.y + r.h));
+    }
 }
 
 void Widget::moveAt(Widget::VarDir argDir, Widget::VarOff argX, Widget::VarOff argY)
