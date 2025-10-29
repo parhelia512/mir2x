@@ -144,9 +144,9 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
       {{
           .texIDList
           {
-              .off  = 0X09000002,
-              .on   = 0X09000002,
-              .down = 0X09000002,
+              .off  = 0X09000010,
+              .on   = 0X09000010,
+              .down = 0X09000010,
           },
 
           .onTrigger = [this](Widget *, int)
@@ -158,10 +158,10 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
               flipAlpha();
 
               if(m_alphaOn){
-                  m_buttonAlpha.setTexID({0X09000003, 0X09000003, 0X09000003});
+                  m_buttonAlpha.setTexID({0X09000011, 0X09000011, 0X09000011});
               }
               else{
-                  m_buttonAlpha.setTexID({0X09000002, 0X09000002, 0X09000002});
+                  m_buttonAlpha.setTexID({0X09000010, 0X09000010, 0X09000010});
               }
           },
       }}
@@ -170,9 +170,9 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
       {{
           .texIDList
           {
-              .off  = 0X09000004,
-              .on   = 0X09000004,
-              .down = 0X09000004,
+              .off  = 0X09000020,
+              .on   = 0X09000020,
+              .down = 0X09000020,
           },
 
           .onTrigger = [this](Widget *, int)
@@ -184,10 +184,10 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
               flipExtended();
 
               if(m_extended){
-                  m_buttonExtend.setTexID({0X09000005, 0X09000005, 0X09000005});
+                  m_buttonExtend.setTexID({0X09000021, 0X09000021, 0X09000021});
               }
               else{
-                  m_buttonExtend.setTexID({0X09000004, 0X09000004, 0X09000004});
+                  m_buttonExtend.setTexID({0X09000020, 0X09000020, 0X09000020});
               }
           },
       }}
@@ -196,9 +196,9 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
       {{
           .texIDList
           {
-              .off  = 0X09000004,
-              .on   = 0X09000004,
-              .down = 0X09000004,
+              .off  = 0X09000030,
+              .on   = 0X09000030,
+              .down = 0X09000030,
           },
 
           .onTrigger = [this](Widget *, int)
@@ -210,10 +210,34 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
               flipAutoCenter();
 
               if(m_autoCenter){
-                  m_buttonExtend.setTexID({0X09000005, 0X09000005, 0X09000005});
+                  m_buttonAutoCenter.setTexID({0X09000031, 0X09000031, 0X09000031});
               }
               else{
-                  m_buttonExtend.setTexID({0X09000004, 0X09000004, 0X09000004});
+                  m_buttonAutoCenter.setTexID({0X09000030, 0X09000030, 0X09000030});
+              }
+          },
+      }}
+
+    , m_buttonConfig
+      {{
+          .texIDList
+          {
+              .off  = 0X09000040,
+              .on   = 0X09000040,
+              .down = 0X09000040,
+          },
+
+          .onTrigger = [this](Widget *, int)
+          {
+              if(!getMiniMapTexture()){
+                  return;
+              }
+
+              if(m_autoCenter){
+                  m_buttonConfig.setTexID({0X09000041, 0X09000041, 0X09000041});
+              }
+              else{
+                  m_buttonConfig.setTexID({0X09000040, 0X09000040, 0X09000040});
               }
           },
       }}
@@ -232,6 +256,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
               {&m_buttonAlpha     , false},
               {&m_buttonExtend    , false},
               {&m_buttonAutoCenter, false},
+              {&m_buttonConfig    , false},
           },
 
           .parent{this},

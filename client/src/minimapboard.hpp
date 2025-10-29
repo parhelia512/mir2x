@@ -51,6 +51,7 @@ class MiniMapBoard: public Widget
         TritexButton  m_buttonAlpha;
         TritexButton  m_buttonExtend;
         TritexButton  m_buttonAutoCenter;
+        TritexButton  m_buttonConfig;
 
     private:
         ItemFlex m_buttonFlex;
