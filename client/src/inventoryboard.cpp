@@ -10,18 +10,16 @@ extern PNGTexDB *g_itemDB;
 extern SoundEffectDB *g_seffDB;
 extern SDLDevice *g_sdlDevice;
 
-InventoryBoard::InventoryBoard(int argX, int argY, ProcessRun *pRun, Widget *argParent, bool argAutoDelete)
+InventoryBoard::InventoryBoard(InventoryBoard::InitArgs args)
     : Widget
       {{
-          .x = argX,
-          .y = argY,
+          .x = args.x,
+          .y = args.y,
 
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .parent = std::move(args.parent),
       }}
+
+    , m_processRun(args.runProc)
 
     , m_wmdAniBoard
       {
@@ -103,8 +101,6 @@ InventoryBoard::InventoryBoard(int argX, int argY, ProcessRun *pRun, Widget *arg
 
           .parent{this},
       }}
-
-    , m_processRun(pRun)
 {
     setShow(false);
     auto texPtr = g_progUseDB->retrieve(0X0000001B);

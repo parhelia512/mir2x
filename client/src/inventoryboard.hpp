@@ -17,6 +17,16 @@ class ProcessRun;
 class InventoryBoard: public Widget
 {
     private:
+        struct InitArgs final
+        {
+            int x = 0;
+            int y = 0;
+
+            ProcessRun *runProc {};
+            Widget::WADPair parent{};
+        };
+
+    private:
         const int m_invGridX0 = 18;
         const int m_invGridY0 = 59;
 
@@ -27,6 +37,9 @@ class InventoryBoard: public Widget
     private:
         int m_invOpCost = -1;
         int m_selectedIndex = -1;
+
+    private:
+        ProcessRun *m_processRun;
 
     private:
         SDStartInvOp m_sdInvOp;
@@ -44,11 +57,8 @@ class InventoryBoard: public Widget
     private:
         TritexButton m_invOpButton;
 
-    private:
-        ProcessRun *m_processRun;
-
     public:
-        InventoryBoard(int, int, ProcessRun *, Widget * = nullptr, bool = false);
+        InventoryBoard(InventoryBoard::InitArgs);
 
     private:
         void drawGold() const;

@@ -89,12 +89,13 @@ GUIManager::GUIManager(ProcessRun *argProc)
       }
 
     , m_inventoryBoard
-      {
-          g_sdlDevice->getRendererWidth()  / 2 - 141,
-          g_sdlDevice->getRendererHeight() / 2 - 233,
-          argProc,
-          this,
-      }
+      {{
+          .x = g_sdlDevice->getRendererWidth()  / 2 - 141,
+          .y = g_sdlDevice->getRendererHeight() / 2 - 233,
+
+          .runProc = argProc,
+          .parent{this},
+      }}
 
     , m_questStateBoard
       {
