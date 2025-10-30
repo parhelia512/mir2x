@@ -680,7 +680,7 @@ bool Widget::processEventParent(const SDL_Event &event, bool valid, Widget::ROIM
     const auto par = parent();
     fflassert(par);
 
-    if(!m.calibrate(this)){
+    if(!m.calibrate(par)){
         return false;
     }
 
