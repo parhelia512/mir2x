@@ -530,16 +530,7 @@ bool Widget::hasDrawFunc(const Widget::VarDrawFunc &varDrawFunc)
 
 void Widget::execDrawFunc(const Widget::VarDrawFunc &varDrawFunc, const Widget *widget, int argX, int argY)
 {
-    std::visit(VarDispatcher
-    {
-        [        argX, argY](const std::function<void(                        int, int)> &varg) { if(varg){ varg(                 argX, argY); }},
-        [widget, argX, argY](const std::function<void(const Widget *,         int, int)> &varg) { if(varg){ varg(widget,          argX, argY); }},
-        [widget, argX, argY](const std::function<void(const Widget *, void *, int, int)> &varg) { if(varg){ varg(widget, nullptr, argX, argY); }},
-
-        [](std::nullptr_t){},
-    },
-
-    varDrawFunc);
+    Widget::execDrawFunc(varDrawFunc, widget, nullptr, argX, argY);
 }
 
 void Widget::execDrawFunc(const Widget::VarDrawFunc &varDrawFunc, const Widget *widget, void *argPtr, int argX, int argY)

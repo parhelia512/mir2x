@@ -268,6 +268,39 @@ template<typename Func> Widget::VarSizeOpt Widget::transform(Widget::VarSizeOpt 
     }
 }
 
+template<typename T> bool Widget::hasUpdateFunc(const Widget::VarUpdateFunc<T> &varUpdateFunc)
+{
+    return std::visit(VarDispatcher
+    {
+        [](const std::function<void(                        const T &)> &varg) -> bool { return !!varg; },
+        [](const std::function<void(const Widget *,         const T &)> &varg) -> bool { return !!varg; },
+        [](const std::function<void(const Widget *, void *, const T &)> &varg) -> bool { return !!varg; },
+
+        [](std::nullptr_t){ return false; },
+    },
+
+    varUpdateFunc);
+}
+
+template<typename T> void Widget::execUpdateFunc(const Widget::VarUpdateFunc<T> &varUpdateFunc, const Widget *widget, const T &arg)
+{
+    Widget::execUpdateFunc(varUpdateFunc, widget, nullptr, arg);
+}
+
+template<typename T> void Widget::execUpdateFunc(const Widget::VarUpdateFunc<T> &varUpdateFunc, const Widget *widget, void *argPtr, const T &arg)
+{
+    std::visit(VarDispatcher
+    {
+        [                arg](const std::function<void(                        const T &)> &varg) { if(varg){ varg(                arg); }},
+        [widget,         arg](const std::function<void(const Widget *,         const T &)> &varg) { if(varg){ varg(widget,         arg); }},
+        [widget, argPtr, arg](const std::function<void(const Widget *, void *, const T &)> &varg) { if(varg){ varg(widget, argPtr, arg); }},
+
+        [](std::nullptr_t){},
+    },
+
+    varUpdateFunc);
+}
+
 auto Widget::focusedChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
     if(self.firstChild() && self.firstChild()->focus()){
