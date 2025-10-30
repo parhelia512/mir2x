@@ -159,14 +159,19 @@ GUIManager::GUIManager(ProcessRun *argProc)
 
 void GUIManager::draw(Widget::ROIMap m) const
 {
+    if(!m.calibrate(this)){
+        return;
+    }
+
     m_miniMapBoard.drawRoot({});
     m_NPCChatBoard.drawRoot({});
     m_controlBoard.drawRoot({});
 
-    drawChild(&m_purchaseBoard, m);
+    if(m_purchaseBoard.show()){
+        drawChild(&m_purchaseBoard, m);
+    }
 
-    const auto [w, h] = g_sdlDevice->getRendererSize();
-    Widget::draw({.ro{0, 0, w, h}});
+    Widget::draw(m);
 
     if(!g_clientArgParser->disableIME){
         g_imeBoard->drawRoot({});
