@@ -10,68 +10,49 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <functional>
-#include "mathf.hpp"
 #include "widget.hpp"
 #include "bevent.hpp"
 
 class Slider: public Widget
 {
     private:
-        const bool m_hslider = true;
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
 
-    protected:
-        const int m_sliderW = 0;
-        const int m_sliderH = 0;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            Widget::VarSizeOpt w = 0;
+            Widget::VarSizeOpt h = 0;
+
+            bool hslider = true;
+
+            int sliderW = 10;
+            int sliderH = 10;
+
+            float value = 0.0f;
+
+            Widget::VarUpdateFunc<float> onChange = nullptr;
+            Widget::WADPair parent {};
+        };
+
+    private:
+        const bool m_hslider;
+        const int  m_sliderW;
+        const int  m_sliderH;
+
+    private:
+        float m_value;
 
     protected:
         int m_sliderState = BEVENT_OFF;
 
     private:
-        float m_value = 0.0f;
-
-    private:
-        const std::function<void(float)> m_onChanged;
+        const Widget::VarUpdateFunc<float> m_onChange;
 
     public:
-        Slider(
-                Widget::VarDir argDir,
-                Widget::VarOff argX,
-                Widget::VarOff argY,
-
-                Widget::VarSizeOpt argW,
-                Widget::VarSizeOpt argH,
-
-                bool argHSlider,
-
-                int argSliderW,
-                int argSliderH,
-
-                std::function<void(float)> argOnChanged,
-
-                Widget *argParent     = nullptr,
-                bool    argAutoDelete = false)
-
-            : Widget
-              ({
-                  .dir = std::move(argDir),
-
-                  .x = std::move(argX),
-                  .y = std::move(argY),
-                  .w = std::move(argW),
-                  .h = std::move(argH),
-
-                  .parent
-                  {
-                      .widget = argParent,
-                      .autoDelete = argAutoDelete,
-                  }
-              })
-
-            , m_hslider(argHSlider)
-            , m_sliderW(argSliderW)
-            , m_sliderH(argSliderH)
-            , m_onChanged(std::move(argOnChanged))
-        {}
+        Slider(Slider::InitArgs);
 
     public:
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
@@ -85,10 +66,10 @@ class Slider: public Widget
     public:
         virtual void setValue(float value, bool triggerCallback)
         {
-            if(const auto newValue = mathf::bound<float>(value, 0.0f, 1.0f); newValue != getValue()){
+            if(const auto newValue = std::clamp<float>(value, 0.0f, 1.0f); newValue != getValue()){
                 m_value = newValue;
-                if(triggerCallback && m_onChanged){
-                    m_onChanged(getValue());
+                if(triggerCallback && Widget::hasUpdateFunc(m_onChange)){
+                    Widget::execUpdateFunc(m_onChange, this, getValue());
                 }
             }
         }

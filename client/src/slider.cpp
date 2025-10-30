@@ -1,6 +1,27 @@
 #include <SDL2/SDL.h>
 #include "slider.hpp"
 
+Slider::Slider(Slider::InitArgs args)
+    : Widget
+      {{
+          .dir = std::move(args.dir),
+
+          .x = std::move(args.x),
+          .y = std::move(args.y),
+          .w = std::move(args.w),
+          .h = std::move(args.h),
+
+          .parent = std::move(args.parent),
+      }}
+
+    , m_hslider(args.hslider)
+    , m_sliderW(args.sliderW)
+    , m_sliderH(args.sliderH)
+
+    , m_value(fflcheck(args.value, args.value >= 0.0f && args.value <= 1.0f))
+    , m_onChange(std::move(args.onChange))
+{}
+
 std::tuple<int, int> Slider::getValueCenter(int startDstX, int startDstY) const
 {
     return
@@ -114,12 +135,8 @@ bool Slider::inSlider(int eventX, int eventY, Widget::ROIMap m) const
         return false;
     }
 
-    auto sliderROI = Widget::makeROI(getSliderRectangle(m.x - m.ro->x, m.y - m.ro->y));
-    sliderROI.crop({m.x, m.y, m.ro->w, m.ro->h});
-
-    if(sliderROI.empty()){
-        return false;
+    if(auto sliderROI = Widget::makeROI(getSliderRectangle(m.x - m.ro->x, m.y - m.ro->y)); sliderROI.crop({m.x, m.y, m.ro->w, m.ro->h})){
+        return sliderROI.in(eventX, eventY);
     }
-
-    return sliderROI.in(eventX, eventY);
+    return false;
 }

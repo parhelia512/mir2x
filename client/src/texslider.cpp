@@ -25,22 +25,26 @@ TexSlider::TexSlider(
         bool    argAutoDelete)
 
     : Slider
-      {
-          std::move(argDir),
-          std::move(argX),
-          std::move(argY),
-          std::move(argW),
-          std::move(argH),
+      {{
+          .dir = std::move(argDir),
 
-          argHSlider,
-          getSliderTexInfo(argSliderIndex).w,
-          getSliderTexInfo(argSliderIndex).h,
+          .x = std::move(argX),
+          .y = std::move(argY),
+          .w = std::move(argW),
+          .h = std::move(argH),
 
-          std::move(argOnChanged),
+          .hslider = argHSlider,
 
-          argParent,
-          argAutoDelete,
-      }
+          .sliderW = getSliderTexInfo(argSliderIndex).w,
+          .sliderH = getSliderTexInfo(argSliderIndex).h,
+
+          .onChange = std::move(argOnChanged),
+          .parent
+          {
+              .widget = argParent,
+              .autoDelete = argAutoDelete,
+          }
+      }}
 
     , m_sliderTexInfo(getSliderTexInfo(argSliderIndex))
 

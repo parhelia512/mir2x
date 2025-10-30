@@ -163,8 +163,10 @@ bool Widget::ROI::in(int argX, int argY) const
 
 bool Widget::ROI::crop(const Widget::ROI &r)
 {
-    /**/   mathf::cropSegment<int>(x, w, r.x, r.w);
-    return mathf::cropSegment<int>(y, h, r.y, r.h);
+    const bool cropx = mathf::cropSegment<int>(x, w, r.x, r.w);
+    const bool cropy = mathf::cropSegment<int>(y, h, r.y, r.h);
+
+    return cropx && cropy;
 }
 
 bool Widget::ROI::overlap(const Widget::ROI &r) const
