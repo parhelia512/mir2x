@@ -47,18 +47,18 @@ class PurchaseBoard: public Widget
         std::vector<uint32_t> m_itemList;
 
     private:
-        TritexButton m_closeButton;
-        TritexButton m_selectButton;
+        TritexButton m_buttonClose;
+        TritexButton m_buttonSelect;
 
     private:
-        TritexButton m_closeExt1Button;
-        TritexButton m_leftExt1Button;
-        TritexButton m_selectExt1Button;
-        TritexButton m_rightExt1Button;
+        TritexButton m_buttonExt1Close;
+        TritexButton m_buttonExt1Left;
+        TritexButton m_buttonExt1Select;
+        TritexButton m_buttonExt1Right;
 
     private:
-        TritexButton m_closeExt2Button;
-        TritexButton m_selectExt2Button;
+        TritexButton m_buttonExt2Close;
+        TritexButton m_buttonExt2Select;
 
     private:
         TexSlider m_slider;

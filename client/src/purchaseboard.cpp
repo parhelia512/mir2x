@@ -21,7 +21,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
           }
       }}
 
-    , m_closeButton
+    , m_buttonClose
       {{
           .x = 257,
           .y = 183,
@@ -41,7 +41,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
           .parent{this},
       }}
 
-    , m_selectButton
+    , m_buttonSelect
       {{
           .x = 105,
           .y = 185,
@@ -55,14 +55,14 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
           .onTrigger = [this](Widget *, int)
           {
               setExtendedItemID(selectedItemID());
-              m_closeExt1Button.setOff();
-              m_closeExt2Button.setOff();
+              m_buttonExt1Close.setOff();
+              m_buttonExt2Close.setOff();
           },
 
           .parent{this},
       }}
 
-    , m_closeExt1Button
+    , m_buttonExt1Close
       {{
           .x = 448,
           .y = 159,
@@ -81,7 +81,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
           .parent{this},
       }}
 
-    , m_leftExt1Button
+    , m_buttonExt1Left
       {{
           .x = 315,
           .y = 163,
@@ -100,7 +100,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
           .parent{this},
       }}
 
-    , m_selectExt1Button
+    , m_buttonExt1Select
       {{
           .x = 357,
           .y = 163,
@@ -122,7 +122,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
           .parent{this},
       }}
 
-    , m_rightExt1Button
+    , m_buttonExt1Right
       {{
           .x = 405,
           .y = 163,
@@ -146,7 +146,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
           .parent{this},
       }}
 
-    , m_closeExt2Button
+    , m_buttonExt2Close
       {{
           .x = 474,
           .y = 56,
@@ -165,7 +165,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
           .parent{this},
       }}
 
-    , m_selectExt2Button
+    , m_buttonExt2Select
       {{
           .x = 366,
           .y = 60,
@@ -245,8 +245,8 @@ void PurchaseBoard::draw(Widget::ROIMap m) const
         g_sdlDevice->drawTexture(texPtr, m.x, m.y);
     }
 
-    drawChild(&m_closeButton , m);
-    drawChild(&m_selectButton, m);
+    drawChild(&m_buttonClose , m);
+    drawChild(&m_buttonSelect, m);
     drawChild(&m_slider      , m);
 
     const auto remapX = m.x - m.ro->x;
@@ -294,26 +294,26 @@ bool PurchaseBoard::processEventDefault(const SDL_Event &event, bool valid, Widg
         return consumeFocus(false);
     }
 
-    if(m_closeButton .processEventParent(event, valid, m)){ return true; }
-    if(m_selectButton.processEventParent(event, valid, m)){ return true; }
+    if(m_buttonClose .processEventParent(event, valid, m)){ return true; }
+    if(m_buttonSelect.processEventParent(event, valid, m)){ return true; }
     if(m_slider      .processEventParent(event, valid, m)){ return true; }
 
     switch(extendedBoardGfxID()){
         case 1:
             {
-                if(m_closeExt1Button .processEventParent(event, valid, m)){ return true; }
-                if(m_leftExt1Button  .processEventParent(event, valid, m)){ return true; }
-                if(m_selectExt1Button.processEventParent(event, valid, m)){ return true; }
-                if(m_rightExt1Button .processEventParent(event, valid, m)){ return true; }
+                if(m_buttonExt1Close .processEventParent(event, valid, m)){ return true; }
+                if(m_buttonExt1Left  .processEventParent(event, valid, m)){ return true; }
+                if(m_buttonExt1Select.processEventParent(event, valid, m)){ return true; }
+                if(m_buttonExt1Right .processEventParent(event, valid, m)){ return true; }
                 break;
             }
         case 2:
             {
-                if(m_closeExt2Button.processEventParent(event, valid, m)){
+                if(m_buttonExt2Close.processEventParent(event, valid, m)){
                     return true;
                 }
 
-                if(m_selectExt2Button.processEventParent(event, valid, m)){
+                if(m_buttonExt2Select.processEventParent(event, valid, m)){
                     if(m_processRun->getWidget("InputStringBoard")->focus()){
                         setFocus(false);
                     }
@@ -514,10 +514,10 @@ void PurchaseBoard::drawt1(Widget::ROIMap m) const
         throw fflreach();
     }
 
-    drawChild(&m_closeExt1Button , m);
-    drawChild(&m_leftExt1Button  , m);
-    drawChild(&m_selectExt1Button, m);
-    drawChild(&m_rightExt1Button , m);
+    drawChild(&m_buttonExt1Close , m);
+    drawChild(&m_buttonExt1Left  , m);
+    drawChild(&m_buttonExt1Select, m);
+    drawChild(&m_buttonExt1Right , m);
 
     const int ext1PageCount = extendedPageCount();
     if(ext1PageCount <= 0){
@@ -607,8 +607,8 @@ void PurchaseBoard::drawt2(Widget::ROIMap m) const
         throw fflerror("unexpected extSeqID: %llu", to_llu(extSeqID));
     }
 
-    drawChild(&m_closeExt2Button , m);
-    drawChild(&m_selectExt2Button, m);
+    drawChild(&m_buttonExt2Close , m);
+    drawChild(&m_buttonExt2Select, m);
 
     if(m_sdSellItemList.list.empty()){
         return;
