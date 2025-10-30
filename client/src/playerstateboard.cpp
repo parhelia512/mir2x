@@ -357,17 +357,12 @@ bool PlayerStateBoard::processEventDefault(const SDL_Event &event, bool valid, W
         case SDL_MOUSEMOTION:
             {
                 if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || focus())){
-                    const auto remapXDiff = m.x - m.ro->x;
-                    const auto remapYDiff = m.y - m.ro->y;
-
-                    const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
-                    const int maxX = rendererW - w();
-                    const int maxY = rendererH - h();
-
-                    const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
-
-                    moveBy(newX - remapXDiff, newY - remapYDiff);
+                    if(const auto par = parent()){
+                        moveBy(event.motion.xrel, event.motion.yrel, par->roi());
+                    }
+                    else{
+                        moveBy(event.motion.xrel, event.motion.yrel, Widget::makeROI(0, 0, g_sdlDevice->getRendererSize()));
+                    }
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);
