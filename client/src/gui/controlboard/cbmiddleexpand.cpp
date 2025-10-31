@@ -142,18 +142,15 @@ CBMiddleExpand::CBMiddleExpand(
 
     , m_slider
       {
-          DIR_UPLEFT,
-          [this]{ return w() - 176; },
-          40,
-          5,
-          60,
+          .x = [this]{ return w() - 176; },
+          .y = 40,
+          .w = 5,
+          .h = 60,
 
-          false,
-          2,
-          nullptr,
+          .hslider = false,
+          .sliderIndex = 2,
 
-          this,
-          false,
+          .parent{this},
       }
 {
     setH([this]
