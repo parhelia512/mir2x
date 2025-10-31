@@ -8,72 +8,52 @@ extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 extern ClientArgParser *g_clientArgParser;
 
-TexSlider::TexSlider(
-        Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
-
-        Widget::VarSizeOpt argW,
-        Widget::VarSizeOpt argH,
-
-        bool argHSlider,
-        int  argSliderIndex,
-
-        std::function<void(float)> argOnChanged,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
+TexSlider::TexSlider(TexSlider::InitArgs args)
     : Slider
       {{
-          .dir = std::move(argDir),
+          .dir = std::move(args.dir),
 
-          .x = std::move(argX),
-          .y = std::move(argY),
-          .w = std::move(argW),
-          .h = std::move(argH),
+          .x = std::move(args.x),
+          .y = std::move(args.y),
+          .w = std::move(args.w),
+          .h = std::move(args.h),
 
-          .hslider = argHSlider,
+          .hslider = args.hslider,
 
-          .sliderW = getSliderTexInfo(argSliderIndex).w,
-          .sliderH = getSliderTexInfo(argSliderIndex).h,
+          .sliderW = getSliderTexInfo(args.sliderIndex).w,
+          .sliderH = getSliderTexInfo(args.sliderIndex).h,
 
           .onChange = std::move(argOnChanged),
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .parent = std::move(args.parent),
       }}
 
-    , m_sliderTexInfo(getSliderTexInfo(argSliderIndex))
+    , m_sliderTexInfo(getSliderTexInfo(args.sliderIndex))
 
     , m_image
       {{
-          .x = [this](const Widget *){ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.offX; },
-          .y = [this](const Widget *){ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.offY; },
+          .x = [this]{ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.offX; },
+          .y = [this]{ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.offY; },
 
-          .texLoadFunc = [this](const Widget *) -> SDL_Texture *
+          .texLoadFunc = [this] -> SDL_Texture *
           {
               return g_progUseDB->retrieve(m_sliderTexInfo.texID);
           },
 
-          .modColor = [this](const Widget *)
+          .modColor = [this] -> uint32_t
           {
               if(active()){ return colorf::WHITE + colorf::A_SHF(0XFF); }
               else        { return colorf::GREY  + colorf::A_SHF(0XFF); }
           },
 
-          .blendMode = SDL_BLENDMODE_NONE,
           .parent{this},
       }}
 
     , m_cover
       {{
-          .x = [this](const Widget *){ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
-          .y = [this](const Widget *){ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
+          .x = [this]{ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
+          .y = [this]{ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
 
-          .texLoadFunc = [this](const Widget *) -> SDL_Texture *
+          .texLoadFunc = [this] -> SDL_Texture *
           {
               switch(m_sliderState){
                   case BEVENT_ON:
@@ -88,7 +68,7 @@ TexSlider::TexSlider(
               }
           },
 
-          .modColor = [this](const Widget *)
+          .modColor = [this] -> uint32_t
           {
               switch(m_sliderState){
                   case BEVENT_ON:
@@ -113,19 +93,19 @@ TexSlider::TexSlider(
 
     , m_debugDraw
       {{
-          .w = [this](const Widget *){ return w(); },
-          .h = [this](const Widget *){ return h(); },
+          .w = [this]{ return w(); },
+          .h = [this]{ return h(); },
 
-          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [](const Widget *self, int drawDstX, int drawDstY)
           {
               if(g_clientArgParser->debugSlider){
-                  g_sdlDevice->drawRectangle(colorf::GREEN + colorf::A_SHF(255), drawDstX, drawDstY, w(), h());
+                  g_sdlDevice->drawRectangle(colorf::GREEN_A255, drawDstX, drawDstY, self->w(), self->h());
 
                   const auto [valCenterX, valCenterY] = getValueCenter(drawDstX, drawDstY);
-                  g_sdlDevice->drawLine(colorf::YELLOW + colorf::A_SHF(255), valCenterX, valCenterY, valCenterX - m_sliderTexInfo.offX, valCenterY - m_sliderTexInfo.offY);
+                  g_sdlDevice->drawLine(colorf::YELLOW_A255, valCenterX, valCenterY, valCenterX - m_sliderTexInfo.offX, valCenterY - m_sliderTexInfo.offY);
 
                   const auto [sliderX, sliderY, sliderW, sliderH] = getSliderRectangle(drawDstX, drawDstY);
-                  g_sdlDevice->drawRectangle(colorf::RED + colorf::A_SHF(255), sliderX, sliderY, sliderW, sliderH);
+                  g_sdlDevice->drawRectangle(colorf::RED_A255, sliderX, sliderY, sliderW, sliderH);
               }
           },
 

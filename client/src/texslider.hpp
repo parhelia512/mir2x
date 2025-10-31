@@ -10,6 +10,23 @@
 class TexSlider: public Slider
 {
     private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            Widget::VarSizeOpt w = 0;
+            Widget::VarSizeOpt h = 0;
+
+            bool hslider = true;
+            int sliderIndex = 0;
+
+            Widget::VarUpdateFunc<float> onChange = nullptr;
+            Widget::WADPair parent {};
+        };
+
+    private:
         struct SliderTexInfo
         {
             const int w;
@@ -54,19 +71,5 @@ class TexSlider: public Slider
         ShapeCropBoard m_debugDraw;
 
     public:
-        TexSlider(
-                Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
-
-                Widget::VarSizeOpt,
-                Widget::VarSizeOpt,
-
-                bool,
-                int,
-
-                std::function<void(float)>,
-
-                Widget * = nullptr,
-                bool     = false);
+        TexSlider(TexSlider::InitArgs);
 };
