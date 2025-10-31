@@ -212,18 +212,18 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
       }}
 
     , m_slider
-      {
-          DIR_UPLEFT,
-          266,
-          27,
-          5,
-          123,
+      {{
+          .x = 266,
+          .y = 27,
+          .w = 5,
+          .h = 123,
 
-          false,
-          0,
-          nullptr,
-          this,
-      }
+          .hslider = false,
+          .sliderIndex = 0,
+
+          .parent{this},
+      }}
+
     , m_processRun(runPtr)
 {
     setShow(false);

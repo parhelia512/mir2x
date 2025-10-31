@@ -23,7 +23,7 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
           .sliderW = getSliderTexInfo(args.sliderIndex).w,
           .sliderH = getSliderTexInfo(args.sliderIndex).h,
 
-          .onChange = std::move(argOnChanged),
+          .onChange = std::move(args.onChange),
           .parent = std::move(args.parent),
       }}
 
@@ -96,7 +96,7 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
           .w = [this]{ return w(); },
           .h = [this]{ return h(); },
 
-          .drawFunc = [](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               if(g_clientArgParser->debugSlider){
                   g_sdlDevice->drawRectangle(colorf::GREEN_A255, drawDstX, drawDstY, self->w(), self->h());

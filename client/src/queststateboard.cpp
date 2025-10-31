@@ -81,20 +81,17 @@ QuestStateBoard::QuestStateBoard(
       }}
 
     , m_slider
-      {
-          DIR_UPLEFT,
-          326,
-          160,
-          9,
-          214,
+      {{
+          .x = 326,
+          .y = 160,
+          .w = 9,
+          .h = 214,
 
-          false,
-          3,
-          nullptr,
+          .hslider = false,
+          .sliderIndex = 3,
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_lrButton
       {{

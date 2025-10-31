@@ -133,18 +133,18 @@ TexSliderBar::TexSliderBar(
       }
 
     , m_slider
-      {
-          DIR_NONE,
-          w() / 2,
-          h() / 2,
+      {{
+          .dir = DIR_NONE,
 
-          w() - 6,
-          h() - 6,
+          .x = w() / 2,
+          .y = h() / 2,
+          .w = w() - 6,
+          .h = h() - 6,
 
-          argHSlider,
-          argSliderIndex,
+          .hslider = argHSlider,
+          .sliderIndex = argSliderIndex,
 
-          [argHSlider, argOnChanged = std::move(argOnChanged), this](float val)
+          .onChange = [argHSlider, argOnChanged = std::move(argOnChanged), this](float val)
           {
               argOnChanged(val);
               if(argHSlider){
@@ -155,7 +155,6 @@ TexSliderBar::TexSliderBar(
               }
           },
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {}

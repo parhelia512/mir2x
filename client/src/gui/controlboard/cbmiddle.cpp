@@ -125,21 +125,17 @@ CBMiddle::CBMiddle(
       }}
 
     , m_slider
-      {
-          DIR_UPLEFT,
-          [this](const Widget *){ return w() - 178; },
-          40,
-          5,
-          60,
+      {{
+          .x = [this]{ return w() - 178; },
+          .y = 40,
+          .w = 5,
+          .h = 60,
 
-          false,
-          2,
-          nullptr,
+          .hslider = false,
+          .sliderIndex = 2,
 
-          this,
-          false,
-      }
-
+          .parent{this},
+      }}
 
     , m_logView
       {

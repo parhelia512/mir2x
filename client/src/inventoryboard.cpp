@@ -30,18 +30,17 @@ InventoryBoard::InventoryBoard(InventoryBoard::InitArgs args)
       }
 
     , m_slider
-      {
-          DIR_UPLEFT,
-          410,
-          64,
-          5,
-          367,
+      {{
+          .x = 410,
+          .y = 64,
+          .w = 5,
+          .h = 367,
 
-          false,
-          0,
-          nullptr,
-          this,
-      }
+          .hslider = false,
+          .sliderIndex = 0,
+
+          .parent{this},
+      }}
 
     , m_sortButton
       {{

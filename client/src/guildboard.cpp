@@ -196,20 +196,17 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
       }}
 
     , m_slider
-      {
-          DIR_UPLEFT,
-          564,
-          62,
-          9,
-          277,
+      {{
+          .x = 564,
+          .y = 62,
+          .w = 9,
+          .h = 277,
 
-          false,
-          3,
-          nullptr,
+          .hslider = false,
+          .sliderIndex = 3,
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     setShow(false);
 }

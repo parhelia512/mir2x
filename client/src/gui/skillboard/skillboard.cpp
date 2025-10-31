@@ -326,16 +326,16 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
       }())
 
     , m_slider
-      {
-          DIR_UPLEFT,
-          326,
-          74,
-          5,
-          266,
+      {{
+          .x = 326,
+          .y = 74,
+          .w = 5,
+          .h = 266,
 
-          false,
-          0,
-          [this](float value)
+          .hslider = false,
+          .sliderIndex = 0,
+
+          .onChange = [this](float value)
           {
               const auto r = SkillBoard::getPageRectange();
               auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
@@ -344,8 +344,9 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
                   pagePtr->moveTo(r[0], r[1] - to_d((pagePtr->h() - r[3]) * value));
               }
           },
-          this,
-      }
+
+          .parent{this},
+      }}
 
     , m_closeButton
       {{
