@@ -58,43 +58,26 @@ class Slider: public Widget
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     public:
+        bool hslider() const
+        {
+            return m_hslider;
+        }
+
         float getValue() const
         {
             return m_value;
         }
 
     public:
-        virtual void setValue(float value, bool triggerCallback)
-        {
-            if(const auto newValue = std::clamp<float>(value, 0.0f, 1.0f); newValue != getValue()){
-                m_value = newValue;
-                if(triggerCallback && Widget::hasUpdateFunc(m_onChange)){
-                    Widget::execUpdateFunc(m_onChange, this, getValue());
-                }
-            }
-        }
-
-    public:
-        void addValue(float diff, bool triggerCallback)
-        {
-            setValue(m_value + diff, triggerCallback);
-        }
+        virtual void setValue(float, bool);
+        virtual void addValue(float, bool) final;
 
     protected:
-        float pixel2Value(int pixel) const
-        {
-            return pixel * 1.0f / std::max<int>(m_hslider ? w() : h(), 1);
-        }
+        float pixel2Value(int) const;
 
     public:
         std::tuple<int, int> getValueCenter(int, int) const;
         std::tuple<int, int, int, int> getSliderRectangle(int, int) const;
-
-    public:
-        bool hslider() const
-        {
-            return m_hslider;
-        }
 
     protected:
         bool inSlider(int, int, Widget::ROIMap) const;

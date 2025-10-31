@@ -22,27 +22,6 @@ Slider::Slider(Slider::InitArgs args)
     , m_onChange(std::move(args.onChange))
 {}
 
-std::tuple<int, int> Slider::getValueCenter(int startDstX, int startDstY) const
-{
-    return
-    {
-        startDstX + to_dround(( m_hslider ? getValue() : 0.5f) * w()),
-        startDstY + to_dround((!m_hslider ? getValue() : 0.5f) * h()),
-    };
-}
-
-std::tuple<int, int, int, int> Slider::getSliderRectangle(int startDstX, int startDstY) const
-{
-    const auto [centerX, centerY] = getValueCenter(startDstX, startDstY);
-    return
-    {
-        centerX - m_sliderW / 2,
-        centerY - m_sliderH / 2,
-        m_sliderW,
-        m_sliderH,
-    };
-}
-
 bool Slider::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
     if(!m.calibrate(this)){
@@ -127,6 +106,47 @@ bool Slider::processEventDefault(const SDL_Event &event, bool valid, Widget::ROI
                 return consumeFocus(false);
             }
     }
+}
+
+virtual void Slider::setValue(float value, bool triggerCallback)
+{
+    if(const auto newValue = std::clamp<float>(value, 0.0f, 1.0f); newValue != getValue()){
+        m_value = newValue;
+        if(triggerCallback && Widget::hasUpdateFunc(m_onChange)){
+            Widget::execUpdateFunc(m_onChange, this, getValue());
+        }
+    }
+}
+
+void Slider::addValue(float diff, bool triggerCallback)
+{
+    setValue(m_value + diff, triggerCallback);
+}
+
+float Slider::pixel2Value(int pixel) const
+{
+    return pixel * 1.0f / std::max<int>(m_hslider ? w() : h(), 1);
+}
+
+std::tuple<int, int> Slider::getValueCenter(int startDstX, int startDstY) const
+{
+    return
+    {
+        startDstX + to_dround(( m_hslider ? getValue() : 0.5f) * w()),
+        startDstY + to_dround((!m_hslider ? getValue() : 0.5f) * h()),
+    };
+}
+
+std::tuple<int, int, int, int> Slider::getSliderRectangle(int startDstX, int startDstY) const
+{
+    const auto [centerX, centerY] = getValueCenter(startDstX, startDstY);
+    return
+    {
+        centerX - m_sliderW / 2,
+        centerY - m_sliderH / 2,
+        m_sliderW,
+        m_sliderH,
+    };
 }
 
 bool Slider::inSlider(int eventX, int eventY, Widget::ROIMap m) const
