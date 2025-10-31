@@ -108,7 +108,7 @@ bool Slider::processEventDefault(const SDL_Event &event, bool valid, Widget::ROI
     }
 }
 
-virtual void Slider::setValue(float value, bool triggerCallback)
+void Slider::setValue(float value, bool triggerCallback)
 {
     if(const auto newValue = std::clamp<float>(value, 0.0f, 1.0f); newValue != getValue()){
         m_value = newValue;
