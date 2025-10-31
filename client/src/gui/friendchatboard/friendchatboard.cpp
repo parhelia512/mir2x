@@ -226,20 +226,17 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
               },
 
               .slider = new TexSlider
-              {
-                  DIR_UPLEFT,
-                  [this]{ return w() - 30; },
-                  70,
-                  9,
-                  [this]{ return h() - 140; },
+              {{
+                  .x = [this]{ return w() - 30; },
+                  .y = 70,
+                  .w = 9,
+                  .h = [this]{ return h() - 140; },
 
-                  false,
-                  3,
-                  nullptr,
+                  .hslider = false,
+                  .sliderIndex = 3,
 
-                  this,
-                  true,
-              },
+                  .parent{this},
+              }},
 
               .page = new ChatPage
               {
@@ -322,20 +319,17 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
               },
 
               .slider = new TexSlider
-              {
-                  DIR_UPLEFT,
-                  [this]{ return w() - 30; },
-                  70,
-                  9,
-                  [this]{ return h() - 140; },
+              {{
+                  .x = [this]{ return w() - 30; },
+                  .y = 70,
+                  .w = 9,
+                  .h = [this]{ return h() - 140; },
 
-                  false,
-                  3,
-                  nullptr,
+                  .hslider = false,
+                  .sliderIndex = 3,
 
-                  this,
-                  true,
-              },
+                  .parent{this},
+              }},
 
               .page = new ChatPreviewPage
               {
@@ -441,20 +435,17 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
               },
 
               .slider = new TexSlider
-              {
-                  DIR_UPLEFT,
-                  [this]{ return w() - 30; },
-                  70,
-                  9,
-                  [this]{ return h() - 140; },
+              {{
+                  .x = [this]{ return w() - 30; },
+                  .y = 70,
+                  .w = 9,
+                  .h = [this]{ return h() - 140; },
 
-                  false,
-                  3,
-                  nullptr,
+                  .hslider = false,
+                  .sliderIndex = 3,
 
-                  this,
-                  true,
-              },
+                  .parent{this},
+              }},
 
               .page = new FriendListPage
               {
@@ -521,20 +512,17 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
               },
 
               .slider = new TexSlider
-              {
-                  DIR_UPLEFT,
-                  [this]{ return w() - 30; },
-                  70,
-                  9,
-                  [this]{ return h() - 140; },
+              {{
+                  .x = [this]{ return w() - 30; },
+                  .y = 70,
+                  .w = 9,
+                  .h = [this]{ return h() - 140; },
 
-                  false,
-                  3,
-                  nullptr,
+                  .hslider = false,
+                  .sliderIndex = 3,
 
-                  this,
-                  true,
-              },
+                  .parent{this},
+              }},
 
               .page = new SearchPage
               {
@@ -691,20 +679,17 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
               },
 
               .slider = new TexSlider
-              {
-                  DIR_UPLEFT,
-                  [this]{ return w() -  30; },
-                  70,
-                  9,
-                  [this]{ return h() - 140; },
+              {{
+                  .x = [this]{ return w() - 30; },
+                  .y = 70,
+                  .w = 9,
+                  .h = [this]{ return h() - 140; },
 
-                  false,
-                  3,
-                  nullptr,
+                  .hslider = false,
+                  .sliderIndex = 3,
 
-                  this,
-                  true,
-              },
+                  .parent{this},
+              }},
 
               .page = new FriendListPage
               {

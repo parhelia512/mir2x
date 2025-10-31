@@ -141,7 +141,7 @@ CBMiddleExpand::CBMiddleExpand(
       }}
 
     , m_slider
-      {
+      {{
           .x = [this]{ return w() - 176; },
           .y = 40,
           .w = 5,
@@ -151,7 +151,7 @@ CBMiddleExpand::CBMiddleExpand(
           .sliderIndex = 2,
 
           .parent{this},
-      }
+      }}
 {
     setH([this]
     {
