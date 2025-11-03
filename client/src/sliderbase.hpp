@@ -14,6 +14,7 @@
 #include <functional>
 #include "widget.hpp"
 #include "bevent.hpp"
+#include "shapecropboard.hpp"
 #include "margincontainer.hpp"
 
 class SliderBase: public Widget
@@ -80,6 +81,9 @@ class SliderBase: public Widget
     private:
         MarginContainer m_bar;
         MarginContainer m_slider;
+
+    private:
+        ShapeCropBoard m_debugDraw;
 
     public:
         SliderBase(SliderBase::InitArgs);

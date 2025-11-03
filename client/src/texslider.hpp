@@ -5,7 +5,6 @@
 #include "widget.hpp"
 #include "sliderbase.hpp"
 #include "imageboard.hpp"
-#include "shapecropboard.hpp"
 
 class TexSlider: public Widget
 {
@@ -61,9 +60,6 @@ class TexSlider: public Widget
 
     private:
         SliderBase m_base;
-
-    private:
-        ShapeCropBoard m_debugDraw;
 
     public:
         TexSlider(TexSlider::InitArgs);

@@ -1,5 +1,10 @@
 #include <SDL2/SDL.h>
+#include "sdldevice.hpp"
 #include "sliderbase.hpp"
+#include "clientargparser.hpp"
+
+extern SDLDevice *g_sdlDevice;
+extern ClientArgParser *g_clientArgParser;
 
 SliderBase::SliderBase(SliderBase::InitArgs args)
     : Widget
@@ -36,6 +41,27 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
           .h = [this]{ return Widget::evalSize(m_sliderArgs.h, this); },
 
           .contained = std::move(args.sliderWidget),
+          .parent{this},
+      }}
+
+    , m_debugDraw
+      {{
+          .w = [this]{ return w(); },
+          .h = [this]{ return h(); },
+
+          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
+          {
+              if(g_clientArgParser->debugSlider){
+                  g_sdlDevice->drawRectangle(colorf::GREEN_A255, drawDstX, drawDstY, self->w(), self->h());
+
+                  const auto [valCenterX, valCenterY] = getValueCenter(drawDstX, drawDstY);
+                  g_sdlDevice->drawLine(colorf::YELLOW_A255, drawDstX, drawDstY, valCenterX, valCenterY);
+
+                  const auto r = getSliderROI(drawDstX, drawDstY);
+                  g_sdlDevice->drawRectangle(colorf::RED_A255, r.x, r.y, r.w, r.h);
+              }
+          },
+
           .parent{this},
       }}
 {

@@ -14,7 +14,7 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
           .parent = std::move(args.parent),
       }}
 
-    , m_sliderTexInfo(fflcheck(args.index, args.index >= 0 && args.index < static_cast<int>(std::size(m_sliderTexInfoList))))
+    , m_sliderTexInfo(m_sliderTexInfoList + fflcheck(args.index, args.index >= 0 && args.index < static_cast<int>(std::size(m_sliderTexInfoList))))
     , m_image
       {{
           .texLoadFunc = [this] -> SDL_Texture *
@@ -96,27 +96,6 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
           },
 
           .onChange = std::move(args.onChange),
-          .parent{this},
-      }}
-
-    , m_debugDraw
-      {{
-          .w = [this]{ return w(); },
-          .h = [this]{ return h(); },
-
-          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
-          {
-              if(g_clientArgParser->debugSlider){
-                  g_sdlDevice->drawRectangle(colorf::GREEN_A255, drawDstX, drawDstY, self->w(), self->h());
-
-                  const auto [valCenterX, valCenterY] = getValueCenter(drawDstX, drawDstY);
-                  g_sdlDevice->drawLine(colorf::YELLOW_A255, valCenterX, valCenterY, valCenterX - m_sliderTexInfo->offX, valCenterY - m_sliderTexInfo->offY);
-
-                  const auto [sliderX, sliderY, sliderW, sliderH] = getSliderRectangle(drawDstX, drawDstY);
-                  g_sdlDevice->drawRectangle(colorf::RED_A255, sliderX, sliderY, sliderW, sliderH);
-              }
-          },
-
           .parent{this},
       }}
 {
