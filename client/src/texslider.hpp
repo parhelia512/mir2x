@@ -79,4 +79,15 @@ class TexSlider: public Widget
     public:
         void setValue(float value, bool triggerCallback){ m_base.setValue(value, triggerCallback); }
         void addValue(float value, bool triggerCallback){ m_base.addValue(value, triggerCallback); }
+
+    public:
+        void draw(Widget::ROIMap m) const
+        {
+            drawChild(std::addressof(m_base), m);
+        }
+
+        bool processEventDefault(const SDL_Event &e, bool valid, Widget::ROIMap m)
+        {
+            return m_base.processEventParent(e, valid, m);
+        }
 };
