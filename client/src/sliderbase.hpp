@@ -29,8 +29,8 @@ class SliderBase: public Widget
             Widget::VarOff x = 0;
             Widget::VarOff y = 0;
 
-            Widget::VarSizeOpt w = 0;
-            Widget::VarSizeOpt h = 0;
+            Widget::VarSize w = 0;
+            Widget::VarSize h = 0;
 
             bool v = true; // vertical bar
         };

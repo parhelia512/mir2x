@@ -17,31 +17,33 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
       {{
           .dir = std::move(args.bar.dir),
 
-          .w = std::move(args.bar.w),
-          .h = std::move(args.bar.h),
+          .x = [this]{ return -1 * widgetXFromBar(0); },
+          .y = [this]{ return -1 * widgetYFromBar(0); },
 
+          .w = [this]{ return Widget::evalSize(m_barArgs.w, this); },
+          .h = [this]{ return Widget::evalSize(m_barArgs.w, this); },
+
+          .contained = std::move(args.barWidget),
           .parent{this},
       }}
 
     , m_slider
       {{
+          .x = [this]{ return sliderXAtValue(m_bar.dx(), getValue()); },
+          .y = [this]{ return sliderYAtValue(m_bar.dy(), getValue()); },
+
           .w = [this]{ return Widget::evalSize(m_sliderArgs.w, this); },
           .h = [this]{ return Widget::evalSize(m_sliderArgs.h, this); },
 
+          .contained = std::move(args.sliderWidget),
           .parent{this},
       }}
 {
-    m_bar.moveTo([this]{ return -1 * widgetXFromBar(0); },
-                 [this]{ return -1 * widgetYFromBar(0); });
+    moveTo([this]{ return widgetXFromBar(Widget::evalOff(m_barArgs.x, this))); },
+           [this]{ return widgetYFromBar(Widget::evalOff(m_barArgs.y, this))); });
 
-    m_slider.moveTo([this]{ return sliderXAtValue(m_bar.dx(), getValue()); },
-                    [this]{ return sliderYAtValue(m_bar.dy(), getValue()); });
-
-    moveTo([barX = std::move(args.bar.x), this]{ return widgetXFromBar(Widget::evalOff(barX, this))); },
-           [barY = std::move(args.bar.y), this]{ return widgetYFromBar(Widget::evalOff(barY, this))); });
-
-    setSize([this]{ return std::max<int>(m_bar.dx() + m_bar.w(), sliderXAtValue(1.0f) + m_slider.w())) - dx(); },
-            [this]{ return std::max<int>(m_bar.dy() + m_bar.h(), sliderYAtValue(1.0f) + m_slider.h())) - dy(); });
+    setSize([this]{ return std::max<int>(m_bar.dx() + m_bar.w(), sliderXAtValue(1.0f) + m_slider.w()) - dx(); },
+            [this]{ return std::max<int>(m_bar.dy() + m_bar.h(), sliderYAtValue(1.0f) + m_slider.h()) - dy(); });
 }
 
 bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
