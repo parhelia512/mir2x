@@ -49,7 +49,7 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
 
                       {new ImageBoard
                       {{
-                          .dir = DIR_NONE;
+                          .dir = DIR_NONE,
 
                           .x = [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->offX; },
                           .y = [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->offY; },
