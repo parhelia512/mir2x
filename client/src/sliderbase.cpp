@@ -53,11 +53,12 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
           {
               if(g_clientArgParser->debugSlider){
                   g_sdlDevice->drawRectangle(colorf::GREEN_A255, drawDstX, drawDstY, self->w(), self->h());
-
-                  const auto [valCenterX, valCenterY] = getValueCenter(drawDstX, drawDstY);
-                  g_sdlDevice->drawLine(colorf::YELLOW_A255, drawDstX, drawDstY, valCenterX, valCenterY);
+                  g_sdlDevice->drawRectangle(colorf::BLUE_A255, drawDstX + m_bar.dx(), drawDstY + m_bar.dy(), m_bar.w(), m_bar.h());
 
                   const auto r = getSliderROI(drawDstX, drawDstY);
+                  const auto [cx, cy] = getValueCenter(drawDstX, drawDstY);
+
+                  g_sdlDevice->drawLine(colorf::YELLOW_A255, r.x, r.y, cx, cy);
                   g_sdlDevice->drawRectangle(colorf::RED_A255, r.x, r.y, r.w, r.h);
               }
           },
