@@ -65,8 +65,8 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
           .parent{this},
       }}
 {
-    moveTo([this]{ return widgetXFromBar(Widget::evalInt(m_barArgs.x, this))); },
-           [this]{ return widgetYFromBar(Widget::evalInt(m_barArgs.y, this))); });
+    moveTo([this]{ return widgetXFromBar(Widget::evalInt(m_barArgs.x, this)); },
+           [this]{ return widgetYFromBar(Widget::evalInt(m_barArgs.y, this)); });
 
     setSize([this]{ return std::max<int>(m_bar.dx() + m_bar.w(), sliderXAtValue(1.0f) + m_slider.w()) - dx(); },
             [this]{ return std::max<int>(m_bar.dy() + m_bar.h(), sliderYAtValue(1.0f) + m_slider.h()) - dy(); });
