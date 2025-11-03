@@ -1120,3 +1120,27 @@ Widget *Widget::setSize(Widget::VarSizeOpt argW, Widget::VarSizeOpt argH)
 {
     return setW(std::move(argW))->setH(std::move(argH));
 }
+
+std::string Widget::dumpTree() const
+{
+    std::vector<std::string> tokens;
+
+    tokens.push_back(str_printf("id:%llu", to_llu(id())));
+    tokens.push_back(str_printf("name:%s", name()));
+    tokens.push_back(str_printf("dx:%d", dx()));
+    tokens.push_back(str_printf("dy:%d", dy()));
+    tokens.push_back(str_printf("w:%d", w()));
+    tokens.push_back(str_printf("h:%d", h()));
+
+    if(!m_childList.empty()){
+        std::vector<std::string> childTokens;
+        for(const auto &child: m_childList){
+            if(child.widget){
+                childTokens.push_back(child.widget->dumpTree());
+            }
+        }
+        tokens.push_back(str_printf("children:[%s]", str_join(childTokens, ",").c_str()));
+    }
+
+    return str_printf("{%s}", str_join(tokens, ",").c_str());
+}

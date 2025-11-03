@@ -26,7 +26,7 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
           .y = [this]{ return -1 * widgetYFromBar(0); },
 
           .w = [this]{ return Widget::evalSize(m_barArgs.w, this); },
-          .h = [this]{ return Widget::evalSize(m_barArgs.w, this); },
+          .h = [this]{ return Widget::evalSize(m_barArgs.h, this); },
 
           .contained = std::move(args.barWidget),
           .parent{this},
