@@ -232,5 +232,5 @@ int SliderBase::sliderYAtValue(int barY, float value) const
 
     return vbar()
         ? (barY - sliderCY + to_dround(value * (barH - 1)))
-        : (barY - sliderCY + sliderH / 2);
+        : (barY - sliderCY + barH / 2);
 }
