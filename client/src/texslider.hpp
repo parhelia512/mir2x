@@ -38,11 +38,11 @@ class TexSlider: public SliderBase
 
         constexpr static SliderTexInfo m_sliderTexInfoList []
         {
-            { 7,  8, 5, 0X00000080},
-            { 9,  9, 5, 0X00000081},
-            { 8,  9, 4, 0X00000088},
-            {12, 13, 7, 0X00000089},
-            {12, 13, 7, 0X0000008A},
+            { 7,  7, 5, 0X00000080},
+            { 9,  8, 5, 0X00000081},
+            { 7,  8, 4, 0X00000088},
+            {10, 12, 7, 0X00000089},
+            {14, 15, 7, 0X0000008A},
         };
 
     private:
