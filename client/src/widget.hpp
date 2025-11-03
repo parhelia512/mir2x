@@ -332,6 +332,7 @@ class Widget: public WidgetTreeNode
 
             Widget::VarBool show;
             Widget::VarBool focus;
+            Widget::VarBool moveOnFocus;
 
             Widget::WADPair parent;
         };
@@ -403,9 +404,6 @@ class Widget: public WidgetTreeNode
         std::pair<Widget::VarBool, bool> m_active {true, false};
 
     protected:
-        bool m_focus = false;
-
-    protected:
         std::any m_data;
 
     private:
@@ -421,6 +419,10 @@ class Widget: public WidgetTreeNode
     private:
         Widget::VarSizeOpt m_w;
         Widget::VarSizeOpt m_h;
+
+    protected:
+        bool m_focus = false;
+        Widget::VarBool m_moveOnFocus;
 
     private:
         mutable bool m_hCalc = false;

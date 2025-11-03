@@ -552,10 +552,13 @@ void Widget::execDrawFunc(const Widget::VarDrawFunc &varDrawFunc, const Widget *
 Widget::Widget(Widget::InitArgs args)
     : WidgetTreeNode(args.parent.widget, args.parent.autoDelete)
     , m_dir(std::move(args.dir))
-    , m_x  (std::make_pair(std::move(args.x), 0))
-    , m_y  (std::make_pair(std::move(args.y), 0))
-    , m_w  (std::move(args.w))
-    , m_h  (std::move(args.h))
+
+    , m_x(std::make_pair(std::move(args.x), 0))
+    , m_y(std::make_pair(std::move(args.y), 0))
+    , m_w(std::move(args.w))
+    , m_h(std::move(args.h))
+
+    , m_moveOnFocus(std::move(args.moveOnFocus))
 {
     for(auto &[childPtr, offDir, offX, offY, autoDelete]: args.childList){
         if(childPtr){
@@ -729,10 +732,11 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, Widget::ROI
         }
     });
 
-    if(auto widget = hasChild(focusedWidgetID)){
-        moveBack(widget);
+    if(Widget::evalBool(m_moveOnFocus, this)){
+        if(auto widget = hasChild(focusedWidgetID)){
+            moveBack(widget);
+        }
     }
-
     return took;
 }
 
