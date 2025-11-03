@@ -332,7 +332,7 @@ class Widget: public WidgetTreeNode
 
             Widget::VarBool show;
             Widget::VarBool focus;
-            Widget::VarBool moveOnFocus;
+            Widget::VarBool moveOnFocus = true;
 
             Widget::WADPair parent;
         };
