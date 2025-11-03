@@ -19,7 +19,7 @@
 
 class SliderBase: public Widget
 {
-    public:
+    protected:
         struct BarArgs final
         {
             // full widget's location is decided by bar position and size
