@@ -7,7 +7,7 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
           .parent = std::move(args.parent),
       }}
 
-    , m_vbar(args.bar.v)
+    , m_barArgs(std::move(args.bar))
     , m_sliderArgs(std::move(args.slider))
 
     , m_value(fflcheck(args.value, args.value >= 0.0f && args.value <= 1.0f))
@@ -31,17 +31,17 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
           .parent{this},
       }}
 {
-    m_bar.moveTo([this]{ return -1 * std::get<0>(widgetPosFromBar(0, 0)); },
-                 [this]{ return -1 * std::get<1>(widgetPosFromBar(0, 0)); });
+    m_bar.moveTo([this]{ return -1 * widgetXFromBar(0); },
+                 [this]{ return -1 * widgetYFromBar(0); });
 
-    m_slider.moveTo([this]{ return std::get<0>(sliderPosAtValue(m_bar.dx()),          0, getValue())); },
-                    [this]{ return std::get<1>(sliderPosAtValue(0          , m_bar.dy(), getValue())); });
+    m_slider.moveTo([this]{ return sliderXAtValue(m_bar.dx(), getValue()); },
+                    [this]{ return sliderYAtValue(m_bar.dy(), getValue()); });
 
-    moveTo([barX = std::move(args.bar.x), this]{ return std::get<0>(widgetPosFromBar(Widget::evalOff(barX, this),                           0)); },
-           [barY = std::move(args.bar.y), this]{ return std::get<1>(widgetPosFromBar(0                          , Widget::evalOff(barY, this))); });
+    moveTo([barX = std::move(args.bar.x), this]{ return widgetXFromBar(Widget::evalOff(barX, this))); },
+           [barY = std::move(args.bar.y), this]{ return widgetYFromBar(Widget::evalOff(barY, this))); });
 
-    setSize([this]{ return std::max<int>(m_bar.dx() + m_bar.w(), std::get<0>(sliderPosAtValue(1.0f) + m_slider.w())) - dx(); },
-            [this]{ return std::max<int>(m_bar.dy() + m_bar.h(), std::get<1>(sliderPosAtValue(1.0f) + m_slider.h())) - dy(); });
+    setSize([this]{ return std::max<int>(m_bar.dx() + m_bar.w(), sliderXAtValue(1.0f) + m_slider.w())) - dx(); },
+            [this]{ return std::max<int>(m_bar.dy() + m_bar.h(), sliderYAtValue(1.0f) + m_slider.h())) - dy(); });
 }
 
 bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
@@ -182,50 +182,30 @@ bool SliderBase::inSlider(int eventX, int eventY, Widget::ROIMap m) const
     return false;
 }
 
-int SliderBase::sliderXAtValue(int barX, float value) const // depends on m_bar.w
+int SliderBase::sliderXAtValue(int barX, float value) const
 {
     fflassert(value >= 0.0f, value);
     fflassert(value <= 1.0f, value);
 
-    const auto sliderW = Widget::evalSize(m_sliderArgs.w, this); // don't use m_slider.w(), initialization may not be done yet
+    const auto barW = Widget::evalSize(m_barArgs.w, this);
+    const auto sliderW = Widget::evalSize(m_sliderArgs.w, this);
     const auto sliderCX = Widget::evalOff(m_sliderArgs.cx.value_or(sliderW / 2), this);
 
-    return vbar() ? (barX - (sliderCX - m_bar.w() / 2)) : (barX + to_dround(value * (m_bar.w() - 1)) - sliderCX);
+    return vbar()
+        ? (barX - sliderCX + barW / 2)
+        : (barX - sliderCX + to_dround(value * (barW - 1)));
 }
 
-std::tuple<int, int> SliderBase::sliderPosAtValue(std::optinal<int> barX, std::optional<int> barY, float value) const // depends on m_bar.w/h
+int SliderBase::sliderYAtValue(int barY, float value) const
 {
     fflassert(value >= 0.0f, value);
     fflassert(value <= 1.0f, value);
 
-    const auto sliderW  = Widget::evalSize(m_sliderArgs.w, this); // don't use m_slider.w(), initialization may not be done yet
-    const auto sliderH  = Widget::evalSize(m_sliderArgs.h, this);
-
-    const auto sliderCX = Widget::evalOff(m_sliderArgs.cx.value_or(sliderW / 2), this);
+    const auto barH = Widget::evalSize(m_barArgs.h, this);
+    const auto sliderH = Widget::evalSize(m_sliderArgs.h, this);
     const auto sliderCY = Widget::evalOff(m_sliderArgs.cy.value_or(sliderH / 2), this);
 
-    if(vbar()){
-        return
-        {
-            barX - (sliderCX - sliderW / 2),
-            barY + to_dround(value * (m_bar.h() - 1)) - sliderCY,
-        };
-    }
-    else{
-        return
-        {
-            barX + to_dround(value * (m_bar.w() - 1)) - sliderCX,
-            barY - (sliderCY - sliderH / 2),
-        };
-    }
-}
-
-std::tuple<int, int> SliderBase::widgetPosFromBar(int barX, int barY) const
-{
-    const auto [sliderX, sliderY] = sliderPosAtValue(barX, barY, 0.0f);
-    return
-    {
-        std::min<int>(barX, sliderX),
-        std::min<int>(barY, sliderY),
-    };
+    return vbar()
+        ? (barY - sliderCY + to_dround(value * (barH - 1)))
+        : (barY - sliderCY + sliderH / 2);
 }

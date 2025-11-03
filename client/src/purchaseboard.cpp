@@ -213,14 +213,16 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
 
     , m_slider
       {{
-          .x = 266,
-          .y = 27,
-          .w = 5,
-          .h = 123,
+          .bar
+          {
+              .x = 266,
+              .y = 27,
+              .w = 5,
+              .h = 123,
+              .v = true,
+          },
 
-          .hslider = false,
           .index = 0,
-
           .parent{this},
       }}
 

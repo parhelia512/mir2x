@@ -82,14 +82,16 @@ QuestStateBoard::QuestStateBoard(
 
     , m_slider
       {{
-          .x = 326,
-          .y = 160,
-          .w = 9,
-          .h = 214,
+          .bar
+          {
+              .x = 326,
+              .y = 160,
+              .w = 9,
+              .h = 214,
+              .v = true,
+          },
 
-          .hslider = false,
           .index = 3,
-
           .parent{this},
       }}
 

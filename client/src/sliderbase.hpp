@@ -71,7 +71,7 @@ class SliderBase: public Widget
     private:
         float m_value;
 
-    protected:
+    private:
         int m_sliderState = BEVENT_OFF;
 
     private:
@@ -86,6 +86,12 @@ class SliderBase: public Widget
 
     public:
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
+
+    public:
+        int sliderState() const
+        {
+            return m_sliderState;
+        }
 
     public:
         bool vbar() const
@@ -113,10 +119,10 @@ class SliderBase: public Widget
         bool inSlider(int, int, Widget::ROIMap) const;
 
     private:
-        std::tuple<int, int> sliderPosAtValue(std::optional<int>, std::optional<int>, float) const;
-        std::tuple<int, int> widgetPosFromBar(std::optional<int>, std::optional<int>       ) const;
+        int sliderXAtValue(int, float) const; // only depends on barArgs and sliderArgs
+        int sliderYAtValue(int, float) const; // ....
 
     private:
-        int sliderXAtValue(int, float) const;
-        int sliderYAtValue(int, float) const;
+        int widgetXFromBar(int barX) const { return std::min<int>(barX, sliderXAtValue(barX, 0.0f)); }
+        int widgetYFromBar(int barY) const { return std::min<int>(barY, sliderXAtValue(barY, 0.0f)); }
 };

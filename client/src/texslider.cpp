@@ -33,11 +33,11 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
       {{
           .texLoadFunc = [this] -> SDL_Texture *
           {
-              switch(m_sliderState){
+              switch(m_base.sliderState()){
                   case BEVENT_ON:
                   case BEVENT_DOWN:
                       {
-                          return g_sdlDevice->getCover(m_sliderTexInfo.cover, 360);
+                          return g_sdlDevice->getCover(m_sliderTexInfo->cover, 360);
                       }
                   default:
                       {
@@ -48,7 +48,7 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
 
           .modColor = [this] -> uint32_t
           {
-              switch(m_sliderState){
+              switch(m_base.sliderState()){
                   case BEVENT_ON:
                       {
                           if(active()){ return colorf::BLUE  + colorf::A_SHF(200); }
@@ -110,7 +110,7 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
                   g_sdlDevice->drawRectangle(colorf::GREEN_A255, drawDstX, drawDstY, self->w(), self->h());
 
                   const auto [valCenterX, valCenterY] = getValueCenter(drawDstX, drawDstY);
-                  g_sdlDevice->drawLine(colorf::YELLOW_A255, valCenterX, valCenterY, valCenterX - m_sliderTexInfo.offX, valCenterY - m_sliderTexInfo.offY);
+                  g_sdlDevice->drawLine(colorf::YELLOW_A255, valCenterX, valCenterY, valCenterX - m_sliderTexInfo->offX, valCenterY - m_sliderTexInfo->offY);
 
                   const auto [sliderX, sliderY, sliderW, sliderH] = getSliderRectangle(drawDstX, drawDstY);
                   g_sdlDevice->drawRectangle(colorf::RED_A255, sliderX, sliderY, sliderW, sliderH);
@@ -122,8 +122,8 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
 {
     fflassert(w() > 0);
     fflassert(h() > 0);
-    fflassert(m_sliderTexInfo.w > 0);
-    fflassert(m_sliderTexInfo.h > 0);
-    fflassert(m_sliderTexInfo.cover > 0);
-    fflassert(g_progUseDB->retrieve(m_sliderTexInfo.texID), str_printf("%08X.PNG", m_sliderTexInfo.texID));
+    fflassert(m_sliderTexInfo->w > 0);
+    fflassert(m_sliderTexInfo->h > 0);
+    fflassert(m_sliderTexInfo->cover > 0);
+    fflassert(g_progUseDB->retrieve(m_sliderTexInfo->texID), str_printf("%08X.PNG", m_sliderTexInfo->texID));
 }
