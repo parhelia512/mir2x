@@ -558,6 +558,9 @@ Widget::Widget(Widget::InitArgs args)
     , m_w(std::move(args.w))
     , m_h(std::move(args.h))
 
+    , m_show  (std::make_pair(std::move(args.show)  , false))
+    , m_active(std::make_pair(std::move(args.active), false))
+
     , m_moveOnFocus(std::move(args.moveOnFocus))
 {
     for(auto &[childPtr, offDir, offX, offY, autoDelete]: args.childList){

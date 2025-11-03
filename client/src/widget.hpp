@@ -330,7 +330,9 @@ class Widget: public WidgetTreeNode
 
             std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> childList = {};
 
-            Widget::VarBool show;
+            Widget::VarBool show   = true;
+            Widget::VarBool active = true;
+
             Widget::VarBool focus;
             Widget::VarBool moveOnFocus = true;
 
@@ -399,13 +401,6 @@ class Widget: public WidgetTreeNode
                 }
         };
 
-    protected:
-        std::pair<Widget::VarBool, bool> m_show   {true, false};
-        std::pair<Widget::VarBool, bool> m_active {true, false};
-
-    protected:
-        std::any m_data;
-
     private:
         Widget::VarDir m_dir;
 
@@ -419,6 +414,13 @@ class Widget: public WidgetTreeNode
     private:
         Widget::VarSizeOpt m_w;
         Widget::VarSizeOpt m_h;
+
+    protected:
+        std::pair<Widget::VarBool, bool> m_show;
+        std::pair<Widget::VarBool, bool> m_active;
+
+    protected:
+        std::any m_data;
 
     protected:
         bool m_focus = false;
