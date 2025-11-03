@@ -128,5 +128,5 @@ class SliderBase: public Widget
 
     private:
         int widgetXFromBar(int barX) const { return std::min<int>(barX, sliderXAtValue(barX, 0.0f)); }
-        int widgetYFromBar(int barY) const { return std::min<int>(barY, sliderXAtValue(barY, 0.0f)); }
+        int widgetYFromBar(int barY) const { return std::min<int>(barY, sliderYAtValue(barY, 0.0f)); }
 };

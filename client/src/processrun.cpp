@@ -566,8 +566,8 @@ void ProcessRun::draw() const
     {{
         .bar
         {
-            .x = 10,
-            .y = 10,
+            .x = 20,
+            .y = 20,
             .w = 5,
             .h = 100,
             .v = true,
