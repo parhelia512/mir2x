@@ -49,11 +49,6 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
 
                       {new ImageBoard
                       {{
-                          .dir = DIR_NONE,
-
-                          .x = [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->offX; },
-                          .y = [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->offY; },
-
                           .texLoadFunc = [index = args.index, this] -> SDL_Texture *
                           {
                               switch(sliderState()){
@@ -88,7 +83,14 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
                                       }
                               }
                           },
-                      }}, DIR_UPLEFT, 0, 0, true},
+                      }},
+
+                      DIR_NONE,
+
+                      [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->offX; },
+                      [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->offY; },
+
+                      true},
                   }
               }},
           },
