@@ -34,9 +34,9 @@ InventoryBoard::InventoryBoard(InventoryBoard::InitArgs args)
           .bar
           {
               .x = 410,
-              .y = 64,
-              .w = 5,
-              .h = 367,
+              .y = 63,
+              .w = 8,
+              .h = 369,
               .v = true,
           },
 
