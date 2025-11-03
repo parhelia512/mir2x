@@ -95,19 +95,16 @@ ChatItemContainer::ChatItemContainer(
       }}
 
     , nomsgBox
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this]{ return canvas.w(); },
+          .h = [this]{ return nomsg.h() + 2 * ChatItemContainer::BACKGROUND_MARGIN; },
 
-          [this](const Widget *){ return canvas.w(); },
-          [this](const Widget *){ return nomsg.h() + 2 * ChatItemContainer::BACKGROUND_MARGIN; },
+          .contained
+          {
+              .widget = std::addressof(nomsg),
+          },
 
-          &nomsg,
-          DIR_NONE,
-          false,
-
-          [this](const Widget *, int startDstX, int startDstY)
+          .bgDrawFunc = [this](const Widget *, int startDstX, int startDstY)
           {
               g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64),
                       startDstX - ChatItemContainer::BACKGROUND_MARGIN,
@@ -115,22 +112,19 @@ ChatItemContainer::ChatItemContainer(
                       nomsg.w() + ChatItemContainer::BACKGROUND_MARGIN * 2,
                       nomsg.h() + ChatItemContainer::BACKGROUND_MARGIN * 2, ChatItemContainer::BACKGROUND_CORNER);
           },
-      }
+      }}
 
     , opsBox
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .w = [this]{ return canvas.w(); },
+          .h = [this]{ return ops.h() + 2 * ChatItemContainer::BACKGROUND_MARGIN; },
 
-          [this](const Widget *){ return canvas.w(); },
-          [this](const Widget *){ return ops.h() + 2 * ChatItemContainer::BACKGROUND_MARGIN; },
+          .contained
+          {
+              .widget = std::addressof(ops),
+          },
 
-          &ops,
-          DIR_NONE,
-          false,
-
-          [this](const Widget *, int startDstX, int startDstY)
+          .bgDrawFunc = [this](const Widget *, int startDstX, int startDstY)
           {
               g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64),
                       startDstX - ChatItemContainer::BACKGROUND_MARGIN,
@@ -138,7 +132,7 @@ ChatItemContainer::ChatItemContainer(
                       ops.w() + ChatItemContainer::BACKGROUND_MARGIN * 2,
                       ops.h() + ChatItemContainer::BACKGROUND_MARGIN * 2, ChatItemContainer::BACKGROUND_CORNER);
           },
-      }
+      }}
 {
     nomsgBox.setShow([this](const Widget *) -> bool
     {
@@ -226,19 +220,21 @@ void ChatItemContainer::append(const SDChatMessage &sdCM, std::function<void(con
     };
 
     auto chatItemBox = new MarginContainer
-    {
-        DIR_UPLEFT,
-        0,
-        0,
+    {{
+        .w = [this    ]{ return    canvas.w(); },
+        .h = [chatItem]{ return chatItem->h(); },
 
-        [this    ](const Widget *){ return    canvas.w(); },
-        [chatItem](const Widget *){ return chatItem->h(); },
+        .contained
+        {
+            .dir = [chatItem](const Widget *)
+            {
+                return chatItem->avatarLeft ? DIR_LEFT : DIR_RIGHT;
+            },
 
-        chatItem,
-
-        [chatItem](const Widget *){ return chatItem->avatarLeft ? DIR_LEFT : DIR_RIGHT; },
-        true,
-    };
+            .widget = chatItem,
+            .autoDelete = true,
+        },
+    }};
 
     canvas.removeChild(    &opsBox, false);
     canvas.   addChild(chatItemBox, true );

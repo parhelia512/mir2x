@@ -801,12 +801,12 @@ int Widget::h() const
 
 int Widget::dx() const
 {
-    return Widget::evalInt(m_x.first, this) + m_x.second - xSizeOff(dir(), w());
+    return Widget::evalInt(m_x.first, this) + m_x.second - xSizeOff(Widget::evalDir(m_dir, this), w());
 }
 
 int Widget::dy() const
 {
-    return Widget::evalInt(m_y.first, this) + m_y.second - ySizeOff(dir(), h());
+    return Widget::evalInt(m_y.first, this) + m_y.second - ySizeOff(Widget::evalDir(m_dir, this), h());
 }
 
 static int _rd_helper(const Widget *a, const Widget *b, const auto func)
@@ -1078,8 +1078,7 @@ void Widget::moveBy(Widget::VarOff argDX, Widget::VarOff argDY, const Widget::RO
 void Widget::moveAt(Widget::VarDir argDir, Widget::VarOff argX, Widget::VarOff argY)
 {
     m_dir = std::move(argDir);
-    m_x   = std::make_pair(std::move(argX), 0);
-    m_y   = std::make_pair(std::move(argY), 0);
+    moveTo(std::move(argX), std::move(argY));
 }
 
 Widget *Widget::disableSetSize()

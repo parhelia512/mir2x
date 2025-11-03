@@ -47,11 +47,11 @@ class TexSliderBar: public Widget
         void setValue(float val, bool triggerCallback)
         {
             m_slider.setValue(val, triggerCallback);
-            if(m_slider.hslider()){
-                m_barCropDup.setW(to_dround(val * (w() - 6)));
+            if(m_slider.vbar()){
+                m_barCropDup.setH(to_dround(val * (h() - 6)));
             }
             else{
-                m_barCropDup.setH(to_dround(val * (h() - 6)));
+                m_barCropDup.setW(to_dround(val * (w() - 6)));
             }
         }
 };

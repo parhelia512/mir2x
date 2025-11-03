@@ -31,14 +31,16 @@ InventoryBoard::InventoryBoard(InventoryBoard::InitArgs args)
 
     , m_slider
       {{
-          .x = 410,
-          .y = 64,
-          .w = 5,
-          .h = 367,
+          .bar
+          {
+              .x = 410,
+              .y = 64,
+              .w = 5,
+              .h = 367,
+              .v = true,
+          },
 
-          .hslider = false,
-          .sliderIndex = 0,
-
+          .index = 0,
           .parent{this},
       }}
 

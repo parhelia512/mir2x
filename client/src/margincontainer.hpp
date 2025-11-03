@@ -4,105 +4,142 @@
 
 class MarginContainer: public Widget
 {
+    public:
+        struct ContainedWidget final
+        {
+            Widget::VarDir dir = DIR_NONE;
+
+            Widget * widget     = nullptr;
+            bool     autoDelete = false;
+        };
+
     private:
-        Widget::VarDir m_widgetDir;
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+
+            Widget::VarOff x = 0;
+            Widget::VarOff y = 0;
+
+            Widget::VarSizeOpt w = 0;
+            Widget::VarSizeOpt h = 0;
+
+            ContainedWidget contained {};
+
+            Widget::VarDrawFunc bgDrawFunc = nullptr;
+            Widget::VarDrawFunc fgDrawFunc = nullptr;
+
+            Widget::WADPair parent {};
+        };
+
+    private:
+        ContainedWidget m_contained;
+
+    private:
+        ShapeCropBoard *m_bgBoard;
+        ShapeCropBoard *m_fgBoard;
 
     public:
-        MarginContainer(
-                Widget::VarDir argDir,
-                Widget::VarOff argX,
-                Widget::VarOff argY,
-
-                Widget::VarSizeOpt argW,
-                Widget::VarSizeOpt argH,
-
-                Widget *argWidget,
-
-                Widget::VarDir argWidgetDir,
-                bool           argWidgetAutoDelete,
-
-                std::function<void(const Widget *, int, int)> argDrawFunc = nullptr,
-
-                Widget *argParent     = nullptr,
-                bool    argAutoDelete = false)
-
+        MarginContainer(MarginContainer::InitArgs args)
             : Widget
               {{
-                  .dir = std::move(argDir),
+                  .dir = std::move(args.dir),
 
-                  .x = std::move(argX),
-                  .y = std::move(argY),
-                  .w = std::move(argW),
-                  .h = std::move(argH),
+                  .x = std::move(args.x),
+                  .y = std::move(args.y),
+                  .w = std::move(args.w),
+                  .h = std::move(args.h),
 
-                  .parent
-                  {
-                      .widget = argParent,
-                      .autoDelete = argAutoDelete,
-                  }
+                  .parent = std::move(args.parent),
               }}
 
-            , m_widgetDir(std::move(argWidgetDir))
+            , m_contained(std::move(args.contained))
+            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new ShapeCropBoard
+              {{
+                  .w = [this]{ return w(); },
+                  .h = [this]{ return h(); },
+
+                  .drawFunc = std::move(args.bgDrawFunc),
+
+              }} : nullptr)
+
+            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new ShapeCropBoard
+              {{
+                  .w = [this]{ return w(); },
+                  .h = [this]{ return h(); },
+
+                  .drawFunc = std::move(args.fgDrawFunc),
+
+              }} : nullptr)
         {
-            Widget::addChild(new ShapeCropBoard
-            {{
-                .w = [this]{ return w(); },
-                .h = [this]{ return h(); },
+            if(m_bgBoard){
+                Widget::addChild(m_bgBoard, true);
+            }
 
-                .drawFunc = std::move(argDrawFunc),
-            }},
+            doSetContained();
 
-            true);
-
-            Widget::addChildAt(argWidget, [this](const Widget *)
-            {
-                return Widget::evalDir(m_widgetDir, this);
-            },
-
-            [this](const Widget *)
-            {
-                switch(Widget::evalDir(m_widgetDir, this)){
-                    case DIR_UPLEFT   : return       0;
-                    case DIR_UP       : return w() / 2;
-                    case DIR_UPRIGHT  : return w() - 1;
-                    case DIR_LEFT     : return       0;
-                    case DIR_RIGHT    : return w() - 1;
-                    case DIR_DOWNLEFT : return       0;
-                    case DIR_DOWN     : return w() / 2;
-                    case DIR_DOWNRIGHT: return w() - 1;
-                    default           : return w() / 2; // DIR_NONE
-                }
-            },
-
-            [this](const Widget *)
-            {
-                switch(Widget::evalDir(m_widgetDir, this)){
-                    case DIR_UPLEFT   : return       0;
-                    case DIR_UP       : return       0;
-                    case DIR_UPRIGHT  : return       0;
-                    case DIR_LEFT     : return h() / 2;
-                    case DIR_RIGHT    : return h() / 2;
-                    case DIR_DOWNLEFT : return h() - 1;
-                    case DIR_DOWN     : return h() - 1;
-                    case DIR_DOWNRIGHT: return h() - 1;
-                    default           : return h() / 2; // DIR_NONE
-                }
-            },
-
-            argWidgetAutoDelete);
+            if(m_fgBoard){
+                Widget::addChild(m_fgBoard, true);
+            }
         }
 
     public:
+        void draw(Widget::ROIMap m) const override
+        {
+            if(m_bgBoard          && m_bgBoard         ->show()) drawChild(m_bgBoard         , m);
+            if(m_contained.widget && m_contained.widget->show()) drawChild(m_contained.widget, m);
+            if(m_fgBoard          && m_fgBoard         ->show()) drawChild(m_fgBoard         , m);
+        }
+
         bool processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m) override
         {
-            return contained()->processEvent(event, valid, m);
+            if(m_contained.widget){
+                return m_contained.widget->processEventParent(event, valid, m);
+            }
+            return false;
         }
 
     public:
-        void addChild  (Widget *,                                                 bool) override { throw fflreach(); }
-        void addChildAt(Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool) override { throw fflreach(); }
+        auto contained(this auto && self) -> std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, const Widget *, Widget *>
+        {
+            return self.m_contained.widget;
+        }
 
     public:
-        const Widget *contained() const { return lastChild(); }
-        /* */ Widget *contained()       { return lastChild(); }
+        void addChild  (Widget *,                                                 bool) override { throw fflvalue(name()); }
+        void addChildAt(Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool) override { throw fflvalue(name()); }
+
+    public:
+        void setContained(Widget::VarDir argDir, Widget *argWidget, bool argAutoDelete)
+        {
+            if(m_contained.widget){
+                removeChild(m_contained.widget, true);
+            }
+
+            m_contained = ContainedWidget{.dir = std::move(argDir), .widget = argWidget, .autoDelete = argAutoDelete};
+            doSetContained();
+        }
+
+    private:
+        void doSetContained()
+        {
+            if(m_contained.widget){
+                Widget::addChildAt(m_contained.widget, [this]
+                {
+                    return Widget::evalDir(m_contained.dir, this);
+                },
+
+                [this]
+                {
+                    return Widget::xSizeOff(Widget::evalDir(m_contained.dir, this), w());
+                },
+
+                [this]
+                {
+                    return Widget::ySizeOff(Widget::evalDir(m_contained.dir, this), h());
+                },
+
+                m_contained.autoDelete);
+            }
+        }
 };

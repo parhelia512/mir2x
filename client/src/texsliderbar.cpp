@@ -134,15 +134,17 @@ TexSliderBar::TexSliderBar(
 
     , m_slider
       {{
-          .dir = DIR_NONE,
+          .bar
+          {
+              .dir = DIR_NONE,
 
-          .x = w() / 2,
-          .y = h() / 2,
-          .w = w() - 6,
-          .h = h() - 6,
-
-          .hslider = argHSlider,
-          .sliderIndex = argSliderIndex,
+              .x = w() / 2,
+              .y = h() / 2,
+              .w = w() - 6,
+              .h = h() - 6,
+              .v = !argHSlider,
+          },
+          .index = argSliderIndex,
 
           .onChange = [argHSlider, argOnChanged = std::move(argOnChanged), this](float val)
           {

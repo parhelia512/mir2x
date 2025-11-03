@@ -142,14 +142,16 @@ CBMiddleExpand::CBMiddleExpand(
 
     , m_slider
       {{
-          .x = [this]{ return w() - 176; },
-          .y = 40,
-          .w = 5,
-          .h = 60,
+           .bar
+           {
+              .x = [this]{ return w() - 176; },
+              .y = 40,
+              .w = 5,
+              .h = 60,
+              .v = true,
+           },
 
-          .hslider = false,
-          .sliderIndex = 2,
-
+          .index = 2,
           .parent{this},
       }}
 {

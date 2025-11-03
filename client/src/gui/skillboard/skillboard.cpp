@@ -327,14 +327,16 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 
     , m_slider
       {{
-          .x = 326,
-          .y = 74,
-          .w = 5,
-          .h = 266,
+          .bar
+          {
+              .x = 326,
+              .y = 74,
+              .w = 5,
+              .h = 266,
+              .v = true,
+          },
 
-          .hslider = false,
-          .sliderIndex = 0,
-
+          .index = 0,
           .onChange = [this](float value)
           {
               const auto r = SkillBoard::getPageRectange();

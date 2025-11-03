@@ -156,7 +156,6 @@ SearchInputLine::SearchInputLine(Widget::VarDir argDir,
 
     , hint
       {{
-          .dir = this->input.dir(),
           .x = this->input.dx(),
           .y = this->input.dy(),
 

@@ -219,7 +219,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
           .h = 123,
 
           .hslider = false,
-          .sliderIndex = 0,
+          .index = 0,
 
           .parent{this},
       }}

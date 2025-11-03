@@ -197,14 +197,16 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 
     , m_slider
       {{
-          .x = 564,
-          .y = 62,
-          .w = 9,
-          .h = 277,
+          .bar
+          {
+              .x = 564,
+              .y = 62,
+              .w = 9,
+              .h = 277,
+              .v = true,
+          },
 
-          .hslider = false,
-          .sliderIndex = 3,
-
+          .index = 3,
           .parent{this},
       }}
 {

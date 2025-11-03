@@ -65,6 +65,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         struct VarTexLoadFunc: public alias_VarTexLoadFunc{ using alias_VarTexLoadFunc::alias_VarTexLoadFunc; };
 
     protected:
+        using VarOffOpt  = std::optional<VarOff>;
         using VarSizeOpt = std::optional<VarSize>;
 
     private:
@@ -184,6 +185,7 @@ class Widget: public WidgetTreeNode
     public:
         using WidgetTreeNode::VarDir;
         using WidgetTreeNode::VarOff;
+        using WidgetTreeNode::VarOffOpt;
         using WidgetTreeNode::VarU32;
         using WidgetTreeNode::VarSize;
         using WidgetTreeNode::VarSizeOpt;
@@ -431,7 +433,7 @@ class Widget: public WidgetTreeNode
     public:
         explicit Widget(Widget::InitArgs);
 
-    private:
+    public:
         static int  sizeOff(   int, int);
         static int xSizeOff(dir8_t, int);
         static int ySizeOff(dir8_t, int);
@@ -495,9 +497,6 @@ class Widget: public WidgetTreeNode
 
         virtual void afterResize() final;
         virtual void afterResizeDefault();
-
-    public:
-        virtual dir8_t dir() const { return Widget::evalDir(m_dir, this); }
 
     public:
         virtual int w() const;

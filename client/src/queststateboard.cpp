@@ -88,7 +88,7 @@ QuestStateBoard::QuestStateBoard(
           .h = 214,
 
           .hslider = false,
-          .sliderIndex = 3,
+          .index = 3,
 
           .parent{this},
       }}

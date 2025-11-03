@@ -9,34 +9,17 @@ extern SDLDevice *g_sdlDevice;
 extern ClientArgParser *g_clientArgParser;
 
 TexSlider::TexSlider(TexSlider::InitArgs args)
-    : Slider
+    : Widget
       {{
-          .dir = std::move(args.dir),
-
-          .x = std::move(args.x),
-          .y = std::move(args.y),
-          .w = std::move(args.w),
-          .h = std::move(args.h),
-
-          .hslider = args.hslider,
-
-          .sliderW = getSliderTexInfo(args.sliderIndex).w,
-          .sliderH = getSliderTexInfo(args.sliderIndex).h,
-
-          .onChange = std::move(args.onChange),
           .parent = std::move(args.parent),
       }}
 
-    , m_sliderTexInfo(getSliderTexInfo(args.sliderIndex))
-
+    , m_sliderTexInfo(fflcheck(args.index, args.index >= 0 && args.index < static_cast<int>(std::size(m_sliderTexInfoList))))
     , m_image
       {{
-          .x = [this]{ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.offX; },
-          .y = [this]{ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.offY; },
-
           .texLoadFunc = [this] -> SDL_Texture *
           {
-              return g_progUseDB->retrieve(m_sliderTexInfo.texID);
+              return g_progUseDB->retrieve(m_sliderTexInfo->texID);
           },
 
           .modColor = [this] -> uint32_t
@@ -44,15 +27,10 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
               if(active()){ return colorf::WHITE + colorf::A_SHF(0XFF); }
               else        { return colorf::GREY  + colorf::A_SHF(0XFF); }
           },
-
-          .parent{this},
       }}
 
     , m_cover
       {{
-          .x = [this]{ return std::get<0>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
-          .y = [this]{ return std::get<1>(getValueCenter(0, 0)) - m_sliderTexInfo.cover; },
-
           .texLoadFunc = [this] -> SDL_Texture *
           {
               switch(m_sliderState){
@@ -87,7 +65,28 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
                       }
               }
           },
+      }}
 
+    , m_base
+      {{
+          .bar = std::move(args.bar)
+          .slider
+          {
+              .cx = [this]{ return m_sliderTexInfo->offX; },
+              .cy = [this]{ return m_sliderTexInfo->offY; },
+
+              .w = [this]{ return SDLDeviceHelper::getTextureWidth (g_progUseDB->retrieve(m_sliderTexInfo->texID)); },
+              .h = [this]{ return SDLDeviceHelper::getTextureHeight(g_progUseDB->retrieve(m_sliderTexInfo->texID)); },
+          },
+
+          .value = args.value,
+          .sliderWidget
+          {
+              .dir = DIR_UPLEFT,
+              .widget = std::addressof(m_image),
+          },
+
+          .onChange = std::move(args.onChange),
           .parent{this},
       }}
 

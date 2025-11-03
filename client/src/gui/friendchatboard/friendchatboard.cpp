@@ -227,14 +227,16 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
 
               .slider = new TexSlider
               {{
-                  .x = [this]{ return w() - 30; },
-                  .y = 70,
-                  .w = 9,
-                  .h = [this]{ return h() - 140; },
+                  .bar
+                  {
+                      .x = [this]{ return w() - 30; },
+                      .y = 70,
+                      .w = 9,
+                      .h = [this]{ return h() - 140; },
+                      .v = true,
+                  },
 
-                  .hslider = false,
-                  .sliderIndex = 3,
-
+                  .index = 3,
                   .parent{this},
               }},
 
@@ -320,14 +322,16 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
 
               .slider = new TexSlider
               {{
-                  .x = [this]{ return w() - 30; },
-                  .y = 70,
-                  .w = 9,
-                  .h = [this]{ return h() - 140; },
+                  .bar
+                  {
+                      .x = [this]{ return w() - 30; },
+                      .y = 70,
+                      .w = 9,
+                      .h = [this]{ return h() - 140; },
+                      .v = true,
+                  },
 
-                  .hslider = false,
-                  .sliderIndex = 3,
-
+                  .index = 3,
                   .parent{this},
               }},
 
@@ -436,14 +440,16 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
 
               .slider = new TexSlider
               {{
-                  .x = [this]{ return w() - 30; },
-                  .y = 70,
-                  .w = 9,
-                  .h = [this]{ return h() - 140; },
+                  .bar
+                  {
+                      .x = [this]{ return w() - 30; },
+                      .y = 70,
+                      .w = 9,
+                      .h = [this]{ return h() - 140; },
+                      .v = true,
+                  },
 
-                  .hslider = false,
-                  .sliderIndex = 3,
-
+                  .index = 3,
                   .parent{this},
               }},
 
@@ -513,14 +519,16 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
 
               .slider = new TexSlider
               {{
-                  .x = [this]{ return w() - 30; },
-                  .y = 70,
-                  .w = 9,
-                  .h = [this]{ return h() - 140; },
+                  .bar
+                  {
+                      .x = [this]{ return w() - 30; },
+                      .y = 70,
+                      .w = 9,
+                      .h = [this]{ return h() - 140; },
+                      .v = true,
+                  },
 
-                  .hslider = false,
-                  .sliderIndex = 3,
-
+                  .index = 3,
                   .parent{this},
               }},
 
@@ -680,14 +688,16 @@ FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, Proce
 
               .slider = new TexSlider
               {{
-                  .x = [this]{ return w() - 30; },
-                  .y = 70,
-                  .w = 9,
-                  .h = [this]{ return h() - 140; },
+                  .bar
+                  {
+                      .x = [this]{ return w() - 30; },
+                      .y = 70,
+                      .w = 9,
+                      .h = [this]{ return h() - 140; },
+                      .v = true,
+                  },
 
-                  .hslider = false,
-                  .sliderIndex = 3,
-
+                  .index = 3,
                   .parent{this},
               }},
 
