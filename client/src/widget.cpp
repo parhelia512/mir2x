@@ -1123,24 +1123,29 @@ Widget *Widget::setSize(Widget::VarSizeOpt argW, Widget::VarSizeOpt argH)
 
 std::string Widget::dumpTree() const
 {
-    std::vector<std::string> tokens;
+    std::vector<std::string> attrs;
 
-    tokens.push_back(str_printf("id:%llu", to_llu(id())));
-    tokens.push_back(str_printf("name:%s", name()));
-    tokens.push_back(str_printf("dx:%d", dx()));
-    tokens.push_back(str_printf("dy:%d", dy()));
-    tokens.push_back(str_printf("w:%d", w()));
-    tokens.push_back(str_printf("h:%d", h()));
+    attrs.push_back(str_printf(R"("id":%llu)", to_llu(id())));
+    attrs.push_back(str_printf(R"("name":"%s")", name()));
+    attrs.push_back(str_printf(R"("dx":%d)", dx()));
+    attrs.push_back(str_printf(R"("dy":%d)", dy()));
+    attrs.push_back(str_printf(R"("w":%d)", w()));
+    attrs.push_back(str_printf(R"("h":%d)", h()));
+    attrs.push_back(str_printf(R"("show":%s)", to_boolcstr(show())));
+    attrs.push_back(str_printf(R"("localShow":%s)", to_boolcstr(localShow())));
+    attrs.push_back(str_printf(R"("active":%s)", to_boolcstr(active())));
+    attrs.push_back(str_printf(R"("localActive":%s)", to_boolcstr(localActive())));
+    attrs.push_back(str_printf(R"("focus":%s)", to_boolcstr(focus())));
 
     if(!m_childList.empty()){
-        std::vector<std::string> childTokens;
+        std::vector<std::string> childAttrs;
         for(const auto &child: m_childList){
             if(child.widget){
-                childTokens.push_back(child.widget->dumpTree());
+                childAttrs.push_back(child.widget->dumpTree());
             }
         }
-        tokens.push_back(str_printf("children:[%s]", str_join(childTokens, ",").c_str()));
+        attrs.push_back(str_printf("children:[%s]", str_join(childAttrs, ",").c_str()));
     }
 
-    return str_printf("{%s}", str_join(tokens, ",").c_str());
+    return str_printf("{%s}", str_join(attrs, ",").c_str());
 }

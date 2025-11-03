@@ -578,7 +578,7 @@ class Widget: public WidgetTreeNode
         virtual Widget *setSize(Widget::VarSizeOpt, Widget::VarSizeOpt) final;
 
     public:
-        std::string dumpTree() const;
+        virtual std::string dumpTree() const;
 };
 
 #include "widget.impl.hpp"
