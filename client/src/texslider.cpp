@@ -78,7 +78,7 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
 
     , m_base
       {{
-          .bar = std::move(args.bar)
+          .bar = std::move(args.bar),
           .slider
           {
               .cx = [this]{ return m_sliderTexInfo->offX; },

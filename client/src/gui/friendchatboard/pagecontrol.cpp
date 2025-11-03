@@ -3,8 +3,8 @@
 
 PageControl::PageControl(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         int argSpace,
 

@@ -25,8 +25,8 @@ class ImageBoard: public Widget
         struct InitArgs final
         {
             Widget::VarDir dir = DIR_UPLEFT;
-            Widget::VarOff x = 0;
-            Widget::VarOff y = 0;
+            Widget::VarInt x = 0;
+            Widget::VarInt y = 0;
 
             Widget::VarSizeOpt w = {}; // {} means image width , otherwise rescale the image
             Widget::VarSizeOpt h = {}; // {} means image height, otherwise rescale the image

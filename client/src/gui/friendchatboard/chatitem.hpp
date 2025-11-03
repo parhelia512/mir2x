@@ -88,8 +88,8 @@ struct ChatItem: public Widget
 
     ChatItem(
             Widget::VarDir,
-            Widget::VarOff,
-            Widget::VarOff,
+            Widget::VarInt,
+            Widget::VarInt,
 
             int,
             bool,

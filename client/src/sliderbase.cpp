@@ -39,8 +39,8 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
           .parent{this},
       }}
 {
-    moveTo([this]{ return widgetXFromBar(Widget::evalOff(m_barArgs.x, this))); },
-           [this]{ return widgetYFromBar(Widget::evalOff(m_barArgs.y, this))); });
+    moveTo([this]{ return widgetXFromBar(Widget::evalInt(m_barArgs.x, this))); },
+           [this]{ return widgetYFromBar(Widget::evalInt(m_barArgs.y, this))); });
 
     setSize([this]{ return std::max<int>(m_bar.dx() + m_bar.w(), sliderXAtValue(1.0f) + m_slider.w()) - dx(); },
             [this]{ return std::max<int>(m_bar.dy() + m_bar.h(), sliderYAtValue(1.0f) + m_slider.h()) - dy(); });
@@ -167,8 +167,8 @@ std::tuple<int, int> SliderBase::getValueCenter(int startDstX, int startDstY) co
 {
     return
     {
-        startDstX + m_slider.dx() + Widget::evalOff(m_sliderArgs.cx.value_or(m_slider.w() / 2), this),
-        startDstY + m_slider.dy() + Widget::evalOff(m_sliderArgs.cy.value_or(m_slider.h() / 2), this),
+        startDstX + m_slider.dx() + Widget::evalInt(m_sliderArgs.cx.value_or(m_slider.w() / 2), this),
+        startDstY + m_slider.dy() + Widget::evalInt(m_sliderArgs.cy.value_or(m_slider.h() / 2), this),
     };
 }
 
@@ -191,7 +191,7 @@ int SliderBase::sliderXAtValue(int barX, float value) const
 
     const auto barW = Widget::evalSize(m_barArgs.w, this);
     const auto sliderW = Widget::evalSize(m_sliderArgs.w, this);
-    const auto sliderCX = Widget::evalOff(m_sliderArgs.cx.value_or(sliderW / 2), this);
+    const auto sliderCX = Widget::evalInt(m_sliderArgs.cx.value_or(sliderW / 2), this);
 
     return vbar()
         ? (barX - sliderCX + barW / 2)
@@ -205,7 +205,7 @@ int SliderBase::sliderYAtValue(int barY, float value) const
 
     const auto barH = Widget::evalSize(m_barArgs.h, this);
     const auto sliderH = Widget::evalSize(m_sliderArgs.h, this);
-    const auto sliderCY = Widget::evalOff(m_sliderArgs.cy.value_or(sliderH / 2), this);
+    const auto sliderCY = Widget::evalInt(m_sliderArgs.cy.value_or(sliderH / 2), this);
 
     return vbar()
         ? (barY - sliderCY + to_dround(value * (barH - 1)))

@@ -11,26 +11,26 @@ class GfxCropDupBoard: public Widget
         const Widget * const m_gfxWidget;
 
     private:
-        const Widget::VarOff m_cropX;
-        const Widget::VarOff m_cropY;
-        const Widget::VarOff m_cropW;
-        const Widget::VarOff m_cropH;
+        const Widget::VarInt m_cropX;
+        const Widget::VarInt m_cropY;
+        const Widget::VarInt m_cropW;
+        const Widget::VarInt m_cropH;
 
     public:
         GfxCropDupBoard(
                 Widget::VarDir argDir,
-                Widget::VarOff argX,
-                Widget::VarOff argY,
+                Widget::VarInt argX,
+                Widget::VarInt argY,
 
                 Widget::VarSizeOpt argW,
                 Widget::VarSizeOpt argH,
 
                 const Widget *argWidget,
 
-                Widget::VarOff argCropX,
-                Widget::VarOff argCropY,
-                Widget::VarOff argCropW, // don't use VarSizeOpt because empty VarSizeOpt is not well-defined
-                Widget::VarOff argCropH, // ...
+                Widget::VarInt argCropX,
+                Widget::VarInt argCropY,
+                Widget::VarInt argCropW, // don't use VarSizeOpt because empty VarSizeOpt is not well-defined
+                Widget::VarInt argCropH, // ...
 
                 Widget *argParent     = nullptr,
                 bool    argAutoDelete = false)

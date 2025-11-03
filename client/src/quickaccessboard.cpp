@@ -13,8 +13,8 @@ extern SDLDevice *g_sdlDevice;
 
 QuickAccessBoard::Grid::Grid(
         Widget::VarDir argDir,
-        Widget::VarOff argX,
-        Widget::VarOff argY,
+        Widget::VarInt argX,
+        Widget::VarInt argY,
 
         Widget::VarSizeOpt argW,
         Widget::VarSizeOpt argH,

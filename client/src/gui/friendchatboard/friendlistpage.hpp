@@ -9,8 +9,8 @@ struct FriendListPage: public Widget
 {
     Widget canvas;
     FriendListPage(Widget::VarDir,
-            Widget::VarOff,
-            Widget::VarOff,
+            Widget::VarInt,
+            Widget::VarInt,
 
             Widget::VarSizeOpt,
             Widget::VarSizeOpt,

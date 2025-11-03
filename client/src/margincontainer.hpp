@@ -18,8 +18,8 @@ class MarginContainer: public Widget
         {
             Widget::VarDir dir = DIR_UPLEFT;
 
-            Widget::VarOff x = 0;
-            Widget::VarOff y = 0;
+            Widget::VarInt x = 0;
+            Widget::VarInt y = 0;
 
             Widget::VarSizeOpt w = 0;
             Widget::VarSizeOpt h = 0;
@@ -107,7 +107,7 @@ class MarginContainer: public Widget
 
     public:
         void addChild  (Widget *,                                                 bool) override { throw fflvalue(name()); }
-        void addChildAt(Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool) override { throw fflvalue(name()); }
+        void addChildAt(Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool) override { throw fflvalue(name()); }
 
     public:
         void setContained(Widget::VarDir argDir, Widget *argWidget, bool argAutoDelete)

@@ -98,7 +98,7 @@ void WidgetTreeNode::addChild(Widget *argWidget, bool argAutoDelete)
     doAddChild(argWidget, argAutoDelete);
 }
 
-void WidgetTreeNode::addChildAt(Widget *argWidget, WidgetTreeNode::VarDir argDir, WidgetTreeNode::VarOff argX, WidgetTreeNode::VarOff argY, bool argAutoDelete)
+void WidgetTreeNode::addChildAt(Widget *argWidget, WidgetTreeNode::VarDir argDir, WidgetTreeNode::VarInt argX, WidgetTreeNode::VarInt argY, bool argAutoDelete)
 {
     doAddChild(argWidget, argAutoDelete);
     argWidget->moveAt(std::move(argDir), std::move(argX), std::move(argY));
@@ -309,7 +309,7 @@ dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widget, const
     varDir);
 }
 
-int Widget::evalInt(const Widget::VarOff &varOffset, const Widget *widget, const void *arg)
+int Widget::evalInt(const Widget::VarInt &varOffset, const Widget *widget, const void *arg)
 {
     return std::visit(VarDispatcher
     {
@@ -1019,25 +1019,25 @@ Widget *Widget::setActive(Widget::VarBool argActive)
     return this;
 }
 
-void Widget::moveXTo(Widget::VarOff arg)
+void Widget::moveXTo(Widget::VarInt arg)
 {
     m_x = std::make_pair(std::move(arg), 0);
 }
 
-void Widget::moveYTo(Widget::VarOff arg)
+void Widget::moveYTo(Widget::VarInt arg)
 {
     m_y = std::make_pair(std::move(arg), 0);
 }
 
-void Widget::moveTo(Widget::VarOff argX, Widget::VarOff argY)
+void Widget::moveTo(Widget::VarInt argX, Widget::VarInt argY)
 {
     moveXTo(std::move(argX));
     moveYTo(std::move(argY));
 }
 
-void Widget::moveBy(Widget::VarOff argDX, Widget::VarOff argDY)
+void Widget::moveBy(Widget::VarInt argDX, Widget::VarInt argDY)
 {
-    const auto fnOp = [](std::pair<Widget::VarOff, int> &offset, Widget::VarOff update)
+    const auto fnOp = [](std::pair<Widget::VarInt, int> &offset, Widget::VarInt update)
     {
         if(update.index() == 0){
             offset.second += std::get<int>(update);
@@ -1059,7 +1059,7 @@ void Widget::moveBy(Widget::VarOff argDX, Widget::VarOff argDY)
     fnOp(m_y, std::move(argDY));
 }
 
-void Widget::moveBy(Widget::VarOff argDX, Widget::VarOff argDY, const Widget::ROI &r)
+void Widget::moveBy(Widget::VarInt argDX, Widget::VarInt argDY, const Widget::ROI &r)
 {
     moveBy(std::move(argDX), std::move(argDY));
     if(const auto t = dx(); r.x > t){
@@ -1079,7 +1079,7 @@ void Widget::moveBy(Widget::VarOff argDX, Widget::VarOff argDY, const Widget::RO
     }
 }
 
-void Widget::moveAt(Widget::VarDir argDir, Widget::VarOff argX, Widget::VarOff argY)
+void Widget::moveAt(Widget::VarDir argDir, Widget::VarInt argX, Widget::VarInt argY)
 {
     m_dir = std::move(argDir);
     moveTo(std::move(argX), std::move(argY));

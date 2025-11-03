@@ -56,7 +56,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         // make all var types distinct
         // this is necessary for Widget::transform
         struct VarDir        : public alias_VarDir        { using alias_VarDir        ::alias_VarDir        ; };
-        struct VarOff        : public alias_VarOff        { using alias_VarOff        ::alias_VarOff        ; };
+        struct VarInt        : public alias_VarOff        { using alias_VarOff        ::alias_VarOff        ; };
         struct VarU32        : public alias_VarU32        { using alias_VarU32        ::alias_VarU32        ; };
         struct VarSize       : public alias_VarSize       { using alias_VarSize       ::alias_VarSize       ; };
         struct VarBool       : public alias_VarBool       { using alias_VarBool       ::alias_VarBool       ; };
@@ -65,7 +65,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         struct VarTexLoadFunc: public alias_VarTexLoadFunc{ using alias_VarTexLoadFunc::alias_VarTexLoadFunc; };
 
     protected:
-        using VarOffOpt  = std::optional<VarOff>;
+        using VarOffOpt  = std::optional<VarInt>;
         using VarSizeOpt = std::optional<VarSize>;
 
     private:
@@ -159,7 +159,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
 
     public:
         virtual void addChild  (Widget *, bool);
-        virtual void addChildAt(Widget *, WidgetTreeNode::VarDir, WidgetTreeNode::VarOff, WidgetTreeNode::VarOff, bool);
+        virtual void addChildAt(Widget *, WidgetTreeNode::VarDir, WidgetTreeNode::VarInt, WidgetTreeNode::VarInt, bool);
 
     public:
         bool hasChild() const
@@ -184,7 +184,7 @@ class Widget: public WidgetTreeNode
 
     public:
         using WidgetTreeNode::VarDir;
-        using WidgetTreeNode::VarOff;
+        using WidgetTreeNode::VarInt;
         using WidgetTreeNode::VarOffOpt;
         using WidgetTreeNode::VarU32;
         using WidgetTreeNode::VarSize;
@@ -322,13 +322,13 @@ class Widget: public WidgetTreeNode
         struct InitArgs final
         {
             Widget::VarDir dir = DIR_UPLEFT;
-            Widget::VarOff x   = 0;
-            Widget::VarOff y   = 0;
+            Widget::VarInt x   = 0;
+            Widget::VarInt y   = 0;
 
             Widget::VarSizeOpt w = 0; // nullopt means auto-resize
             Widget::VarSizeOpt h = 0;
 
-            std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarOff, Widget::VarOff, bool>> childList = {};
+            std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> childList = {};
 
             Widget::VarBool show;
             Widget::VarBool focus;
@@ -349,7 +349,7 @@ class Widget: public WidgetTreeNode
 
     public:
         static dir8_t        evalDir        (const Widget::VarDir         &, const Widget *, const void * = nullptr);
-        static int           evalInt        (const Widget::VarOff         &, const Widget *, const void * = nullptr);
+        static int           evalInt        (const Widget::VarInt         &, const Widget *, const void * = nullptr);
         static uint32_t      evalU32        (const Widget::VarU32         &, const Widget *, const void * = nullptr);
         static int           evalSize       (const Widget::VarSize        &, const Widget *, const void * = nullptr);
         static bool          evalBool       (const Widget::VarBool        &, const Widget *, const void * = nullptr);
@@ -410,8 +410,8 @@ class Widget: public WidgetTreeNode
         Widget::VarDir m_dir;
 
     private:
-        std::pair<Widget::VarOff, int> m_x;
-        std::pair<Widget::VarOff, int> m_y;
+        std::pair<Widget::VarInt, int> m_x;
+        std::pair<Widget::VarInt, int> m_y;
 
     private:
         bool m_canSetSize = true;
@@ -557,14 +557,14 @@ class Widget: public WidgetTreeNode
         Widget *setActive(Widget::VarBool);
 
     public:
-        void moveXTo(Widget::VarOff);
-        void moveYTo(Widget::VarOff);
+        void moveXTo(Widget::VarInt);
+        void moveYTo(Widget::VarInt);
 
 
-        void moveTo(                Widget::VarOff, Widget::VarOff);
-        void moveBy(                Widget::VarOff, Widget::VarOff);
-        void moveBy(                Widget::VarOff, Widget::VarOff, const Widget::ROI &);
-        void moveAt(Widget::VarDir, Widget::VarOff, Widget::VarOff);
+        void moveTo(                Widget::VarInt, Widget::VarInt);
+        void moveBy(                Widget::VarInt, Widget::VarInt);
+        void moveBy(                Widget::VarInt, Widget::VarInt, const Widget::ROI &);
+        void moveAt(Widget::VarDir, Widget::VarInt, Widget::VarInt);
 
 
     public:

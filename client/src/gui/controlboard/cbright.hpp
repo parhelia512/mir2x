@@ -48,8 +48,8 @@ class CBRight: public Widget
     public:
         CBRight(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 ProcessRun *,
                 Widget * = nullptr,

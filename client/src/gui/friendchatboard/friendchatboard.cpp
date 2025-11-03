@@ -16,7 +16,7 @@ extern Client *g_client;
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-FriendChatBoard::FriendChatBoard(Widget::VarOff argX, Widget::VarOff argY, ProcessRun *runPtr, Widget *argParent, bool argAutoDelete)
+FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, ProcessRun *runPtr, Widget *argParent, bool argAutoDelete)
     : Widget
       {{
           .x = std::move(argX),

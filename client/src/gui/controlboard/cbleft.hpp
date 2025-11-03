@@ -54,8 +54,8 @@ class CBLeft: public Widget
     public:
         CBLeft(
                 Widget::VarDir,
-                Widget::VarOff,
-                Widget::VarOff,
+                Widget::VarInt,
+                Widget::VarInt,
 
                 ProcessRun *,
                 Widget * = nullptr,
