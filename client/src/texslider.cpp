@@ -99,8 +99,8 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
           .parent{this},
       }}
 {
-    moveAt (DIR_UPLEFT, [this]{ return m_base.x(); }, [this]{ return m_base.y(); });
-    setSize(            [this]{ return m_base.w(); }, [this]{ return m_base.h(); });
+    moveAt (DIR_UPLEFT, [this]{ return m_base.dx(); }, [this]{ return m_base.dy(); });
+    setSize(            [this]{ return m_base. w(); }, [this]{ return m_base. h(); });
 
     fflassert(w() > 0);
     fflassert(h() > 0);
