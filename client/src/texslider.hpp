@@ -18,6 +18,7 @@ class TexSlider: public Widget
             BarArgs bar {};
 
             int index = 0;
+            float value = 0.0f;
 
             Widget::VarUpdateFunc<float> onChange = nullptr;
             Widget::WADPair parent {};
