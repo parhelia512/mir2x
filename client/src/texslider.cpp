@@ -27,6 +27,9 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
               .dir = DIR_UPLEFT,
               .widget = new Widget
               {{
+                  .w = {},
+                  .h = {},
+
                   .childList
                   {
                       {new ImageBoard
