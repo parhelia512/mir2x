@@ -52,6 +52,14 @@ class TexSlider: public Widget
         const SliderTexInfo *m_sliderTexInfo;
 
     private:
+        static constexpr auto getSliderTexInfo(int index)
+        {
+            fflassert(index >= 0);
+            fflassert(index <  static_cast<int>(std::size(m_sliderTexInfoList)));
+            return m_sliderTexInfoList + index;
+        }
+
+    private:
         ImageBoard m_image;
         ImageBoard m_cover;
 

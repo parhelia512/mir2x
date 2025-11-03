@@ -316,14 +316,30 @@ std::tuple<int, int> SDLDeviceHelper::getTextureSize(SDL_Texture *texture)
     throw fflerror("query texture failed: %p", to_cvptr(texture));
 }
 
-int SDLDeviceHelper::getTextureWidth(SDL_Texture *texture)
+int SDLDeviceHelper::getTextureWidth(SDL_Texture *texture, std::optional<int> optW)
 {
-    return std::get<0>(getTextureSize(texture));
+    if(texture){
+        return std::get<0>(getTextureSize(texture));
+    }
+    else if(optW.has_value() && optW.value() >= 0){
+        return optW.value();
+    }
+    else{
+        throw fflerror("invalid texture pointer and optional width");
+    }
 }
 
-int SDLDeviceHelper::getTextureHeight(SDL_Texture *texture)
+int SDLDeviceHelper::getTextureHeight(SDL_Texture *texture, std::optional<int> optH)
 {
-    return std::get<1>(getTextureSize(texture));
+    if(texture){
+        return std::get<1>(getTextureSize(texture));
+    }
+    else if(optH.has_value() && optH.value() >= 0){
+        return optH.value();
+    }
+    else{
+        throw fflerror("invalid texture pointer and optional height");
+    }
 }
 
 SDLSoundEffectChannel::SDLSoundEffectChannel(SDLDevice *sdlDevice, int channel)

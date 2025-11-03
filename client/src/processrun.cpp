@@ -561,6 +561,24 @@ void ProcessRun::draw() const
     if(getRuntimeConfig<RTCFG_SHOWFPS>()){
         drawFPS();
     }
+
+    TexSlider slider
+    {{
+        .bar
+        {
+            .x = 10,
+            .y = 10,
+            .w = 5,
+            .h = 100,
+            .v = true,
+        },
+
+        .index = 0,
+    }};
+
+    slider.drawRoot({});
+
+
 }
 
 void ProcessRun::processEvent(const SDL_Event &event)
