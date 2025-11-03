@@ -56,6 +56,9 @@ class TexSlider: public Widget
         ImageBoard m_cover;
 
     private:
+        Widget m_sliderWidget;
+
+    private:
         SliderBase m_base;
 
     private:

@@ -67,6 +67,15 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
           },
       }}
 
+    , m_sliderWidget
+      {{
+          .childList
+          {
+              {std::addressof(m_image)},
+              {std::addressof(m_cover)},
+          },
+      }}
+
     , m_base
       {{
           .bar = std::move(args.bar)
@@ -83,7 +92,7 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
           .sliderWidget
           {
               .dir = DIR_UPLEFT,
-              .widget = std::addressof(m_image),
+              .widget = std::addressof(m_sliderWidget),
           },
 
           .onChange = std::move(args.onChange),
