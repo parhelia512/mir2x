@@ -71,8 +71,8 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
       {{
           .childList
           {
-              {std::addressof(m_image)},
-              {std::addressof(m_cover)},
+              {std::addressof(m_image), DIR_UPLEFT, 0, 0, false},
+              {std::addressof(m_cover), DIR_UPLEFT, 0, 0, false},
           },
       }}
 

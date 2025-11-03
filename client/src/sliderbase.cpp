@@ -203,11 +203,7 @@ bool SliderBase::inSlider(int eventX, int eventY, Widget::ROIMap m) const
     if(!m.calibrate(this)){
         return false;
     }
-
-    if(auto sliderROI = getSliderROI(); sliderROI.crop({m.x, m.y, m.ro->w, m.ro->h})){
-        return sliderROI.in(eventX, eventY);
-    }
-    return false;
+    return m.create(m_slider.roi(this)).in(eventX, eventY);
 }
 
 int SliderBase::sliderXAtValue(int barX, float value) const
