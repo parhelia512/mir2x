@@ -68,8 +68,8 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
     moveTo([this]{ return widgetXFromBar(Widget::evalInt(m_barArgs.x, this)); },
            [this]{ return widgetYFromBar(Widget::evalInt(m_barArgs.y, this)); });
 
-    setSize([this]{ return std::max<int>(m_bar.dx() + m_bar.w(), sliderXAtValue(1.0f) + m_slider.w()) - dx(); },
-            [this]{ return std::max<int>(m_bar.dy() + m_bar.h(), sliderYAtValue(1.0f) + m_slider.h()) - dy(); });
+    setSize([this]{ return std::max<int>(Widget::evalSize(m_barArgs.w, this), sliderXAtValue(0, 1.0f) + m_slider.w()) - widgetXFromBar(0); },
+            [this]{ return std::max<int>(Widget::evalSize(m_barArgs.h, this), sliderYAtValue(0, 1.0f) + m_slider.h()) - widgetYFromBar(0); });
 }
 
 bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
@@ -97,11 +97,11 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                     m_sliderState = BEVENT_ON;
                     setValue([&event, startDstX = m.x, startDstY = m.y, roiOpt = m.ro, this]() -> float
                     {
-                        if(m_hslider){
-                            return ((event.button.x - (startDstX - roiOpt->x)) * 1.0f) / std::max<int>(1, w());
+                        if(vbar()){
+                            return ((event.button.y - (startDstY - roiOpt->y)) * 1.0f) / std::max<int>(1, h());
                         }
                         else{
-                            return ((event.button.y - (startDstY - roiOpt->y)) * 1.0f) / std::max<int>(1, h());
+                            return ((event.button.x - (startDstX - roiOpt->x)) * 1.0f) / std::max<int>(1, w());
                         }
                     }(), true);
                     return consumeFocus(true);
@@ -127,11 +127,11 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                 if(event.motion.state & SDL_BUTTON_LMASK){
                     if(inSlider(event.motion.x, event.motion.y, m) || focus()){
                         m_sliderState = BEVENT_DOWN;
-                        if(m_hslider){
-                            addValue(pixel2Value(event.motion.xrel), true);
+                        if(vbar()){
+                            addValue(pixel2Value(event.motion.yrel), true);
                         }
                         else{
-                            addValue(pixel2Value(event.motion.yrel), true);
+                            addValue(pixel2Value(event.motion.xrel), true);
                         }
                         return consumeFocus(true);
                     }
