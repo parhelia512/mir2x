@@ -307,12 +307,12 @@ class Widget: public WidgetTreeNode
 
             Widget::ROIOpt ro = std::nullopt;
 
-            bool calibrate(const Widget *);
-
-            bool   crop  (const Widget::ROI &);
-            ROIMap create(const Widget::ROI &) const; // create ROIMap for child
+            ROIMap & calibrate(const Widget *);
+            ROIMap & crop     (const Widget::ROI &);
+            ROIMap   create   (const Widget::ROI &) const; // create ROIMap for child
 
             bool empty() const;
+            operator bool () const; // can throw if ro is nullopt
 
             /**/                 bool in(int, int ) const;
             template<typename T> bool in(const T &) const;

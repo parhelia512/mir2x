@@ -186,7 +186,7 @@ Widget::ROIOpt::ROIOpt(const Widget::ROI &roi)
     : m_roiOpt(roi)
 {}
 
-bool Widget::ROIMap::calibrate(const Widget *widget)
+Widget::ROIMap & Widget::ROIMap::calibrate(const Widget *widget)
 {
     if(!ro.has_value()){
         if(widget){
@@ -219,10 +219,10 @@ bool Widget::ROIMap::calibrate(const Widget *widget)
         y = 0;
     }
 
-    return !ro->empty();
+    return *this;
 }
 
-bool Widget::ROIMap::crop(const Widget::ROI &r)
+Widget::ROIMap & Widget::ROIMap::crop(const Widget::ROI &r)
 {
     if(!ro.has_value()){
         throw fflerror("ro empty");
@@ -242,7 +242,7 @@ bool Widget::ROIMap::crop(const Widget::ROI &r)
     x += (ro->x - oldX);
     y += (ro->y - oldY);
 
-    return !empty();
+    return *this;
 }
 
 Widget::ROIMap Widget::ROIMap::create(const Widget::ROI &cr /* child ROI */) const
@@ -264,6 +264,11 @@ bool Widget::ROIMap::empty() const
     else{
         throw fflerror("ro empty");
     }
+}
+
+Widget::ROIMap::operator bool () const
+{
+    return !empty();
 }
 
 bool Widget::ROIMap::in(int pixelX, int pixelY) const
