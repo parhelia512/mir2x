@@ -38,8 +38,8 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
 
     , m_slider
       {{
-          .x = [this]{ return sliderXAtValue(m_bar.dx(), getValue()); },
-          .y = [this]{ return sliderYAtValue(m_bar.dy(), getValue()); },
+          .x = [this]{ return sliderXAtValueFromBar(getValue(), m_bar.dx()); },
+          .y = [this]{ return sliderYAtValueFromBar(getValue(), m_bar.dy()); },
 
           .w = [this]{ return Widget::evalSize(m_sliderArgs.w, this); },
           .h = [this]{ return Widget::evalSize(m_sliderArgs.h, this); },
@@ -73,8 +73,8 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
     moveTo([this]{ return widgetXFromBar(Widget::evalInt(m_barArgs.x, this)); },
            [this]{ return widgetYFromBar(Widget::evalInt(m_barArgs.y, this)); });
 
-    setSize([this]{ return std::max<int>(Widget::evalSize(m_barArgs.w, this), sliderXAtValue(0, 1.0f) + m_slider.w()) - widgetXFromBar(0); },
-            [this]{ return std::max<int>(Widget::evalSize(m_barArgs.h, this), sliderYAtValue(0, 1.0f) + m_slider.h()) - widgetYFromBar(0); });
+    setSize([this]{ return std::max<int>(Widget::evalSize(m_barArgs.w, this), sliderXAtValueFromBar(1.0f, 0) + m_slider.w()) - widgetXFromBar(0); },
+            [this]{ return std::max<int>(Widget::evalSize(m_barArgs.h, this), sliderYAtValueFromBar(1.0f, 0) + m_slider.h()) - widgetYFromBar(0); });
 
     if(args.bgWidget.widget){
         addChildAt(args.bgWidget.widget, DIR_UPLEFT,
@@ -217,7 +217,7 @@ bool SliderBase::inSlider(int eventX, int eventY, Widget::ROIMap m) const
     return m.create(m_slider.roi(this)).in(eventX, eventY);
 }
 
-int SliderBase::sliderXAtValue(int barX, float value) const
+int SliderBase::sliderXAtValueFromBar(float value, int barX) const
 {
     fflassert(value >= 0.0f, value);
     fflassert(value <= 1.0f, value);
@@ -231,7 +231,7 @@ int SliderBase::sliderXAtValue(int barX, float value) const
         : (barX - sliderCX + to_dround(value * (barW - 1)));
 }
 
-int SliderBase::sliderYAtValue(int barY, float value) const
+int SliderBase::sliderYAtValueFromBar(float value, int barY) const
 {
     fflassert(value >= 0.0f, value);
     fflassert(value <= 1.0f, value);
@@ -248,7 +248,15 @@ int SliderBase::sliderYAtValue(int barY, float value) const
 std::optional<int> SliderBase::bgXFromBar(int barX) const
 {
     if(m_bgOff.has_value()){
-        return barX - Widget::evalInt(m_bgOff->first ,this);
+        return barX - Widget::evalInt(m_bgOff->first, this);
+    }
+    return std::nullopt;
+}
+
+std::optional<int> SliderBase::bgYFromBar(int barY) const
+{
+    if(m_bgOff.has_value()){
+        return barY - Widget::evalInt(m_bgOff->second, this);
     }
     return std::nullopt;
 }

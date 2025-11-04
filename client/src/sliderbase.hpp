@@ -136,14 +136,14 @@ class SliderBase: public Widget
         bool inSlider(int, int, Widget::ROIMap) const;
 
     private:
-        int sliderXAtValue(int, float) const; // only depends on barArgs and sliderArgs
-        int sliderYAtValue(int, float) const; // ....
+        int sliderXAtValueFromBar(float, int) const; // only depends on barArgs and sliderArgs
+        int sliderYAtValueFromBar(float, int) const; // ....
 
     private:
-        std::optional<int> bgXFromBar(int barX) const { return m_bgOff.has_value() ? (barX - Widget::evalInt(m_bgOff->first , this)) : std::nullopt; }
-        std::optional<int> bgYFromBar(int barY) const { return m_bgOff.has_value() ? (barY - Widget::evalInt(m_bgOff->second, this)) : std::nullopt; }
+        std::optional<int> bgXFromBar(int) const;
+        std::optional<int> bgYFromBar(int) const;
 
     private:
-        int widgetXFromBar(int barX) const { return std::min<int>({barX, sliderXAtValue(barX, 0.0f), bgXFromBar(barX).value_or(INT_MAX)}); }
-        int widgetYFromBar(int barY) const { return std::min<int>({barY, sliderYAtValue(barY, 0.0f), bgYFromBar(barX).value_or(INT_MAX)}); }
+        int widgetXFromBar(int barX) const { return std::min<int>({barX, sliderXAtValueFromBar(0.0f, barX), bgXFromBar(barX).value_or(INT_MAX)}); }
+        int widgetYFromBar(int barY) const { return std::min<int>({barY, sliderYAtValueFromBar(0.0f, barY), bgYFromBar(barY).value_or(INT_MAX)}); }
 };
