@@ -94,15 +94,15 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                     m_sliderState = BEVENT_DOWN;
                     return consumeFocus(true);
                 }
-                else if(m.in(event.button.x, event.button.y)){
+                else if(const auto mbar = m.create(m_bar.roi(this)); mbar.in(event.button.x, event.button.y)){
                     m_sliderState = BEVENT_ON;
-                    setValue([&event, startDstX = m.x, startDstY = m.y, roiOpt = m.ro, this]() -> float
+                    setValue([&event, startDstX = mbar.x - mbar.ro->x, startDstY = mbar.y - mbar.ro->y, this]() -> float
                     {
                         if(vbar()){
-                            return ((event.button.y - (startDstY - roiOpt->y)) * 1.0f) / std::max<int>(1, h());
+                            return ((event.button.y - startDstY) * 1.0f) / std::max<int>(1, m_bar.h());
                         }
                         else{
-                            return ((event.button.x - (startDstX - roiOpt->x)) * 1.0f) / std::max<int>(1, w());
+                            return ((event.button.x - startDstX) * 1.0f) / std::max<int>(1, m_bar.w());
                         }
                     }(), true);
                     return consumeFocus(true);
