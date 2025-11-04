@@ -12,6 +12,7 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
           .parent = std::move(args.parent),
       }}
 
+    , m_value(fflcheck(args.value, args.value >= 0.0f && args.value <= 1.0f))
     , m_bgOff(args.bgWidget.widget
             ? std::make_optional(std::make_pair(std::move(args.bgWidget.ox), std::move(args.bgWidget.oy)))
             : std::nullopt)
@@ -19,9 +20,7 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
     , m_barArgs(std::move(args.bar))
     , m_sliderArgs(std::move(args.slider))
 
-    , m_value(fflcheck(args.value, args.value >= 0.0f && args.value <= 1.0f))
     , m_onChange(std::move(args.onChange))
-
     , m_bar
       {{
           .dir = std::move(args.bar.dir),

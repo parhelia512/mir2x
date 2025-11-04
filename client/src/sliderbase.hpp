@@ -76,17 +76,15 @@ class SliderBase: public Widget
         };
 
     private:
+        float m_value;
+        int   m_sliderState = BEVENT_OFF;
+
+    private:
         const std::optional<std::pair<Widget::VarInt, Widget::VarInt>> m_bgOff;
 
     private:
         const BarArgs m_barArgs;
         const SliderArgs m_sliderArgs;
-
-    private:
-        float m_value;
-
-    private:
-        int m_sliderState = BEVENT_OFF;
 
     private:
         const Widget::VarUpdateFunc<float> m_onChange;
