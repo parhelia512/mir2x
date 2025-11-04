@@ -79,7 +79,7 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
     if(args.bgWidget.widget){
         addChildAt(args.bgWidget.widget, DIR_UPLEFT,
                 [this]{ return -1 * widgetXFromBar(0) - Widget::evalInt(m_bgOff->first , this); },
-                [this]{ return -1 * widgetYFromBar(0) - Widget::evalInt(m_bgOff->second, this); });
+                [this]{ return -1 * widgetYFromBar(0) - Widget::evalInt(m_bgOff->second, this); }, args.bgWidget.autoDelete);
     }
 }
 
