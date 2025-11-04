@@ -829,14 +829,14 @@ void SDLDevice::drawTextureEx(
 
 SDL_Texture *SDLDevice::createRGBATexture(const uint32_t *data, size_t w, size_t h)
 {
-    // we can only use SDL_PIXELFORMAT_RGBA8888
-    // tried SDL_PIXELFORMAT_RGBA32 but gives wrong pixel format
+    // use SDL_PIXELFORMAT_RGBA32
+    // it's alias of SDL_PIXELFORMAT_ARGB8888
 
     fflassert(data);
     fflassert(w > 0);
     fflassert(h > 0);
 
-    if(auto texPtr = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h)){
+    if(auto texPtr = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, w, h)){
         if(!SDL_UpdateTexture(texPtr, 0, data, w * 4) && !SDL_SetTextureBlendMode(texPtr, SDL_BLENDMODE_BLEND)){
             return texPtr;
         }
