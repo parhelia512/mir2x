@@ -69,12 +69,12 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
                               switch(sliderState()){
                                   case BEVENT_ON:
                                       {
-                                          if(active()){ return colorf::BLUE  + colorf::A_SHF(200); }
+                                          if(active()){ return colorf::BLUE  + colorf::A_SHF(128); }
                                           else        { return colorf::WHITE_A255; }
                                       }
                                   case BEVENT_DOWN:
                                       {
-                                          if(active()){ return colorf::RED   + colorf::A_SHF(200); }
+                                          if(active()){ return colorf::RED   + colorf::A_SHF(128); }
                                           else        { return colorf::WHITE_A255; }
                                       }
                                   default:
