@@ -22,6 +22,8 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
           },
 
           .value = args.value,
+
+          .bgWidget = std::move(args.bgWidget),
           .sliderWidget
           {
               .dir = DIR_UPLEFT,
