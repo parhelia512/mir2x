@@ -44,7 +44,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
 
     private:
         using alias_VarDir         = VarTypeHelper<       dir8_t>;
-        using alias_VarOff         = VarTypeHelper<          int>;
+        using alias_VarInt         = VarTypeHelper<          int>;
         using alias_VarU32         = VarTypeHelper<     uint32_t>;
         using alias_VarSize        = VarTypeHelper<          int>;
         using alias_VarBool        = VarTypeHelper<         bool>;
@@ -56,7 +56,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         // make all var types distinct
         // this is necessary for Widget::transform
         struct VarDir        : public alias_VarDir        { using alias_VarDir        ::alias_VarDir        ; };
-        struct VarInt        : public alias_VarOff        { using alias_VarOff        ::alias_VarOff        ; };
+        struct VarInt        : public alias_VarInt        { using alias_VarInt        ::alias_VarInt        ; };
         struct VarU32        : public alias_VarU32        { using alias_VarU32        ::alias_VarU32        ; };
         struct VarSize       : public alias_VarSize       { using alias_VarSize       ::alias_VarSize       ; };
         struct VarBool       : public alias_VarBool       { using alias_VarBool       ::alias_VarBool       ; };
@@ -65,7 +65,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         struct VarTexLoadFunc: public alias_VarTexLoadFunc{ using alias_VarTexLoadFunc::alias_VarTexLoadFunc; };
 
     protected:
-        using VarOffOpt  = std::optional<VarInt>;
+        using VarIntOpt  = std::optional<VarInt>;
         using VarSizeOpt = std::optional<VarSize>;
 
     private:
@@ -185,7 +185,7 @@ class Widget: public WidgetTreeNode
     public:
         using WidgetTreeNode::VarDir;
         using WidgetTreeNode::VarInt;
-        using WidgetTreeNode::VarOffOpt;
+        using WidgetTreeNode::VarIntOpt;
         using WidgetTreeNode::VarU32;
         using WidgetTreeNode::VarSize;
         using WidgetTreeNode::VarSizeOpt;

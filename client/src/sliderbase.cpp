@@ -12,6 +12,10 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
           .parent = std::move(args.parent),
       }}
 
+    , m_bgOff(args.bgWidget.widget
+            ? std::make_optional(std::make_pair(std::move(args.bgWidget.ox), std::move(args.bgWidget.oy)))
+            : std::nullopt)
+
     , m_barArgs(std::move(args.bar))
     , m_sliderArgs(std::move(args.slider))
 
@@ -71,6 +75,12 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
 
     setSize([this]{ return std::max<int>(Widget::evalSize(m_barArgs.w, this), sliderXAtValue(0, 1.0f) + m_slider.w()) - widgetXFromBar(0); },
             [this]{ return std::max<int>(Widget::evalSize(m_barArgs.h, this), sliderYAtValue(0, 1.0f) + m_slider.h()) - widgetYFromBar(0); });
+
+    if(args.bgWidget.widget){
+        addChildAt(args.bgWidget.widget, DIR_UPLEFT,
+                [this]{ -1 * widgetXFromBar(0) - Widget::evalInt(m_bgOff->first , this) },
+                [this]{ -1 * widgetYFromBar(0) - Widget::evalInt(m_bgOff->second, this) });
+    }
 }
 
 bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
@@ -233,4 +243,12 @@ int SliderBase::sliderYAtValue(int barY, float value) const
     return vbar()
         ? (barY - sliderCY + to_dround(value * (barH - 1)))
         : (barY - sliderCY + barH / 2);
+}
+
+std::optional<int> SliderBase::bgXFromBar(int barX) const
+{
+    if(m_bgOff.has_value()){
+        return barX - Widget::evalInt(m_bgOff->first ,this);
+    }
+    return std::nullopt;
 }

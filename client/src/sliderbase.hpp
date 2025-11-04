@@ -43,11 +43,20 @@ class SliderBase: public Widget
 
             // (cx, cy) overlaps with bar geometric center when slider value is 0.5, in pixel-level
 
-            Widget::VarOffOpt cx = std::nullopt;
-            Widget::VarOffOpt cy = std::nullopt;
+            Widget::VarIntOpt cx = std::nullopt;
+            Widget::VarIntOpt cy = std::nullopt;
 
             Widget::VarSize w = 10;
             Widget::VarSize h = 10;
+        };
+
+        struct BarBgWidget final
+        {
+            Widget::VarInt ox = 0; // offset (ox, oy) that overlaps with bar DIR_UPLEFT corner
+            Widget::VarInt oy = 0;
+
+            Widget *widget     = nullptr;
+            bool    autoDelete = false;
         };
 
     private:
@@ -58,12 +67,16 @@ class SliderBase: public Widget
 
             float value = 0.0f;
 
+            BarBgWidget                          bgWidget {};
             MarginContainer::ContainedWidget    barWidget {};
             MarginContainer::ContainedWidget sliderWidget {};
 
             Widget::VarUpdateFunc<float> onChange = nullptr;
             Widget::WADPair parent {};
         };
+
+    private:
+        const std::optional<std::pair<Widget::VarInt, Widget::VarInt>> m_bgOff;
 
     private:
         const BarArgs m_barArgs;
@@ -127,6 +140,10 @@ class SliderBase: public Widget
         int sliderYAtValue(int, float) const; // ....
 
     private:
-        int widgetXFromBar(int barX) const { return std::min<int>(barX, sliderXAtValue(barX, 0.0f)); }
-        int widgetYFromBar(int barY) const { return std::min<int>(barY, sliderYAtValue(barY, 0.0f)); }
+        std::optional<int> bgXFromBar(int barX) const { return m_bgOff.has_value() ? (barX - Widget::evalInt(m_bgOff->first , this)) : std::nullopt; }
+        std::optional<int> bgYFromBar(int barY) const { return m_bgOff.has_value() ? (barY - Widget::evalInt(m_bgOff->second, this)) : std::nullopt; }
+
+    private:
+        int widgetXFromBar(int barX) const { return std::min<int>({barX, sliderXAtValue(barX, 0.0f), bgXFromBar(barX).value_or(INT_MAX)}); }
+        int widgetYFromBar(int barY) const { return std::min<int>({barY, sliderYAtValue(barY, 0.0f), bgYFromBar(barX).value_or(INT_MAX)}); }
 };
