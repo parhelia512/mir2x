@@ -10,6 +10,7 @@ class TexSlider: public SliderBase
 {
     protected:
         using SliderBase::BarArgs;
+        using SliderBase::BarBgWidget;
 
     private:
         struct InitArgs final
@@ -18,6 +19,8 @@ class TexSlider: public SliderBase
 
             int index = 0;
             float value = 0.0f;
+
+            BarBgWidget bgWidget {};
 
             Widget::VarUpdateFunc<float> onChange = nullptr;
             Widget::WADPair parent {};
