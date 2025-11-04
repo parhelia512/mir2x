@@ -606,11 +606,11 @@ void SDLDevice::drawTexture(SDL_Texture *texPtr, dir8_t dir, int anchorX, int an
             switch(dir){
                 case DIR_UPLEFT   : return {anchorX           , anchorY           };
                 case DIR_UP       : return {anchorX - texW / 2, anchorY           };
-                case DIR_UPRIGHT  : return {anchorX - texW    , anchorY           };
-                case DIR_RIGHT    : return {anchorX - texW    , anchorY - texH / 2};
-                case DIR_DOWNRIGHT: return {anchorX - texW    , anchorY - texH    };
-                case DIR_DOWN     : return {anchorX - texW / 2, anchorY - texH    };
-                case DIR_DOWNLEFT : return {anchorX           , anchorY - texH    };
+                case DIR_UPRIGHT  : return {anchorX - texW - 1, anchorY           };
+                case DIR_RIGHT    : return {anchorX - texW - 1, anchorY - texH / 2};
+                case DIR_DOWNRIGHT: return {anchorX - texW - 1, anchorY - texH - 1};
+                case DIR_DOWN     : return {anchorX - texW / 2, anchorY - texH - 1};
+                case DIR_DOWNLEFT : return {anchorX           , anchorY - texH - 1};
                 case DIR_LEFT     : return {anchorX           , anchorY - texH / 2};
                 default           : return {anchorX - texW / 2, anchorY - texH / 2};
             }
@@ -829,15 +829,14 @@ void SDLDevice::drawTextureEx(
 
 SDL_Texture *SDLDevice::createRGBATexture(const uint32_t *data, size_t w, size_t h)
 {
-    // TODO
-    // seems we can only use SDL_PIXELFORMAT_RGBA8888
+    // we can only use SDL_PIXELFORMAT_RGBA8888
     // tried SDL_PIXELFORMAT_RGBA32 but gives wrong pixel format
 
     fflassert(data);
     fflassert(w > 0);
     fflassert(h > 0);
 
-    if(auto texPtr = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, w, h)){
+    if(auto texPtr = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h)){
         if(!SDL_UpdateTexture(texPtr, 0, data, w * 4) && !SDL_SetTextureBlendMode(texPtr, SDL_BLENDMODE_BLEND)){
             return texPtr;
         }
@@ -901,7 +900,7 @@ SDL_Texture *SDLDevice::getCover(int r, int angle)
                 return ((dx > 0) ? 0 : 180) + to_d(std::lround((1.0 - 2.0 * std::atan(to_df(dy) / dx) / 3.14159265358979323846) * 90.0));
             }();
 
-            if(curr_r2 < r * r && mathf::bound<int>(curr_angle, 0, 360) <= angle){
+            if(curr_r2 < r * r && std::clamp<int>(curr_angle, 0, 360) <= angle){
                 buf[x + y * w] = colorf::RGBA(0XFF, 0XFF, 0XFF, alpha);
             }
             else{
