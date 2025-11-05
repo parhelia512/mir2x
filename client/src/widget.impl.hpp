@@ -245,6 +245,34 @@ int Widget::evalSizeOpt(const Widget::VarSizeOpt &varSizeOpt, const Widget *widg
     }
 }
 
+template<typename T> T Widget::evalGetter(const Widget::VarGetter<T> &varGetter, const Widget *widget, const void *arg)
+{
+    return std::visit(VarDispatcher
+    {
+        [](const T &varg)
+        {
+            return varg;
+        },
+
+        [](const std::function<T()> &varg)
+        {
+            return varg ? varg() : T{};
+        },
+
+        [widget](const std::function<T(const Widget *)> &varg)
+        {
+            return varg ? varg(widget) : T{};
+        },
+
+        [widget, arg](const std::function<T(const Widget *, const void *)> &varg)
+        {
+            return varg ? varg(widget, arg) : T{};
+        },
+    },
+
+    varGetter);
+}
+
 template<typename Func> Widget::VarSize Widget::transform(Widget::VarSize varSize, Func && func)
 {
     if(varSize.index() == 0){

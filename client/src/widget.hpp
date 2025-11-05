@@ -68,6 +68,12 @@ class WidgetTreeNode // tree concept, used by class Widget only
         using VarIntOpt  = std::optional<VarInt>;
         using VarSizeOpt = std::optional<VarSize>;
 
+    protected:
+        template<typename T> struct VarGetter: public VarTypeHelper<T>
+        {
+            using VarTypeHelper<T>::VarTypeHelper;
+        };
+
     private:
         friend class Widget;
 
@@ -362,6 +368,9 @@ class Widget: public WidgetTreeNode
     public:
         static int evalSizeOpt(const Widget::VarSizeOpt &, const Widget *,               const auto &);
         static int evalSizeOpt(const Widget::VarSizeOpt &, const Widget *, const void *, const auto &);
+
+    public:
+        template<typename T> static T evalGetter(const Widget::VarGetter<T> &, const Widget *, const void * = nullptr);
 
     public:
         template<typename Func> static VarSize    transform(VarSize   , Func &&);
