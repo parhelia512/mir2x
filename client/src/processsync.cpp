@@ -23,23 +23,19 @@ ProcessSync::ProcessSync()
       }}
 
     , m_bar
-      {
-          DIR_UPLEFT,
-          112,
-          528,
+      {{
+          .x = 112,
+          .y = 528,
 
-          &m_barFull,
+          .getter = &m_barFull,
+          .roi
+          {
+              .w = [this]{ return m_barFull.w() * m_ratio / 100; },
+              .h = [this]{ return m_barFull.h()                ; },
+          },
 
-          0,
-          0,
-          [this]{ return m_barFull.w() * m_ratio / 100; },
-          [this]{ return m_barFull.h()                ; },
-
-          {},
-
-          &m_canvas,
-          false,
-      }
+          .parent{&m_canvas},
+      }}
 
     , m_bgImg
       {{

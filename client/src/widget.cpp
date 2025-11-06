@@ -174,6 +174,18 @@ bool Widget::ROI::overlap(const Widget::ROI &r) const
     return mathf::rectangleOverlap(x, y, w, h, r.x, r.y, r.w, r.h);
 }
 
+Widget::ROI Widget::VarROI::roi(const Widget *widget, const void *arg) const
+{
+    return
+    {
+        .x = Widget::evalInt (x, widget, arg),
+        .y = Widget::evalInt (y, widget, arg),
+        .w = Widget::evalSize(w, widget, arg),
+        .h = Widget::evalSize(h, widget, arg),
+    };
+}
+
+
 Widget::ROIOpt::ROIOpt(int argW, int argH)
     : Widget::ROIOpt::ROIOpt(0, 0, argW, argH)
 {}

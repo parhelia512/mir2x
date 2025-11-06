@@ -46,59 +46,46 @@ TexSliderBar::TexSliderBar(
       }}
 
     , m_slotCropLeft
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          &m_slotImage,
-
-          0,
-          0,
-
-          /* brdCropW */  argHSlider ? 3 : m_slotImage.w(),
-          /* brdCropH */ !argHSlider ? 3 : m_slotImage.h(),
-
-          {},
-
-          this,
-          false,
-      }
+      {{
+          .getter = &m_slotImage,
+          .roi
+          {
+          /* brdCropW */ .w =  argHSlider ? 3 : m_slotImage.w(),
+          /* brdCropH */ .h = !argHSlider ? 3 : m_slotImage.h(),
+          },
+          .parent{this},
+      }}
 
     , m_slotCropMiddle
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .getter = &m_slotImage,
+          .roi
+          {
+              /* brdCropX */ .x =  argHSlider ? 3 : 0,
+              /* brdCropY */ .y = !argHSlider ? 3 : 0,
 
-          &m_slotImage,
-
-          /* brdCropX */  argHSlider ? 3 : 0,
-          /* brdCropY */ !argHSlider ? 3 : 0,
-
-          /* brdCropW */  argHSlider ? m_slotImage.w() - 6 : m_slotImage.w(),
-          /* brdCropH */ !argHSlider ? m_slotImage.h() - 6 : m_slotImage.h(),
-      }
+              /* brdCropW */ .w =  argHSlider ? m_slotImage.w() - 6 : m_slotImage.w(),
+              /* brdCropH */ .h = !argHSlider ? m_slotImage.h() - 6 : m_slotImage.h(),
+          },
+      }}
 
     , m_slotCropRight
-      {
-          DIR_DOWNRIGHT,
-          w() - 1,
-          h() - 1,
+      {{
+          .dir = DIR_DOWNRIGHT,
+          .x = w() - 1,
+          .y = h() - 1,
 
-          &m_slotImage,
+          .getter = &m_slotImage,
+          .roi
+          {
+              /* brdCropX */ .x =  argHSlider ? m_slotImage.w() - 3 : 0,
+              /* brdCropY */ .y = !argHSlider ? m_slotImage.h() - 3 : 0,
 
-          /* brdCropX */  argHSlider ? m_slotImage.w() - 3 : 0,
-          /* brdCropY */ !argHSlider ? m_slotImage.h() - 3 : 0,
-
-          /* brdCropW */  argHSlider ? 3 : m_slotImage.w(),
-          /* brdCropW */ !argHSlider ? 3 : m_slotImage.h(),
-
-          {},
-
-          this,
-          false,
-      }
+              /* brdCropW */ .w =  argHSlider ? 3 : m_slotImage.w(),
+              /* brdCropW */ .h = !argHSlider ? 3 : m_slotImage.h(),
+          },
+          .parent{this},
+      }}
 
     , m_slotMidCropDup
       {

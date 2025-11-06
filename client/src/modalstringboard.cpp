@@ -79,18 +79,14 @@ class ModalStringBoardImpl: public Widget
               }}
 
             , m_imageUp
-              {
-                  DIR_UPLEFT,
-                  0,
-                  0,
-
-                  &m_image,
-
-                  0,
-                  0,
-                  [this](const Widget *){ return m_image.w(); },
-                  180,
-              }
+              {{
+                  .getter = &m_image,
+                  .roi
+                  {
+                      .w = [this]{ return m_image.w(); },
+                      .h = 180,
+                  },
+              }}
 
             , m_imageUpDup
               {
@@ -112,23 +108,20 @@ class ModalStringBoardImpl: public Widget
               }
 
             , m_imageDown
-              {
-                  DIR_UPLEFT,
-                  [this](const Widget *){ return m_imageUpDup.dx(); },
-                  [this](const Widget *){ return m_imageUpDup.dy() + m_imageUpDup.h(); },
+              {{
+                  .x = [this]{ return m_imageUpDup.dx(); },
+                  .y = [this]{ return m_imageUpDup.dy() + m_imageUpDup.h(); },
 
-                  &m_image,
+                  .getter = &m_image,
+                  .roi
+                  {
+                      .y = [this]{ return m_image.h() - 40; },
+                      .w = [this]{ return m_image.w(); },
+                      .h = 40,
+                  },
 
-                  0,
-                  [this](const Widget *){ return m_image.h() - 40; },
-                  [this](const Widget *){ return m_image.w(); },
-                  40,
-
-                  {},
-
-                  this,
-                  false,
-              }
+                  .parent{this},
+              }}
         {
             addChildAt(&m_board, DIR_NONE, [this](const Widget *)
             {

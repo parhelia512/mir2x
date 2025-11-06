@@ -177,23 +177,15 @@ RuntimeConfigBoard::PullMenu::PullMenu(
       }}
 
     , m_labelCrop
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          &m_label,
-
-          0,
-          0,
-          [argLabelWidth]{fflassert(argLabelWidth >= 0); return argLabelWidth; }(),
-          m_label.h(),
-
-          {},
-
-          this,
-          false,
-      }
+      {{
+          .getter = &m_label,
+          .roi
+          {
+              .w = [argLabelWidth]{fflassert(argLabelWidth >= 0); return argLabelWidth; }(),
+              .h = m_label.h(),
+          },
+          .parent{this},
+      }}
 
     , m_menuTitleImage
       {{
@@ -231,23 +223,16 @@ RuntimeConfigBoard::PullMenu::PullMenu(
       }}
 
     , m_menuTitleCrop
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .getter = &m_menuTitle,
+          .roi
+          {
+              .w = m_menuTitleBackground.w() - 6,
+              .h = std::min<int>(m_menuTitleBackground.h() - 4, m_menuTitle.h()),
+          },
 
-          &m_menuTitle,
-
-          0,
-          0,
-          m_menuTitleBackground.w() - 6,
-          std::min<int>(m_menuTitleBackground.h() - 4, m_menuTitle.h()),
-
-          {},
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_imgOff {{.w = 22, .h = 22, .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000301); }, .rotate = 1}}
     , m_imgOn  {{.w = 22, .h = 22, .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000300); }, .rotate = 1}}
@@ -374,23 +359,15 @@ RuntimeConfigBoard::LabelSliderBar::LabelSliderBar(
       }}
 
     , m_labelCrop
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          &m_label,
-
-          0,
-          0,
-          [argLabelWidth]{fflassert(argLabelWidth >= 0); return argLabelWidth; }(),
-          m_label.h(),
-
-          {},
-
-          this,
-          false,
-      }
+      {{
+          .getter = &m_label,
+          .roi
+          {
+              .w = fflcheck(argLabelWidth, argLabelWidth >= 0),
+              .h = m_label.h(),
+          },
+          .parent{this},
+      }}
 
     , m_slider
       {

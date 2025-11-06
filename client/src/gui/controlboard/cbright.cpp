@@ -50,23 +50,16 @@ CBRight::CBRight(
       }}
 
     , m_bg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-
-          &m_bgFull,
-
-          [this](const Widget *){ return m_bgFull.w() - w(); },
-          0,
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
-
-          {},
-
-          this,
-          false,
-      }
+      {{
+          .getter = &m_bgFull,
+          .roi
+          {
+              .x = [this]{ return m_bgFull.w() - w(); },
+              .w = [this]{ return w(); },
+              .h = [this]{ return h(); },
+          },
+          .parent{this},
+      }}
 
     , m_buttonExchange
       {{

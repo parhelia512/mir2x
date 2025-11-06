@@ -8,7 +8,7 @@
 class GfxCropDupBoard: public Widget
 {
     private:
-        const Widget * const m_gfxWidget;
+        Widget * m_gfxWidget;
 
     private:
         const Widget::VarInt m_cropX;
@@ -25,7 +25,7 @@ class GfxCropDupBoard: public Widget
                 Widget::VarSizeOpt argW,
                 Widget::VarSizeOpt argH,
 
-                const Widget *argWidget,
+                Widget *argWidget,
 
                 Widget::VarInt argCropX,
                 Widget::VarInt argCropY,
@@ -102,15 +102,15 @@ class GfxCropDupBoard: public Widget
             const int w2 = m_gfxWidget->w() - w0 - w1;
             const int h2 = m_gfxWidget->h() - h0 - h1;
 
-            const GfxCropBoard topLeft     {DIR_UPLEFT, 0, 0, m_gfxWidget, x0, y0, w0, h0};
-            const GfxCropBoard top         {DIR_UPLEFT, 0, 0, m_gfxWidget, x1, y0, w1, h0};
-            const GfxCropBoard topRight    {DIR_UPLEFT, 0, 0, m_gfxWidget, x2, y0, w2, h0};
-            const GfxCropBoard left        {DIR_UPLEFT, 0, 0, m_gfxWidget, x0, y1, w0, h1};
-            const GfxCropBoard middle      {DIR_UPLEFT, 0, 0, m_gfxWidget, x1, y1, w1, h1};
-            const GfxCropBoard right       {DIR_UPLEFT, 0, 0, m_gfxWidget, x2, y1, w2, h1};
-            const GfxCropBoard bottomLeft  {DIR_UPLEFT, 0, 0, m_gfxWidget, x0, y2, w0, h2};
-            const GfxCropBoard bottom      {DIR_UPLEFT, 0, 0, m_gfxWidget, x1, y2, w1, h2};
-            const GfxCropBoard bottomRight {DIR_UPLEFT, 0, 0, m_gfxWidget, x2, y2, w2, h2};
+            const GfxCropBoard topLeft     {{.getter = m_gfxWidget, .roi{x0, y0, w0, h0}}};
+            const GfxCropBoard top         {{.getter = m_gfxWidget, .roi{x1, y0, w1, h0}}};
+            const GfxCropBoard topRight    {{.getter = m_gfxWidget, .roi{x2, y0, w2, h0}}};
+            const GfxCropBoard left        {{.getter = m_gfxWidget, .roi{x0, y1, w0, h1}}};
+            const GfxCropBoard middle      {{.getter = m_gfxWidget, .roi{x1, y1, w1, h1}}};
+            const GfxCropBoard right       {{.getter = m_gfxWidget, .roi{x2, y1, w2, h1}}};
+            const GfxCropBoard bottomLeft  {{.getter = m_gfxWidget, .roi{x0, y2, w0, h2}}};
+            const GfxCropBoard bottom      {{.getter = m_gfxWidget, .roi{x1, y2, w1, h2}}};
+            const GfxCropBoard bottomRight {{.getter = m_gfxWidget, .roi{x2, y2, w2, h2}}};
 
             const GfxDupBoard    topDup{DIR_UPLEFT, 0, 0, w() - w0 - w2,            h0, &top    };
             const GfxDupBoard   leftDup{DIR_UPLEFT, 0, 0,            w0, h() - h0 - h2, &left   };

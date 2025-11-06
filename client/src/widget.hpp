@@ -265,6 +265,16 @@ class Widget: public WidgetTreeNode
             bool overlap(const Widget::ROI &) const;
         };
 
+        struct VarROI final
+        {
+            Widget::VarInt  x = 0;
+            Widget::VarInt  y = 0;
+            Widget::VarSize w = 0;
+            Widget::VarSize h = 0;
+
+            Widget::ROI roi(const Widget *, const void *) const;
+        };
+
         class ROIOpt final
         {
             private:

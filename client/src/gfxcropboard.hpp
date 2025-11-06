@@ -1,78 +1,77 @@
 #pragma once
-#include <variant>
-#include "protocoldef.hpp"
-#include "mathf.hpp"
 #include "widget.hpp"
+#include "shapecropboard.hpp"
 
 class GfxCropBoard: public Widget
 {
     private:
-        using VarGfxWidget = std::variant <const Widget *,
-                             std::function<const Widget *(const Widget *)>>;
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarInt x = 0;
+            Widget::VarInt y = 0;
+
+            Widget::VarGetter<Widget *> getter = nullptr; // not-owning
+            Widget::VarROI roi {};
+
+            Widget::VarDrawFunc bgDrawFunc = nullptr;
+            Widget::VarDrawFunc fgDrawFunc = nullptr;
+
+            Widget::VarMargin margin {};
+            Widget::WADPair   parent {};
+        };
 
     private:
-        VarGfxWidget m_gfxWidgetGetter;
+        Widget::VarGetter<Widget *> m_getter;
 
     private:
-        const Widget::VarInt m_gfxCropX;
-        const Widget::VarInt m_gfxCropY;
-        const Widget::VarInt m_gfxCropW;
-        const Widget::VarInt m_gfxCropH;
+        Widget::VarROI    m_roi;
+        Widget::VarMargin m_margin;
 
     private:
-        const std::array<Widget::VarInt, 4> m_margin;
+        ShapeCropBoard *m_bgBoard;
+        ShapeCropBoard *m_fgBoard;
 
     public:
-        GfxCropBoard(
-                Widget::VarDir argDir,
-                Widget::VarInt argX,
-                Widget::VarInt argY,
-
-                VarGfxWidget argWidgetGetter,
-
-                Widget::VarInt argGfxCropX, // crop on gfx widget
-                Widget::VarInt argGfxCropY, // ...
-                Widget::VarInt argGfxCropW, // crop width, don't use Widget::VarSizeOpt, support over-cropping
-                Widget::VarInt argGfxCropH, // ...
-
-                std::array<Widget::VarInt, 4> argMargin = {},
-
-                Widget *argParent     = nullptr,
-                bool    argAutoDelete = false)
-
+        GfxCropBoard(GfxCropBoard::InitArgs args)
             : Widget
               {{
-                  .dir = std::move(argDir),
-                  .x = std::move(argX),
-                  .y = std::move(argY),
-                  .parent
-                  {
-                      .widget = argParent,
-                      .autoDelete = argAutoDelete,
-                  }
+                  .dir = std::move(args.dir),
+                  .x = std::move(args.x),
+                  .y = std::move(args.y),
+                  .parent = std::move(args.parent),
               }}
 
-            , m_gfxWidgetGetter(std::move(argWidgetGetter))
+            , m_getter(std::move(args.getter))
+            , m_roi   (std::move(args.roi   ))
+            , m_margin(std::move(args.margin))
 
-            , m_gfxCropX(std::move(argGfxCropX))
-            , m_gfxCropY(std::move(argGfxCropY))
-            , m_gfxCropW(std::move(argGfxCropW))
-            , m_gfxCropH(std::move(argGfxCropH))
+            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new ShapeCropBoard
+              {{
+                  .w = [this]{ return w(); },
+                  .h = [this]{ return h(); },
 
-            , m_margin(std::move(argMargin))
+                  .drawFunc = std::move(args.bgDrawFunc),
+
+              }} : nullptr)
+
+            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new ShapeCropBoard
+              {{
+                  .w = [this]{ return w(); },
+                  .h = [this]{ return h(); },
+
+                  .drawFunc = std::move(args.fgDrawFunc),
+
+              }} : nullptr)
         {
             // respect blank space by over-cropping
             // if cropped size bigger than gfx size, it's fill with blank
 
-            setSize([this](const Widget *)
-            {
-                return gfxCropW() + margin(2) + margin(3);
-            },
+            setSize([this]{ return margin(2) + gfxCropW() + margin(3); },
+                    [this]{ return margin(0) + gfxCropH() + margin(1); });
 
-            [this](const Widget *)
-            {
-                return gfxCropH() + margin(0) + margin(1);
-            });
+            if(m_bgBoard){ Widget::addChild(m_bgBoard, true); }
+            if(m_fgBoard){ Widget::addChild(m_fgBoard, true); }
         }
 
     public:
@@ -82,76 +81,76 @@ class GfxCropBoard: public Widget
                 return;
             }
 
-            const auto gfxPtr = gfxWidget();
-            if(!gfxPtr){
-                return;
+            if(m_bgBoard){
+                drawChild(m_bgBoard, m);
             }
 
-            const int brdCropXOrig = gfxCropX();
-            const int brdCropYOrig = gfxCropY();
+            if(auto gfxPtr = gfxWidget()){
+                if(auto r = gfxCropROI(); !r.empty()){
+                    const auto marginLeft = margin(2);
+                    const auto marginUp   = margin(0);
 
-            int brdCropX = brdCropXOrig;
-            int brdCropY = brdCropYOrig;
-            int brdCropW = gfxCropW();
-            int brdCropH = gfxCropH();
+                    if(auto gfxMap = m; gfxMap.crop({marginLeft, marginUp, r.w, r.h})){
+                        const auto Dx = marginLeft - r.x;
+                        const auto Dy = marginUp   - r.y;
 
-            if(!mathf::rectangleOverlapRegion<int>(0, 0, gfxPtr->w(), gfxPtr->h(), brdCropX, brdCropY, brdCropW, brdCropH)){
-                return;
-            }
-
-            int drawDstX = m.x;
-            int drawDstY = m.y;
-            int drawSrcX = m.ro->x;
-            int drawSrcY = m.ro->y;
-            int drawSrcW = m.ro->w;
-            int drawSrcH = m.ro->h;
-
-            if(!mathf::cropChildROI(
-                        &drawSrcX, &drawSrcY,
-                        &drawSrcW, &drawSrcH,
-                        &drawDstX, &drawDstY,
-
-                        w(),
-                        h(),
-
-                        margin(2) + brdCropX - brdCropXOrig,
-                        margin(0) + brdCropY - brdCropYOrig,
-
-                        brdCropW,
-                        brdCropH)){
-                return;
-            }
-
-            gfxPtr->draw({.x = drawDstX, .y = drawDstY, .ro{drawSrcX + brdCropX, drawSrcY + brdCropY, drawSrcW, drawSrcH}});
-        }
-
-    public:
-        const Widget *gfxWidget() const
-        {
-            return std::visit(VarDispatcher
-            {
-                [](const Widget *arg) -> const Widget *
-                {
-                    return arg;
-                },
-
-                [this](const std::function<const Widget *(const Widget *)> &arg) -> const Widget *
-                {
-                    return arg ? arg(this) : nullptr;
+                        drawAsChild(gfxPtr, DIR_UPLEFT, Dx, Dy, gfxMap);
+                    }
                 }
-            },
-            m_gfxWidgetGetter);
+            }
+
+            if(m_fgBoard){
+                drawChild(m_fgBoard, m);
+            }
         }
 
     public:
-        int gfxCropX() const { return                  Widget::evalInt(m_gfxCropX, this) ; }
-        int gfxCropY() const { return                  Widget::evalInt(m_gfxCropY, this) ; }
-        int gfxCropW() const { return std::max<int>(0, Widget::evalInt(m_gfxCropW, this)); }
-        int gfxCropH() const { return std::max<int>(0, Widget::evalInt(m_gfxCropH, this)); }
+        bool processEventDefault(const SDL_Event &e, bool valid, Widget::ROIMap m) override
+        {
+            if(!m.calibrate(this)){
+                return false;
+            }
+
+            if(auto gfxPtr = gfxWidget()){
+                if(auto r = gfxCropROI(); !r.empty()){
+                    const auto marginLeft = margin(2);
+                    const auto marginUp   = margin(0);
+
+                    if(m.crop({marginLeft, marginUp, r.w, r.h})){
+                        return gfxPtr->processEvent(e, valid, m.create(Widget::ROI
+                        {
+                            .x = marginLeft - r.x,
+                            .y = marginUp   - r.y,
+                            .w = r.w,
+                            .h = r.h,
+                        }));
+                    }
+                }
+            }
+            return false;
+        }
+
+    public:
+        Widget *gfxWidget() const
+        {
+            return Widget::evalGetter(m_getter, this);
+        }
+
+    public:
+        Widget::ROI gfxCropROI() const
+        {
+            return m_roi.roi(this, nullptr);
+        }
+
+    public:
+        int gfxCropX() const { return Widget::evalInt (m_roi.x, this); }
+        int gfxCropY() const { return Widget::evalInt (m_roi.y, this); }
+        int gfxCropW() const { return Widget::evalSize(m_roi.w, this); }
+        int gfxCropH() const { return Widget::evalSize(m_roi.h, this); }
 
     public:
         int margin(int index) const
         {
-            return std::max<int>(0, Widget::evalInt(m_margin[((index % 4) + 4) % 4], this));
+            return Widget::evalSize(m_margin[index], this);
         }
 };

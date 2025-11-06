@@ -8,7 +8,7 @@
 class GfxCutoutBoard: public Widget
 {
     private:
-        const Widget * const m_gfxWidget;
+        Widget * m_gfxWidget;
 
     private:
         const int m_cropX;
@@ -22,7 +22,7 @@ class GfxCutoutBoard: public Widget
                 Widget::VarInt argX,
                 Widget::VarInt argY,
 
-                const Widget *argWidget,
+                Widget *argWidget,
 
                 int argCropX,
                 int argCropY,
@@ -96,10 +96,10 @@ class GfxCutoutBoard: public Widget
             const int w2 = m_gfxWidget->w() - w0 - w1;
             const int h2 = m_gfxWidget->h() - h0 - h1;
 
-            const GfxCropBoard top    {DIR_UPLEFT, x0, y0, m_gfxWidget, x0, y0, w0 + w1 + w2, h0};
-            const GfxCropBoard left   {DIR_UPLEFT, x0, y1, m_gfxWidget, x0, y1, w0          , h1};
-            const GfxCropBoard right  {DIR_UPLEFT, x2, y1, m_gfxWidget, x2, y1,           w2, h1};
-            const GfxCropBoard bottom {DIR_UPLEFT, x0, y2, m_gfxWidget, x0, y2, w0 + w1 + w2, h2};
+            const GfxCropBoard top    {{.x = x0, .y = y0, .getter = m_gfxWidget, .roi{x0, y0, w0 + w1 + w2, h0}}};
+            const GfxCropBoard left   {{.x = x0, .y = y1, .getter = m_gfxWidget, .roi{x0, y1, w0          , h1}}};
+            const GfxCropBoard right  {{.x = x2, .y = y1, .getter = m_gfxWidget, .roi{x2, y1,           w2, h1}}};
+            const GfxCropBoard bottom {{.x = x0, .y = y2, .getter = m_gfxWidget, .roi{x0, y2, w0 + w1 + w2, h2}}};
 
             for(auto &p:
             {
