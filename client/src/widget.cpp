@@ -257,6 +257,11 @@ Widget::ROIMap & Widget::ROIMap::crop(const Widget::ROI &r)
     return *this;
 }
 
+Widget::ROIMap Widget::ROIMap::clone() const
+{
+    return *this;
+}
+
 Widget::ROIMap Widget::ROIMap::create(const Widget::ROI &cr /* child ROI */) const
 {
     auto r = *this;

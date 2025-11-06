@@ -275,6 +275,7 @@ class Widget: public WidgetTreeNode
             Widget::ROI roi(const Widget *, const void *) const;
         };
 
+        using VarROIOpt = std::optional<Widget::VarROI>;
         class ROIOpt final
         {
             private:
@@ -325,7 +326,9 @@ class Widget: public WidgetTreeNode
 
             ROIMap & calibrate(const Widget *);
             ROIMap & crop     (const Widget::ROI &);
-            ROIMap   create   (const Widget::ROI &) const; // create ROIMap for child
+
+            ROIMap clone() const;
+            ROIMap create(const Widget::ROI &) const; // create ROIMap for child
 
             bool empty() const;
             operator bool () const; // can throw if ro is nullopt

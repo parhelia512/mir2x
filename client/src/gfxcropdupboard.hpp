@@ -102,21 +102,21 @@ class GfxCropDupBoard: public Widget
             const int w2 = m_gfxWidget->w() - w0 - w1;
             const int h2 = m_gfxWidget->h() - h0 - h1;
 
-            const GfxCropBoard topLeft     {{.getter = m_gfxWidget, .roi{x0, y0, w0, h0}}};
-            const GfxCropBoard top         {{.getter = m_gfxWidget, .roi{x1, y0, w1, h0}}};
-            const GfxCropBoard topRight    {{.getter = m_gfxWidget, .roi{x2, y0, w2, h0}}};
-            const GfxCropBoard left        {{.getter = m_gfxWidget, .roi{x0, y1, w0, h1}}};
-            const GfxCropBoard middle      {{.getter = m_gfxWidget, .roi{x1, y1, w1, h1}}};
-            const GfxCropBoard right       {{.getter = m_gfxWidget, .roi{x2, y1, w2, h1}}};
-            const GfxCropBoard bottomLeft  {{.getter = m_gfxWidget, .roi{x0, y2, w0, h2}}};
-            const GfxCropBoard bottom      {{.getter = m_gfxWidget, .roi{x1, y2, w1, h2}}};
-            const GfxCropBoard bottomRight {{.getter = m_gfxWidget, .roi{x2, y2, w2, h2}}};
+            GfxCropBoard topLeft     {{.getter = m_gfxWidget, .roi{x0, y0, w0, h0}}};
+            GfxCropBoard top         {{.getter = m_gfxWidget, .roi{x1, y0, w1, h0}}};
+            GfxCropBoard topRight    {{.getter = m_gfxWidget, .roi{x2, y0, w2, h0}}};
+            GfxCropBoard left        {{.getter = m_gfxWidget, .roi{x0, y1, w0, h1}}};
+            GfxCropBoard middle      {{.getter = m_gfxWidget, .roi{x1, y1, w1, h1}}};
+            GfxCropBoard right       {{.getter = m_gfxWidget, .roi{x2, y1, w2, h1}}};
+            GfxCropBoard bottomLeft  {{.getter = m_gfxWidget, .roi{x0, y2, w0, h2}}};
+            GfxCropBoard bottom      {{.getter = m_gfxWidget, .roi{x1, y2, w1, h2}}};
+            GfxCropBoard bottomRight {{.getter = m_gfxWidget, .roi{x2, y2, w2, h2}}};
 
-            const GfxDupBoard    topDup{DIR_UPLEFT, 0, 0, w() - w0 - w2,            h0, &top    };
-            const GfxDupBoard   leftDup{DIR_UPLEFT, 0, 0,            w0, h() - h0 - h2, &left   };
-            const GfxDupBoard middleDup{DIR_UPLEFT, 0, 0, w() - w0 - w2, h() - h0 - h2, &middle };
-            const GfxDupBoard  rightDup{DIR_UPLEFT, 0, 0,            w2, h() - h0 - h2, &right  };
-            const GfxDupBoard bottomDup{DIR_UPLEFT, 0, 0, w() - w0 - w2,            h2, &bottom };
+            const GfxDupBoard    topDup{{.w = w() - w0 - w2, .h =            h0, .getter = &top   }};
+            const GfxDupBoard   leftDup{{.w =            w0, .h = h() - h0 - h2, .getter = &left  }};
+            const GfxDupBoard middleDup{{.w = w() - w0 - w2, .h = h() - h0 - h2, .getter = &middle}};
+            const GfxDupBoard  rightDup{{.w =            w2, .h = h() - h0 - h2, .getter = &right }};
+            const GfxDupBoard bottomDup{{.w = w() - w0 - w2, .h =            h2, .getter = &bottom}};
 
             for(const auto &[widgetPtr, offX, offY]: std::initializer_list<std::tuple<const Widget *, int, int>>
             {
