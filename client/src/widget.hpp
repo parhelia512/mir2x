@@ -251,91 +251,7 @@ class Widget: public WidgetTreeNode
         };
 
     public:
-        struct ROI final
-        {
-            int x = 0;
-            int y = 0;
-            int w = 0;
-            int h = 0;
-
-            bool empty() const;
-            bool in(int, int) const;
-
-            bool crop   (const Widget::ROI &);
-            bool overlap(const Widget::ROI &) const;
-        };
-
-        struct VarROI final
-        {
-            Widget::VarInt  x = 0;
-            Widget::VarInt  y = 0;
-            Widget::VarSize w = 0;
-            Widget::VarSize h = 0;
-
-            Widget::ROI roi(const Widget *, const void *) const;
-        };
-
-        using VarROIOpt = std::optional<Widget::VarROI>;
-        class ROIOpt final
-        {
-            private:
-                std::optional<Widget::ROI> m_roiOpt;
-
-            public:
-                ROIOpt() = default;
-                ROIOpt(std::nullopt_t): ROIOpt() {};
-
-            public:
-                ROIOpt(int, int);
-                ROIOpt(int, int, int, int);
-
-            public:
-                ROIOpt(const Widget::ROI &);
-
-            public:
-                auto operator -> (this auto && self)
-                {
-                    return std::addressof(self.m_roiOpt.value());
-                }
-
-            public:
-                bool has_value() const
-                {
-                    return m_roiOpt.has_value();
-                }
-
-                decltype(auto) value(this auto && self)
-                {
-                    return self.m_roiOpt.value();
-                }
-
-                Widget::ROI value_or(Widget::ROI r) const
-                {
-                    return m_roiOpt.value_or(r);
-                }
-        };
-
-        struct ROIMap final
-        {
-            dir8_t dir = DIR_UPLEFT;
-
-            int x = 0;
-            int y = 0;
-
-            Widget::ROIOpt ro = std::nullopt;
-
-            ROIMap & calibrate(const Widget *);
-            ROIMap & crop     (const Widget::ROI &);
-
-            ROIMap clone() const;
-            ROIMap create(const Widget::ROI &) const; // create ROIMap for child
-
-            bool empty() const;
-            operator bool () const; // can throw if ro is nullopt
-
-            /**/                 bool in(int, int ) const;
-            template<typename T> bool in(const T &) const;
-        };
+#include "widget.roi.hpp"
 
     private:
         struct InitArgs final
@@ -357,13 +273,6 @@ class Widget: public WidgetTreeNode
 
             Widget::WADPair parent;
         };
-
-    public:
-        template<typename T            > static Widget::ROI makeROI(const T &);
-        template<typename U, typename V> static Widget::ROI makeROI(const U &, const V &);
-
-        template<typename T> static Widget::ROI makeROI( int, int, const T &);
-        template<typename T> static Widget::ROI makeROI(const T &, int, int );
 
     public:
         using WidgetTreeNode::ChildElement;

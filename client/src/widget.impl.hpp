@@ -174,57 +174,6 @@ template<std::derived_from<Widget> T> auto WidgetTreeNode::hasParent(this auto &
     return nullptr;
 }
 
-template<typename T> bool Widget::ROIMap::in(const T &t) const
-{
-    const auto [tx, ty] = t;
-    return in(tx, ty);
-}
-
-template<typename T> Widget::ROI Widget::makeROI(const T &t)
-{
-    const auto [x, y, w, h] = t; return Widget::ROI
-    {
-        .x = x,
-        .y = y,
-        .w = w,
-        .h = h,
-    };
-}
-
-template<typename U, typename V> Widget::ROI Widget::makeROI(const U &u, const V &v)
-{
-    const auto [x, y] = u;
-    const auto [w, h] = v; return Widget::ROI
-    {
-        .x = x,
-        .y = y,
-        .w = w,
-        .h = h,
-    };
-}
-
-template<typename T> Widget::ROI Widget::makeROI(int x, int y, const T &t)
-{
-    const auto [w, h] = t; return Widget::ROI
-    {
-        .x = x,
-        .y = y,
-        .w = w,
-        .h = h,
-    };
-}
-
-template<typename T> Widget::ROI Widget::makeROI(const T &t, int w, int h)
-{
-    const auto [x, y] = t; return Widget::ROI
-    {
-        .x = x,
-        .y = y,
-        .w = w,
-        .h = h,
-    };
-}
-
 int Widget::evalSizeOpt(const Widget::VarSizeOpt &varSizeOpt, const Widget *widget, const auto &f)
 {
     if(varSizeOpt.has_value()){

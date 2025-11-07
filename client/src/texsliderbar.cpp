@@ -88,36 +88,28 @@ TexSliderBar::TexSliderBar(
       }}
 
     , m_slotMidCropDup
-      {
-          DIR_UPLEFT,
+      {{
+          /* x */ .x =  argHSlider ? 3 : 0,
+          /* y */ .y = !argHSlider ? 3 : 0,
 
-          /* x */  argHSlider ? 3 : 0,
-          /* y */ !argHSlider ? 3 : 0,
+          /* w */ .w =  argHSlider ? w() - 6 : w(),
+          /* h */ .h = !argHSlider ? h() - 6 : h(),
 
-          /* w */  argHSlider ? w() - 6 : w(),
-          /* h */ !argHSlider ? h() - 6 : h(),
-
-          &m_slotCropMiddle,
-
-          this,
-          false,
-      }
+          .getter = &m_slotCropMiddle,
+          .parent{this},
+      }}
 
     , m_barCropDup
-      {
-          DIR_UPLEFT,
+      {{
+          /* x */ .x =  argHSlider ? 3 : 2,
+          /* y */ .y = !argHSlider ? 3 : 2,
 
-          /* x */  argHSlider ? 3 : 2,
-          /* y */ !argHSlider ? 3 : 2,
+          /* w */ .w =  argHSlider ? 0 : m_barImage.w(),
+          /* h */ .h = !argHSlider ? 0 : m_barImage.h(),
 
-          /* w */  argHSlider ? 0 : m_barImage.w(),
-          /* h */ !argHSlider ? 0 : m_barImage.h(),
-
-          &m_barImage,
-
-          this,
-          false,
-      }
+          .getter = &m_barImage,
+          .parent{this},
+      }}
 
     , m_slider
       {{
