@@ -1,0 +1,61 @@
+#include "imageboard.hpp"
+#include "baseframeboard.hpp"
+
+extern PNGTexDB *g_progUseDB;
+
+BaseFrameBoard::BaseFrameBoard(BaseFrameBoard::InitArgs args)
+    : Widget
+      {{
+          .dir = std::move(args.dir),
+
+          .x = std::move(args.x),
+          .y = std::move(args.y),
+
+          .parent = std::move(args.parent),
+      }}
+
+    , m_frame
+      {{
+          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(m_frameTexID); },
+      }}
+
+    , m_frameBoard
+      {{
+          .getter = &m_frame,
+          .vr
+          {
+              .x = m_cornerSize,
+              .y = m_cornerSize,
+              .w = m_frame.w() - 2 * m_cornerSize,
+              .h = m_frame.h() - 2 * m_cornerSize,
+          },
+
+          .resize
+          {
+              .w = [this]{ return w() - 2 * m_cornerSize; },
+              .h = [this]{ return h() - 2 * m_cornerSize; },
+          },
+
+          .parent{this},
+      }}
+
+    , m_close
+      {{
+          .x = [this]{ return w() - 51; },
+          .y = [this]{ return h() - 53; },
+
+          .texIDList
+          {
+              .on   = 0X0000001C,
+              .down = 0X0000001D,
+          },
+
+          .onTrigger = [this](Widget *, int)
+          {
+              this->parent()->setShow(false);
+          },
+
+          .moveOnFocus = false,
+          .parent{this},
+      }}
+{}

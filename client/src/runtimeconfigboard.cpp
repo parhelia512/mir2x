@@ -620,16 +620,11 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
        }}
 
     , m_frameBoard
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          argW,
-          argH,
-
-          this,
-          false,
-      }
+      {{
+          .w = argW,
+          .h = argH,
+          .parent{this},
+      }}
 
     , m_leftMenuBackground
       {{

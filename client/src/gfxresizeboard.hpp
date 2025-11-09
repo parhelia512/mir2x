@@ -111,7 +111,7 @@ class GfxResizeBoard: public Widget
                 return;
             }
 
-            const auto fnOp = [m = std::cref(m), &func](const Widget::ROI &cr, int dx, int dy, bool needDup)
+            const auto fnOp = [gfxWidget, m = std::cref(m), &r, &func, &self](const Widget::ROI &cr, int dx, int dy, bool needDup)
             {
                 if(!cr){
                     return;
@@ -129,8 +129,8 @@ class GfxResizeBoard: public Widget
                 }
             };
 
-            const int mx = margin(2);
-            const int my = margin(0);
+            const int mx = self.margin(2);
+            const int my = self.margin(0);
             const int cw = gfxWidget->w();
             const int ch = gfxWidget->h();
             const int rw = Widget::evalSize(self.m_resize.w, &self);
@@ -160,7 +160,7 @@ class GfxResizeBoard: public Widget
 
             gridHelper(m, [](const Widget *widget, const Widget::ROIMap &cm)
             {
-                wiget->draw(cm);
+                widget->draw(cm);
             });
 
             if(m_fgBoard){
@@ -168,13 +168,13 @@ class GfxResizeBoard: public Widget
             }
         }
 
-        bool processEventDefalut(const SDL_Event &e, bool valid, Widget::ROIMap m) override
+        bool processEventDefault(const SDL_Event &e, bool valid, Widget::ROIMap m) override
         {
             if(!m.calibrate(this)){
                 return false;
             }
 
-            gridHelper(*this, m, [&e, &valid](Widget *widget, const Widget::ROIMap &cm)
+            gridHelper(m, [&e, &valid](Widget *widget, const Widget::ROIMap &cm)
             {
                 valid = !widget->processEvent(e, valid, cm);
             });

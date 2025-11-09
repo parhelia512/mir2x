@@ -15,7 +15,7 @@
 #include "trigfxbutton.hpp"
 #include "texsliderbar.hpp"
 #include "shapecropboard.hpp"
-#include "resizableframeboard.hpp"
+#include "baseframeboard.hpp"
 
 class ProcessRun;
 class RuntimeConfigBoard: public Widget
@@ -210,7 +210,7 @@ class RuntimeConfigBoard: public Widget
         SDRuntimeConfig m_sdRuntimeConfig;
 
     private:
-        ResizableFrameBoard m_frameBoard;
+        BaseFrameBoard m_frameBoard;
 
     private:
         ShapeCropBoard m_leftMenuBackground;
