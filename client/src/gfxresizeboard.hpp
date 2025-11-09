@@ -13,12 +13,16 @@ class GfxResizeBoard: public Widget
             Widget::VarInt x = 0;
             Widget::VarInt y = 0;
 
-            Widget::VarMargin margin {};
 
             Widget::VarGetter<Widget *> getter = nullptr; // not-owning
             Widget::VarROI vr {};
 
             Widget::VarSize2D resize {};
+            Widget::VarMargin margin {};
+
+            Widget::VarDrawFunc bgDrawFunc = nullptr;
+            Widget::VarDrawFunc fgDrawFunc = nullptr;
+
             Widget::WADPair parent {};
         };
 
@@ -28,6 +32,11 @@ class GfxResizeBoard: public Widget
 
     private:
         Widget::VarSize2D m_resize;
+        Widget::VarMargin m_margin;
+
+    private:
+        ShapeCropBoard *m_bgBoard;
+        ShapeCropBoard *m_fgBoard;
 
     public:
         GfxResizeBoard(GfxResizeBoard::InitArgs args)
@@ -43,22 +52,45 @@ class GfxResizeBoard: public Widget
 
             , m_getter(std::move(args.getter))
             , m_vr(std::move(args.vr))
-            , m_resize(std::move(args.resize))
-        {
-            setSize([this]
 
+            , m_resize(std::move(args.resize))
+            , m_margin(std::move(args.margin))
+
+            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new ShapeCropBoard
+              {{
+                  .w = [this]{ return w(); },
+                  .h = [this]{ return h(); },
+
+                  .drawFunc = std::move(args.bgDrawFunc),
+
+              }} : nullptr)
+
+            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new ShapeCropBoard
+              {{
+                  .w = [this]{ return w(); },
+                  .h = [this]{ return h(); },
+
+                  .drawFunc = std::move(args.fgDrawFunc),
+
+              }} : nullptr)
+        {
+            setSize([this]{ return margin(2) + Widget::evalSize(m_resize.w, this) + margin(3); },
+                    [this]{ return margin(0) + Widget::evalSize(m_resize.h, this) + margin(1); });
+
+            if(m_bgBoard){ Widget::addChild(m_bgBoard, true); }
+            if(m_fgBoard){ Widget::addChild(m_fgBoard, true); }
         }
 
     public:
-        Widget *gfxWidget() const
-        {
-            return Widget::evalGetter(m_getter, this);
-        }
+            Widget *gfxWidget() const
+            {
+                return Widget::evalGetter(m_getter, this);
+            }
 
-        Widget::ROI gfxCropROI() const
-        {
-            return m_vr.roi(this, nullptr);
-        }
+            Widget::ROI gfxCropROI() const
+            {
+                return m_vr.roi(this, nullptr);
+            }
 
     public:
         int margin(int index) const
@@ -122,10 +154,18 @@ class GfxResizeBoard: public Widget
                 return;
             }
 
+            if(m_bgBoard){
+                drawChild(m_bgBoard, m);
+            }
+
             gridHelper(m, [](const Widget *widget, const Widget::ROIMap &cm)
             {
                 wiget->draw(cm);
             });
+
+            if(m_fgBoard){
+                drawChild(m_fgBoard, m);
+            }
         }
 
         bool processEventDefalut(const SDL_Event &e, bool valid, Widget::ROIMap m) override
