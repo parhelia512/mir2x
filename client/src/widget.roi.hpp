@@ -162,6 +162,41 @@ struct ROIMap final
 
     Widget::ROIOpt ro = std::nullopt;
 
+    bool empty() const
+    {
+        if(ro.has_value()){
+            return ro->empty();
+        }
+        else{
+            throw fflerror("ro empty");
+        }
+    }
+
+    operator bool () const
+    {
+        return !empty();
+    }
+
+    bool in(int pixelX, int pixelY) const
+    {
+        if(ro.has_value()){
+            return Widget::ROI{x, y, ro->w, ro->h}.in(pixelX, pixelY);
+        }
+        else{
+            throw fflerror("ro empty");
+        }
+    }
+
+    template<typename T> bool in(const T &t) const
+    {
+        const auto [tx, ty] = t; return in(tx, ty);
+    }
+
+    Widget::ROIMap clone() const
+    {
+        return *this;
+    }
+
     Widget::ROIMap & calibrate(const Widget *widget)
     {
         if(!ro.has_value()){
@@ -221,13 +256,25 @@ struct ROIMap final
         return *this;
     }
 
-    Widget::ROIMap clone() const
+    Widget::ROIMap map(int dx, int dy, const Widget::ROI &cr) const
     {
-        return *this;
+        // maps from parent's m to child's m
+        // cr is child's cropped ROI in itself, child's (0, 0) is at (dx, dy) in parent
+
+        return create(Widget::ROI
+        {
+            .x = cr.x + dx,
+            .y = cr.y + dy,
+            .w = cr.w,
+            .h = cr.h,
+        });
     }
 
-    Widget::ROIMap create(const Widget::ROI &cr /* child ROI */) const
+    Widget::ROIMap create(const Widget::ROI &cr) const
     {
+        // maps from parent's m to child's m
+        // cr is child's full ROI in parent, child's (0, 0) is at (cr.x, cr.y) in parent
+
         auto r = *this;
         r.crop(cr);
 
@@ -235,36 +282,6 @@ struct ROIMap final
         r.ro->y -= cr.y;
 
         return r;
-    }
-
-    bool empty() const
-    {
-        if(ro.has_value()){
-            return ro->empty();
-        }
-        else{
-            throw fflerror("ro empty");
-        }
-    }
-
-    operator bool () const
-    {
-        return !empty();
-    }
-
-    bool in(int pixelX, int pixelY) const
-    {
-        if(ro.has_value()){
-            return Widget::ROI{x, y, ro->w, ro->h}.in(pixelX, pixelY);
-        }
-        else{
-            throw fflerror("ro empty");
-        }
-    }
-
-    template<typename T> bool in(const T &t) const
-    {
-        const auto [tx, ty] = t; return in(tx, ty);
     }
 };
 
