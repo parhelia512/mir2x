@@ -1,5 +1,4 @@
 #pragma once
-#include <initializer_list>
 #include "widget.hpp"
 #include "gfxdupboard.hpp"
 #include "gfxcropboard.hpp"

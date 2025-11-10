@@ -11,12 +11,18 @@ BaseFrameBoard::BaseFrameBoard(BaseFrameBoard::InitArgs args)
           .x = std::move(args.x),
           .y = std::move(args.y),
 
+          .w = [argW = std::move(args.w), this]{ return std::max<int>(Widget::evalSize(argW, this), 2 * m_cornerSize); },
+          .h = [argH = std::move(args.h), this]{ return std::max<int>(Widget::evalSize(argH, this), 2 * m_cornerSize); },
+
           .parent = std::move(args.parent),
       }}
 
     , m_frame
       {{
-          .texLoadFunc = [](const Widget *){ return g_progUseDB->retrieve(m_frameTexID); },
+          .texLoadFunc = [](const Widget *)
+          {
+              return g_progUseDB->retrieve(m_frameTexID);
+          },
       }}
 
     , m_frameBoard
