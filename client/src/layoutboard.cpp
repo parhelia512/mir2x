@@ -416,7 +416,7 @@ void LayoutBoard::drawDefault(Widget::ROIMap m) const
     }
 
     if(m_canEdit && focus()){
-        Widget::draw(m); // draw cursor
+        Widget::drawDefault(m); // draw cursor
     }
 }
 

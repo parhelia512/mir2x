@@ -172,7 +172,7 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
         drawChild(&m_purchaseBoard, m);
     }
 
-    Widget::draw(m);
+    Widget::drawDefault(m);
 
     if(!g_clientArgParser->disableIME){
         g_imeBoard->drawRoot({});

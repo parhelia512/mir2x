@@ -125,7 +125,7 @@ void SkillBoard::MagicIconButton::drawDefault(Widget::ROIMap m) const
     }
 
     if(const auto levelOpt = m_config->getMagicLevel(magicID()); levelOpt.has_value()){
-        Widget::draw(m);
+        Widget::drawDefault(m);
 
         const LabelBoard magicLevel
         {{
@@ -215,7 +215,7 @@ void SkillBoard::SkillPage::drawDefault(Widget::ROIMap m) const
             g_sdlDevice->drawTexture(texPtr, dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
         }
     }
-    Widget::draw(m);
+    Widget::drawDefault(m);
 }
 
 SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent, bool argAutoDelete)
