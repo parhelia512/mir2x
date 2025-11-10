@@ -3,7 +3,7 @@
 #include "shapecropboard.hpp"
 #include "cropviewboard.hpp"
 #include "imageboard.hpp"
-#include "gfxcropdupboard.hpp"
+#include "gfxresizeboard.hpp"
 #include "tritexbutton.hpp"
 #include "texslider.hpp"
 #include "layoutboard.hpp"
@@ -26,8 +26,8 @@ class CBMiddleExpand: public Widget
         CropViewBoard m_logView;
 
     private:
-        ImageBoard      m_bgImgFull;
-        GfxCropDupBoard m_bgImg;
+        ImageBoard     m_bgImgFull;
+        GfxResizeBoard m_bgImg;
 
     private:
         TritexButton m_buttonSwitchMode;

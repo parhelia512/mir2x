@@ -10,7 +10,7 @@
 #include "cropviewboard.hpp"
 #include "alphaonbutton.hpp"
 #include "shapecropboard.hpp"
-#include "gfxcropdupboard.hpp"
+#include "gfxresizeboard.hpp"
 #include "cbface.hpp"
 
 class ProcessRun;
@@ -33,8 +33,8 @@ class CBMiddle: public Widget
         CBFace m_face;
 
     private:
-        ImageBoard      m_bgImgFull;
-        GfxCropDupBoard m_bgImg;
+        ImageBoard     m_bgImgFull;
+        GfxResizeBoard m_bgImg;
 
     private:
         TritexButton m_switchMode;

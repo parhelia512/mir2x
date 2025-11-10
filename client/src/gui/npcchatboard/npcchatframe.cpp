@@ -36,23 +36,23 @@ NPCChatFrame::NPCChatFrame(
       }
 
     , m_board
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .getter = &m_frame,
+          .vr
+          {
+              40,
+              50,
 
-          [this](const Widget *){ return w(); },
-          [this](const Widget *){ return h(); },
+              300,
+              110,
+          },
 
-          &m_frame,
+          .resize
+          {
+              .w = [this]{ return w() - (m_frame.w() - 300); },
+              .h = [this]{ return h() - (m_frame.h() - 110); },
+          },
 
-          40,
-          50,
-
-          300,
-          110,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {}

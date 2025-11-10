@@ -4,7 +4,7 @@
 #include "imageboard.hpp"
 #include "layoutboard.hpp"
 #include "tritexbutton.hpp"
-#include "gfxcropdupboard.hpp"
+#include "gfxresizeboard.hpp"
 
 class ProcessRun;
 class NPCChatBoard: public Widget

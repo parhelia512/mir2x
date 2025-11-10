@@ -78,24 +78,24 @@ RuntimeConfigBoard::TextInput::TextInput(
       }}
 
     , m_imageBg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .getter = &m_image,
+          .vr
+          {
+              3,
+              3,
+              m_image.w() - 6,
+              2,
+          },
 
-          argInputW + 6,
-          argInputH + 4,
+          .resize
+          {
+              argInputW,
+              argInputH,
+          },
 
-          &m_image,
-
-          3,
-          3,
-          m_image.w() - 6,
-          2,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_input
       {
@@ -193,24 +193,24 @@ RuntimeConfigBoard::PullMenu::PullMenu(
       }}
 
     , m_menuTitleBackground
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .getter = &m_menuTitleImage,
+          .vr
+          {
+              3,
+              3,
+              m_menuTitleImage.w() - 6,
+              2,
+          },
 
-          [argTitleBgWidth ]{fflassert(argTitleBgWidth  >= 0); return argTitleBgWidth ; }(),
-          [argTitleBgHeight]{fflassert(argTitleBgHeight >= 0); return argTitleBgHeight; }(),
+          .resize
+          {
+              .w = fflcheck(argTitleBgWidth , argTitleBgWidth  >= 0),
+              .h = fflcheck(argTitleBgHeight, argTitleBgHeight >= 0),
+          },
 
-          &m_menuTitleImage,
-
-          3,
-          3,
-          m_menuTitleImage.w() - 6,
-          2,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_menuTitle
       {{

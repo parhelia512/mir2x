@@ -74,24 +74,24 @@ CBMiddleExpand::CBMiddleExpand(
       }}
 
     , m_bgImg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .getter = std::addressof(m_bgImgFull),
+          .vr
+          {
+              50,
+              47,
+              287,
+              196,
+          },
 
-          [this]{ return w(); },
-          [this]{ return h(); },
+          .resize
+          {
+              [this]{ return w() - (m_bgImgFull.w() - 287); },
+              [this]{ return h() - (m_bgImgFull.h() - 196); },
+          },
 
-          &m_bgImgFull,
-
-          50,
-          47,
-          287,
-          196,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_buttonSwitchMode
       {{

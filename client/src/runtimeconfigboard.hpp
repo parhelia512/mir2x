@@ -6,7 +6,7 @@
 #include "menuboard.hpp"
 #include "imageboard.hpp"
 #include "gfxcutoutboard.hpp"
-#include "gfxcropdupboard.hpp"
+#include "gfxresizeboard.hpp"
 #include "menubutton.hpp"
 #include "checklabel.hpp"
 #include "labelboard.hpp"
@@ -28,8 +28,8 @@ class RuntimeConfigBoard: public Widget
                 LabelBoard m_labelSecond;
 
             private:
-                ImageBoard      m_image;
-                GfxCropDupBoard m_imageBg;
+                ImageBoard     m_image;
+                GfxResizeBoard m_imageBg;
 
             private:
                 InputLine m_input;
@@ -77,10 +77,10 @@ class RuntimeConfigBoard: public Widget
                 GfxCropBoard m_labelCrop;
 
             private:
-                ImageBoard      m_menuTitleImage;
-                GfxCropDupBoard m_menuTitleBackground;
-                LabelBoard      m_menuTitle;
-                GfxCropBoard    m_menuTitleCrop;
+                ImageBoard     m_menuTitleImage;
+                GfxResizeBoard m_menuTitleBackground;
+                LabelBoard     m_menuTitle;
+                GfxCropBoard   m_menuTitleCrop;
 
             private:
                 ImageBoard m_imgOff;

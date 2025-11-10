@@ -175,7 +175,7 @@ class GfxResizeBoard: public Widget
 
             gridHelper(m, [&e, &valid](Widget *widget, const Widget::ROIMap &cm)
             {
-                valid = !widget->processEvent(e, valid, cm);
+                valid &= !widget->processEvent(e, valid, cm);
             });
 
             return !valid;

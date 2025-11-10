@@ -1,6 +1,6 @@
 #pragma once
 #include "widget.hpp"
-#include "gfxcropdupboard.hpp"
+#include "gfxresizeboard.hpp"
 #include "npcchatorigframe.hpp"
 
 class NPCChatFrame: public Widget
@@ -9,7 +9,7 @@ class NPCChatFrame: public Widget
         NPCChatOrigFrame m_frame;
 
     private:
-        GfxCropDupBoard m_board;
+        GfxResizeBoard m_board;
 
     public:
         NPCChatFrame(

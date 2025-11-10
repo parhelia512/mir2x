@@ -9,7 +9,7 @@
 #include "labelboard.hpp"
 #include "imageboard.hpp"
 #include "tritexbutton.hpp"
-#include "gfxcropdupboard.hpp"
+#include "gfxresizeboard.hpp"
 #include "friendchatboardconst.hpp"
 
 class ProcessRun;
@@ -61,11 +61,11 @@ class FriendChatBoard: public Widget
 
     private:
         ImageBoard m_frame;
-        GfxCropDupBoard m_frameCropDup;
+        GfxResizeBoard m_frameCropDup;
 
     private:
         ImageBoard m_background;
-        GfxCropDupBoard m_backgroundCropDup;
+        GfxResizeBoard m_backgroundCropDup;
 
     private:
         TritexButton m_close;

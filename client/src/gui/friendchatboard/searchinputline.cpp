@@ -39,24 +39,24 @@ SearchInputLine::SearchInputLine(Widget::VarDir argDir,
       }}
 
     , inputbg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .getter = &image,
+          .vr
+          {
+              3,
+              3,
+              image.w() - 6,
+              2,
+          },
 
-          this->w(),
-          this->h(),
+          .resize
+          {
+              [this]{ return w() - 6; },
+              [this]{ return h() - (image.h() - 2); },
+          },
 
-          &image,
-
-          3,
-          3,
-          image.w() - 6,
-          2,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , icon
       {{

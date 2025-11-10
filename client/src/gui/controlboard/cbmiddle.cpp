@@ -84,24 +84,24 @@ CBMiddle::CBMiddle(
       }}
 
     , m_bgImg
-      {
-          DIR_UPLEFT,
-          0,
-          0,
+      {{
+          .getter = std::addressof(m_bgImgFull),
+          .vr
+          {
+              50,
+              0,
+              287,
+              m_bgImgFull.h(),
+          },
 
-          [this](const Widget *){ return             w(); },
-          [this](const Widget *){ return m_bgImgFull.h(); },
+          .resize
+          {
+              .w = [this]{ return             w() - (m_bgImgFull.w() - 287); },
+              .h = [this]{ return m_bgImgFull.h()                          ; },
+          },
 
-          &m_bgImgFull,
-
-          50,
-          0,
-          287,
-          [this](const Widget *){ return m_bgImgFull.h(); },
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_switchMode
       {{

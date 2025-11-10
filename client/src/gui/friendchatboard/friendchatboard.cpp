@@ -56,23 +56,24 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
       }}
 
     , m_frameCropDup
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          [this]{ return w(); },
-          [this]{ return h(); },
+      {{
+          .getter = &m_frame,
+          .vr
+          {
+              55,
+              95,
+              230, // = 285 - 55,
+              250, // = 345 - 95,
+          },
 
-          &m_frame,
+          .resize
+          {
+              .w = [this]{ return w() - (m_frame.w() - 230); },
+              .h = [this]{ return h() - (m_frame.h() - 250); },
+          },
 
-          55,
-          95,
-          285 - 55,
-          345 - 95,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_background
       {{
@@ -81,23 +82,24 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
       }}
 
     , m_backgroundCropDup
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          [this](){ return w(); },
-          [this](){ return h(); },
+      {{
+          .getter = &m_background,
+          .vr
+          {
+              0,
+              0,
+              510,
+              187,
+          },
 
-          &m_background,
+          .resize
+          {
+              .w = [this](){ return w() - (m_background.w() - 510); },
+              .h = [this](){ return h() - (m_background.h() - 187); },
+          },
 
-          0,
-          0,
-          510,
-          187,
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 
     , m_close
       {{

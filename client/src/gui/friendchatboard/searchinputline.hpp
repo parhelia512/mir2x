@@ -4,7 +4,7 @@
 #include "labelboard.hpp"
 #include "layoutboard.hpp"
 #include "imageboard.hpp"
-#include "gfxcropdupboard.hpp"
+#include "gfxresizeboard.hpp"
 #include "friendchatboardconst.hpp"
 
 struct SearchInputLine: public Widget
@@ -34,7 +34,7 @@ struct SearchInputLine: public Widget
     constexpr static int GAP = 5;
 
     ImageBoard image;
-    GfxCropDupBoard inputbg;
+    GfxResizeBoard inputbg;
 
     ImageBoard icon;
     InputLine  input;

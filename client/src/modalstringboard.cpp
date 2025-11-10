@@ -4,7 +4,7 @@
 #include "imageboard.hpp"
 #include "layoutboard.hpp"
 #include "gfxcropboard.hpp"
-#include "gfxcropdupboard.hpp"
+#include "gfxresizeboard.hpp"
 #include "pngtexdb.hpp"
 #include "sdldevice.hpp"
 #include "layoutboard.hpp"
@@ -47,10 +47,10 @@ class ModalStringBoardImpl: public Widget
         LayoutBoard m_board;
 
     private:
-        ImageBoard      m_image;
-        GfxCropBoard    m_imageUp;    // top 180 pixels
-        GfxCropDupBoard m_imageUpDup; // duplicate top 84 ~ 180 pixels for stretch
-        GfxCropBoard    m_imageDown;  // bottom 40 pixels
+        ImageBoard     m_image;
+        GfxCropBoard   m_imageUp;    // top 180 pixels
+        GfxResizeBoard m_imageUpDup; // duplicate top 84 ~ 180 pixels for stretch
+        GfxCropBoard   m_imageDown;  // bottom 40 pixels
 
     public:
         ModalStringBoardImpl()
@@ -89,23 +89,24 @@ class ModalStringBoardImpl: public Widget
               }}
 
             , m_imageUpDup
-              {
-                  DIR_UPLEFT,
-                  0,
-                  0,
-                  [this](const Widget *){ return m_image.w(); },
-                  [this](const Widget *){ return std::max<int>(m_minH, 84 + m_board.h() + 30 * 2); }, // add 30 pixels as top/bottom margin of m_board
+              {{
+                  .getter = &m_imageUp,
+                  .vr
+                  {
+                      0,
+                      84,
+                      m_image.w(),
+                      180 - 84,
+                  },
 
-                  &m_imageUp,
+                  .resize
+                  {
+                      .w = [this]{ return m_image.w(); },
+                      .h = [this]{ return std::max<int>(m_minH, 84 + m_board.h() + 30 * 2); }, // add 30 pixels as top/bottom margin of m_board
+                  },
 
-                  0,
-                  84,
-                  [this](const Widget *){ return m_image.w(); },
-                  180 - 84,
-
-                  this,
-                  false,
-              }
+                  .parent{this},
+              }}
 
             , m_imageDown
               {{
