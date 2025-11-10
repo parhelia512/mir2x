@@ -49,7 +49,7 @@ ImageBoard::ImageBoard(ImageBoard::InitArgs args)
     setH((m_rotate % 2 == 0) ? varTexH : varTexW);
 }
 
-void ImageBoard::draw(Widget::ROIMap m) const
+void ImageBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

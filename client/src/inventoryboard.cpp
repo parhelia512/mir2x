@@ -184,7 +184,7 @@ void InventoryBoard::update(double fUpdateTime)
     m_wmdAniBoard.update(fUpdateTime);
 }
 
-void InventoryBoard::draw(Widget::ROIMap m) const
+void InventoryBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

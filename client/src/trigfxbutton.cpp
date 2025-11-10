@@ -34,7 +34,7 @@ TrigfxButton::TrigfxButton(TrigfxButton::InitArgs args)
     initButtonSize();
 }
 
-void TrigfxButton::draw(Widget::ROIMap m) const
+void TrigfxButton::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

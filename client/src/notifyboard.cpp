@@ -98,7 +98,7 @@ void NotifyBoard::update(double)
     }
 }
 
-void NotifyBoard::draw(Widget::ROIMap m) const
+void NotifyBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

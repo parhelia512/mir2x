@@ -72,7 +72,7 @@ void MenuButton::updateMenuButtonSize()
     setH(m_margin[0] + m_gfxWidget->h() + std::max<int>(                   m_margin[1], m_menuBoard->show() ? m_menuBoard->h() : 0));
 }
 
-void MenuButton::draw(Widget::ROIMap m) const
+void MenuButton::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

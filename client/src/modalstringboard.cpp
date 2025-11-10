@@ -138,7 +138,7 @@ class ModalStringBoardImpl: public Widget
         }
 
     public:
-        void draw(Widget::ROIMap m) const override
+        void drawDefault(Widget::ROIMap m) const override
         {
             drawChild(&m_imageUpDup, m);
             drawChild(&m_imageDown , m);

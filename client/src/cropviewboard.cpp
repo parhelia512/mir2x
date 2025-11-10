@@ -53,7 +53,7 @@ CropViewBoard::CropViewBoard(
     });
 }
 
-void CropViewBoard::draw(Widget::ROIMap m) const
+void CropViewBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!show()){
         return;

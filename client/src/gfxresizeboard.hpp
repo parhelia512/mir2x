@@ -147,7 +147,7 @@ class GfxResizeBoard: public Widget
         }
 
     public:
-        void draw(Widget::ROIMap m) const override
+        void drawDefault(Widget::ROIMap m) const override
         {
             if(!m.calibrate(this)){
                 return;

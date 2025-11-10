@@ -197,7 +197,7 @@ void ItemListBoard::drawGridHoverLayout(size_t index) const
     hoverTextBoard.draw({.x=mousePX + margin, .y=mousePY + margin});
 }
 
-void ItemListBoard::draw(Widget::ROIMap m) const
+void ItemListBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

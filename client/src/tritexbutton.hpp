@@ -73,7 +73,7 @@ class TritexButton: public ButtonBase
         TritexButton(TritexButton::InitArgs);
 
     public:
-        void draw(Widget::ROIMap) const override;
+        void drawDefault(Widget::ROIMap) const override;
 
     public:
         void setTexID(const TritexButton::TritexIDList &texIDList)

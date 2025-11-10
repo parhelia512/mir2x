@@ -79,7 +79,7 @@ class GfxDupBoard: public Widget
         }
 
     public:
-        void draw(Widget::ROIMap m) const override
+        void drawDefault(Widget::ROIMap m) const override
         {
             gridHelper(m, [this](int xi, int yi, Widget::ROIMap sm, const Widget::ROI &r)
             {

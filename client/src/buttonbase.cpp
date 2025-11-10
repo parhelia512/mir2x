@@ -17,8 +17,7 @@ ButtonBase::ButtonBase(ButtonBase::InitArgs args)
           .w = std::move(args.w),
           .h = std::move(args.h),
 
-          .moveOnFocus = std::move(args.moveOnFocus),
-
+          .attrs = std::move(args.attrs),
           .parent = std::move(args.parent),
       }}
 

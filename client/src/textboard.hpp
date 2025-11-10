@@ -72,7 +72,7 @@ class TextBoard: public Widget
             return getText().empty();
         }
 
-        void draw(Widget::ROIMap m) const override
+        void drawDefault(Widget::ROIMap m) const override
         {
             return m_image.draw(m);
         }

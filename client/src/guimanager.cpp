@@ -158,7 +158,7 @@ GUIManager::GUIManager(ProcessRun *argProc)
     }
 }
 
-void GUIManager::draw(Widget::ROIMap m) const
+void GUIManager::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

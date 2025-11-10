@@ -231,6 +231,37 @@ RuntimeConfigBoard::PullMenu::PullMenu(
               .h = std::min<int>(m_menuTitleBackground.h() - 4, m_menuTitle.h()),
           },
 
+          .attrs
+          {
+              .eventHandler = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
+              {
+                  if(!m.calibrate(self)){
+                      return false;
+                  }
+
+                  if(!valid){
+                      return self->consumeFocus(false);
+                  }
+
+                  switch(event.type){
+                      case SDL_MOUSEBUTTONUP:
+                          {
+                              if(m.in(SDLDeviceHelper::getEventPLoc(event).value())){
+                                  m_menuList.setShow(true);
+                                  return self->consumeFocus(true);
+                              }
+                              else{
+                                  return false;
+                              }
+                          }
+                      default:
+                          {
+                              return false;
+                          }
+                  }
+              },
+          },
+
           .parent{this},
       }}
 
@@ -289,34 +320,6 @@ RuntimeConfigBoard::PullMenu::PullMenu(
     m_button       .moveAt(DIR_LEFT, m_menuTitleBackground.dx() + m_menuTitleBackground.w(), maxHeight / 2);
 
     m_menuList.moveAt(DIR_UPLEFT, m_menuTitleBackground.dx() + 3, m_menuTitleBackground.dy() + m_menuTitleBackground.h() - 2);
-
-    m_menuTitleCrop.setProcessEvent([this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
-    {
-        if(!m.calibrate(self)){
-            return false;
-        }
-
-        if(!valid){
-            return self->consumeFocus(false);
-        }
-
-        switch(event.type){
-            case SDL_MOUSEBUTTONUP:
-                {
-                    if(m.in(SDLDeviceHelper::getEventPLoc(event).value())){
-                        m_menuList.setShow(true);
-                        return self->consumeFocus(true);
-                    }
-                    else{
-                        return false;
-                    }
-                }
-            default:
-                {
-                    return false;
-                }
-        }
-    });
 }
 
 RuntimeConfigBoard::LabelSliderBar::LabelSliderBar(
@@ -391,7 +394,7 @@ RuntimeConfigBoard::LabelSliderBar::LabelSliderBar(
     m_slider   .moveAt(DIR_LEFT, m_labelCrop.dx() + m_labelCrop.w(), h() / 2);
 }
 
-void RuntimeConfigBoard::PullMenu::draw(Widget::ROIMap m) const
+void RuntimeConfigBoard::PullMenu::drawDefault(Widget::ROIMap m) const
 {
     for(const auto p:
     {
@@ -1071,7 +1074,7 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
     setShow(false);
 }
 
-void RuntimeConfigBoard::draw(Widget::ROIMap m) const
+void RuntimeConfigBoard::drawDefault(Widget::ROIMap m) const
 {
     for(const auto p:
     {

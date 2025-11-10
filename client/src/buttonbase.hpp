@@ -57,8 +57,7 @@ class ButtonBase: public Widget
             bool onClickDone = true;
             bool radioMode   = false;
 
-            Widget::VarBool moveOnFocus = true;
-
+            Widget::InitAttrs attrs {};
             Widget::WADPair parent {};
         };
 

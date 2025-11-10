@@ -237,7 +237,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *runPtr, Widget *argParent, bool argAuto
     }
 }
 
-void PurchaseBoard::draw(Widget::ROIMap m) const
+void PurchaseBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

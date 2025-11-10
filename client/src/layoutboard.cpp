@@ -387,7 +387,7 @@ void LayoutBoard::addParXML(int loc, const Widget::IntMargin &parMargin, const c
     addPar(loc, parMargin, xmlDoc.RootElement());
 }
 
-void LayoutBoard::draw(Widget::ROIMap m) const
+void LayoutBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

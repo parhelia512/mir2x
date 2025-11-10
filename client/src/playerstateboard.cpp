@@ -114,7 +114,7 @@ void PlayerStateBoard::update(double)
 {
 }
 
-void PlayerStateBoard::draw(Widget::ROIMap m) const
+void PlayerStateBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

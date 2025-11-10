@@ -74,6 +74,9 @@ class WidgetTreeNode // tree concept, used by class Widget only
             using VarTypeHelper<T>::VarTypeHelper;
         };
 
+    protected:
+        using VarFocusProxy = VarGetter<Widget *>;
+
     private:
         friend class Widget;
 
@@ -189,6 +192,8 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::check_const_cond_out_ptr_t;
 
     public:
+
+    public:
         using WidgetTreeNode::VarDir;
         using WidgetTreeNode::VarInt;
         using WidgetTreeNode::VarIntOpt;
@@ -260,14 +265,21 @@ class Widget: public WidgetTreeNode
     public:
 #include "widget.roi.hpp"
 
-    private:
+    public:
         struct InitAttrs final
         {
             Widget::VarBool show = true;
             Widget::VarBool active = true;
 
-            Widget::VarBool focus = false;
-            Widget::VarBool moveOnFocus = true;
+            bool focus = false;
+            bool moveOnFocus = true;
+
+            int focusPolicy = WFP_NONE;
+            Widget::VarFocusProxy focusProxy = nullptr;
+
+            std::function<void(Widget *                                         )> afterResize  = nullptr;
+            std::function<bool(Widget *, const SDL_Event &, bool, Widget::ROIMap)> processEvent = nullptr;
+            std::function<void(Widget *,                          Widget::ROIMap)> draw         = nullptr;
         };
 
     private:
@@ -280,13 +292,7 @@ class Widget: public WidgetTreeNode
             Widget::VarSizeOpt w = 0; // nullopt means auto-resize
             Widget::VarSizeOpt h = 0;
 
-            std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> childList = {};
-
-            Widget::VarBool show   = true;
-            Widget::VarBool active = true;
-
-            Widget::VarBool focus;
-            Widget::VarBool moveOnFocus = true;
+            std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> childList {};
 
             Widget::InitAttrs attrs  {};
             Widget::WADPair   parent {};
@@ -365,23 +371,18 @@ class Widget: public WidgetTreeNode
         Widget::VarSizeOpt m_h;
 
     protected:
-        std::pair<Widget::VarBool, bool> m_show;
-        std::pair<Widget::VarBool, bool> m_active;
+        Widget::InitAttrs m_attrs;
+
+    protected:
+        std::pair<Widget::VarBool &, bool> m_show   {m_attrs.show  , false};
+        std::pair<Widget::VarBool &, bool> m_active {m_attrs.active, false};
 
     protected:
         std::any m_data;
 
-    protected:
-        bool m_focus = false;
-        Widget::VarBool m_moveOnFocus;
-
     private:
         mutable bool m_hCalc = false;
         mutable bool m_wCalc = false;
-
-    private:
-        std::function<void(Widget *)> m_afterResizeHandler;
-        std::function<bool(Widget *, const SDL_Event &, bool, Widget::ROIMap)> m_processEventHandler;
 
     public:
         explicit Widget(Widget::InitArgs);
@@ -395,36 +396,11 @@ class Widget: public WidgetTreeNode
         virtual void update(double);
 
     public:
-        Widget *setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, Widget::ROIMap)>);
-
         virtual bool processEvent      (const SDL_Event &, bool, Widget::ROIMap) final;
         virtual bool processEventRoot  (const SDL_Event &, bool, Widget::ROIMap) final;
         virtual bool processEventParent(const SDL_Event &, bool, Widget::ROIMap) final;
 
     protected:
-        // @param
-        //      event
-        //      valid
-        //
-        //      startDstX:
-        //      startDstY: where the top-left corner locates when processing current event
-        //
-        // @return
-        //      true if event is consumed
-        //
-        // widget has no x()/y() supported
-        // when draw/processEvent, needs give explicit startDstX/startDstY when calling draw()/processEvent()
-        // this helps to support more features, like:
-        //
-        //      +--------+   +--------+
-        //      |        |   |        |
-        //      | view_1 |   | view_2 |
-        //      |        |   |        |
-        //      +--------+   +--------+
-        //
-        // above two view-window can show the same widget, but different part of it
-        // and either view can capture and process event
-        //
         // for draw() and processEventDefault(), it doesn't check show()
         //
         //     1. if need to manually draw a widget, we ignore show() result
@@ -440,15 +416,18 @@ class Widget: public WidgetTreeNode
         virtual bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap);
 
     public:
-        virtual void draw       (                                  Widget::ROIMap) const;
+        virtual void draw       (                                  Widget::ROIMap) const final;
+        virtual void drawRoot   (                                  Widget::ROIMap) const final;
         virtual void drawChild  (const Widget *,                   Widget::ROIMap) const final;
         virtual void drawAsChild(const Widget *, dir8_t, int, int, Widget::ROIMap) const final;
-        virtual void drawRoot   (                                  Widget::ROIMap) const final;
+
+    protected:
+        virtual void drawDefault(Widget::ROIMap) const;
 
     public:
-        Widget *setAfterResize(std::function<void(Widget *)>);
-
         virtual void afterResize() final;
+
+    protected:
         virtual void afterResizeDefault();
 
     public:

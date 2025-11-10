@@ -63,7 +63,7 @@ ACButton::ACButton(ACButton::InitArgs args)
     setLabel();
 }
 
-void ACButton::draw(Widget::ROIMap m) const
+void ACButton::drawDefault(Widget::ROIMap m) const
 {
     const auto buttonName = m_buttonNameList.at(m_currButtonName);
     auto texPtr = g_progUseDB->retrieve(m_texMap.at(buttonName));

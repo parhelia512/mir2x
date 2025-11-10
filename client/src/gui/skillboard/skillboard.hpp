@@ -109,7 +109,7 @@ class SkillBoard: public Widget
                 MagicIconButton(dir8_t, int, int, uint32_t, SkillBoardConfig *, ProcessRun *, Widget * = nullptr, bool = false);
 
             public:
-                void draw(Widget::ROIMap) const override;
+                void drawDefault(Widget::ROIMap) const override;
 
             public:
                 bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
@@ -167,7 +167,7 @@ class SkillBoard: public Widget
                 }
 
             public:
-                void draw(Widget::ROIMap) const override;
+                void drawDefault(Widget::ROIMap) const override;
 
             public:
                 const auto &getMagicIconButtonList() const
@@ -201,7 +201,7 @@ class SkillBoard: public Widget
 
     public:
         void drawTabName() const;
-        void draw(Widget::ROIMap) const override;
+        void drawDefault(Widget::ROIMap) const override;
 
     public:
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;

@@ -86,7 +86,7 @@ class FriendChatBoard: public Widget
                 bool     = false);
 
     public:
-        void draw(Widget::ROIMap) const override;
+        void drawDefault(Widget::ROIMap) const override;
 
     public:
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;

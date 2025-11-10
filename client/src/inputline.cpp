@@ -201,7 +201,7 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, Widget::
     }
 }
 
-void InputLine::draw(Widget::ROIMap m) const
+void InputLine::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

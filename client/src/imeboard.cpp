@@ -304,7 +304,7 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::R
     }
 }
 
-void IMEBoard::draw(Widget::ROIMap m) const
+void IMEBoard::drawDefault(Widget::ROIMap m) const
 {
     //        +---------------------------------------------------------------------------------- m_startX
     //        |

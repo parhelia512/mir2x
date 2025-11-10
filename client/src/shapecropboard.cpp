@@ -17,7 +17,7 @@ ShapeCropBoard::ShapeCropBoard(ShapeCropBoard::InitArgs args)
     , m_drawFunc(std::move(args.drawFunc))
 {}
 
-void ShapeCropBoard::draw(Widget::ROIMap m) const
+void ShapeCropBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!Widget::hasDrawFunc(m_drawFunc)){
         return;

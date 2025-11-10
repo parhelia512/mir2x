@@ -118,7 +118,7 @@ SkillBoard::MagicIconButton::MagicIconButton(
     setH(m_icon.h() + 8);
 }
 
-void SkillBoard::MagicIconButton::draw(Widget::ROIMap m) const
+void SkillBoard::MagicIconButton::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;
@@ -190,7 +190,7 @@ SkillBoard::SkillPage::SkillPage(uint32_t pageImage, SkillBoardConfig *configPtr
     setSize(r[2], r[3]);
 }
 
-void SkillBoard::SkillPage::draw(Widget::ROIMap m) const
+void SkillBoard::SkillPage::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;
@@ -379,7 +379,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
     }
 }
 
-void SkillBoard::draw(Widget::ROIMap m) const
+void SkillBoard::drawDefault(Widget::ROIMap m) const
 {
     if(auto texPtr = g_progUseDB->retrieve(0X05000000)){
         g_sdlDevice->drawTexture(texPtr, m.x, m.y);

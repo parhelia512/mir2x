@@ -769,7 +769,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
     setShow(false);
 }
 
-void FriendChatBoard::draw(Widget::ROIMap m) const
+void FriendChatBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

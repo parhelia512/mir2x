@@ -40,7 +40,7 @@ class ACButton: public ButtonBase
         ACButton(ACButton::InitArgs);
 
     public:
-        void draw(Widget::ROIMap) const override;
+        void drawDefault(Widget::ROIMap) const override;
 
     private:
         void setLabel();

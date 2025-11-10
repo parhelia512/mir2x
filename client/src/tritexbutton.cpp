@@ -62,7 +62,7 @@ TritexButton::TritexButton(TritexButton::InitArgs args)
             fnGetEdgeSize([](SDL_Texture *texPtr){ return SDLDeviceHelper::getTextureHeight(texPtr); }));
 }
 
-void TritexButton::draw(Widget::ROIMap m) const
+void TritexButton::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

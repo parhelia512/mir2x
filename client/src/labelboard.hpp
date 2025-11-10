@@ -67,5 +67,5 @@ class LabelBoard: public Widget
         }
 
     public:
-        void draw(Widget::ROIMap) const override;
+        void drawDefault(Widget::ROIMap) const override;
 };

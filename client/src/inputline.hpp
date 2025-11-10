@@ -57,7 +57,7 @@ class InputLine: public Widget
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     public:
-        void draw(Widget::ROIMap) const override;
+        void drawDefault(Widget::ROIMap) const override;
 
     public:
         void update(double ms) override

@@ -82,7 +82,7 @@ class MarginWrapper: public Widget
         }
 
     public:
-        void draw(Widget::ROIMap m) const override
+        void drawDefault(Widget::ROIMap m) const override
         {
             if(m_bgBoard        && m_bgBoard       ->show()) drawChild(m_bgBoard       , m);
             if(m_wrapped.widget && m_wrapped.widget->show()) drawChild(m_wrapped.widget, m);

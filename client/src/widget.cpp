@@ -445,43 +445,6 @@ Widget::Widget(Widget::InitArgs args)
     }
 }
 
-void Widget::drawChild(const Widget *child, Widget::ROIMap m) const
-{
-    fflassert(child);
-    fflassert(hasChild(child->id()));
-    drawAsChild(child, DIR_UPLEFT, child->dx(), child->dy(), m);
-}
-
-void Widget::drawAsChild(const Widget *gfxWidget, dir8_t gfxDir, int gfxDx, int gfxDy, Widget::ROIMap m) const
-{
-    if(!gfxWidget){
-        return;
-    }
-
-    if(!m.calibrate(this)){
-        return;
-    }
-
-    gfxWidget->draw(m.create(Widget::ROI
-    {
-        .x = gfxDx - xSizeOff(gfxDir, gfxWidget->w()),
-        .y = gfxDy - ySizeOff(gfxDir, gfxWidget->h()),
-
-        .w = gfxWidget->w(),
-        .h = gfxWidget->h(),
-    }));
-}
-
-void Widget::drawRoot(Widget::ROIMap m) const
-{
-    fflassert(!parent());
-
-    m.x += dx();
-    m.y += dy();
-
-    draw(m);
-}
-
 int Widget::sizeOff(int size, int index)
 {
     /**/ if(index <  0) return        0;
@@ -527,16 +490,14 @@ void Widget::update(double fUpdateTime)
     });
 }
 
-Widget *Widget::setProcessEvent(std::function<bool(Widget *, const SDL_Event &, bool, Widget::ROIMap)> argHandler)
-{
-    m_processEventHandler = std::move(argHandler);
-    return this;
-}
-
 bool Widget::processEvent(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(m_processEventHandler){ return m_processEventHandler(this, event, valid, m); }
-    else                     { return   processEventDefault(      event, valid, m); }
+    if(m_attrs.processEvent){
+        return m_attrs.processEvent(this, event, valid, m);
+    }
+    else{
+        return processEventDefault(event, valid, m);
+    }
 }
 
 bool Widget::processEventRoot(const SDL_Event &event, bool valid, Widget::ROIMap m)
@@ -618,7 +579,54 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, Widget::ROI
     return took;
 }
 
-void Widget::draw(Widget::ROIMap m) const
+void Widget::drawDefault(Widget::ROIMap m) const
+{
+    if(m_attrs.draw){
+        m_attrs.draw(this, m);
+    }
+    else{
+        drawDefault(m);
+    }
+}
+
+void Widget::drawRoot(Widget::ROIMap m) const
+{
+    fflassert(!parent());
+
+    m.x += dx();
+    m.y += dy();
+
+    draw(m);
+}
+
+void Widget::drawChild(const Widget *child, Widget::ROIMap m) const
+{
+    fflassert(child);
+    fflassert(hasChild(child->id()));
+    drawAsChild(child, DIR_UPLEFT, child->dx(), child->dy(), m);
+}
+
+void Widget::drawAsChild(const Widget *gfxWidget, dir8_t gfxDir, int gfxDx, int gfxDy, Widget::ROIMap m) const
+{
+    if(!gfxWidget){
+        return;
+    }
+
+    if(!m.calibrate(this)){
+        return;
+    }
+
+    gfxWidget->draw(m.create(Widget::ROI
+    {
+        .x = gfxDx - xSizeOff(gfxDir, gfxWidget->w()),
+        .y = gfxDy - ySizeOff(gfxDir, gfxWidget->h()),
+
+        .w = gfxWidget->w(),
+        .h = gfxWidget->h(),
+    }));
+}
+
+void Widget::drawDefault(Widget::ROIMap m) const
 {
     foreachChild([&m, this](const Widget *widget, bool)
     {
@@ -628,16 +636,10 @@ void Widget::draw(Widget::ROIMap m) const
     });
 }
 
-Widget *Widget::setAfterResize(std::function<void(Widget *)> argHandler)
-{
-    m_afterResizeHandler = std::move(argHandler);
-    return this;
-}
-
 void Widget::afterResize()
 {
-    if(m_afterResizeHandler){
-        m_afterResizeHandler(this);
+    if(m_attrs.afterResize){
+        m_attrs.afterResize(this);
     }
     else{
         afterResizeDefault();

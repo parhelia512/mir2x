@@ -74,7 +74,7 @@ void LabelBoard::setImageMaskColor(uint32_t argColor)
     m_tpset.setImageMaskColor(argColor);
 }
 
-void LabelBoard::draw(Widget::ROIMap m) const
+void LabelBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

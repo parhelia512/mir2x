@@ -180,7 +180,7 @@ TeamStateBoard::TeamStateBoard(int argX, int argY, ProcessRun *runPtr, Widget *a
     }
 }
 
-void TeamStateBoard::draw(Widget::ROIMap m) const
+void TeamStateBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

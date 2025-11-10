@@ -26,5 +26,5 @@ class ShapeCropBoard: public Widget
         ShapeCropBoard(ShapeCropBoard::InitArgs);
 
     public:
-        void draw(Widget::ROIMap) const override;
+        void drawDefault(Widget::ROIMap) const override;
 };
