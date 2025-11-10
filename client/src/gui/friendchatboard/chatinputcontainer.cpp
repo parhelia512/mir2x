@@ -34,10 +34,13 @@ ChatInputContainer::ChatInputContainer(
 
           .attrs
           {
-              .afterResize = [this](Widget *)
+              .inst
               {
-                  layout.setLineWidth(this->w());
-              },
+                  .afterResize = [this](Widget *)
+                  {
+                      layout.setLineWidth(this->w());
+                  },
+              }
           },
 
           .parent

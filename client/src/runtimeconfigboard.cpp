@@ -233,32 +233,35 @@ RuntimeConfigBoard::PullMenu::PullMenu(
 
           .attrs
           {
-              .processEvent = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
+              .inst
               {
-                  if(!m.calibrate(self)){
-                      return false;
-                  }
+                  .processEvent = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
+                  {
+                      if(!m.calibrate(self)){
+                          return false;
+                      }
 
-                  if(!valid){
-                      return self->consumeFocus(false);
-                  }
+                      if(!valid){
+                          return self->consumeFocus(false);
+                      }
 
-                  switch(event.type){
-                      case SDL_MOUSEBUTTONUP:
-                          {
-                              if(m.in(SDLDeviceHelper::getEventPLoc(event).value())){
-                                  m_menuList.setShow(true);
-                                  return self->consumeFocus(true);
+                      switch(event.type){
+                          case SDL_MOUSEBUTTONUP:
+                              {
+                                  if(m.in(SDLDeviceHelper::getEventPLoc(event).value())){
+                                      m_menuList.setShow(true);
+                                      return self->consumeFocus(true);
+                                  }
+                                  else{
+                                      return false;
+                                  }
                               }
-                              else{
+                          default:
+                              {
                                   return false;
                               }
-                          }
-                      default:
-                          {
-                              return false;
-                          }
-                  }
+                      }
+                  },
               },
           },
 
@@ -473,7 +476,10 @@ RuntimeConfigBoard::MenuPage::TabHeader::TabHeader(
 
           .attrs
           {
-              .data = std::move(argData),
+              .inst
+              {
+                  .data = std::move(argData),
+              }
           },
 
           .parent

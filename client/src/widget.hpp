@@ -266,11 +266,14 @@ class Widget: public WidgetTreeNode
 #include "widget.roi.hpp"
 
     public:
-        struct InitAttrs final
+        struct TypeAttrs final // per class attributes
+        {
+            const bool canSetSize = true;
+        };
+
+        struct InstAttrs final // per instance attributes
         {
             std::any data {};
-
-            const bool canSetSize = true; // won't prevent other member variables from move
 
             Widget::VarBool show = true;
             Widget::VarBool active = true;
@@ -284,6 +287,12 @@ class Widget: public WidgetTreeNode
             std::function<void(      Widget *                                         )> afterResize  = nullptr;
             std::function<bool(      Widget *, const SDL_Event &, bool, Widget::ROIMap)> processEvent = nullptr;
             std::function<void(const Widget *,                          Widget::ROIMap)> draw         = nullptr;
+        };
+
+        struct InitAttrs final
+        {
+            Widget::TypeAttrs type {};
+            Widget::InstAttrs inst {};
         };
 
     private:
@@ -375,8 +384,8 @@ class Widget: public WidgetTreeNode
         Widget::InitAttrs m_attrs;
 
     protected:
-        std::pair<Widget::VarBool &, bool> m_show   {m_attrs.show  , false};
-        std::pair<Widget::VarBool &, bool> m_active {m_attrs.active, false};
+        std::pair<Widget::VarBool &, bool> m_show   {m_attrs.inst.show  , false};
+        std::pair<Widget::VarBool &, bool> m_active {m_attrs.inst.active, false};
 
     private:
         mutable bool m_hCalc = false;
@@ -458,7 +467,7 @@ class Widget: public WidgetTreeNode
     public:
         auto & data(this auto && self)
         {
-            return self.m_attrs.data;
+            return self.m_attrs.inst.data;
         }
 
     public:

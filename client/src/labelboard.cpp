@@ -17,17 +17,11 @@ LabelBoard::LabelBoard(LabelBoard::InitArgs args)
 
           .attrs
           {
-              .data = std::move(args.attrs.data),
-              .canSetSize = false,
-
-              .show = std::move(args.attrs.show),
-              .active = std::move(args.attrs.active),
-
-              .focus = std::move(args.attrs.focus),
-              .moveOnFocus = std::move(args.attrs.moveOnFocus),
-
-              .focusPolicy = std::move(args.attrs.focusPolicy),
-              .focusProxy = std::move(args.attrs.focusProxy),
+              .type
+              {
+                  .canSetSize = false,
+              },
+              .inst = std::move(args.attrs),
           },
 
           .parent = std::move(args.parent),

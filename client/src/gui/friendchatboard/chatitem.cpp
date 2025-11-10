@@ -43,8 +43,15 @@ ChatItem::ChatItem(
 
           .attrs
           {
-              .canSetSize = false,
-              .afterResize = std::move(argAfterResizeFunc),
+              .type
+              {
+                  .canSetSize = false,
+              },
+
+              .inst
+              {
+                  .afterResize = std::move(argAfterResizeFunc),
+              },
           },
 
           .parent

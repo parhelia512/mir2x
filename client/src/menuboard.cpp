@@ -195,63 +195,66 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
 
         .attrs
         {
-            .processEvent = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
+            .inst
             {
-                if(!m.calibrate(self)){
-                    return false;
-                }
-
-                if(!valid){
-                    return self->consumeFocus(false);
-                }
-
-                Widget *menuWidget = nullptr;
-                ShapeCropBoard *background = nullptr;
-
-                self->foreachChild([&menuWidget, &background](Widget *child, bool)
+                .processEvent = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
                 {
-
-                    if(auto p = dynamic_cast<ShapeCropBoard *>(child)){
-                        background = p;
+                    if(!m.calibrate(self)){
+                        return false;
                     }
-                    else{
-                        menuWidget = child;
+
+                    if(!valid){
+                        return self->consumeFocus(false);
                     }
-                });
 
-                if(menuWidget->processEventParent(event, valid, m)){
-                    return self->consumeFocus(true, menuWidget);
-                }
+                    Widget *menuWidget = nullptr;
+                    ShapeCropBoard *background = nullptr;
 
-                switch(event.type){
-                    case SDL_MOUSEMOTION:
-                    case SDL_MOUSEBUTTONUP:
-                    case SDL_MOUSEBUTTONDOWN:
-                        {
-                            if(m.create(background->roi()).in(SDLDeviceHelper::getEventPLoc(event).value())){
-                                if(event.type == SDL_MOUSEMOTION){
-                                    return self->consumeFocus(true);
+                    self->foreachChild([&menuWidget, &background](Widget *child, bool)
+                    {
+
+                        if(auto p = dynamic_cast<ShapeCropBoard *>(child)){
+                            background = p;
+                        }
+                        else{
+                            menuWidget = child;
+                        }
+                    });
+
+                    if(menuWidget->processEventParent(event, valid, m)){
+                        return self->consumeFocus(true, menuWidget);
+                    }
+
+                    switch(event.type){
+                        case SDL_MOUSEMOTION:
+                        case SDL_MOUSEBUTTONUP:
+                        case SDL_MOUSEBUTTONDOWN:
+                            {
+                                if(m.create(background->roi()).in(SDLDeviceHelper::getEventPLoc(event).value())){
+                                    if(event.type == SDL_MOUSEMOTION){
+                                        return self->consumeFocus(true);
+                                    }
+                                    else{
+                                        if(m_onClickMenu){
+                                            m_onClickMenu(menuWidget);
+                                        }
+
+                                        setFocus(false);
+                                        setShow(false);
+                                        return true;
+                                    }
                                 }
                                 else{
-                                    if(m_onClickMenu){
-                                        m_onClickMenu(menuWidget);
-                                    }
-
-                                    setFocus(false);
-                                    setShow(false);
-                                    return true;
+                                    return self->consumeFocus(false);
                                 }
                             }
-                            else{
-                                return self->consumeFocus(false);
+                        default:
+                            {
+                                return false;
                             }
-                        }
-                    default:
-                        {
-                            return false;
-                        }
-                }
-            },
+                    }
+                },
+            }
         },
     }}, true);
 }

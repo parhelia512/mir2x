@@ -63,7 +63,10 @@ BaseFrameBoard::BaseFrameBoard(BaseFrameBoard::InitArgs args)
 
           .attrs
           {
-              .moveOnFocus = false,
+              .inst
+              {
+                  .moveOnFocus = false,
+              }
           },
           .parent{this},
       }}

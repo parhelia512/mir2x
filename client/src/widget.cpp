@@ -487,8 +487,8 @@ void Widget::update(double fUpdateTime)
 
 bool Widget::processEvent(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(m_attrs.processEvent){
-        return m_attrs.processEvent(this, event, valid, m);
+    if(m_attrs.inst.processEvent){
+        return m_attrs.inst.processEvent(this, event, valid, m);
     }
     else{
         return processEventDefault(event, valid, m);
@@ -566,7 +566,7 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, Widget::ROI
         }
     });
 
-    if(m_attrs.moveOnFocus){
+    if(m_attrs.inst.moveOnFocus){
         if(auto widget = hasChild(focusedWidgetID)){
             moveBack(widget);
         }
@@ -576,8 +576,8 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, Widget::ROI
 
 void Widget::draw(Widget::ROIMap m) const
 {
-    if(m_attrs.draw){
-        m_attrs.draw(this, m);
+    if(m_attrs.inst.draw){
+        m_attrs.inst.draw(this, m);
     }
     else{
         drawDefault(m);
@@ -633,8 +633,8 @@ void Widget::drawDefault(Widget::ROIMap m) const
 
 void Widget::afterResize()
 {
-    if(m_attrs.afterResize){
-        m_attrs.afterResize(this);
+    if(m_attrs.inst.afterResize){
+        m_attrs.inst.afterResize(this);
     }
     else{
         afterResizeDefault();
@@ -750,7 +750,7 @@ bool Widget::focus() const
         return true;
     }
 
-    return m_attrs.focus;
+    return m_attrs.inst.focus;
 }
 
 void Widget::setFocus(bool argFocus)
@@ -760,7 +760,7 @@ void Widget::setFocus(bool argFocus)
         widget->setFocus(false);
     });
 
-    m_attrs.focus = argFocus;
+    m_attrs.inst.focus = argFocus;
 }
 
 // focus helper
@@ -953,7 +953,7 @@ void Widget::moveAt(Widget::VarDir argDir, Widget::VarInt argX, Widget::VarInt a
 
 void Widget::setW(Widget::VarSizeOpt argSize)
 {
-    if(m_attrs.canSetSize){
+    if(m_attrs.type.canSetSize){
         m_w = std::move(argSize);
     }
     else{
@@ -963,7 +963,7 @@ void Widget::setW(Widget::VarSizeOpt argSize)
 
 void Widget::setH(Widget::VarSizeOpt argSize)
 {
-    if(m_attrs.canSetSize){
+    if(m_attrs.type.canSetSize){
         m_h = std::move(argSize);
     }
     else{

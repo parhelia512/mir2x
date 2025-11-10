@@ -11,21 +11,6 @@
 
 class LabelBoard: public Widget
 {
-    protected:
-        struct InitAttrs final
-        {
-            std::any data {};
-
-            Widget::VarBool show = true;
-            Widget::VarBool active = true;
-
-            bool focus = false;
-            bool moveOnFocus = true;
-
-            int focusPolicy = WFP_NONE;
-            Widget::VarFocusProxy focusProxy = nullptr;
-        };
-
     private:
         struct InitArgs final
         {
@@ -37,7 +22,7 @@ class LabelBoard: public Widget
 
             Widget::FontConfig font {};
 
-            LabelBoard::InitAttrs attrs {};
+            LabelBoard::InstAttrs attrs {};
             Widget::WADPair      parent {};
         };
 
