@@ -43,6 +43,7 @@ ChatItem::ChatItem(
 
           .attrs
           {
+              .canSetSize = false,
               .afterResize = std::move(argAfterResizeFunc),
           },
 
@@ -198,8 +199,6 @@ ChatItem::ChatItem(
           to_cstr(argMessageRefStr),
       } : nullptr)
 {
-    disableSetSize();
-
     if(avatarLeft){
         addChildAt(&avatar, DIR_UPLEFT, 0, 0, false);
         if(showName){

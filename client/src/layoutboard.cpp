@@ -59,6 +59,10 @@ LayoutBoard::LayoutBoard(LayoutBoard::InitArgs args)
               return backNode.startY + lastPerHeight + backNode.margin[1];
           },
 
+          .attrs
+          {
+              .canSetSize = false,
+          },
           .parent = std::move(args.parent),
       }}
 
@@ -105,8 +109,6 @@ LayoutBoard::LayoutBoard(LayoutBoard::InitArgs args)
     , m_onCR   (std::move(args.onCR))
     , m_eventCB(std::move(args.onEvent))
 {
-    disableSetSize();
-
     if(str_haschar(args.initXML)){
         loadXML(args.initXML, args.parLimit);
     }

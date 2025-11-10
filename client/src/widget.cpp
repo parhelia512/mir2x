@@ -753,7 +753,7 @@ bool Widget::focus() const
     return m_attrs.focus;
 }
 
-Widget *Widget::setFocus(bool argFocus)
+void Widget::setFocus(bool argFocus)
 {
     foreachChild([](Widget * widget, bool)
     {
@@ -761,7 +761,6 @@ Widget *Widget::setFocus(bool argFocus)
     });
 
     m_attrs.focus = argFocus;
-    return this;
 }
 
 // focus helper
@@ -858,10 +857,9 @@ void Widget::flipShow()
     m_show.second = !m_show.second;
 }
 
-Widget *Widget::setShow(Widget::VarBool argShow)
+void Widget::setShow(Widget::VarBool argShow)
 {
     m_show = std::make_pair(std::move(argShow), false);
-    return this;
 }
 
 bool Widget::active() const
@@ -882,10 +880,9 @@ void Widget::flipActive()
     m_active.second = !m_active.second;
 }
 
-Widget *Widget::setActive(Widget::VarBool argActive)
+void Widget::setActive(Widget::VarBool argActive)
 {
     m_active = std::make_pair(std::move(argActive), false);
-    return this;
 }
 
 void Widget::moveXTo(Widget::VarInt arg)
@@ -954,37 +951,30 @@ void Widget::moveAt(Widget::VarDir argDir, Widget::VarInt argX, Widget::VarInt a
     moveTo(std::move(argX), std::move(argY));
 }
 
-Widget *Widget::disableSetSize()
+void Widget::setW(Widget::VarSizeOpt argSize)
 {
-    m_canSetSize = false; // can not flip back
-    return this;
-}
-
-Widget *Widget::setW(Widget::VarSizeOpt argSize)
-{
-    if(m_canSetSize){
+    if(m_attrs.canSetSize){
         m_w = std::move(argSize);
-        return this;
     }
     else{
         throw fflerror("can not resize %s", name());
     }
 }
 
-Widget *Widget::setH(Widget::VarSizeOpt argSize)
+void Widget::setH(Widget::VarSizeOpt argSize)
 {
-    if(m_canSetSize){
+    if(m_attrs.canSetSize){
         m_h = std::move(argSize);
-        return this;
     }
     else{
         throw fflerror("can not resize %s", name());
     }
 }
 
-Widget *Widget::setSize(Widget::VarSizeOpt argW, Widget::VarSizeOpt argH)
+void Widget::setSize(Widget::VarSizeOpt argW, Widget::VarSizeOpt argH)
 {
-    return setW(std::move(argW))->setH(std::move(argH));
+    setW(std::move(argW));
+    setH(std::move(argH));
 }
 
 std::string Widget::dumpTree() const

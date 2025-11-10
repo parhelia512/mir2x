@@ -44,7 +44,7 @@ class CheckLabel: public Widget
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     public:
-        Widget *setFocus(bool) override;
+        void setFocus(bool) override;
 
     public:
         bool getter() const

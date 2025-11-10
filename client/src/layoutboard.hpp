@@ -236,11 +236,10 @@ class LayoutBoard: public Widget
         std::string getText(bool) const;
 
     public:
-        Widget *setFocus(bool argFocus) override
+        void setFocus(bool argFocus) override
         {
             Widget::setFocus(argFocus);
             m_cursorBlink = 0.0;
-            return this;
         }
 
     public:

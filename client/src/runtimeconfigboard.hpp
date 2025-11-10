@@ -123,7 +123,7 @@ class RuntimeConfigBoard: public Widget
                 }
 
             public:
-                Widget *setFocus(bool argFocus) override
+                void setFocus(bool argFocus) override
                 {
                     if(!argFocus){
                         m_menuList.setShow(false);

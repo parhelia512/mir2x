@@ -225,11 +225,10 @@ bool CheckLabel::processEventDefault(const SDL_Event &event, bool valid, Widget:
     }
 }
 
-Widget *CheckLabel::setFocus(bool argFocus)
+void CheckLabel::setFocus(bool argFocus)
 {
     Widget::setFocus(false);
     if(argFocus){
         m_checkBox.setFocus(true);
     }
-    return this;
 }

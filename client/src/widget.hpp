@@ -270,6 +270,8 @@ class Widget: public WidgetTreeNode
         {
             std::any data {};
 
+            const bool canSetSize = true; // won't prevent other member variables from move
+
             Widget::VarBool show = true;
             Widget::VarBool active = true;
 
@@ -364,9 +366,6 @@ class Widget: public WidgetTreeNode
     private:
         std::pair<Widget::VarInt, int> m_x;
         std::pair<Widget::VarInt, int> m_y;
-
-    private:
-        bool m_canSetSize = true;
 
     private:
         Widget::VarSizeOpt m_w;
@@ -464,7 +463,7 @@ class Widget: public WidgetTreeNode
 
     public:
         virtual bool focus() const;
-        virtual Widget *setFocus(bool);
+        virtual void setFocus(bool);
         virtual bool consumeFocus(bool, Widget * = nullptr) final;
 
     public:
@@ -474,13 +473,13 @@ class Widget: public WidgetTreeNode
         bool       show() const;
         bool  localShow() const;
         void   flipShow();
-        Widget *setShow(Widget::VarBool);
+        void    setShow(Widget::VarBool);
 
     public:
         bool      active() const;
         bool localActive() const;
         void  flipActive();
-        Widget *setActive(Widget::VarBool);
+        void   setActive(Widget::VarBool);
 
     public:
         void moveXTo(Widget::VarInt);
@@ -492,14 +491,10 @@ class Widget: public WidgetTreeNode
         void moveBy(                Widget::VarInt, Widget::VarInt, const Widget::ROI &);
         void moveAt(Widget::VarDir, Widget::VarInt, Widget::VarInt);
 
-
     public:
-        Widget *disableSetSize();
-
-    public:
-        virtual Widget *setW(Widget::VarSizeOpt) final;
-        virtual Widget *setH(Widget::VarSizeOpt) final;
-        virtual Widget *setSize(Widget::VarSizeOpt, Widget::VarSizeOpt) final;
+        virtual void setW(Widget::VarSizeOpt) final;
+        virtual void setH(Widget::VarSizeOpt) final;
+        virtual void setSize(Widget::VarSizeOpt, Widget::VarSizeOpt) final;
 
     public:
         virtual std::string dumpTree() const;

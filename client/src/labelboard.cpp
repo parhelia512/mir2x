@@ -12,7 +12,24 @@ LabelBoard::LabelBoard(LabelBoard::InitArgs args)
           .x = std::move(args.x),
           .y = std::move(args.y),
 
-          .attrs = std::move(args.attrs),
+          .w = [this]{ return m_initDone ? (m_tpset.px() + m_tpset.pw()) : 0; },
+          .h = [this]{ return m_initDone ? (m_tpset.py() + m_tpset.ph()) : 0; },
+
+          .attrs
+          {
+              .data = std::move(args.attrs.data),
+              .canSetSize = false,
+
+              .show = std::move(args.attrs.show),
+              .active = std::move(args.attrs.active),
+
+              .focus = std::move(args.attrs.focus),
+              .moveOnFocus = std::move(args.attrs.moveOnFocus),
+
+              .focusPolicy = std::move(args.attrs.focusPolicy),
+              .focusProxy = std::move(args.attrs.focusProxy),
+          },
+
           .parent = std::move(args.parent),
       }}
 
@@ -28,10 +45,7 @@ LabelBoard::LabelBoard(LabelBoard::InitArgs args)
       }
 {
     setText(u8"%s", args.label ? args.label : u8"");
-    setSize([this](const Widget *){ return m_tpset.px() + m_tpset.pw(); },
-            [this](const Widget *){ return m_tpset.py() + m_tpset.ph(); });
-
-    disableSetSize();
+    m_initDone = true;
 }
 
 void LabelBoard::setText(const char8_t *format, ...)
