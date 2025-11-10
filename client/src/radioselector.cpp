@@ -85,7 +85,7 @@ void RadioSelector::append(Widget *widget, bool autoDelete)
 
         .attrs
         {
-            .data = widget,
+            .data = std::make_any<Widget *>(widget),
         },
         .parent{this},
     }};
