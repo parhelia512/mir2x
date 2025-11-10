@@ -93,7 +93,7 @@ class GfxDupBoard: public Widget
             bool takenEvent = false;
             gridHelper(m, [this, &e, valid, &takenEvent](int xi, int yi, Widget::ROIMap sm, const Widget::ROI &r)
             {
-                takenEvent |= !gfxWidget()->processEvent(e, valid && !takenEvent, sm.create(Widget::ROI
+                takenEvent |= gfxWidget()->processEvent(e, valid && !takenEvent, sm.create(Widget::ROI
                 {
                     .x = xi * r.w - r.x,
                     .y = yi * r.h - r.y,
