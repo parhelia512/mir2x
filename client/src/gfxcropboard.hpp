@@ -18,7 +18,9 @@ class GfxCropBoard: public Widget
             Widget::VarDrawFunc fgDrawFunc = nullptr;
 
             Widget::VarMargin margin {};
-            Widget::WADPair   parent {};
+
+            Widget::InitAttrs attrs {};
+            Widget::WADPair  parent {};
         };
 
     private:
@@ -39,6 +41,8 @@ class GfxCropBoard: public Widget
                   .dir = std::move(args.dir),
                   .x = std::move(args.x),
                   .y = std::move(args.y),
+
+                  .attrs = std::move(args.attrs),
                   .parent = std::move(args.parent),
               }}
 

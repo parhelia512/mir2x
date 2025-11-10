@@ -756,7 +756,7 @@ bool Widget::focus() const
         return true;
     }
 
-    return m_focus;
+    return m_attrs.focus;
 }
 
 Widget *Widget::setFocus(bool argFocus)
@@ -766,7 +766,7 @@ Widget *Widget::setFocus(bool argFocus)
         widget->setFocus(false);
     });
 
-    m_focus = argFocus;
+    m_attrs.focus = argFocus;
     return this;
 }
 
