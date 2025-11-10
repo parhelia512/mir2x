@@ -432,11 +432,6 @@ Widget::Widget(Widget::InitArgs args)
     , m_y(std::make_pair(std::move(args.y), 0))
     , m_w(std::move(args.w))
     , m_h(std::move(args.h))
-
-    , m_show  (std::make_pair(std::move(args.show)  , false))
-    , m_active(std::make_pair(std::move(args.active), false))
-
-    , m_moveOnFocus(std::move(args.moveOnFocus))
 {
     for(auto &[childPtr, offDir, offX, offY, autoDelete]: args.childList){
         if(childPtr){
@@ -571,7 +566,7 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, Widget::ROI
         }
     });
 
-    if(Widget::evalBool(m_moveOnFocus, this)){
+    if(m_attrs.moveOnFocus){
         if(auto widget = hasChild(focusedWidgetID)){
             moveBack(widget);
         }

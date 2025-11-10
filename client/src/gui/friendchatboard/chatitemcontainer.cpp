@@ -213,6 +213,13 @@ void ChatItemContainer::append(const SDChatMessage &sdCM, std::function<void(con
             return g_progUseDB->retrieve(0X010007CF);
         },
 
+        [this](Widget *self)
+        {
+            if(auto chatItem = dynamic_cast<ChatItem *>(self)){
+                chatItem->setMaxWidth(chatItemMaxWidth());
+            }
+        },
+
         sdCM.from != FriendChatBoard::getParentBoard(this)->m_processRun->getMyHeroChatPeer().cpid(),
         sdCM.from != FriendChatBoard::getParentBoard(this)->m_processRun->getMyHeroChatPeer().cpid(),
 
@@ -239,11 +246,6 @@ void ChatItemContainer::append(const SDChatMessage &sdCM, std::function<void(con
     canvas.removeChild(    &opsBox, false);
     canvas.   addChild(chatItemBox, true );
     canvas.   addChild(    &opsBox, false);
-
-    chatItem->setAfterResize([this](Widget *self)
-    {
-        dynamic_cast<ChatItem *>(self)->setMaxWidth(chatItemMaxWidth());
-    });
 
     if(sdCM.from.group()){
         ops.loadXML(R"###(<layout><par>GROUP</par></layout>)###");

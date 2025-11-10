@@ -58,7 +58,7 @@ class ButtonBase: public Widget
             bool radioMode   = false;
 
             Widget::InitAttrs attrs {};
-            Widget::WADPair parent {};
+            Widget::WADPair  parent {};
         };
 
     private:

@@ -61,7 +61,10 @@ BaseFrameBoard::BaseFrameBoard(BaseFrameBoard::InitArgs args)
               this->parent()->setShow(false);
           },
 
-          .moveOnFocus = false,
+          .attrs
+          {
+              .moveOnFocus = false,
+          },
           .parent{this},
       }}
 {}

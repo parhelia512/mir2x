@@ -277,9 +277,9 @@ class Widget: public WidgetTreeNode
             int focusPolicy = WFP_NONE;
             Widget::VarFocusProxy focusProxy = nullptr;
 
-            std::function<void(Widget *                                         )> afterResize  = nullptr;
-            std::function<bool(Widget *, const SDL_Event &, bool, Widget::ROIMap)> processEvent = nullptr;
-            std::function<void(Widget *,                          Widget::ROIMap)> draw         = nullptr;
+            std::function<void(      Widget *                                         )> afterResize  = nullptr;
+            std::function<bool(      Widget *, const SDL_Event &, bool, Widget::ROIMap)> processEvent = nullptr;
+            std::function<void(const Widget *,                          Widget::ROIMap)> draw         = nullptr;
         };
 
     private:

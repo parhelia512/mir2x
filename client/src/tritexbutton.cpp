@@ -32,7 +32,7 @@ TritexButton::TritexButton(TritexButton::InitArgs args)
           .onClickDone = args.onClickDone,
           .radioMode = args.radioMode,
 
-          .moveOnFocus = std::move(args.moveOnFocus),
+          .attrs = std::move(args.attrs),
           .parent = args.parent,
       }}
 

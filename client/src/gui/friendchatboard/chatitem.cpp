@@ -23,6 +23,7 @@ ChatItem::ChatItem(
         const char8_t *argMessageRefStr,
 
         std::function<SDL_Texture *(const Widget *)> argLoadImageFunc,
+        std::function<void         (      Widget *)> argAfterResizeFunc,
 
         bool argShowName,
         bool argAvatarLeft,
@@ -39,6 +40,11 @@ ChatItem::ChatItem(
           .y = std::move(argY),
           .w = {},
           .h = {},
+
+          .attrs
+          {
+              .afterResize = std::move(argAfterResizeFunc),
+          },
 
           .parent
           {

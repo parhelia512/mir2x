@@ -55,8 +55,8 @@ class TritexButton: public ButtonBase
             bool radioMode   = false;
             bool alterColor  = true;
 
-            Widget::VarBool moveOnFocus = true;
-            Widget::WADPair parent {};
+            Widget::InitAttrs attrs {};
+            Widget::WADPair  parent {};
         };
 
     private:

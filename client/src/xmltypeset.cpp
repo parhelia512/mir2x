@@ -1094,7 +1094,7 @@ XMLTypeset *XMLTypeset::split(int cursorX, int cursorY)
     return newTpset;
 }
 
-void XMLTypeset::drawDefault(Widget::ROIMap m) const
+void XMLTypeset::draw(Widget::ROIMap m) const
 {
     int dstX = m.x;
     int dstY = m.y;

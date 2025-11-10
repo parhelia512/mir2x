@@ -195,7 +195,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
 
         .attrs
         {
-            .eventHandler = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
+            .processEvent = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
             {
                 if(!m.calibrate(self)){
                     return false;
