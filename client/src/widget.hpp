@@ -379,9 +379,6 @@ class Widget: public WidgetTreeNode
         std::pair<Widget::VarBool &, bool> m_show   {m_attrs.show  , false};
         std::pair<Widget::VarBool &, bool> m_active {m_attrs.active, false};
 
-    protected:
-        std::any m_data;
-
     private:
         mutable bool m_hCalc = false;
         mutable bool m_wCalc = false;

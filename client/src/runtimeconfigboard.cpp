@@ -945,7 +945,7 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
 
                                   dynamic_cast<const RadioSelector *>(radioSelector)->foreachRadioWidget([&selectedWidget, val](const Widget *widget)
                                   {
-                                      if(std::any_cast<int>(widget->data()) == val){
+                                      if(widget && (std::any_cast<int>(widget->data()) == val)){
                                           selectedWidget = widget;
                                           return true;
                                       }

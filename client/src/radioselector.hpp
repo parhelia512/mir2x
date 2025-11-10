@@ -164,13 +164,13 @@ class RadioSelector: public Widget
         {
             fflassert(button);
             fflassert(dynamic_cast<RadioSelector::InternalRadioButton *>(button));
-            return std::any_cast<Widget *>(button->data());
+            return button->data().has_value() ? std::any_cast<Widget *>(button->data()) : nullptr;
         }
 
         static const Widget *getRadioWidget(const Widget *button)
         {
             fflassert(button);
             fflassert(dynamic_cast<const RadioSelector::InternalRadioButton *>(button));
-            return std::any_cast<Widget *>(button->data());
+            return button->data().has_value() ? std::any_cast<Widget *>(button->data()) : nullptr;
         }
 };
