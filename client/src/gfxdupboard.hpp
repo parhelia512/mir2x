@@ -90,9 +90,10 @@ class GfxDupBoard: public Widget
     public:
         bool processEventDefault(const SDL_Event &e, bool valid, Widget::ROIMap m) override
         {
-            gridHelper(m, [this, &e, &valid](int xi, int yi, Widget::ROIMap sm, const Widget::ROI &r)
+            bool takenEvent = false;
+            gridHelper(m, [this, &e, valid, &takenEvent](int xi, int yi, Widget::ROIMap sm, const Widget::ROI &r)
             {
-                valid &= !gfxWidget()->processEvent(e, valid, sm.create(Widget::ROI
+                takenEvent |= !gfxWidget()->processEvent(e, valid && !takenEvent, sm.create(Widget::ROI
                 {
                     .x = xi * r.w - r.x,
                     .y = yi * r.h - r.y,
@@ -101,6 +102,6 @@ class GfxDupBoard: public Widget
                 }));
             });
 
-            return !valid;
+            return takenEvent;
         }
 };

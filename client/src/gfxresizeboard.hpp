@@ -173,11 +173,12 @@ class GfxResizeBoard: public Widget
                 return false;
             }
 
-            gridHelper(m, [&e, &valid](Widget *widget, const Widget::ROIMap &cm)
+            bool takenEvent = false;
+            gridHelper(m, [&e, valid, &takenEvent](Widget *widget, const Widget::ROIMap &cm)
             {
-                valid &= !widget->processEvent(e, valid, cm);
+                takenEvent |= widget->processEvent(e, valid && !takenEvent, cm);
             });
 
-            return !valid;
+            return takenEvent;
         }
 };
