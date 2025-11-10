@@ -574,7 +574,7 @@ bool Widget::processEventDefault(const SDL_Event &event, bool valid, Widget::ROI
     return took;
 }
 
-void Widget::drawDefault(Widget::ROIMap m) const
+void Widget::draw(Widget::ROIMap m) const
 {
     if(m_attrs.draw){
         m_attrs.draw(this, m);
