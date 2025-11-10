@@ -261,6 +261,16 @@ class Widget: public WidgetTreeNode
 #include "widget.roi.hpp"
 
     private:
+        struct InitAttrs final
+        {
+            Widget::VarBool show = true;
+            Widget::VarBool active = true;
+
+            Widget::VarBool focus = false;
+            Widget::VarBool moveOnFocus = true;
+        };
+
+    private:
         struct InitArgs final
         {
             Widget::VarDir dir = DIR_UPLEFT;
@@ -278,7 +288,8 @@ class Widget: public WidgetTreeNode
             Widget::VarBool focus;
             Widget::VarBool moveOnFocus = true;
 
-            Widget::WADPair parent;
+            Widget::InitAttrs attrs  {};
+            Widget::WADPair   parent {};
         };
 
     public:
