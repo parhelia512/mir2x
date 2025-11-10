@@ -26,7 +26,8 @@ TrigfxButton::TrigfxButton(TrigfxButton::InitArgs args)
           .onClickDone = args.onClickDone,
           .radioMode = args.radioMode,
 
-          .parent = args.parent,
+          .attrs = std::move(args.attrs),
+          .parent = std::move(args.parent),
       }}
 
     , m_gfxList(args.gfxList)

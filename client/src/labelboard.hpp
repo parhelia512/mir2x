@@ -21,7 +21,9 @@ class LabelBoard: public Widget
             const char8_t *label = nullptr;
 
             Widget::FontConfig font {};
-            Widget::WADPair parent {};
+
+            Widget::InitAttrs attrs {};
+            Widget::WADPair  parent {};
         };
 
     private:

@@ -268,6 +268,8 @@ class Widget: public WidgetTreeNode
     public:
         struct InitAttrs final
         {
+            std::any data {};
+
             Widget::VarBool show = true;
             Widget::VarBool active = true;
 
@@ -460,11 +462,8 @@ class Widget: public WidgetTreeNode
     public:
         auto & data(this auto && self)
         {
-            return self.m_data;
+            return self.m_attrs.data;
         }
-
-    public:
-        Widget *setData(std::any);
 
     public:
         virtual bool focus() const;

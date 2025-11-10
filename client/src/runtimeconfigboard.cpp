@@ -457,6 +457,8 @@ RuntimeConfigBoard::MenuPage::TabHeader::TabHeader(
         const char8_t *argLabel,
         std::function<void(Widget *, int)> argOnClick,
 
+        std::any argData,
+
         Widget *argParent,
         bool    argAutoDelete)
 
@@ -468,6 +470,11 @@ RuntimeConfigBoard::MenuPage::TabHeader::TabHeader(
           .y = argY,
           .w = {},
           .h = {},
+
+          .attrs
+          {
+              .data = std::move(argData),
+          },
 
           .parent
           {
@@ -586,10 +593,11 @@ RuntimeConfigBoard::MenuPage::MenuPage(
 
                 tab->setShow(true);
                 m_selectedHeader = self->parent();
-            }
-        }, true);
+            },
 
-        currHeader->setData(tab);
+            tab,
+
+        }, true);
 
         tab->setShow(lastHeader == nullptr);
         tab->moveAt(DIR_UPLEFT, 0, currHeader->dy() + currHeader->h() + argGap);
@@ -691,12 +699,12 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
           24,
 
           {
-              {(new LabelBoard{{.label = u8"800×600" , .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>( 800, 600)), false, true},
-              {(new LabelBoard{{.label = u8"960×600" , .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>( 960, 600)), false, true},
-              {(new LabelBoard{{.label = u8"1024×768", .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>(1024, 768)), false, true},
-              {(new LabelBoard{{.label = u8"1280×720", .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>(1280, 720)), false, true},
-              {(new LabelBoard{{.label = u8"1280×768", .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>(1280, 768)), false, true},
-              {(new LabelBoard{{.label = u8"1280×800", .font{.id = 1, .size = 12}}})->setData(std::make_any<std::pair<int, int>>(1280, 800)), false, true},
+              {new LabelBoard{{.label = u8"800×600" , .font{.id = 1, .size = 12}, .attrs{.data = std::pair<int, int>( 800, 600)}}}, false, true},
+              {new LabelBoard{{.label = u8"960×600" , .font{.id = 1, .size = 12}, .attrs{.data = std::pair<int, int>( 960, 600)}}}, false, true},
+              {new LabelBoard{{.label = u8"1024×768", .font{.id = 1, .size = 12}, .attrs{.data = std::pair<int, int>(1024, 768)}}}, false, true},
+              {new LabelBoard{{.label = u8"1280×720", .font{.id = 1, .size = 12}, .attrs{.data = std::pair<int, int>(1280, 720)}}}, false, true},
+              {new LabelBoard{{.label = u8"1280×768", .font{.id = 1, .size = 12}, .attrs{.data = std::pair<int, int>(1280, 768)}}}, false, true},
+              {new LabelBoard{{.label = u8"1280×800", .font{.id = 1, .size = 12}, .attrs{.data = std::pair<int, int>(1280, 800)}}}, false, true},
           },
 
           [this](Widget *widgetPtr)
@@ -925,9 +933,9 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
                               5,
 
                               {
-                                  {(new LabelBoard{{.label = u8"允许任何人加我微好友", .font{.id = 1, .size = 12}}})->setData(to_d(FR_ACCEPT)), true},
-                                  {(new LabelBoard{{.label = u8"拒绝任何人加我为好友", .font{.id = 1, .size = 12}}})->setData(to_d(FR_REJECT)), true},
-                                  {(new LabelBoard{{.label = u8"好友申请验证"        , .font{.id = 1, .size = 12}}})->setData(to_d(FR_VERIFY)), true},
+                                  {new LabelBoard{{.label = u8"允许任何人加我微好友", .font{.id = 1, .size = 12}, .attrs{.data = to_d(FR_ACCEPT)}}}, true},
+                                  {new LabelBoard{{.label = u8"拒绝任何人加我为好友", .font{.id = 1, .size = 12}, .attrs{.data = to_d(FR_REJECT)}}}, true},
+                                  {new LabelBoard{{.label = u8"好友申请验证"        , .font{.id = 1, .size = 12}, .attrs{.data = to_d(FR_VERIFY)}}}, true},
                               },
 
                               [this](const Widget *radioSelector)

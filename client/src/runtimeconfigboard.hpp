@@ -182,6 +182,8 @@ class RuntimeConfigBoard: public Widget
                                 const char8_t *,
                                 std::function<void(Widget *, int)>,
 
+                                std::any,
+
                                 Widget * = nullptr,
                                 bool     = false);
                 };

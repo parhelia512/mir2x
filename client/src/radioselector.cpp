@@ -83,10 +83,13 @@ void RadioSelector::append(Widget *widget, bool autoDelete)
         .onClickDone = false,
         .radioMode = true,
 
+        .attrs
+        {
+            .data = widget,
+        },
         .parent{this},
     }};
 
-    button->setData(widget);
     if(getter() == widget){
         button->setDown();
     }

@@ -8,8 +8,11 @@ LabelBoard::LabelBoard(LabelBoard::InitArgs args)
     : Widget
       {{
           .dir = std::move(args.dir),
+
           .x = std::move(args.x),
           .y = std::move(args.y),
+
+          .attrs = std::move(args.attrs),
           .parent = std::move(args.parent),
       }}
 

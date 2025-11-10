@@ -738,12 +738,6 @@ int Widget::rdy(const Widget* other) const
     return _rd_helper(this, other, [](const Widget *w) { return w->dy(); });
 }
 
-Widget *Widget::setData(std::any argData)
-{
-    m_data = std::move(argData);
-    return this;
-}
-
 bool Widget::focus() const
 {
     bool hasFocus = false;

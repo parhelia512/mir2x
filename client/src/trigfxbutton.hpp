@@ -37,7 +37,8 @@ class TrigfxButton: public ButtonBase
             bool onClickDone = true;
             bool radioMode   = false;
 
-            Widget::WADPair parent {};
+            Widget::InitAttrs attrs {};
+            Widget::WADPair  parent {};
         };
 
     private:
