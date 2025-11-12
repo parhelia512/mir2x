@@ -534,24 +534,10 @@ SDL_Texture *SDLDevice::loadPNGTexture(const void *data, size_t size)
         return nullptr;
     }
 
-    SDL_RWops   * rwOpsPtr = nullptr;
-    SDL_Surface *  surfPtr = nullptr;
-    SDL_Texture *   texPtr = nullptr;
-
-    if((rwOpsPtr = SDL_RWFromConstMem(data, size))){
-        if((surfPtr = IMG_LoadPNG_RW(rwOpsPtr))){
-            texPtr = SDL_CreateTextureFromSurface(m_renderer, surfPtr);
-        }
+    if(auto rwOpsPtr = SDL_RWFromConstMem(data, size)){
+        return IMG_LoadTextureTyped_RW(m_renderer, rwOpsPtr, 1, "PNG");
     }
-
-    if(rwOpsPtr){
-        SDL_FreeRW(rwOpsPtr);
-    }
-
-    if(surfPtr){
-        SDL_FreeSurface(surfPtr);
-    }
-    return texPtr;
+    return nullptr;
 }
 
 void SDLDevice::drawTexture(SDL_Texture *texPtr,
