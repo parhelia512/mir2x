@@ -96,10 +96,10 @@ class GfxCutoutBoard: public Widget
             const int w2 = m_gfxWidget->w() - w0 - w1;
             const int h2 = m_gfxWidget->h() - h0 - h1;
 
-            const GfxCropBoard top    {{.x = x0, .y = y0, .getter = m_gfxWidget, .roi{x0, y0, w0 + w1 + w2, h0}}};
-            const GfxCropBoard left   {{.x = x0, .y = y1, .getter = m_gfxWidget, .roi{x0, y1, w0          , h1}}};
-            const GfxCropBoard right  {{.x = x2, .y = y1, .getter = m_gfxWidget, .roi{x2, y1,           w2, h1}}};
-            const GfxCropBoard bottom {{.x = x0, .y = y2, .getter = m_gfxWidget, .roi{x0, y2, w0 + w1 + w2, h2}}};
+            const GfxCropBoard top    {{.x = x0, .y = y0, .getter = m_gfxWidget, .vr{x0, y0, w0 + w1 + w2, h0}}};
+            const GfxCropBoard left   {{.x = x0, .y = y1, .getter = m_gfxWidget, .vr{x0, y1, w0          , h1}}};
+            const GfxCropBoard right  {{.x = x2, .y = y1, .getter = m_gfxWidget, .vr{x2, y1,           w2, h1}}};
+            const GfxCropBoard bottom {{.x = x0, .y = y2, .getter = m_gfxWidget, .vr{x0, y2, w0 + w1 + w2, h2}}};
 
             for(auto &p:
             {

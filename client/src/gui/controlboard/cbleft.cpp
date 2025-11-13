@@ -51,7 +51,7 @@ CBLeft::CBLeft(
     , m_bg
       {{
           .getter = &m_bgFull,
-          .roi
+          .vr
           {
               .w = [this]{ return w(); },
               .h = [this]{ return h(); },
@@ -74,7 +74,7 @@ CBLeft::CBLeft(
           .y = 95,
 
           .getter = &m_hpFull,
-          .roi
+          .vr
           {
               .y = [this]
               {
@@ -109,7 +109,7 @@ CBLeft::CBLeft(
           .y = 95,
 
           .getter = &m_mpFull,
-          .roi
+          .vr
           {
               .y = [this](const Widget *)
               {
@@ -144,7 +144,7 @@ CBLeft::CBLeft(
           .y = 115,
 
           .getter = &m_levelBarFull,
-          .roi
+          .vr
           {
               .y = [this]
               {
@@ -179,7 +179,7 @@ CBLeft::CBLeft(
           .y = 115,
 
           .getter = &m_inventoryBarFull,
-          .roi
+          .vr
           {
               .y = [this]
               {
@@ -274,7 +274,7 @@ CBLeft::CBLeft(
           .y = 117,
 
           .getter = &m_mapGLocFull,
-          .roi
+          .vr
           {
               .x = [this]
               {

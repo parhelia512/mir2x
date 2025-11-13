@@ -28,7 +28,7 @@ ProcessSync::ProcessSync()
           .y = 528,
 
           .getter = &m_barFull,
-          .roi
+          .vr
           {
               .w = [this]{ return m_barFull.w() * m_ratio / 100; },
               .h = [this]{ return m_barFull.h()                ; },

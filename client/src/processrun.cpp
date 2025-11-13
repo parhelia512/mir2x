@@ -561,6 +561,68 @@ void ProcessRun::draw() const
     if(getRuntimeConfig<RTCFG_SHOWFPS>()){
         drawFPS();
     }
+
+    ImageBoard img
+    {{
+        .texLoadFunc = [](const Widget *)
+        {
+            return g_progUseDB->retrieve(0X0100001C);
+        },
+    }};
+
+    GfxCropBoard crop
+    {{
+         .getter = &img,
+         .vr
+         {
+             0,
+             0,
+             50,
+             50,
+         },
+    }};
+
+    GfxDupBoard dup
+    {{
+        .w = 150,
+        .h = 50,
+        .getter = &img,
+        .vro
+        {
+            0,
+            0,
+            50,
+            50,
+        },
+    }};
+
+    GfxResizeBoard resize
+    {{
+        .getter = &img,
+        .vr
+        {
+            .x = 0,
+            .y = 0,
+            .w = 50,
+            .h = 50,
+        },
+
+        .resize
+        {
+            100,
+            100,
+        },
+    }};
+
+    img.drawRoot({});
+    crop.drawRoot({.x=img.w()});
+    dup.drawRoot({.x = img.w() + crop.w() + 10});
+    resize.drawRoot({.x = img.w() + crop.w() + 10 + dup.w()});
+
+    g_sdlDevice->drawRectangle(colorf::RED_A255, 0, 0, 50, 50);
+
+
+
 }
 
 void ProcessRun::processEvent(const SDL_Event &event)

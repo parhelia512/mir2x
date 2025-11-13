@@ -179,7 +179,7 @@ RuntimeConfigBoard::PullMenu::PullMenu(
     , m_labelCrop
       {{
           .getter = &m_label,
-          .roi
+          .vr
           {
               .w = [argLabelWidth]{fflassert(argLabelWidth >= 0); return argLabelWidth; }(),
               .h = m_label.h(),
@@ -225,7 +225,7 @@ RuntimeConfigBoard::PullMenu::PullMenu(
     , m_menuTitleCrop
       {{
           .getter = &m_menuTitle,
-          .roi
+          .vr
           {
               .w = m_menuTitleBackground.w() - 6,
               .h = std::min<int>(m_menuTitleBackground.h() - 4, m_menuTitle.h()),
@@ -367,7 +367,7 @@ RuntimeConfigBoard::LabelSliderBar::LabelSliderBar(
     , m_labelCrop
       {{
           .getter = &m_label,
-          .roi
+          .vr
           {
               .w = fflcheck(argLabelWidth, argLabelWidth >= 0),
               .h = m_label.h(),

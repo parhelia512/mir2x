@@ -1,3 +1,5 @@
+struct VarROI; // for ROI::asVarROI()
+
 struct ROI final
 {
     int x = 0;
@@ -36,6 +38,8 @@ struct ROI final
         mathf::cropSegment<int>(y, h, r.y, r.h);
         return *this;
     }
+
+    Widget::VarROI asVarROI() const; // defines in widget.cpp
 };
 
 struct VarROI final

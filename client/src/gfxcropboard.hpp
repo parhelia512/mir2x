@@ -12,7 +12,7 @@ class GfxCropBoard: public Widget
             Widget::VarInt y = 0;
 
             Widget::VarGetter<Widget *> getter = nullptr; // not-owning
-            Widget::VarROI roi {};
+            Widget::VarROI vr {};
 
             Widget::VarDrawFunc bgDrawFunc = nullptr;
             Widget::VarDrawFunc fgDrawFunc = nullptr;
@@ -27,7 +27,7 @@ class GfxCropBoard: public Widget
         Widget::VarGetter<Widget *> m_getter;
 
     private:
-        Widget::VarROI    m_roi;
+        Widget::VarROI    m_vr;
         Widget::VarMargin m_margin;
 
     private:
@@ -47,7 +47,7 @@ class GfxCropBoard: public Widget
               }}
 
             , m_getter(std::move(args.getter))
-            , m_roi   (std::move(args.roi   ))
+            , m_vr    (std::move(args.vr    ))
             , m_margin(std::move(args.margin))
 
             , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new ShapeCropBoard
@@ -143,14 +143,14 @@ class GfxCropBoard: public Widget
     public:
         Widget::ROI gfxCropROI() const
         {
-            return m_roi.roi(this, nullptr);
+            return m_vr.roi(this, nullptr);
         }
 
     public:
-        int gfxCropX() const { return Widget::evalInt (m_roi.x, this); }
-        int gfxCropY() const { return Widget::evalInt (m_roi.y, this); }
-        int gfxCropW() const { return Widget::evalSize(m_roi.w, this); }
-        int gfxCropH() const { return Widget::evalSize(m_roi.h, this); }
+        int gfxCropX() const { return Widget::evalInt (m_vr.x, this); }
+        int gfxCropY() const { return Widget::evalInt (m_vr.y, this); }
+        int gfxCropW() const { return Widget::evalSize(m_vr.w, this); }
+        int gfxCropH() const { return Widget::evalSize(m_vr.h, this); }
 
     public:
         int margin(int index) const

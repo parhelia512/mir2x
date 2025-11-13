@@ -81,7 +81,7 @@ class ModalStringBoardImpl: public Widget
             , m_imageUp
               {{
                   .getter = &m_image,
-                  .roi
+                  .vr
                   {
                       .w = [this]{ return m_image.w(); },
                       .h = 180,
@@ -114,7 +114,7 @@ class ModalStringBoardImpl: public Widget
                   .y = [this]{ return m_imageUpDup.dy() + m_imageUpDup.h(); },
 
                   .getter = &m_image,
-                  .roi
+                  .vr
                   {
                       .y = [this]{ return m_image.h() - 40; },
                       .w = [this]{ return m_image.w(); },

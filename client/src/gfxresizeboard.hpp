@@ -117,7 +117,7 @@ class GfxResizeBoard: public Widget
                 }
 
                 if(const auto cm = m.get().map(dx, dy, cr)){
-                    GfxCropBoard crop{{.getter = gfxWidget, .roi = cr}};
+                    GfxCropBoard crop{{.getter = gfxWidget, .vr = cr.asVarROI()}};
                     if(needDup){
                         GfxDupBoard dup{{.w = cr.w, .h = cr.h, .getter = &crop}};
                         func(&dup, cm);

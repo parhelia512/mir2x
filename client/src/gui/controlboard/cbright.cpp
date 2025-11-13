@@ -52,7 +52,7 @@ CBRight::CBRight(
     , m_bg
       {{
           .getter = &m_bgFull,
-          .roi
+          .vr
           {
               .x = [this]{ return m_bgFull.w() - w(); },
               .w = [this]{ return w(); },

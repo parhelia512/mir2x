@@ -48,7 +48,7 @@ TexSliderBar::TexSliderBar(
     , m_slotCropLeft
       {{
           .getter = &m_slotImage,
-          .roi
+          .vr
           {
           /* brdCropW */ .w =  argHSlider ? 3 : m_slotImage.w(),
           /* brdCropH */ .h = !argHSlider ? 3 : m_slotImage.h(),
@@ -59,7 +59,7 @@ TexSliderBar::TexSliderBar(
     , m_slotCropMiddle
       {{
           .getter = &m_slotImage,
-          .roi
+          .vr
           {
               /* brdCropX */ .x =  argHSlider ? 3 : 0,
               /* brdCropY */ .y = !argHSlider ? 3 : 0,
@@ -76,7 +76,7 @@ TexSliderBar::TexSliderBar(
           .y = h() - 1,
 
           .getter = &m_slotImage,
-          .roi
+          .vr
           {
               /* brdCropX */ .x =  argHSlider ? m_slotImage.w() - 3 : 0,
               /* brdCropY */ .y = !argHSlider ? m_slotImage.h() - 3 : 0,
