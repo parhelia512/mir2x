@@ -110,7 +110,7 @@ class GfxResizeBoard: public Widget
                 return;
             }
 
-            const auto fnOp = [gfxWidget, m = std::cref(m), &r, &func, &self](const Widget::ROI &cr, int dx, int dy, bool needDup)
+            const auto fnOp = [gfxWidget, m = std::cref(m), &r, &func, &self](const Widget::ROI &cr, int dx, int dy, std::initializer_list<int> dupSize = {})
             {
                 if(!cr){
                     return;
@@ -118,8 +118,8 @@ class GfxResizeBoard: public Widget
 
                 if(const auto cm = m.get().map(dx, dy, cr)){
                     GfxCropBoard crop{{.getter = gfxWidget, .vr = cr.asVarROI()}};
-                    if(needDup){
-                        GfxDupBoard dup{{.w = cr.w, .h = cr.h, .getter = &crop}};
+                    if(dupSize.size() >= 2){
+                        GfxDupBoard dup{{.w = dupSize.begin()[0], .h = dupSize.begin()[1], .getter = &crop}};
                         func(&dup, cm);
                     }
                     else{
@@ -135,15 +135,15 @@ class GfxResizeBoard: public Widget
             const int rw = Widget::evalSize(self.m_resize.w, &self);
             const int rh = Widget::evalSize(self.m_resize.h, &self);
 
-            fnOp({        0,         0,            r.x,            r.y}, mx           , my           , false); // top-left
-            fnOp({      r.x,         0,            r.w,            r.y}, mx + r.x     , my           , true ); // top-middle
-            fnOp({r.x + r.w,         0, cw - r.x - r.w,            r.y}, mx + r.x + rw, my           , false); // top-right
-            fnOp({        0,       r.y,            r.x,            r.h}, mx           , my + r.y     , true ); // middle-left
-            fnOp({      r.x,       r.y,            r.w,            r.h}, mx + r.x     , my + r.y     , true ); // middle
-            fnOp({r.x + r.w,       r.y, cw - r.x - r.w,            r.h}, mx + r.x + rw, my + r.y     , true ); // middle-right
-            fnOp({        0, r.y + r.h,            r.x, ch - r.y - r.h}, mx           , my + r.y + rh, false); // bottom-left
-            fnOp({      r.x, r.y + r.h,            r.w, ch - r.y - r.h}, mx + r.x     , my + r.y + rh, true ); // bottom-middle
-            fnOp({r.x + r.w, r.y + r.h, cw - r.x - r.w, ch - r.y - r.h}, mx + r.x + rw, my + r.y + rh, false); // bottom-right
+            fnOp({        0,         0,            r.x,            r.y}, mx           , my                                             ); // top-left
+            fnOp({      r.x,         0,            r.w,            r.y}, mx + r.x     , my           , {rw            ,            r.y}); // top-middle
+            fnOp({r.x + r.w,         0, cw - r.x - r.w,            r.y}, mx + r.x + rw, my                                             ); // top-right
+            fnOp({        0,       r.y,            r.x,            r.h}, mx           , my + r.y     , {           r.x, rh            }); // middle-left
+            fnOp({      r.x,       r.y,            r.w,            r.h}, mx + r.x     , my + r.y     , {rw            , rh            }); // middle
+            fnOp({r.x + r.w,       r.y, cw - r.x - r.w,            r.h}, mx + r.x + rw, my + r.y     , {cw - r.x - r.w, rh            }); // middle-right
+            fnOp({        0, r.y + r.h,            r.x, ch - r.y - r.h}, mx           , my + r.y + rh                                  ); // bottom-left
+            fnOp({      r.x, r.y + r.h,            r.w, ch - r.y - r.h}, mx + r.x     , my + r.y + rh, {rw            , ch - r.y - r.h}); // bottom-middle
+            fnOp({r.x + r.w, r.y + r.h, cw - r.x - r.w, ch - r.y - r.h}, mx + r.x + rw, my + r.y + rh                                  ); // bottom-right
         }
 
     public:

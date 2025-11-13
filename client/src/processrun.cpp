@@ -617,7 +617,7 @@ void ProcessRun::draw() const
     img.drawRoot({});
     crop.drawRoot({.x=img.w()});
     dup.drawRoot({.x = img.w() + crop.w() + 10});
-    resize.drawRoot({.x = img.w() + crop.w() + 10 + dup.w()});
+    resize.drawRoot({.x = img.w() + crop.w() + 10 + dup.w() + 10});
 
     g_sdlDevice->drawRectangle(colorf::RED_A255, 0, 0, 50, 50);
 
