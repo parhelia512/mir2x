@@ -90,13 +90,13 @@ class GfxCropBoard: public Widget
             }
 
             if(auto gfxPtr = gfxWidget()){
-                if(auto r = gfxCropROI(); !r.empty()){
-                    const auto marginLeft = margin(2);
-                    const auto marginUp   = margin(0);
+                if(const auto r = gfxCropROI()){
+                    const auto mx = margin(2);
+                    const auto my = margin(0);
 
-                    if(auto gfxMap = m; gfxMap.crop({marginLeft, marginUp, r.w, r.h})){
-                        const auto Dx = marginLeft - r.x;
-                        const auto Dy = marginUp   - r.y;
+                    if(auto gfxMap = m.clone().crop({mx, my, r.w, r.h})){
+                        const auto Dx = mx - r.x;
+                        const auto Dy = my - r.y;
 
                         drawAsChild(gfxPtr, DIR_UPLEFT, Dx, Dy, gfxMap);
                     }
