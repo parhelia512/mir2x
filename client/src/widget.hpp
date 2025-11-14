@@ -212,6 +212,12 @@ class Widget: public WidgetTreeNode
             Widget::VarSize h = 0;
         };
 
+        struct IntSize2D final
+        {
+            int w = 0;
+            int h = 0;
+        };
+
     public:
         using VarDrawFunc = std::variant<std::nullptr_t,
                                          std::function<void(                        int, int)>,

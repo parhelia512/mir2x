@@ -22,7 +22,8 @@ class GfxResizeBoard: public Widget
             Widget::VarDrawFunc bgDrawFunc = nullptr;
             Widget::VarDrawFunc fgDrawFunc = nullptr;
 
-            Widget::WADPair parent {};
+            Widget::InitAttrs attrs {};
+            Widget::WADPair  parent {};
         };
 
     private:
@@ -46,6 +47,7 @@ class GfxResizeBoard: public Widget
                   .x = std::move(args.x),
                   .y = std::move(args.y),
 
+                  .attrs = std::move(args.attrs),
                   .parent = std::move(args.parent),
               }}
 
@@ -110,16 +112,19 @@ class GfxResizeBoard: public Widget
                 return;
             }
 
-            const auto fnOp = [gfxWidget, m = std::cref(m), &r, &func, &self](const Widget::ROI &cr, int dx, int dy, std::initializer_list<int> dupSize = {})
+            const auto fnOp = [gfxWidget, m = std::cref(m), &func](const Widget::ROI &cr, int dx, int dy, std::optional<std::pair<int, int>> dupSize = std::nullopt)
             {
                 if(!cr){
                     return;
                 }
 
-                if(const auto cm = m.get().map(dx, dy, cr)){
+                const int dw = dupSize.has_value() ? dupSize->first  : cr.w;
+                const int dh = dupSize.has_value() ? dupSize->second : cr.h;
+
+                if(const auto cm = m.get().create({dx, dy, dw, dh})){
                     GfxCropBoard crop{{.getter = gfxWidget, .vr = cr.asVarROI()}};
-                    if(dupSize.size() >= 2){
-                        GfxDupBoard dup{{.w = dupSize.begin()[0], .h = dupSize.begin()[1], .getter = &crop}};
+                    if(dupSize.has_value()){
+                        GfxDupBoard dup{{.w = dupSize->first, .h = dupSize->second, .getter = &crop}};
                         func(&dup, cm);
                     }
                     else{
@@ -135,15 +140,15 @@ class GfxResizeBoard: public Widget
             const int rw = Widget::evalSize(self.m_resize.w, &self);
             const int rh = Widget::evalSize(self.m_resize.h, &self);
 
-            fnOp({        0,         0,            r.x,            r.y}, mx           , my                                             ); // top-left
-            fnOp({      r.x,         0,            r.w,            r.y}, mx + r.x     , my           , {rw            ,            r.y}); // top-middle
-            fnOp({r.x + r.w,         0, cw - r.x - r.w,            r.y}, mx + r.x + rw, my                                             ); // top-right
-            fnOp({        0,       r.y,            r.x,            r.h}, mx           , my + r.y     , {           r.x, rh            }); // middle-left
-            fnOp({      r.x,       r.y,            r.w,            r.h}, mx + r.x     , my + r.y     , {rw            , rh            }); // middle
-            fnOp({r.x + r.w,       r.y, cw - r.x - r.w,            r.h}, mx + r.x + rw, my + r.y     , {cw - r.x - r.w, rh            }); // middle-right
-            fnOp({        0, r.y + r.h,            r.x, ch - r.y - r.h}, mx           , my + r.y + rh                                  ); // bottom-left
-            fnOp({      r.x, r.y + r.h,            r.w, ch - r.y - r.h}, mx + r.x     , my + r.y + rh, {rw            , ch - r.y - r.h}); // bottom-middle
-            fnOp({r.x + r.w, r.y + r.h, cw - r.x - r.w, ch - r.y - r.h}, mx + r.x + rw, my + r.y + rh                                  ); // bottom-right
+            fnOp({        0,         0,            r.x,            r.y}, mx           , my                                                           ); // top-left
+            fnOp({      r.x,         0,            r.w,            r.y}, mx + r.x     , my           , std::make_pair(rw            ,            r.y)); // top-middle
+            fnOp({r.x + r.w,         0, cw - r.x - r.w,            r.y}, mx + r.x + rw, my                                                           ); // top-right
+            fnOp({        0,       r.y,            r.x,            r.h}, mx           , my + r.y     , std::make_pair(           r.x, rh            )); // middle-left
+            fnOp({      r.x,       r.y,            r.w,            r.h}, mx + r.x     , my + r.y     , std::make_pair(rw            , rh            )); // middle
+            fnOp({r.x + r.w,       r.y, cw - r.x - r.w,            r.h}, mx + r.x + rw, my + r.y     , std::make_pair(cw - r.x - r.w, rh            )); // middle-right
+            fnOp({        0, r.y + r.h,            r.x, ch - r.y - r.h}, mx           , my + r.y + rh                                                ); // bottom-left
+            fnOp({      r.x, r.y + r.h,            r.w, ch - r.y - r.h}, mx + r.x     , my + r.y + rh, std::make_pair(rw            , ch - r.y - r.h)); // bottom-middle
+            fnOp({r.x + r.w, r.y + r.h, cw - r.x - r.w, ch - r.y - r.h}, mx + r.x + rw, my + r.y + rh                                                ); // bottom-right
         }
 
     public:
@@ -157,7 +162,7 @@ class GfxResizeBoard: public Widget
                 drawChild(m_bgBoard, m);
             }
 
-            gridHelper(m, [](const Widget *widget, const Widget::ROIMap &cm)
+            gridHelper(m, [](const auto *widget, const auto &cm)
             {
                 widget->draw(cm);
             });
@@ -174,7 +179,7 @@ class GfxResizeBoard: public Widget
             }
 
             bool takenEvent = false;
-            gridHelper(m, [&e, valid, &takenEvent](Widget *widget, const Widget::ROIMap &cm)
+            gridHelper(m, [&e, valid, &takenEvent](auto *widget, const auto &cm)
             {
                 takenEvent |= widget->processEvent(e, valid && !takenEvent, cm);
             });
