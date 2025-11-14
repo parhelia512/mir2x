@@ -89,17 +89,9 @@ class GfxCropBoard: public Widget
                 drawChild(m_bgBoard, m);
             }
 
-            if(auto gfxPtr = gfxWidget()){
-                if(const auto r = gfxCropROI()){
-                    const auto mx = margin(2);
-                    const auto my = margin(0);
-
-                    if(auto gfxMap = m.clone().crop({mx, my, r.w, r.h})){
-                        const auto Dx = mx - r.x;
-                        const auto Dy = my - r.y;
-
-                        drawAsChild(gfxPtr, DIR_UPLEFT, Dx, Dy, gfxMap);
-                    }
+            if(const auto r = gfxCropROI()){
+                if(const auto gfxPtr = gfxWidget()){
+                    gfxPtr->draw(m.map(margin(2) - r.x, margin(0) - r.y, r));
                 }
             }
 
@@ -115,20 +107,9 @@ class GfxCropBoard: public Widget
                 return false;
             }
 
-            if(auto gfxPtr = gfxWidget()){
-                if(auto r = gfxCropROI(); !r.empty()){
-                    const auto marginLeft = margin(2);
-                    const auto marginUp   = margin(0);
-
-                    if(m.crop({marginLeft, marginUp, r.w, r.h})){
-                        return gfxPtr->processEvent(e, valid, m.create(Widget::ROI
-                        {
-                            .x = marginLeft - r.x,
-                            .y = marginUp   - r.y,
-                            .w = r.w,
-                            .h = r.h,
-                        }));
-                    }
+            if(const auto r = gfxCropROI()){
+                if(auto gfxPtr = gfxWidget()){
+                    return gfxPtr->processEvent(e, valid, m.map(margin(2) - r.x, margin(0) - r.y, r));
                 }
             }
             return false;
