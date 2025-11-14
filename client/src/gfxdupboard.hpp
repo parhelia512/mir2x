@@ -10,13 +10,14 @@ class GfxDupBoard: public Widget
             Widget::VarInt x = 0;
             Widget::VarInt y = 0;
 
-            Widget::VarSizeOpt w = 0;
-            Widget::VarSizeOpt h = 0;
+            Widget::VarSize w = 0;
+            Widget::VarSize h = 0;
 
             Widget::VarGetter<Widget *> getter = nullptr; // not-owning
             Widget::VarROIOpt vro {};
 
-            Widget::WADPair parent {};
+            Widget::InitAttrs attrs {};
+            Widget::WADPair  parent {};
         };
 
     private:
@@ -34,6 +35,7 @@ class GfxDupBoard: public Widget
                   .w = std::move(args.w),
                   .h = std::move(args.h),
 
+                  .attrs = std::move(args.attrs),
                   .parent = std::move(args.parent),
               }}
 
@@ -68,10 +70,10 @@ class GfxDupBoard: public Widget
             }
 
             if(auto gfxPtr = self.gfxWidget()){
-                if(const auto r = gfxPtr->roi().crop(self.gfxCropROI()); !r.empty()){
+                if(const auto r = gfxPtr->roi().crop(self.gfxCropROI())){
                     for(int yi = m.ro->y / r.h; yi * r.h < m.ro->y + m.ro->h; ++yi){
                         for(int xi = m.ro->x / r.w; xi * r.w < m.ro->x + m.ro->w; ++xi){
-                            func(xi, yi, m.clone().crop({xi * r.w, yi * r.h, r.w, r.h}), r);
+                            func(gfxPtr, m.map(xi * r.w - r.x, yi * r.h - r.y, r));
                         }
                     }
                 }
@@ -81,25 +83,16 @@ class GfxDupBoard: public Widget
     public:
         void drawDefault(Widget::ROIMap m) const override
         {
-            gridHelper(m, [this](int xi, int yi, Widget::ROIMap sm, const Widget::ROI &r)
-            {
-                drawAsChild(gfxWidget(), DIR_UPLEFT, xi * r.w - r.x, yi * r.h - r.y, sm);
-            });
+            gridHelper(m, [](const auto *widget, const auto &cm){ widget->draw(cm); });
         }
 
     public:
         bool processEventDefault(const SDL_Event &e, bool valid, Widget::ROIMap m) override
         {
             bool takenEvent = false;
-            gridHelper(m, [this, &e, valid, &takenEvent](int xi, int yi, Widget::ROIMap sm, const Widget::ROI &r)
+            gridHelper(m, [&e, valid, &takenEvent](auto *widget, const auto &cm)
             {
-                takenEvent |= gfxWidget()->processEvent(e, valid && !takenEvent, sm.create(Widget::ROI
-                {
-                    .x = xi * r.w - r.x,
-                    .y = yi * r.h - r.y,
-                    .w =      r.w + r.x,
-                    .h =      r.h + r.y,
-                }));
+                takenEvent |= widget->processEvent(e, valid && !takenEvent, cm);
             });
 
             return takenEvent;

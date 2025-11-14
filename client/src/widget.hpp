@@ -307,8 +307,8 @@ class Widget: public WidgetTreeNode
 
             std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> childList {};
 
-            Widget::InitAttrs attrs  {};
-            Widget::WADPair   parent {};
+            Widget::InitAttrs attrs {};
+            Widget::WADPair  parent {};
         };
 
     public:
