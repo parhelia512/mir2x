@@ -78,6 +78,16 @@ class GfxCropBoard: public Widget
             if(m_fgBoard){ Widget::addChild(m_fgBoard, true); }
         }
 
+    private:
+        void cropHelper(this auto && self, const Widget::ROIMap &m, auto && func)
+        {
+            if(auto gfxPtr = self.gfxWidget()){
+                if(const auto r = self.gfxCropROI()){
+                    func(gfxPtr, m.map(self.margin(2) - r.x, self.margin(0) - r.y, r));
+                }
+            }
+        }
+
     public:
         void drawDefault(Widget::ROIMap m) const override
         {
@@ -89,11 +99,10 @@ class GfxCropBoard: public Widget
                 drawChild(m_bgBoard, m);
             }
 
-            if(const auto r = gfxCropROI()){
-                if(const auto gfxPtr = gfxWidget()){
-                    gfxPtr->draw(m.map(margin(2) - r.x, margin(0) - r.y, r));
-                }
-            }
+            cropHelper(m, [](const auto *widget, const auto &cm)
+            {
+                widget->draw(cm);
+            });
 
             if(m_fgBoard){
                 drawChild(m_fgBoard, m);
@@ -107,12 +116,13 @@ class GfxCropBoard: public Widget
                 return false;
             }
 
-            if(const auto r = gfxCropROI()){
-                if(auto gfxPtr = gfxWidget()){
-                    return gfxPtr->processEvent(e, valid, m.map(margin(2) - r.x, margin(0) - r.y, r));
-                }
-            }
-            return false;
+            bool tookEvent = false;
+            cropHelper(m, [&e, valid, &tookEvent](auto *widget, const auto &cm)
+            {
+                tookEvent = widget->processEvent(e, valid, cm);
+            });
+
+            return tookEvent;
         }
 
     public:

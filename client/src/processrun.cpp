@@ -601,15 +601,15 @@ void ProcessRun::draw() const
         .getter = &img,
         .vr
         {
-            .x = 0,
-            .y = 0,
+            .x = -20,
+            .y = -20,
             .w = 50,
             .h = 50,
         },
 
         .resize
         {
-            100,
+            120,
             100,
         },
     }};
