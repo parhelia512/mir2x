@@ -575,49 +575,50 @@ void ProcessRun::draw() const
          .getter = &img,
          .vr
          {
-             0,
-             0,
+             -20,
+             -20,
              50,
              50,
          },
     }};
 
-    GfxDupBoard dup
-    {{
-        .w = 150,
-        .h = 50,
-        .getter = &img,
-        .vro
-        {
-            0,
-            0,
-            50,
-            50,
-        },
-    }};
+    // GfxDupBoard dup
+    // {{
+    //     .w = 150,
+    //     .h = 50,
+    //     .getter = &img,
+    //     .vro
+    //     {
+    //         0,
+    //         0,
+    //         50,
+    //         50,
+    //     },
+    // }};
+    //
+    // GfxResizeBoard resize
+    // {{
+    //     .getter = &img,
+    //     .vr
+    //     {
+    //         .x = -20,
+    //         .y = -20,
+    //         .w = 50,
+    //         .h = 50,
+    //     },
+    //
+    //     .resize
+    //     {
+    //         120,
+    //         100,
+    //     },
+    // }};
 
-    GfxResizeBoard resize
-    {{
-        .getter = &img,
-        .vr
-        {
-            .x = -20,
-            .y = -20,
-            .w = 50,
-            .h = 50,
-        },
+    img.drawRoot({.x=20, .y=20});
+    crop.drawRoot({.x=img.w() + 25, .y=20});
 
-        .resize
-        {
-            120,
-            100,
-        },
-    }};
-
-    img.drawRoot({});
-    crop.drawRoot({.x=img.w()});
-    dup.drawRoot({.x = img.w() + crop.w() + 10});
-    resize.drawRoot({.x = img.w() + crop.w() + 10 + dup.w() + 10});
+    // dup.drawRoot({.x = img.w() + crop.w() + 10});
+    // resize.drawRoot({.x = img.w() + crop.w() + 10 + dup.w() + 10});
 
     g_sdlDevice->drawRectangle(colorf::RED_A255, 0, 0, 50, 50);
 
