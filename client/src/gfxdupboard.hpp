@@ -70,10 +70,14 @@ class GfxDupBoard: public Widget
             }
 
             if(auto gfxPtr = self.gfxWidget()){
-                if(const auto r = gfxPtr->roi().crop(self.gfxCropROI())){
-                    for(int yi = m.ro->y / r.h; yi * r.h < m.ro->y + m.ro->h; ++yi){
-                        for(int xi = m.ro->x / r.w; xi * r.w < m.ro->x + m.ro->w; ++xi){
-                            func(gfxPtr, m.map(xi * r.w - r.x, yi * r.h - r.y, r));
+                if(const auto cr = self.gfxCropROI()){
+                    if(!gfxPtr->roi().crop(cr)){
+                        return;
+                    }
+
+                    for(int yi = m.ro->y / cr.h; yi * cr.h < m.ro->y + m.ro->h; ++yi){
+                        for(int xi = m.ro->x / cr.w; xi * cr.w < m.ro->x + m.ro->w; ++xi){
+                            func(gfxPtr, m.map(xi * cr.w - cr.x, yi * cr.h - cr.y, cr));
                         }
                     }
                 }
