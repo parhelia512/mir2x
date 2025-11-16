@@ -262,30 +262,35 @@ struct ROIMap final
 
     Widget::ROIMap map(int dx, int dy, const Widget::ROI &cr) const
     {
-        // maps from parent's m to child's m
+        // maps from parent's m to child's cm
         // cr is child's cropped ROI in itself, child's (0, 0) is at (dx, dy) in parent
 
-        return create(Widget::ROI
+        auto cm = clone().crop(Widget::ROI
         {
             .x = cr.x + dx,
             .y = cr.y + dy,
             .w = cr.w,
             .h = cr.h,
         });
+
+        cm.ro->x -= dx;
+        cm.ro->y -= dy;
+
+        return cm;
     }
 
     Widget::ROIMap create(const Widget::ROI &cr) const
     {
-        // maps from parent's m to child's m
+        // maps from parent's m to child's cm
         // cr is child's full ROI in parent, child's (0, 0) is at (cr.x, cr.y) in parent
 
-        auto r = *this;
-        r.crop(cr);
-
-        r.ro->x -= cr.x;
-        r.ro->y -= cr.y;
-
-        return r;
+        return map(cr.x, cr.y, Widget::ROI
+        {
+            .x = 0,
+            .y = 0,
+            .w = cr.w,
+            .h = cr.h,
+        });
     }
 };
 

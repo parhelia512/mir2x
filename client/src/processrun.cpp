@@ -577,24 +577,24 @@ void ProcessRun::draw() const
          {
              -20,
              -20,
-             50,
-             50,
+             60,
+             60,
          },
     }};
 
-    // GfxDupBoard dup
-    // {{
-    //     .w = 150,
-    //     .h = 50,
-    //     .getter = &img,
-    //     .vro
-    //     {
-    //         0,
-    //         0,
-    //         50,
-    //         50,
-    //     },
-    // }};
+    GfxDupBoard dup
+    {{
+        .w = 180,
+        .h = 120,
+        .getter = &img,
+        .vro
+        {
+             -20,
+             -20,
+             60,
+             60,
+        },
+    }};
     //
     // GfxResizeBoard resize
     // {{
@@ -614,16 +614,13 @@ void ProcessRun::draw() const
     //     },
     // }};
 
-    img.drawRoot({.x=20, .y=20});
-    crop.drawRoot({.x=img.w() + 25, .y=20});
+    img .drawRoot({.x=20                     , .y=20});
+    crop.drawRoot({.x=20 + img.w()           , .y=20});
+    dup .drawRoot({.x=20 + img.w() + crop.w(), .y=20});
 
-    // dup.drawRoot({.x = img.w() + crop.w() + 10});
     // resize.drawRoot({.x = img.w() + crop.w() + 10 + dup.w() + 10});
 
-    g_sdlDevice->drawRectangle(colorf::RED_A255, 0, 0, 50, 50);
-
-
-
+    g_sdlDevice->drawRectangle(colorf::RED_A255, 0, 0, 60, 60);
 }
 
 void ProcessRun::processEvent(const SDL_Event &event)
