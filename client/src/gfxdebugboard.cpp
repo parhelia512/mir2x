@@ -10,6 +10,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
           .x = std::move(args.x),
           .y = std::move(args.y),
+
           .w = 400,
           .h = 300,
 
@@ -26,5 +27,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(0X40), dstDrawX, dstDrawY, w(), h());
               g_sdlDevice->drawRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, w(), h());
           },
+
+          .parent{this},
       }}
 {}
