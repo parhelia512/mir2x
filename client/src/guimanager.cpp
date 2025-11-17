@@ -200,8 +200,8 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
 
         .resize
         {
-            100,
-            100,
+            50,
+            50,
         },
     }};
 
@@ -209,9 +209,9 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
     resize.drawRoot({.x = 0 + img.w()});
 
     g_sdlDevice->drawLine(colorf::RED_A255, 0, 10, img.w(), 10);
-    g_sdlDevice->drawLine(colorf::RED_A255, 0, 50, img.w(), 50);
+    g_sdlDevice->drawLine(colorf::RED_A255, 0, 60, img.w(), 60);
     g_sdlDevice->drawLine(colorf::RED_A255, 10, 0, 10, img.h());
-    g_sdlDevice->drawLine(colorf::RED_A255, 50, 0, 50, img.h());
+    g_sdlDevice->drawLine(colorf::RED_A255, 60, 0, 60, img.h());
 }
 
 void GUIManager::update(double fUpdateTime)

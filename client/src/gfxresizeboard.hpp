@@ -75,8 +75,23 @@ class GfxResizeBoard: public Widget
 
               }} : nullptr)
         {
-            setSize([this]{ return margin(2) + Widget::evalSize(m_resize.w, this) + margin(3); },
-                    [this]{ return margin(0) + Widget::evalSize(m_resize.h, this) + margin(1); });
+            setSize([this]
+            {
+                const auto ox = Widget::evalInt (m_vr    .x, this);
+                const auto ow = Widget::evalSize(m_vr    .w, this);
+                const auto rw = Widget::evalSize(m_resize.w, this);
+
+                return margin(2) + std::max<int>(ox, 0) + rw + std::max<int>(ow - ox - rw, 0) + margin(3);
+            },
+
+            [this]
+            {
+                const auto oy = Widget::evalInt (m_vr    .y, this);
+                const auto oh = Widget::evalSize(m_vr    .h, this);
+                const auto rh = Widget::evalSize(m_resize.h, this);
+
+                return margin(0) + std::max<int>(oy, 0) + rh + std::max<int>(oh - oy - rh, 0) + margin(1);
+            });
 
             if(m_bgBoard){ Widget::addChild(m_bgBoard, true); }
             if(m_fgBoard){ Widget::addChild(m_fgBoard, true); }
