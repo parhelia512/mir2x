@@ -17,6 +17,7 @@
 #include "inputstringboard.hpp"
 #include "runtimeconfigboard.hpp"
 #include "secureditemlistboard.hpp"
+#include "gfxdebugboard.hpp"
 
 class ProcessRun;
 class GUIManager: public Widget
@@ -29,6 +30,7 @@ class GUIManager: public Widget
         ControlBoard m_controlBoard;
 
     private:
+        GfxDebugBoard m_gfxDebugBoard;
         FriendChatBoard m_friendChatBoard;
 
     private:

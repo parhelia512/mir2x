@@ -548,9 +548,6 @@ RuntimeConfigBoard::MenuPage::MenuPage(
 
     , m_buttonMask
       {{
-          .w = argSeperatorW,
-          .h = 0,
-
           .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               if(m_selectedHeader){
@@ -615,10 +612,17 @@ RuntimeConfigBoard::MenuPage::MenuPage(
         }
     }
 
-    if(!argSeperatorW.has_value()){
-        m_buttonMask.setW(w());
-    }
-    m_buttonMask.setH(h());
+    m_buttonMask.setSize([argSeperatorW = std::move(argSeperatorW), this]
+    {
+        if(argSeperatorW.has_value()){
+            return Widget::evalSize(argSeperatorW.value(), this, nullptr);
+        }
+        else{
+            return w();
+        }
+    },
+
+    [this]{ return h(); });
 }
 
 RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, ProcessRun *proc, Widget *argParent, bool argAutoDelete)
