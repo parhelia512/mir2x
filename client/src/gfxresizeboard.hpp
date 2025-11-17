@@ -152,20 +152,23 @@ class GfxResizeBoard: public Widget
 
             const int mx = self.margin(2);
             const int my = self.margin(0);
+            const int ox = std::max<int>(r.x, 0);
+            const int oy = std::max<int>(r.y, 0);
+
             const int cw = gfxWidget->w();
             const int ch = gfxWidget->h();
             const int rw = Widget::evalSize(self.m_resize.w, &self);
             const int rh = Widget::evalSize(self.m_resize.h, &self);
 
-            fnOp({        0,         0,            r.x,            r.y}, mx           , my                                                           ); // top-left
-            fnOp({      r.x,         0,            r.w,            r.y}, mx + r.x     , my           , std::make_pair(rw            ,            r.y)); // top-middle
-            fnOp({r.x + r.w,         0, cw - r.x - r.w,            r.y}, mx + r.x + rw, my                                                           ); // top-right
-            fnOp({        0,       r.y,            r.x,            r.h}, mx           , my + r.y     , std::make_pair(           r.x, rh            )); // middle-left
-            fnOp({      r.x,       r.y,            r.w,            r.h}, mx + r.x     , my + r.y     , std::make_pair(rw            , rh            )); // middle
-            fnOp({r.x + r.w,       r.y, cw - r.x - r.w,            r.h}, mx + r.x + rw, my + r.y     , std::make_pair(cw - r.x - r.w, rh            )); // middle-right
-            fnOp({        0, r.y + r.h,            r.x, ch - r.y - r.h}, mx           , my + r.y + rh                                                ); // bottom-left
-            fnOp({      r.x, r.y + r.h,            r.w, ch - r.y - r.h}, mx + r.x     , my + r.y + rh, std::make_pair(rw            , ch - r.y - r.h)); // bottom-middle
-            fnOp({r.x + r.w, r.y + r.h, cw - r.x - r.w, ch - r.y - r.h}, mx + r.x + rw, my + r.y + rh                                                ); // bottom-right
+            fnOp({        0,         0,            r.x,            r.y}, mx          , my                                                          ); // top-left
+            fnOp({      r.x,         0,            r.w,            r.y}, mx + ox     , my          , std::make_pair(rw            ,            r.y)); // top-middle
+            fnOp({r.x + r.w,         0, cw - r.x - r.w,            r.y}, mx + ox + rw, my                                                          ); // top-right
+            fnOp({        0,       r.y,            r.x,            r.h}, mx          , my + oy     , std::make_pair(           r.x, rh            )); // middle-left
+            fnOp({      r.x,       r.y,            r.w,            r.h}, mx + ox     , my + oy     , std::make_pair(rw            , rh            )); // middle
+            fnOp({r.x + r.w,       r.y, cw - r.x - r.w,            r.h}, mx + ox + rw, my + oy     , std::make_pair(cw - r.x - r.w, rh            )); // middle-right
+            fnOp({        0, r.y + r.h,            r.x, ch - r.y - r.h}, mx          , my + oy + rh                                                ); // bottom-left
+            fnOp({      r.x, r.y + r.h,            r.w, ch - r.y - r.h}, mx + ox     , my + oy + rh, std::make_pair(rw            , ch - r.y - r.h)); // bottom-middle
+            fnOp({r.x + r.w, r.y + r.h, cw - r.x - r.w, ch - r.y - r.h}, mx + ox + rw, my + oy + rh                                                ); // bottom-right
         }
 
     public:
