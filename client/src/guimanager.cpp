@@ -200,8 +200,8 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
 
         .resize
         {
-            50,
-            50,
+            50 + 50,
+            50 + 50,
         },
     }};
 
