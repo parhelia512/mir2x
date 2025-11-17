@@ -190,29 +190,40 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
         },
     }};
 
+    int vr_x = 10;
+    int vr_y = 10;
+    int vr_w = 60;
+    int vr_h = 60;
+
+    int r2d_w = 120;
+    int r2d_h = 120;
+
     GfxResizeBoard resize
     {{
         .getter = &img,
         .vr
         {
-            .x = -10,
-            .y = -10,
-            .w =  60,
-            .h =  60,
+            .x = vr_x,
+            .y = vr_y,
+            .w = vr_w,
+            .h = vr_h,
         },
 
         .resize
         {
-            60 + 60,
-            60 + 60,
+            .w = r2d_w,
+            .h = r2d_h,
         },
     }};
 
-    img   .drawRoot({.x = 10          , .y = 10});
-    resize.drawRoot({.x = 10 + img.w(), .y =  0});
+    img   .drawRoot({.x = std::max<int>(-vr_x, 0)          , .y = std::max<int>(-vr_y, 0)});
+    resize.drawRoot({.x = std::max<int>(-vr_y, 0) + img.w()});
 
-    g_sdlDevice->drawLine(colorf::RED_A255,  0, 60, img.w() + 10,           60);
-    g_sdlDevice->drawLine(colorf::RED_A255, 60,  0,           60, img.h() + 10);
+    g_sdlDevice->drawLine(colorf::RED_A255, 0, vr_y       , img.w(), vr_y       );
+    g_sdlDevice->drawLine(colorf::RED_A255, 0, vr_y + vr_h, img.w(), vr_y + vr_h);
+
+    g_sdlDevice->drawLine(colorf::RED_A255, vr_x       , 0, vr_x       , img.h());
+    g_sdlDevice->drawLine(colorf::RED_A255, vr_x + vr_w, 0, vr_x + vr_w, img.h());
 }
 
 void GUIManager::update(double fUpdateTime)
