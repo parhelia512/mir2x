@@ -77,20 +77,22 @@ class GfxResizeBoard: public Widget
         {
             setSize([this]
             {
-                const auto ox = Widget::evalInt (m_vr    .x, this);
-                const auto ow = Widget::evalSize(m_vr    .w, this);
+                const auto vx = Widget::evalInt (m_vr    .x, this);
+                const auto vw = Widget::evalSize(m_vr    .w, this);
                 const auto rw = Widget::evalSize(m_resize.w, this);
 
-                return margin(2) + std::max<int>(ox, 0) + rw + std::max<int>(ow - ox - rw, 0) + margin(3);
+                if(auto gfxPtr = gfxWidget()){ return margin(2) + std::max<int>(vx, 0) + rw + std::max<int>(gfxPtr->w() - (vx + vw), 0) + margin(3); }
+                else                         { return margin(2) + std::max<int>(vx, 0) + rw                                             + margin(3); }
             },
 
             [this]
             {
-                const auto oy = Widget::evalInt (m_vr    .y, this);
-                const auto oh = Widget::evalSize(m_vr    .h, this);
+                const auto vy = Widget::evalInt (m_vr    .y, this);
+                const auto vh = Widget::evalSize(m_vr    .h, this);
                 const auto rh = Widget::evalSize(m_resize.h, this);
 
-                return margin(0) + std::max<int>(oy, 0) + rh + std::max<int>(oh - oy - rh, 0) + margin(1);
+                if(auto gfxPtr = gfxWidget()){ return margin(0) + std::max<int>(vy, 0) + rh + std::max<int>(gfxPtr->h() - (vy + vh), 0) + margin(1); }
+                else                         { return margin(0) + std::max<int>(vy, 0) + rh                                             + margin(1); }
             });
 
             if(m_bgBoard){ Widget::addChild(m_bgBoard, true); }
