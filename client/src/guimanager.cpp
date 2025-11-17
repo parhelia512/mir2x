@@ -208,7 +208,10 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
     img   .drawRoot({.x = 0          });
     resize.drawRoot({.x = 0 + img.w()});
 
-    g_sdlDevice->drawRectangle(colorf::RED_A255, 10, 10, 50, 50);
+    g_sdlDevice->drawLine(colorf::RED_A255, 0, 10, img.w(), 10);
+    g_sdlDevice->drawLine(colorf::RED_A255, 0, 50, img.w(), 50);
+    g_sdlDevice->drawLine(colorf::RED_A255, 10, 0, 10, img.h());
+    g_sdlDevice->drawLine(colorf::RED_A255, 50, 0, 50, img.h());
 }
 
 void GUIManager::update(double fUpdateTime)
