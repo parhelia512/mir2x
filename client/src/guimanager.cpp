@@ -180,6 +180,9 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
 
     ImageBoard img
     {{
+        .w = 90,
+        .h = 90,
+
         .texLoadFunc = [](const Widget *)
         {
             extern PNGTexDB *g_progUseDB;
@@ -192,26 +195,24 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
         .getter = &img,
         .vr
         {
-            .x = 10,
-            .y = 10,
-            .w = 50,
-            .h = 50,
+            .x = -10,
+            .y = -10,
+            .w =  60,
+            .h =  60,
         },
 
         .resize
         {
-            50 + 50,
-            50 + 50,
+            60 + 60,
+            60 + 60,
         },
     }};
 
-    img   .drawRoot({.x = 0          });
-    resize.drawRoot({.x = 0 + img.w()});
+    img   .drawRoot({.x = 10          , .y = 10});
+    resize.drawRoot({.x = 10 + img.w(), .y =  0});
 
-    g_sdlDevice->drawLine(colorf::RED_A255, 0, 10, img.w(), 10);
-    g_sdlDevice->drawLine(colorf::RED_A255, 0, 60, img.w(), 60);
-    g_sdlDevice->drawLine(colorf::RED_A255, 10, 0, 10, img.h());
-    g_sdlDevice->drawLine(colorf::RED_A255, 60, 0, 60, img.h());
+    g_sdlDevice->drawLine(colorf::RED_A255,  0, 60, img.w() + 10,           60);
+    g_sdlDevice->drawLine(colorf::RED_A255, 60,  0,           60, img.h() + 10);
 }
 
 void GUIManager::update(double fUpdateTime)
