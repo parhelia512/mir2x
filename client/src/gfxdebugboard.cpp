@@ -18,8 +18,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
     , m_bg
       {{
-          . w = [this]{ return w(); },
-          . h = [this]{ return h(); },
+          .w = [this]{ return w(); },
+          .h = [this]{ return h(); },
 
           .drawFunc = [this](int dstDrawX, int dstDrawY)
           {
