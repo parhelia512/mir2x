@@ -190,13 +190,13 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
         },
     }};
 
-    int vr_x = 10;
-    int vr_y = 10;
-    int vr_w = 60;
-    int vr_h = 60;
+    const int vr_x = std::stoi(std::getenv("vr_x"));
+    const int vr_y = std::stoi(std::getenv("vr_y"));
+    const int vr_w = std::stoi(std::getenv("vr_w"));
+    const int vr_h = std::stoi(std::getenv("vr_h"));
 
-    int r2d_w = 120;
-    int r2d_h = 120;
+    const int r2d_w = std::stoi(std::getenv("r2d_w"));
+    const int r2d_h = std::stoi(std::getenv("r2d_h"));
 
     GfxResizeBoard resize
     {{
