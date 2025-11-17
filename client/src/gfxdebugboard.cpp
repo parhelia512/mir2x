@@ -24,7 +24,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
           .drawFunc = [this](int dstDrawX, int dstDrawY)
           {
-              g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(0X40), dstDrawX, dstDrawY, w(), h());
+              g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(0XF0), dstDrawX, dstDrawY, w(), h());
               g_sdlDevice->drawRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, w(), h());
           },
 
