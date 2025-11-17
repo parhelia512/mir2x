@@ -177,53 +177,6 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
     if(!g_clientArgParser->disableIME){
         g_imeBoard->drawRoot({});
     }
-
-    ImageBoard img
-    {{
-        .w = 90,
-        .h = 90,
-
-        .texLoadFunc = [](const Widget *)
-        {
-            extern PNGTexDB *g_progUseDB;
-            return g_progUseDB->retrieve(0X0100001C);
-        },
-    }};
-
-    const int vr_x = std::stoi(std::getenv("vr_x"));
-    const int vr_y = std::stoi(std::getenv("vr_y"));
-    const int vr_w = std::stoi(std::getenv("vr_w"));
-    const int vr_h = std::stoi(std::getenv("vr_h"));
-
-    const int r2d_w = std::stoi(std::getenv("r2d_w"));
-    const int r2d_h = std::stoi(std::getenv("r2d_h"));
-
-    GfxResizeBoard resize
-    {{
-        .getter = &img,
-        .vr
-        {
-            .x = vr_x,
-            .y = vr_y,
-            .w = vr_w,
-            .h = vr_h,
-        },
-
-        .resize
-        {
-            .w = r2d_w,
-            .h = r2d_h,
-        },
-    }};
-
-    img   .drawRoot({.x = std::max<int>(-vr_x, 0)          , .y = std::max<int>(-vr_y, 0)});
-    resize.drawRoot({.x = std::max<int>(-vr_y, 0) + img.w()});
-
-    g_sdlDevice->drawLine(colorf::RED_A255, 0, vr_y       , img.w(), vr_y       );
-    g_sdlDevice->drawLine(colorf::RED_A255, 0, vr_y + vr_h, img.w(), vr_y + vr_h);
-
-    g_sdlDevice->drawLine(colorf::RED_A255, vr_x       , 0, vr_x       , img.h());
-    g_sdlDevice->drawLine(colorf::RED_A255, vr_x + vr_w, 0, vr_x + vr_w, img.h());
 }
 
 void GUIManager::update(double fUpdateTime)
