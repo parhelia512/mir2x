@@ -38,7 +38,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
       {{
           .texLoadFunc = []
           {
-              return g_progUseDB->retrieve(0X00000371);
+              return g_progUseDB->retrieve(0X18000001);
           }
       }}
 
@@ -48,29 +48,6 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .h = std::nullopt,
 
           .parent{this},
-      }}
-
-    , m_imgContainer
-      {{
-          .wrapped{&m_img},
-          .attrs
-          {
-              .processEvent = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
-              {
-                  if(!m.calibrate(self)){
-                      return false;
-                  }
-
-                  if((event.type == SDL_MOUSEMOTION) && valid){
-                      if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || self->focus())){
-                          self->moveBy(event.motion.xrel, event.motion.yrel, m_imgFrame.roi());
-                          return true;
-                      }
-                  }
-                  return false;
-              },
-          },
-          .parent{&m_imgWidget},
       }}
 
     , m_imgFrame
@@ -101,6 +78,32 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               g_sdlDevice->drawLine(colorf::BLUE_A255, dstDrawX, dstDrawY + vr1 * h, dstDrawX + w - 1, dstDrawY + vr1 * h);
           },
 
+          .parent{&m_imgWidget},
+      }}
+
+    , m_imgContainer
+      {{
+          .x = m_imgFrame.dx(),
+          .y = m_imgFrame.dy(),
+
+          .wrapped{&m_img},
+          .attrs
+          {
+              .processEvent = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
+              {
+                  if(!m.calibrate(self)){
+                      return false;
+                  }
+
+                  if((event.type == SDL_MOUSEMOTION) && valid){
+                      if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || self->focus())){
+                          self->moveBy(event.motion.xrel, event.motion.yrel, m_imgFrame.roi(&m_imgWidget));
+                          return true;
+                      }
+                  }
+                  return false;
+              },
+          },
           .parent{&m_imgWidget},
       }}
 
