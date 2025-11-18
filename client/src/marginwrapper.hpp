@@ -22,7 +22,8 @@ class MarginWrapper: public Widget
             Widget::VarDrawFunc bgDrawFunc = nullptr;
             Widget::VarDrawFunc fgDrawFunc = nullptr;
 
-            Widget::WADPair parent {};
+            Widget::InstAttrs attrs {};
+            Widget::WADPair  parent {};
         };
 
     private:
@@ -44,6 +45,10 @@ class MarginWrapper: public Widget
                   .x = std::move(args.x),
                   .y = std::move(args.y),
 
+                  .attrs
+                  {
+                      .inst = std::move(args.attrs),
+                  },
                   .parent = std::move(args.parent),
               }}
 

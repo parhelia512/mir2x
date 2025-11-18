@@ -77,8 +77,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
     , m_imgContainer
       {{
-          .wrapped = &m_img,
-          .parent{&m_imgFrame},
+          .wrapped{&m_img},
+          .parent {&m_imgFrame},
       }}
 
     // , m_imgContainer

@@ -15,6 +15,8 @@ class ShapeCropBoard: public Widget
             Widget::VarSize w = 0;
             Widget::VarSize h = 0;
 
+            std::vector<Widget::AddChildArgs> childList {};
+
             Widget::VarDrawFunc bgDrawFunc = nullptr;
             Widget::VarDrawFunc fgDrawFunc = nullptr;
 

@@ -11,6 +11,7 @@ ShapeCropBoard::ShapeCropBoard(ShapeCropBoard::InitArgs args)
           .w = std::move(args.w),
           .h = std::move(args.h),
 
+          .childList = std::move(args.childList),
           .parent = std::move(args.parent),
       }}
 
