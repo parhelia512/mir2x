@@ -301,7 +301,18 @@ class Widget: public WidgetTreeNode
             Widget::InstAttrs inst {};
         };
 
-    private:
+    public:
+        struct AddChildArgs final
+        {
+            Widget *widget = nullptr;
+
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarInt x = 0;
+            Widget::VarInt y = 0;
+
+            bool autoDelete = false;
+        };
+
         struct InitArgs final
         {
             Widget::VarDir dir = DIR_UPLEFT;
@@ -311,7 +322,7 @@ class Widget: public WidgetTreeNode
             Widget::VarSizeOpt w = 0; // nullopt means auto-resize
             Widget::VarSizeOpt h = 0;
 
-            std::vector<std::tuple<Widget *, Widget::VarDir, Widget::VarInt, Widget::VarInt, bool>> childList {};
+            std::vector<Widget::AddChildArgs> childList {};
 
             Widget::InitAttrs attrs {};
             Widget::WADPair  parent {};
