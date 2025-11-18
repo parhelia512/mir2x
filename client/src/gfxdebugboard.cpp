@@ -2,7 +2,9 @@
 #include "sdldevice.hpp"
 #include "gfxdebugboard.hpp"
 
+extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
+
 GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
     : Widget
       {{
@@ -29,5 +31,25 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           },
 
           .parent{this},
+      }}
+
+    , m_img
+      {{
+          .w = 100,
+          .h = 100,
+
+          .texLoadFunc = []
+          {
+              return g_progUseDB->retrieve(0X00000371);
+          }
+      }}
+
+    , m_imgBg
+      {{
+          .x = 100,
+          .y = 100,
+          .w = 300,
+          .h = 300,
+
       }}
 {}
