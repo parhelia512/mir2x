@@ -44,9 +44,6 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
     , m_imgWidget
       {{
-          .x = 10,
-          .y = 10,
-
           .w = std::nullopt,
           .h = std::nullopt,
 
@@ -92,15 +89,15 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .y = [this]{ return m_imgFrame.dy() + m_imgFrame.h(); },
 
               .w = [this]{ return m_imgFrame.w(); },
-              .h = 20,
+              .h = 10,
 
               .v = false,
           },
 
           .slider
           {
-              .w = 20,
-              .h = 20,
+              .w = 10,
+              .h = 10,
           },
 
           .value = 0.5f,
@@ -111,7 +108,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .widget = new ShapeCropBoard
               {{
                   .w = [this]{ return m_imgFrame.w(); },
-                  .h = 20,
+                  .h = 10,
 
                   .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
                   {
@@ -126,8 +123,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .dir = DIR_UPLEFT,
               .widget = new ShapeCropBoard
               {{
-                  .w = 20,
-                  .h = 20,
+                  .w = 10,
+                  .h = 10,
 
                   .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
                   {
@@ -136,6 +133,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               }},
               .autoDelete = true,
            },
+
+           .parent{&m_imgWidget},
       }}
 
     , m_imgResizeVBar
@@ -145,14 +144,14 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .x = [this]{ return m_imgFrame.dx() + m_imgFrame.w(); },
               .y = [this]{ return m_imgFrame.dy(); },
 
-              .w = 20,
+              .w = 10,
               .h = [this]{ return m_imgFrame.h(); },
           },
 
           .slider
           {
-              .w = 20,
-              .h = 20,
+              .w = 10,
+              .h = 10,
           },
 
           .value = 0.5f,
@@ -162,7 +161,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .dir = DIR_UPLEFT,
               .widget = new ShapeCropBoard
               {{
-                  .w = 20,
+                  .w = 10,
                   .h = [this]{ return m_imgFrame.h(); },
 
                   .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
@@ -178,8 +177,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .dir = DIR_UPLEFT,
               .widget = new ShapeCropBoard
               {{
-                  .w = 20,
-                  .h = 20,
+                  .w = 10,
+                  .h = 10,
 
                   .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
                   {
@@ -188,5 +187,10 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               }},
               .autoDelete = true,
            },
+
+           .parent{&m_imgWidget},
       }}
-{}
+{
+    m_img.setSize([this]{ return m_imgFrame.w() * m_imgResizeHBar.getValue(); },
+                  [this]{ return m_imgFrame.h() * m_imgResizeVBar.getValue(); });
+}
