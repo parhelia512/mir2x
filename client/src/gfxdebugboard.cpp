@@ -97,8 +97,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX + hr0 * w, dstDrawY, dstDrawX + hr0 * w, dstDrawY + h - 1);
               g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX + hr1 * w, dstDrawY, dstDrawX + hr1 * w, dstDrawY + h - 1);
 
-              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX, dstDrawY + vr0 * h, dstDrawX + w - 1, dstDrawY + vr0 * h);
-              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX, dstDrawY + vr1 * h, dstDrawX + w - 1, dstDrawY + vr1 * h);
+              g_sdlDevice->drawLine(colorf::BLUE_A255, dstDrawX, dstDrawY + vr0 * h, dstDrawX + w - 1, dstDrawY + vr0 * h);
+              g_sdlDevice->drawLine(colorf::BLUE_A255, dstDrawX, dstDrawY + vr1 * h, dstDrawX + w - 1, dstDrawY + vr1 * h);
           },
 
           .parent{&m_imgWidget},
@@ -199,7 +199,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .h = 10,
           },
 
-          .value = 0.5f,
+          .value = 0.333f,
 
           .sliderWidget
            {
@@ -237,7 +237,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .h = 10,
           },
 
-          .value = 0.5f,
+          .value = 0.666f,
 
           .sliderWidget
            {
@@ -274,7 +274,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .h = 10,
           },
 
-          .value = 0.5f,
+          .value = 0.333f,
 
           .sliderWidget
            {
@@ -311,7 +311,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .h = 10,
           },
 
-          .value = 0.5f,
+          .value = 0.666f,
 
           .sliderWidget
            {
