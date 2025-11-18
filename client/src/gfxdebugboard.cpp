@@ -36,9 +36,6 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
     , m_img
       {{
-          .w = 100,
-          .h = 100,
-
           .texLoadFunc = []
           {
               return g_progUseDB->retrieve(0X00000371);
@@ -50,13 +47,22 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .x = 10,
           .y = 10,
 
+          .w = std::nullopt,
+          .h = std::nullopt,
+
           .parent{this},
       }}
 
-    , m_imgBg
+    , m_imgContainer
       {{
-          .w = 120,
-          .h = 120,
+          .wrapped{&m_img},
+          .parent{&m_imgWidget},
+      }}
+
+    , m_imgFrame
+      {{
+          .w = 200,
+          .h = 200,
 
           .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
           {
@@ -66,7 +72,6 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               const int dx = w / 3;
               const int dy = h / 3;
 
-              g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(0XF0), dstDrawX, dstDrawY, w, h);
               g_sdlDevice->drawRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, w, h);
 
               g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX +     dx, dstDrawY, dstDrawX +     dx, dstDrawY + h - 1);
@@ -76,12 +81,6 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX, dstDrawY + 2 * dy, dstDrawX + w - 1, dstDrawY + 2 * dy);
           },
 
-          .parent{&m_imgWidget},
-      }}
-
-    , m_imgContainer
-      {{
-          .wrapped{&m_img},
           .parent{&m_imgWidget},
       }}
 {}

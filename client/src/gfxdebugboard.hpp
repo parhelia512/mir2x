@@ -25,8 +25,8 @@ class GfxDebugBoard: public Widget
 
     private:
         Widget         m_imgWidget;
-        ShapeCropBoard m_imgBg;
         MarginWrapper  m_imgContainer;
+        ShapeCropBoard m_imgFrame;
 
     public:
         GfxDebugBoard(GfxDebugBoard::InitArgs);
