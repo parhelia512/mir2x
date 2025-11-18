@@ -78,8 +78,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .x = 10,
           .y = 10,
 
-          .w = 200,
-          .h = 200,
+          .w = 120,
+          .h = 120,
 
           .drawFunc = [this](const Widget *self, int dstDrawX, int dstDrawY)
           {
