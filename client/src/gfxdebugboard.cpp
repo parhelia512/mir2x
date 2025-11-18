@@ -75,6 +75,9 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
     , m_imgFrame
       {{
+          .x = 10,
+          .y = 10,
+
           .w = 200,
           .h = 200,
 
@@ -98,15 +101,15 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .parent{&m_imgWidget},
       }}
 
-    , m_imgResizeHBar
+    , m_imgResizeHSlider
       {{
           .bar
           {
               .x = [this]{ return m_imgFrame.dx(); },
-              .y = [this]{ return m_imgFrame.dy() + m_imgFrame.h(); },
+              .y = [this]{ return m_imgFrame.dy() + m_imgFrame.h() - 1; },
 
               .w = [this]{ return m_imgFrame.w(); },
-              .h = 10,
+              .h = 1,
 
               .v = false,
           },
@@ -118,22 +121,6 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           },
 
           .value = 0.5f,
-
-          .barWidget
-           {
-              .dir = DIR_UPLEFT,
-              .widget = new ShapeCropBoard
-              {{
-                  .w = [this]{ return m_imgFrame.w(); },
-                  .h = 10,
-
-                  .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
-                  {
-                      g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
-                  },
-              }},
-              .autoDelete = true,
-           },
 
           .sliderWidget
            {
@@ -154,14 +141,14 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
            .parent{&m_imgWidget},
       }}
 
-    , m_imgResizeVBar
+    , m_imgResizeVSlider
       {{
           .bar
           {
-              .x = [this]{ return m_imgFrame.dx() + m_imgFrame.w(); },
+              .x = [this]{ return m_imgFrame.dx() + m_imgFrame.w() - 1; },
               .y = [this]{ return m_imgFrame.dy(); },
 
-              .w = 10,
+              .w = 1,
               .h = [this]{ return m_imgFrame.h(); },
           },
 
@@ -172,22 +159,6 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           },
 
           .value = 0.5f,
-
-          .barWidget
-           {
-              .dir = DIR_UPLEFT,
-              .widget = new ShapeCropBoard
-              {{
-                  .w = 10,
-                  .h = [this]{ return m_imgFrame.h(); },
-
-                  .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
-                  {
-                      g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
-                  },
-              }},
-              .autoDelete = true,
-           },
 
           .sliderWidget
            {
@@ -208,6 +179,6 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
            .parent{&m_imgWidget},
       }}
 {
-    m_img.setSize([this]{ return m_imgFrame.w() * m_imgResizeHBar.getValue(); },
-                  [this]{ return m_imgFrame.h() * m_imgResizeVBar.getValue(); });
+    m_img.setSize([this]{ return m_imgFrame.w() * m_imgResizeHSlider.getValue(); },
+                  [this]{ return m_imgFrame.h() * m_imgResizeVSlider.getValue(); });
 }

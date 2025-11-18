@@ -29,8 +29,8 @@ class GfxDebugBoard: public Widget
         MarginWrapper  m_imgContainer;
         ShapeCropBoard m_imgFrame;
 
-        SliderBase m_imgResizeHBar;
-        SliderBase m_imgResizeVBar;
+        SliderBase m_imgResizeHSlider;
+        SliderBase m_imgResizeVSlider;
 
     public:
         GfxDebugBoard(GfxDebugBoard::InitArgs);
