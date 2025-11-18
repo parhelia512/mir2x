@@ -57,7 +57,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           {
               .inst
               {
-                  .processEvent = [](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
+                  .processEvent = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
                   {
                       if(!m.calibrate(self)){
                           return false;
