@@ -1,4 +1,5 @@
 #include "colorf.hpp"
+#include "pngtexdb.hpp"
 #include "sdldevice.hpp"
 #include "gfxdebugboard.hpp"
 
@@ -44,12 +45,43 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           }
       }}
 
+    , m_imgWidget
+      {{
+          .x = 10,
+          .y = 10,
+
+          .parent{this},
+      }}
+
     , m_imgBg
       {{
-          .x = 100,
-          .y = 100,
-          .w = 300,
-          .h = 300,
+          .w = 120,
+          .h = 120,
 
+          .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+          {
+              const int w = self->w();
+              const int h = self->h();
+
+              const int dx = w / 3;
+              const int dy = h / 3;
+
+              g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(0XF0), dstDrawX, dstDrawY, w, h);
+              g_sdlDevice->drawRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, w, h);
+
+              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX +     dx, dstDrawY, dstDrawX +     dx, dstDrawY + h - 1);
+              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX + 2 * dx, dstDrawY, dstDrawX + 2 * dx, dstDrawY + h - 1);
+
+              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX, dstDrawY +     dy, dstDrawX + w - 1, dstDrawY +     dy);
+              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX, dstDrawY + 2 * dy, dstDrawX + w - 1, dstDrawY + 2 * dy);
+          },
+
+          .parent{&m_imgWidget},
+      }}
+
+    , m_imgContainer
+      {{
+          .wrapped{&m_img},
+          .parent{&m_imgWidget},
       }}
 {}

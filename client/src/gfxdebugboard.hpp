@@ -1,6 +1,7 @@
 #pragma once
 #include "widget.hpp"
 #include "imageboard.hpp"
+#include "marginwrapper.hpp"
 #include "shapecropboard.hpp"
 #include "gfxresizeboard.hpp"
 
@@ -23,7 +24,9 @@ class GfxDebugBoard: public Widget
         ImageBoard m_img;
 
     private:
+        Widget         m_imgWidget;
         ShapeCropBoard m_imgBg;
+        MarginWrapper  m_imgContainer;
 
     public:
         GfxDebugBoard(GfxDebugBoard::InitArgs);
