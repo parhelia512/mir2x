@@ -443,6 +443,8 @@ Widget::Widget(Widget::InitArgs args)
     , m_y(std::make_pair(std::move(args.y), 0))
     , m_w(std::move(args.w))
     , m_h(std::move(args.h))
+
+    , m_attrs(std::move(args.attrs))
 {
     for(auto &[childPtr, offDir, offX, offY, autoDelete]: args.childList){
         if(childPtr){

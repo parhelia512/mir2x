@@ -78,47 +78,31 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
     , m_imgContainer
       {{
           .wrapped{&m_img},
-          .parent {&m_imgFrame},
-      }}
+          .attrs
+          {
+              .processEvent = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
+              {
+                  if(!m.calibrate(self)){
+                      return false;
+                  }
 
-    // , m_imgContainer
-    //   {{
-    //       .w = std::nullopt,
-    //       .h = std::nullopt,
-    //
-    //       .childList
-    //       {
-    //           {&m_img, DIR_UPLEFT, 0, 0, false},
-    //       },
-    //
-    //       .attrs
-    //       {
-    //           .inst
-    //           {
-    //               .processEvent = [this](Widget *self, const SDL_Event &event, bool valid, Widget::ROIMap m)
-    //               {
-    //                   if(!m.calibrate(self)){
-    //                       return false;
-    //                   }
-    //
-    //                   if((event.type == SDL_MOUSEMOTION) && valid){
-    //                       if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || self->focus())){
-    //                           self->moveBy(event.motion.xrel, event.motion.yrel, Widget::ROI
-    //                           {
-    //                               .x = 0,
-    //                               .y = 0,
-    //                               .w = m_imgFrame.w(),
-    //                               .h = m_imgFrame.h(),
-    //                           });
-    //                           return true;
-    //                       }
-    //                   }
-    //                   return false;
-    //               },
-    //           },
-    //       },
-    //       .parent{&m_imgWidget},
-    //   }}
+                  if((event.type == SDL_MOUSEMOTION) && valid){
+                      if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || self->focus())){
+                          self->moveBy(event.motion.xrel, event.motion.yrel, Widget::ROI
+                          {
+                              .x = 0,
+                              .y = 0,
+                              .w = m_imgFrame.w(),
+                              .h = m_imgFrame.h(),
+                          });
+                          return true;
+                      }
+                  }
+                  return false;
+              },
+          },
+          .parent{&m_imgFrame},
+      }}
 
     , m_imgResizeHBar
       {{
