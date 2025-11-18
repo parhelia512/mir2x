@@ -176,6 +176,156 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .autoDelete = true,
            },
 
+          .parent{&m_imgWidget},
+      }}
+
+    , m_cropHSlider_0
+      {{
+          .bar
+          {
+              .x = [this]{ return m_imgFrame.dx(); },
+              .y = [this]{ return m_imgFrame.dy(); },
+              .w = [this]{ return m_imgFrame. w(); },
+              .h = 1,
+              .v = false,
+          },
+
+          .slider
+          {
+              .w = 10,
+              .h = 10,
+          },
+
+          .value = 0.5f,
+
+          .sliderWidget
+           {
+              .dir = DIR_UPLEFT,
+              .widget = new ShapeCropBoard
+              {{
+                  .w = 10,
+                  .h = 10,
+
+                  .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+                  {
+                      g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+                  },
+              }},
+              .autoDelete = true,
+           },
+
+           .parent{&m_imgWidget},
+      }}
+
+    , m_cropHSlider_1
+      {{
+          .bar
+          {
+              .x = [this]{ return m_imgFrame.dx(); },
+              .y = [this]{ return m_imgFrame.dy(); },
+              .w = [this]{ return m_imgFrame. w(); },
+              .h = 1,
+              .v = false,
+          },
+
+          .slider
+          {
+              .w = 10,
+              .h = 10,
+          },
+
+          .value = 0.5f,
+
+          .sliderWidget
+           {
+              .dir = DIR_UPLEFT,
+              .widget = new ShapeCropBoard
+              {{
+                  .w = 10,
+                  .h = 10,
+
+                  .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+                  {
+                      g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+                  },
+              }},
+              .autoDelete = true,
+           },
+
+           .parent{&m_imgWidget},
+      }}
+
+    , m_cropVSlider_0
+      {{
+          .bar
+          {
+              .x = [this]{ return m_imgFrame.dx(); },
+              .y = [this]{ return m_imgFrame.dy(); },
+              .w = 1,
+              .h = [this]{ return m_imgFrame. h(); },
+          },
+
+          .slider
+          {
+              .w = 10,
+              .h = 10,
+          },
+
+          .value = 0.5f,
+
+          .sliderWidget
+           {
+              .dir = DIR_UPLEFT,
+              .widget = new ShapeCropBoard
+              {{
+                  .w = 10,
+                  .h = 10,
+
+                  .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+                  {
+                      g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+                  },
+              }},
+              .autoDelete = true,
+           },
+
+           .parent{&m_imgWidget},
+      }}
+
+    , m_cropVSlider_1
+      {{
+          .bar
+          {
+              .x = [this]{ return m_imgFrame.dx(); },
+              .y = [this]{ return m_imgFrame.dy(); },
+              .w = 1,
+              .h = [this]{ return m_imgFrame. h(); },
+          },
+
+          .slider
+          {
+              .w = 10,
+              .h = 10,
+          },
+
+          .value = 0.5f,
+
+          .sliderWidget
+           {
+              .dir = DIR_UPLEFT,
+              .widget = new ShapeCropBoard
+              {{
+                  .w = 10,
+                  .h = 10,
+
+                  .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+                  {
+                      g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+                  },
+              }},
+              .autoDelete = true,
+           },
+
            .parent{&m_imgWidget},
       }}
 {

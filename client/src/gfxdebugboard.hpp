@@ -32,6 +32,12 @@ class GfxDebugBoard: public Widget
         SliderBase m_imgResizeHSlider;
         SliderBase m_imgResizeVSlider;
 
+        SliderBase m_cropHSlider_0;
+        SliderBase m_cropHSlider_1;
+
+        SliderBase m_cropVSlider_0;
+        SliderBase m_cropVSlider_1;
+
     public:
         GfxDebugBoard(GfxDebugBoard::InitArgs);
 };
