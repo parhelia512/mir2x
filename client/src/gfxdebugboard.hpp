@@ -26,7 +26,7 @@ class GfxDebugBoard: public Widget
 
     private:
         Widget         m_imgWidget;
-        MarginWrapper  m_imgContainer;
+        Widget         m_imgContainer;
         ShapeCropBoard m_imgFrame;
 
         SliderBase m_imgResizeHBar;

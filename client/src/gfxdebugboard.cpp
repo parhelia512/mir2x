@@ -52,7 +52,14 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
     , m_imgContainer
       {{
-          .wrapped{&m_img},
+          .w = std::nullopt,
+          .h = std::nullopt,
+
+          .childList
+          {
+              {&m_img, DIR_UPLEFT, 0, 0, false},
+          },
+
           .attrs
           {
               .inst
