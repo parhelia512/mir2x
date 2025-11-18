@@ -113,7 +113,7 @@ ChatPreviewItem::ChatPreviewItem(
           .w = [this]{ return w(); },
           .h = [this]{ return h(); },
 
-          .fgDrawFunc = [this](int drawDstX, int drawDstY)
+          .drawFunc = [this](int drawDstX, int drawDstY)
           {
               if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{roi()}}.in(SDLDeviceHelper::getMousePLoc())){
                   g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());

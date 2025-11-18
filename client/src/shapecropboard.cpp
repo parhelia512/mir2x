@@ -11,12 +11,10 @@ ShapeCropBoard::ShapeCropBoard(ShapeCropBoard::InitArgs args)
           .w = std::move(args.w),
           .h = std::move(args.h),
 
-          .childList = std::move(args.childList),
           .parent = std::move(args.parent),
       }}
 
-    , m_bgDrawFunc(std::move(args.bgDrawFunc))
-    , m_fgDrawFunc(std::move(args.fgDrawFunc))
+    , m_drawFunc(std::move(args.drawFunc))
 {}
 
 void ShapeCropBoard::drawDefault(Widget::ROIMap m) const
@@ -25,15 +23,8 @@ void ShapeCropBoard::drawDefault(Widget::ROIMap m) const
         return;
     }
 
-    if(Widget::hasDrawFunc(m_bgDrawFunc)){
+    if(Widget::hasDrawFunc(m_drawFunc)){
         const SDLDeviceHelper::EnableRenderCropRectangle enableClip(m.x, m.y, m.ro->w, m.ro->h);
-        Widget::execDrawFunc(m_bgDrawFunc, this, m.x - m.ro->x, m.y - m.ro->y);
-    }
-
-    Widget::drawDefault(m);
-
-    if(Widget::hasDrawFunc(m_fgDrawFunc)){
-        const SDLDeviceHelper::EnableRenderCropRectangle enableClip(m.x, m.y, m.ro->w, m.ro->h);
-        Widget::execDrawFunc(m_fgDrawFunc, this, m.x - m.ro->x, m.y - m.ro->y);
+        Widget::execDrawFunc(m_drawFunc, this, m.x - m.ro->x, m.y - m.ro->y);
     }
 }

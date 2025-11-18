@@ -78,7 +78,7 @@ CBFace::CBFace(
           .w = [this]{ return w(); },
           .h = [this]{ return h(); },
 
-          .fgDrawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               drawBuffIDList(drawDstX, drawDstY, self->w(), self->h());
           },

@@ -35,7 +35,7 @@ ChatPage::ChatPage(
           .w = [this](const Widget *){ return w(); },
           .h = [this](const Widget *){ return h(); },
 
-          .fgDrawFunc = [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               // ChatPage = top + sepLine + bottom
               const int bottomHeight = UIPage_MARGIN + ChatPage::SEP_MARGIN + ChatPage::INPUT_MARGIN * 2 + input.h() + (showref() ? (chatref->h() + ChatPage::CHATREF_GAP) : 0);

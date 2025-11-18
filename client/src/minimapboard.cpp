@@ -51,7 +51,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
           .w = [this]{ return w(); },
           .h = [this]{ return h(); },
 
-          .fgDrawFunc = [this](int drawDstX, int drawDstY)
+          .drawFunc = [this](int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(colorf::BLACK_A255, drawDstX, drawDstY, w(), h());
           },
@@ -71,7 +71,7 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
           .w = [this]{ return w(); },
           .h = [this]{ return h(); },
 
-          .fgDrawFunc = [this](int drawDstX, int drawDstY)
+          .drawFunc = [this](int drawDstX, int drawDstY)
           {
               if(getMiniMapTexture()){
                   drawCanvas(drawDstX, drawDstY);

@@ -15,20 +15,15 @@ class ShapeCropBoard: public Widget
             Widget::VarSize w = 0;
             Widget::VarSize h = 0;
 
-            std::vector<Widget::AddChildArgs> childList {};
-
-            Widget::VarDrawFunc bgDrawFunc = nullptr;
-            Widget::VarDrawFunc fgDrawFunc = nullptr;
-
+            Widget::VarDrawFunc drawFunc = nullptr;
             Widget::WADPair parent {};
         };
 
     private:
-        Widget::VarDrawFunc m_bgDrawFunc;
-        Widget::VarDrawFunc m_fgDrawFunc;
+        Widget::VarDrawFunc m_drawFunc;
 
     public:
-        ShapeCropBoard(ShapeCropBoard::InitArgs);
+        explicit ShapeCropBoard(ShapeCropBoard::InitArgs);
 
     public:
         void drawDefault(Widget::ROIMap) const override;

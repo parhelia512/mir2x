@@ -40,7 +40,7 @@ ChatItemRef::ChatItemRef(
           .w = [this](const Widget *){ return w(); },
           .h = [this](const Widget *){ return h(); },
 
-          .fgDrawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+          .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
           {
               g_sdlDevice->fillRectangle(colorf::GREY + colorf::A_SHF(200), dstDrawX, dstDrawY, self->w(), self->h(), ChatItemRef::CORNER);
           },
@@ -63,7 +63,7 @@ ChatItemRef::ChatItemRef(
           .w = ChatItemRef::BUTTON_D,
           .h = ChatItemRef::BUTTON_D,
 
-          .fgDrawFunc = [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               if(auto texPtr = g_sdlDevice->getCover(ChatItemRef::BUTTON_R, 360)){
                   const SDLDeviceHelper::EnableRenderBlendMode enableBlendMode(SDL_BLENDMODE_BLEND);

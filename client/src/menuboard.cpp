@@ -70,7 +70,7 @@ MenuBoard::MenuBoard(
           .w = [this](const Widget *){ return m_wrapper.w(); },
           .h = [this](const Widget *){ return m_wrapper.h(); },
 
-          .fgDrawFunc = [argCorner](const Widget *self, int dstDrawX, int dstDrawY)
+          .drawFunc = [argCorner](const Widget *self, int dstDrawX, int dstDrawY)
           {
               g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(255), dstDrawX, dstDrawY, self->w(), self->h(), std::max<int>(0, argCorner));
               g_sdlDevice->drawRectangle(colorf::GREY  + colorf::A_SHF(255), dstDrawX, dstDrawY, self->w(), self->h(), std::max<int>(0, argCorner));
@@ -168,7 +168,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
                     return upperItemSpace(argWidget) + argWidget->h() + lowerItemSpace(argWidget) + (argAddSeparator ? m_separatorSpace : 0);
                 },
 
-                .fgDrawFunc = [argWidget, argAddSeparator, this](const Widget *self, int drawDstX, int drawDstY)
+                .drawFunc = [argWidget, argAddSeparator, this](const Widget *self, int drawDstX, int drawDstY)
                 {
                     if(self->parent()->focus()){
                         g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(100), drawDstX, drawDstY + upperItemSpace(argWidget), self->w(), argWidget->h());

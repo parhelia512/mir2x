@@ -139,7 +139,7 @@ ChatItem::ChatItem(
           .w = [this](const Widget *){ return ChatItem::MESSAGE_MARGIN * 2 + std::max<int>(message.w(), ChatItem::MESSAGE_MIN_WIDTH ) + ChatItem::TRIANGLE_WIDTH; },
           .h = [this](const Widget *){ return ChatItem::MESSAGE_MARGIN * 2 + std::max<int>(message.h(), ChatItem::MESSAGE_MIN_HEIGHT)                           ; },
 
-          .fgDrawFunc = [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               const uint32_t drawBGColor = bgColor.value_or([this]
               {

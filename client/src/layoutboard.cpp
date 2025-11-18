@@ -93,7 +93,7 @@ LayoutBoard::LayoutBoard(LayoutBoard::InitArgs args)
           .w = [this]{ return w(); },
           .h = [this]{ return h(); },
 
-          .fgDrawFunc = [this](const Widget *, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               drawCursorBlink(drawDstX, drawDstY);
           },

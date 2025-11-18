@@ -70,7 +70,7 @@ InputStringBoard::InputStringBoard(
           .w = 315,
           .h = 23,
 
-          .fgDrawFunc = [](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [](const Widget *self, int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(32), drawDstX, drawDstY, self->w(), self->h());
           },

@@ -52,7 +52,7 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
           .w = [this]{ return w(); },
           .h = [this]{ return h(); },
 
-          .fgDrawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               if(g_clientArgParser->debugSlider){
                   g_sdlDevice->drawRectangle(colorf::GREEN_A255, drawDstX, drawDstY, self->w(), self->h());

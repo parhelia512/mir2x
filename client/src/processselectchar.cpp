@@ -33,7 +33,7 @@ ProcessSelectChar::ProcessSelectChar()
 
     , m_notifyBoardBg
       {{
-          .fgDrawFunc = [](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [](const Widget *self, int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(colorf::RGBA(0, 0,   0, 128), drawDstX, drawDstY, self->w(), self->h(), 8);
               g_sdlDevice->drawRectangle(colorf::RGBA(0, 0, 255, 128), drawDstX, drawDstY, self->w(), self->h(), 8);

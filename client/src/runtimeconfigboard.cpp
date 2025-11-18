@@ -548,7 +548,7 @@ RuntimeConfigBoard::MenuPage::MenuPage(
 
     , m_buttonMask
       {{
-          .fgDrawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
+          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               if(m_selectedHeader){
                   g_sdlDevice->fillRectangle(colorf::RGBA(231, 231, 189, 100),
@@ -654,7 +654,7 @@ RuntimeConfigBoard::RuntimeConfigBoard(int argX, int argY, int argW, int argH, P
           .w = 80,
           .h = argH - 30 * 2,
 
-          .fgDrawFunc = [](const Widget *widgetPtr, int drawDstX, int drawDstY)
+          .drawFunc = [](const Widget *widgetPtr, int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(                             colorf::A_SHF(128), drawDstX, drawDstY, widgetPtr->w(), widgetPtr->h(), 10);
               g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(100), drawDstX, drawDstY, widgetPtr->w(), widgetPtr->h(), 10);
