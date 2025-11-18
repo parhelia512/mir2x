@@ -57,7 +57,7 @@ FriendItem::FriendItem(
           .w = [this]{ return w(); },
           .h = [this]{ return h(); },
 
-          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
+          .fgDrawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{self->roi()}}.in(SDLDeviceHelper::getMousePLoc())){
                   g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());

@@ -59,7 +59,7 @@ class MarginContainer: public Widget
                   .w = [this]{ return w(); },
                   .h = [this]{ return h(); },
 
-                  .drawFunc = std::move(args.bgDrawFunc),
+                  .fgDrawFunc = std::move(args.bgDrawFunc),
 
               }} : nullptr)
 
@@ -68,7 +68,7 @@ class MarginContainer: public Widget
                   .w = [this]{ return w(); },
                   .h = [this]{ return h(); },
 
-                  .drawFunc = std::move(args.fgDrawFunc),
+                  .fgDrawFunc = std::move(args.fgDrawFunc),
 
               }} : nullptr)
         {

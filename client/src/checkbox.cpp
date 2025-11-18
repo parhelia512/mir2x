@@ -61,7 +61,7 @@ CheckBox::CheckBox(dir8_t argDir,
           .w = [this](const Widget *){ return w(); },
           .h = [this](const Widget *){ return h(); },
 
-          .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
+          .fgDrawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               // +----1----+
               // |        ||

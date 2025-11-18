@@ -49,7 +49,7 @@ QuickAccessBoard::Grid::Grid(
           .w = [this](const Widget *){ return w(); },
           .h = [this](const Widget *){ return h(); },
 
-          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
+          .fgDrawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               if(Widget::ROIMap({.x = drawDstX, .y = drawDstY, .ro = self->roi()}).in(SDLDeviceHelper::getMousePLoc())){
                    g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(64), drawDstX, drawDstY, self->w(), self->h());

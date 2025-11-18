@@ -15,12 +15,15 @@ class ShapeCropBoard: public Widget
             Widget::VarSize w = 0;
             Widget::VarSize h = 0;
 
-            Widget::VarDrawFunc drawFunc = nullptr;
+            Widget::VarDrawFunc bgDrawFunc = nullptr;
+            Widget::VarDrawFunc fgDrawFunc = nullptr;
+
             Widget::WADPair parent {};
         };
 
     private:
-        Widget::VarDrawFunc m_drawFunc;
+        Widget::VarDrawFunc m_bgDrawFunc;
+        Widget::VarDrawFunc m_fgDrawFunc;
 
     public:
         ShapeCropBoard(ShapeCropBoard::InitArgs);

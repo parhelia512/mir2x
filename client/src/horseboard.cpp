@@ -39,7 +39,7 @@ HorseBoard::HorseBoard(
           .w = [this](const Widget *){ return w(); },
           .h = [this](const Widget *){ return h(); },
 
-          .drawFunc = [](const Widget *self, int drawDstX, int drawDstY)
+          .fgDrawFunc = [](const Widget *self, int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(colorf::GREY + colorf::A_SHF(255), drawDstX, drawDstY, self->w(), self->h());
           },

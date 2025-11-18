@@ -53,7 +53,7 @@ CBMiddle::CBMiddle(
           .w = [this]{ return w(); },
           .h = [this]{ return h(); },
 
-          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
+          .fgDrawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(colorf::A_SHF(0XFF), drawDstX, drawDstY, self->w(), self->h());
           },
