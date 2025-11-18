@@ -81,21 +81,24 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .w = 200,
           .h = 200,
 
-          .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+          .drawFunc = [this](const Widget *self, int dstDrawX, int dstDrawY)
           {
               const int w = self->w();
               const int h = self->h();
 
-              const int dx = w / 3;
-              const int dy = h / 3;
+              const float hr1 = m_cropHSlider_0.getValue();
+              const float hr2 = m_cropHSlider_1.getValue();
+
+              const float vr1 = m_cropVSlider_0.getValue();
+              const float vr2 = m_cropVSlider_1.getValue();
 
               g_sdlDevice->drawRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, w, h);
 
-              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX +     dx, dstDrawY, dstDrawX +     dx, dstDrawY + h - 1);
-              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX + 2 * dx, dstDrawY, dstDrawX + 2 * dx, dstDrawY + h - 1);
+              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX + hr1 * w, dstDrawY, dstDrawX + hr1 * w, dstDrawY + h - 1);
+              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX + hr2 * w, dstDrawY, dstDrawX + hr2 * w, dstDrawY + h - 1);
 
-              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX, dstDrawY +     dy, dstDrawX + w - 1, dstDrawY +     dy);
-              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX, dstDrawY + 2 * dy, dstDrawX + w - 1, dstDrawY + 2 * dy);
+              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX, dstDrawY + vr1 * h, dstDrawX + w - 1, dstDrawY + vr1 * h);
+              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX, dstDrawY + vr2 * h, dstDrawX + w - 1, dstDrawY + vr2 * h);
           },
 
           .parent{&m_imgWidget},
