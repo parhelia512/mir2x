@@ -339,13 +339,32 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
            .x = [this]{ return m_imgWidget.dx(); },
            .y = [this]{ return m_imgWidget.dy() + m_imgWidget.h() + 20; },
 
-           .length = 20,
            .hbox = false,
 
            .childList
            {
-               {new TextBoard{{ .textFunc = [this]{ return str_printf("IMG W: %d", m_img.w()); }, }}, true},
-               {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", m_img.h()); }, }}, true},
+               {new TextBoard
+               {{
+                    .textFunc = [this]
+                    {
+                        const auto roi = getROI();
+                        return str_printf("IMG (%d, %d), ROI (%d, %d, %d, %d)", m_img.w(), m_img.h(), roi.x, roi.y, roi.w, roi.h);
+                    },
+
+                    .font{.size = 15},
+               }}, true},
+
+               // {new TextBoard{{ .textFunc = [this]{ return str_printf("ROI X: %d", getROI().x); }, .font{.size = 15}}}, true},
+               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    Y: %d", getROI().y); }, .font{.size = 15}}}, true},
+               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    W: %d", getROI().w); }, .font{.size = 15}}}, true},
+               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", getROI().h); }, .font{.size = 15}}}, true},
+               // {new TextBoard{{ .textFunc = [this]{ return str_printf("IMG W: %d", m_img.w()); }, .font{.size = 15}}}, true},
+               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", m_img.h()); }, .font{.size = 15}}}, true},
+               //
+               // {new TextBoard{{ .textFunc = [this]{ return str_printf("ROI X: %d", getROI().x); }, .font{.size = 15}}}, true},
+               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    Y: %d", getROI().y); }, .font{.size = 15}}}, true},
+               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    W: %d", getROI().w); }, .font{.size = 15}}}, true},
+               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", getROI().h); }, .font{.size = 15}}}, true},
            },
 
            .parent{this},

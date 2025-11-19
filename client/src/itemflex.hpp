@@ -13,7 +13,7 @@ class ItemFlex: public Widget
             Widget::VarInt x = 0;
             Widget::VarInt y = 0;
 
-            Widget::VarSizeOpt length;
+            Widget::VarSizeOpt length = std::nullopt;
 
             bool hbox = true;
             Widget::VarSize itemSpace = 0;
