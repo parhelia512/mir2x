@@ -44,12 +44,22 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           }
       }}
 
-    , m_imgWidget
+    , m_srcWidget
       {{
           .w = std::nullopt,
           .h = std::nullopt,
 
           .parent{this},
+      }}
+
+    , m_imgCanvas
+      {{
+          .x = 20,
+          .y = 20,
+          .w = 120,
+          .h = 120,
+
+          .parent{&m_srcWidget},
       }}
 
     , m_imgContainer
@@ -65,23 +75,20 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
                   if((event.type == SDL_MOUSEMOTION) && valid){
                       if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || self->focus())){
-                          self->moveBy(event.motion.xrel, event.motion.yrel, m_imgFrame.roi(&m_imgWidget));
+                          self->moveBy(event.motion.xrel, event.motion.yrel, m_imgCanvas.roi());
                           return true;
                       }
                   }
                   return false;
               },
           },
-          .parent{&m_imgWidget},
+          .parent{&m_imgCanvas},
       }}
 
     , m_imgFrame
       {{
-          .x = 10,
-          .y = 10,
-
-          .w = 120,
-          .h = 120,
+          .w = [this]{ return m_imgCanvas.w(); },
+          .h = [this]{ return m_imgCanvas.h(); },
 
           .drawFunc = [this](const Widget *self, int dstDrawX, int dstDrawY)
           {
@@ -103,17 +110,16 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               g_sdlDevice->drawLine(colorf::BLUE_A255, dstDrawX, dstDrawY + vr1 * h, dstDrawX + w - 1, dstDrawY + vr1 * h);
           },
 
-          .parent{&m_imgWidget},
+          .parent{&m_imgCanvas},
       }}
 
     , m_imgResizeHSlider
       {{
           .bar
           {
-              .x = [this]{ return m_imgFrame.dx(); },
-              .y = [this]{ return m_imgFrame.dy() + m_imgFrame.h() - 1; },
-
-              .w = [this]{ return m_imgFrame.w(); },
+              .x = [this]{ return m_imgCanvas.dx(); },
+              .y = [this]{ return m_imgCanvas.dy(); },
+              .w = [this]{ return m_imgCanvas. w(); },
               .h = 1,
 
               .v = false,
@@ -143,18 +149,22 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .autoDelete = true,
            },
 
-           .parent{&m_imgWidget},
+          .onChange = [this](float)
+          {
+              m_imgContainer.moveBy(0, 0, m_imgCanvas.roi());
+          },
+
+          .parent{&m_srcWidget},
       }}
 
     , m_imgResizeVSlider
       {{
           .bar
           {
-              .x = [this]{ return m_imgFrame.dx() + m_imgFrame.w() - 1; },
-              .y = [this]{ return m_imgFrame.dy(); },
-
+              .x = [this]{ return m_imgCanvas.dx(); },
+              .y = [this]{ return m_imgCanvas.dy(); },
               .w = 1,
-              .h = [this]{ return m_imgFrame.h(); },
+              .h = [this]{ return m_imgCanvas.h(); },
           },
 
           .slider
@@ -181,16 +191,21 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .autoDelete = true,
            },
 
-          .parent{&m_imgWidget},
+          .onChange = [this](float)
+          {
+              m_imgContainer.moveBy(0, 0, m_imgCanvas.roi());
+          },
+
+          .parent{&m_srcWidget},
       }}
 
     , m_cropHSlider_0
       {{
           .bar
           {
-              .x = [this]{ return m_imgFrame.dx(); },
-              .y = [this]{ return m_imgFrame.dy(); },
-              .w = [this]{ return m_imgFrame. w(); },
+              .x = [this]{ return m_imgCanvas.dx(); },
+              .y = [this]{ return m_imgCanvas.dy() + m_imgCanvas.h() - 1; },
+              .w = [this]{ return m_imgCanvas.w(); },
               .h = 1,
               .v = false,
           },
@@ -219,16 +234,16 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .autoDelete = true,
            },
 
-           .parent{&m_imgWidget},
+           .parent{&m_srcWidget},
       }}
 
     , m_cropHSlider_1
       {{
           .bar
           {
-              .x = [this]{ return m_imgFrame.dx(); },
-              .y = [this]{ return m_imgFrame.dy(); },
-              .w = [this]{ return m_imgFrame. w(); },
+              .x = [this]{ return m_imgCanvas.dx(); },
+              .y = [this]{ return m_imgCanvas.dy() + m_imgCanvas.h() - 1; },
+              .w = [this]{ return m_imgCanvas.w(); },
               .h = 1,
               .v = false,
           },
@@ -257,17 +272,17 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .autoDelete = true,
            },
 
-           .parent{&m_imgWidget},
+           .parent{&m_srcWidget},
       }}
 
     , m_cropVSlider_0
       {{
           .bar
           {
-              .x = [this]{ return m_imgFrame.dx(); },
-              .y = [this]{ return m_imgFrame.dy(); },
+              .x = [this]{ return m_imgCanvas.dx() + m_imgCanvas.w() - 1; },
+              .y = [this]{ return m_imgCanvas.dy(); },
               .w = 1,
-              .h = [this]{ return m_imgFrame. h(); },
+              .h = [this]{ return m_imgCanvas. h(); },
           },
 
           .slider
@@ -294,17 +309,17 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .autoDelete = true,
            },
 
-           .parent{&m_imgWidget},
+           .parent{&m_srcWidget},
       }}
 
     , m_cropVSlider_1
       {{
           .bar
           {
-              .x = [this]{ return m_imgFrame.dx(); },
-              .y = [this]{ return m_imgFrame.dy(); },
+              .x = [this]{ return m_imgCanvas.dx() + m_imgCanvas.w() - 1; },
+              .y = [this]{ return m_imgCanvas.dy(); },
               .w = 1,
-              .h = [this]{ return m_imgFrame. h(); },
+              .h = [this]{ return m_imgCanvas. h(); },
           },
 
           .slider
@@ -331,44 +346,44 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .autoDelete = true,
            },
 
-           .parent{&m_imgWidget},
+           .parent{&m_srcWidget},
       }}
 
-    , m_textFlex
-      {{
-           .x = [this]{ return m_imgWidget.dx(); },
-           .y = [this]{ return m_imgWidget.dy() + m_imgWidget.h() + 20; },
-
-           .hbox = false,
-
-           .childList
-           {
-               {new TextBoard
-               {{
-                    .textFunc = [this]
-                    {
-                        const auto roi = getROI();
-                        return str_printf("IMG (%d, %d), ROI (%d, %d, %d, %d)", m_img.w(), m_img.h(), roi.x, roi.y, roi.w, roi.h);
-                    },
-
-                    .font{.size = 15},
-               }}, true},
-
-               // {new TextBoard{{ .textFunc = [this]{ return str_printf("ROI X: %d", getROI().x); }, .font{.size = 15}}}, true},
-               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    Y: %d", getROI().y); }, .font{.size = 15}}}, true},
-               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    W: %d", getROI().w); }, .font{.size = 15}}}, true},
-               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", getROI().h); }, .font{.size = 15}}}, true},
-               // {new TextBoard{{ .textFunc = [this]{ return str_printf("IMG W: %d", m_img.w()); }, .font{.size = 15}}}, true},
-               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", m_img.h()); }, .font{.size = 15}}}, true},
-               //
-               // {new TextBoard{{ .textFunc = [this]{ return str_printf("ROI X: %d", getROI().x); }, .font{.size = 15}}}, true},
-               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    Y: %d", getROI().y); }, .font{.size = 15}}}, true},
-               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    W: %d", getROI().w); }, .font{.size = 15}}}, true},
-               // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", getROI().h); }, .font{.size = 15}}}, true},
-           },
-
-           .parent{this},
-      }}
+    // , m_textFlex
+    //   {{
+    //        .x = [this]{ return m_srcWidget.dx(); },
+    //        .y = [this]{ return m_srcWidget.dy() + m_srcWidget.h() + 20; },
+    //
+    //        .hbox = false,
+    //
+    //        .childList
+    //        {
+    //            {new TextBoard
+    //            {{
+    //                 .textFunc = [this]
+    //                 {
+    //                     const auto roi = getROI();
+    //                     return str_printf("IMG (%d, %d), ROI (%d, %d, %d, %d)", m_img.w(), m_img.h(), roi.x, roi.y, roi.w, roi.h);
+    //                 },
+    //
+    //                 .font{.size = 15},
+    //            }}, true},
+    //
+    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("ROI X: %d", getROI().x); }, .font{.size = 15}}}, true},
+    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    Y: %d", getROI().y); }, .font{.size = 15}}}, true},
+    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    W: %d", getROI().w); }, .font{.size = 15}}}, true},
+    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", getROI().h); }, .font{.size = 15}}}, true},
+    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("IMG W: %d", m_img.w()); }, .font{.size = 15}}}, true},
+    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", m_img.h()); }, .font{.size = 15}}}, true},
+    //            //
+    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("ROI X: %d", getROI().x); }, .font{.size = 15}}}, true},
+    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    Y: %d", getROI().y); }, .font{.size = 15}}}, true},
+    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    W: %d", getROI().w); }, .font{.size = 15}}}, true},
+    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", getROI().h); }, .font{.size = 15}}}, true},
+    //        },
+    //
+    //        .parent{this},
+    //   }}
 {
     m_img.setSize([this]{ return m_imgFrame.w() * m_imgResizeHSlider.getValue(); },
                   [this]{ return m_imgFrame.h() * m_imgResizeVSlider.getValue(); });
@@ -378,8 +393,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
 Widget::ROI GfxDebugBoard::getROI() const
 {
-    const auto roi_frame     = m_imgFrame    .roi(&m_imgWidget);
-    const auto roi_container = m_imgContainer.roi(&m_imgWidget);
+    const auto roi_frame     = m_imgFrame    .roi(&m_srcWidget);
+    const auto roi_container = m_imgContainer.roi(&m_srcWidget);
 
     const float hr0 = m_cropHSlider_0.getValue();
     const float hr1 = m_cropHSlider_1.getValue();
