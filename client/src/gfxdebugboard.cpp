@@ -349,69 +349,62 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
            .parent{&m_srcWidget},
       }}
 
-    // , m_textFlex
-    //   {{
-    //        .x = [this]{ return m_srcWidget.dx(); },
-    //        .y = [this]{ return m_srcWidget.dy() + m_srcWidget.h() + 20; },
-    //
-    //        .hbox = false,
-    //
-    //        .childList
-    //        {
-    //            {new TextBoard
-    //            {{
-    //                 .textFunc = [this]
-    //                 {
-    //                     const auto roi = getROI();
-    //                     return str_printf("IMG (%d, %d), ROI (%d, %d, %d, %d)", m_img.w(), m_img.h(), roi.x, roi.y, roi.w, roi.h);
-    //                 },
-    //
-    //                 .font{.size = 15},
-    //            }}, true},
-    //
-    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("ROI X: %d", getROI().x); }, .font{.size = 15}}}, true},
-    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    Y: %d", getROI().y); }, .font{.size = 15}}}, true},
-    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    W: %d", getROI().w); }, .font{.size = 15}}}, true},
-    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", getROI().h); }, .font{.size = 15}}}, true},
-    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("IMG W: %d", m_img.w()); }, .font{.size = 15}}}, true},
-    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", m_img.h()); }, .font{.size = 15}}}, true},
-    //            //
-    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("ROI X: %d", getROI().x); }, .font{.size = 15}}}, true},
-    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    Y: %d", getROI().y); }, .font{.size = 15}}}, true},
-    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    W: %d", getROI().w); }, .font{.size = 15}}}, true},
-    //            // {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", getROI().h); }, .font{.size = 15}}}, true},
-    //        },
-    //
-    //        .parent{this},
-    //   }}
+    , m_imgSize
+      {{
+           .x = [this]{ return m_imgCanvas.dx(); },
+           .y = [this]{ return m_imgCanvas.dy() + m_imgCanvas.h() + 20; },
+
+           .textFunc = [this]
+           {
+               return str_printf("IMG (%d, %d)", m_img.w(), m_img.h());
+           },
+
+           .font{.size = 12},
+           .parent{&m_srcWidget},
+      }}
+
+    , m_roiInfo
+      {{
+           .x = [this]{ return m_imgSize.dx(); },
+           .y = [this]{ return m_imgSize.dy() + m_imgSize.h() + 20; },
+
+           .textFunc = [this]
+           {
+               const auto r = getROI();
+               return str_printf("ROI (%d, %d, %d, %d)", r.x, r.y, r.w, r.h);
+           },
+
+           .font{.size = 12},
+           .parent{&m_srcWidget},
+      }}
 {
-    m_img.setSize([this]{ return m_imgFrame.w() * m_imgResizeHSlider.getValue(); },
-                  [this]{ return m_imgFrame.h() * m_imgResizeVSlider.getValue(); });
+    m_img.setSize([this]{ return m_imgCanvas.w() * m_imgResizeHSlider.getValue(); },
+                  [this]{ return m_imgCanvas.h() * m_imgResizeVSlider.getValue(); });
 
     m_imgContainer.moveTo(m_imgFrame.dx(), m_imgFrame.dy());
 }
 
 Widget::ROI GfxDebugBoard::getROI() const
 {
-    const auto roi_frame     = m_imgFrame    .roi(&m_srcWidget);
-    const auto roi_container = m_imgContainer.roi(&m_srcWidget);
+    const auto canvas_w = m_imgCanvas.w();
+    const auto canvas_h = m_imgCanvas.h();
 
     const float hr0 = m_cropHSlider_0.getValue();
     const float hr1 = m_cropHSlider_1.getValue();
 
     const float vr0 = m_cropVSlider_0.getValue();
     const float vr1 = m_cropVSlider_1.getValue();
+    //
+    const auto x0 = static_cast<int>(canvas_w * hr0);
+    const auto x1 = static_cast<int>(canvas_w * hr1);
 
-    const auto x0 = static_cast<int>(roi_frame.w * hr0);
-    const auto x1 = static_cast<int>(roi_frame.w * hr1);
-
-    const auto y0 = static_cast<int>(roi_frame.h * vr0);
-    const auto y1 = static_cast<int>(roi_frame.h * vr1);
+    const auto y0 = static_cast<int>(canvas_h * vr0);
+    const auto y1 = static_cast<int>(canvas_h * vr1);
 
     return Widget::ROI
     {
-        .x = roi_container.x - std::max<int>(x0, x1),
-        .y = roi_container.y - std::max<int>(y0, y1),
+        .x = std::min<int>(x0, x1) - m_imgContainer.dx(),
+        .y = std::min<int>(y0, y1) - m_imgContainer.dy(),
 
         .w = std::abs(x0 - x1),
         .h = std::abs(y0 - y1),

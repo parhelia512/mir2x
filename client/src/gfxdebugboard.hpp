@@ -41,8 +41,8 @@ class GfxDebugBoard: public Widget
         SliderBase              m_cropVSlider_0;
         SliderBase              m_cropVSlider_1;
 
-    public:
-        // ItemFlex m_textFlex;
+        TextBoard               m_imgSize;
+        TextBoard               m_roiInfo;
 
     public:
         GfxDebugBoard(GfxDebugBoard::InitArgs);
