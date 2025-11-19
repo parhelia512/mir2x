@@ -294,22 +294,22 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .value = 0.333f,
 
           .sliderWidget
-           {
-              .dir = DIR_UPLEFT,
-              .widget = new ShapeCropBoard
-              {{
-                  .w = 10,
-                  .h = 10,
+          {
+             .dir = DIR_UPLEFT,
+             .widget = new ShapeCropBoard
+             {{
+                 .w = 10,
+                 .h = 10,
 
-                  .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
-                  {
-                      g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
-                  },
-              }},
-              .autoDelete = true,
-           },
+                 .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+                 {
+                     g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+                 },
+             }},
+             .autoDelete = true,
+          },
 
-           .parent{&m_srcWidget},
+          .parent{&m_srcWidget},
       }}
 
     , m_cropVSlider_1
@@ -331,51 +331,69 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .value = 0.666f,
 
           .sliderWidget
-           {
-              .dir = DIR_UPLEFT,
-              .widget = new ShapeCropBoard
-              {{
-                  .w = 10,
-                  .h = 10,
+          {
+             .dir = DIR_UPLEFT,
+             .widget = new ShapeCropBoard
+             {{
+                 .w = 10,
+                 .h = 10,
 
-                  .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
-                  {
-                      g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
-                  },
-              }},
-              .autoDelete = true,
-           },
+                 .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+                 {
+                     g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+                 },
+             }},
+             .autoDelete = true,
+          },
 
-           .parent{&m_srcWidget},
+          .parent{&m_srcWidget},
       }}
 
     , m_imgSize
       {{
-           .x = [this]{ return m_imgCanvas.dx(); },
-           .y = [this]{ return m_imgCanvas.dy() + m_imgCanvas.h() + 20; },
+          .x = [this]{ return m_imgCanvas.dx(); },
+          .y = [this]{ return m_imgCanvas.dy() + m_imgCanvas.h() + 20; },
 
-           .textFunc = [this]
-           {
-               return str_printf("IMG (%d, %d)", m_img.w(), m_img.h());
-           },
+          .textFunc = [this]
+          {
+              return str_printf("IMG (%d, %d)", m_img.w(), m_img.h());
+          },
 
-           .font{.size = 12},
-           .parent{&m_srcWidget},
+          .font{.size = 12},
+          .parent{&m_srcWidget},
       }}
 
     , m_roiInfo
       {{
-           .x = [this]{ return m_imgSize.dx(); },
-           .y = [this]{ return m_imgSize.dy() + m_imgSize.h() + 20; },
+          .x = [this]{ return m_imgSize.dx(); },
+          .y = [this]{ return m_imgSize.dy() + m_imgSize.h() + 20; },
 
-           .textFunc = [this]
-           {
-               const auto r = getROI();
-               return str_printf("ROI (%d, %d, %d, %d)", r.x, r.y, r.w, r.h);
-           },
+          .textFunc = [this]
+          {
+              const auto r = getROI();
+              return str_printf("ROI (%d, %d, %d, %d)", r.x, r.y, r.w, r.h);
+          },
 
-           .font{.size = 12},
-           .parent{&m_srcWidget},
+          .font{.size = 12},
+          .parent{&m_srcWidget},
+      }}
+
+    , m_dstBoard
+      {{
+          .x = [this]{ return m_srcWidget.dx() + m_srcWidget.w() + 20; },
+          .y = [this]{ return m_srcWidget.dy(); },
+
+          .getter = &m_img,
+          .vr
+          {
+              .x = [this]{ return getROI().x; },
+              .y = [this]{ return getROI().y; },
+              .w = [this]{ return getROI().w; },
+              .h = [this]{ return getROI().h; },
+          },
+
+          .resize{200, 200},
+          .parent{this},
       }}
 {
     m_img.setSize([this]{ return m_imgCanvas.w() * m_imgResizeHSlider.getValue(); },

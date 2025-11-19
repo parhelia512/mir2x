@@ -12,7 +12,6 @@ class GfxResizeBoard: public Widget
             Widget::VarInt x = 0;
             Widget::VarInt y = 0;
 
-
             Widget::VarGetter<Widget *> getter = nullptr; // not-owning
             Widget::VarROI vr {};
 

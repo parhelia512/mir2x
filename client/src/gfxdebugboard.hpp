@@ -44,6 +44,8 @@ class GfxDebugBoard: public Widget
         TextBoard               m_imgSize;
         TextBoard               m_roiInfo;
 
+        GfxResizeBoard  m_dstBoard;
+
     public:
         GfxDebugBoard(GfxDebugBoard::InitArgs);
 
