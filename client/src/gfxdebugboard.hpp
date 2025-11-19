@@ -1,5 +1,6 @@
 #pragma once
 #include "widget.hpp"
+#include "itemflex.hpp"
 #include "sliderbase.hpp"
 #include "imageboard.hpp"
 #include "marginwrapper.hpp"
@@ -39,5 +40,11 @@ class GfxDebugBoard: public Widget
         SliderBase m_cropVSlider_1;
 
     public:
+        ItemFlex m_textFlex;
+
+    public:
         GfxDebugBoard(GfxDebugBoard::InitArgs);
+
+    public:
+        Widget::ROI getROI() const; // take img's DIR_UPLEFT as (0, 0)
 };

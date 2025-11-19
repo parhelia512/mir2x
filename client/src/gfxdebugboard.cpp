@@ -1,5 +1,7 @@
 #include "colorf.hpp"
+#include "totype.hpp"
 #include "pngtexdb.hpp"
+#include "textboard.hpp"
 #include "sdldevice.hpp"
 #include "gfxdebugboard.hpp"
 
@@ -331,9 +333,53 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
            .parent{&m_imgWidget},
       }}
+
+    , m_textFlex
+      {{
+           .x = [this]{ return m_imgWidget.dx(); },
+           .y = [this]{ return m_imgWidget.dy() + m_imgWidget.h() + 20; },
+
+           .length = 20,
+           .hbox = false,
+
+           .childList
+           {
+               {new TextBoard{{ .textFunc = [this]{ return str_printf("IMG W: %d", m_img.w()); }, }}, true},
+               {new TextBoard{{ .textFunc = [this]{ return str_printf("    H: %d", m_img.h()); }, }}, true},
+           },
+
+           .parent{this},
+      }}
 {
     m_img.setSize([this]{ return m_imgFrame.w() * m_imgResizeHSlider.getValue(); },
                   [this]{ return m_imgFrame.h() * m_imgResizeVSlider.getValue(); });
 
     m_imgContainer.moveTo(m_imgFrame.dx(), m_imgFrame.dy());
+}
+
+Widget::ROI GfxDebugBoard::getROI() const
+{
+    const auto roi_frame     = m_imgFrame    .roi(&m_imgWidget);
+    const auto roi_container = m_imgContainer.roi(&m_imgWidget);
+
+    const float hr0 = m_cropHSlider_0.getValue();
+    const float hr1 = m_cropHSlider_1.getValue();
+
+    const float vr0 = m_cropVSlider_0.getValue();
+    const float vr1 = m_cropVSlider_1.getValue();
+
+    const auto x0 = static_cast<int>(roi_frame.w * hr0);
+    const auto x1 = static_cast<int>(roi_frame.w * hr1);
+
+    const auto y0 = static_cast<int>(roi_frame.h * vr0);
+    const auto y1 = static_cast<int>(roi_frame.h * vr1);
+
+    return Widget::ROI
+    {
+        .x = roi_container.x - std::max<int>(x0, x1),
+        .y = roi_container.y - std::max<int>(y0, y1),
+
+        .w = std::abs(x0 - x1),
+        .h = std::abs(y0 - y1),
+    };
 }
