@@ -278,6 +278,39 @@ template<typename T> void Widget::execUpdateFunc(const Widget::VarUpdateFunc<T> 
     varUpdateFunc);
 }
 
+template<typename T> bool Widget::hasCheckFunc(const Widget::VarCheckFunc<T> &varCheckFunc)
+{
+    return std::visit(VarDispatcher
+    {
+        [](const std::function<void(                        const T &)> &varg) -> bool { return !!varg; },
+        [](const std::function<void(const Widget *,         const T &)> &varg) -> bool { return !!varg; },
+        [](const std::function<void(const Widget *, void *, const T &)> &varg) -> bool { return !!varg; },
+
+        [](std::nullptr_t){ return false; },
+    },
+
+    varCheckFunc);
+}
+
+template<typename T> bool Widget::execCheckFunc(const Widget::VarCheckFunc<T> &varCheckFunc, const Widget *widget, const T &arg)
+{
+    return Widget::execCheckFunc(varCheckFunc, widget, nullptr, arg);
+}
+
+template<typename T> bool Widget::execCheckFunc(const Widget::VarCheckFunc<T> &varCheckFunc, const Widget *widget, void *argPtr, const T &arg)
+{
+    return std::visit(VarDispatcher
+    {
+        [                arg](const std::function<bool(                        const T &)> &varg) { return varg ? varg(                arg) : true; },
+        [widget,         arg](const std::function<bool(const Widget *,         const T &)> &varg) { return varg ? varg(widget,         arg) : true; },
+        [widget, argPtr, arg](const std::function<bool(const Widget *, void *, const T &)> &varg) { return varg ? varg(widget, argPtr, arg) : true; },
+
+        [](std::nullptr_t){ return true; },
+    },
+
+    varCheckFunc);
+}
+
 auto Widget::focusedChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>
 {
     if(self.firstChild() && self.firstChild()->focus()){

@@ -14,9 +14,7 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
 
     , m_value(fflcheck(args.value, args.value >= 0.0f && args.value <= 1.0f))
 
-    , m_min(std::move(args.min))
-    , m_max(std::move(args.max))
-
+    , m_checkFunc(std::move(args.checkFunc))
     , m_bgOff(args.bgWidget.widget
             ? std::make_optional(std::make_pair(std::move(args.bgWidget.ox), std::move(args.bgWidget.oy)))
             : std::nullopt)
@@ -109,7 +107,7 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                 }
                 else if(const auto mbar = m.create(m_bar.roi(this)); mbar.in(event.button.x, event.button.y)){
                     m_sliderState = BEVENT_ON;
-                    if(const auto [canChange, changed, newValue] = dryRunChangeValue([&event, startDstX = mbar.x - mbar.ro->x, startDstY = mbar.y - mbar.ro->y, this]() -> float
+                    if(const auto newValue = [&event, startDstX = mbar.x - mbar.ro->x, startDstY = mbar.y - mbar.ro->y, this]() -> float
                     {
                         if(vbar()){
                             return ((event.button.y - startDstY) * 1.0f) / std::max<int>(1, m_bar.h());
@@ -117,10 +115,9 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                         else{
                             return ((event.button.x - startDstX) * 1.0f) / std::max<int>(1, m_bar.w());
                         }
-                    }());
+                    }();
 
-                    canChange)
-                    {
+                    Widget::execCheckFunc<float>(m_checkFunc, this, newValue)){
                         setValue(newValue, true);
                     }
                     return consumeFocus(true);
@@ -146,7 +143,7 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                 if(event.motion.state & SDL_BUTTON_LMASK){
                     if(inSlider(event.motion.x, event.motion.y, m) || focus()){
                         m_sliderState = BEVENT_DOWN;
-                        if(const auto [canChange, changed, newValue] = dryRunChangeValue(getValue() + [&event, this]() -> float
+                        if(const auto newValue = getValue() + [&event, this]() -> float
                         {
                             if(vbar()){
                                 return pixel2Value(event.motion.yrel);
@@ -154,10 +151,9 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                             else{
                                 return pixel2Value(event.motion.xrel);
                             }
-                        }());
+                        }();
 
-                        canChange)
-                        {
+                        Widget::execCheckFunc<float>(m_checkFunc, this, newValue)){
                             setValue(newValue, true);
                         }
                         return consumeFocus(true);
@@ -275,39 +271,4 @@ std::optional<int> SliderBase::bgYFromBar(int barY) const
         return barY - Widget::evalInt(m_bgOff->second, this);
     }
     return std::nullopt;
-}
-
-std::tuple<bool, bool, float> SliderBase::dryRunChangeValue(float newValue) const
-{
-    if(const auto [min, max] = getRange(); min > max){
-        return {false, false, 0.0f};
-    }
-    else if(const float clampedNewValue = std::clamp<float>(newValue, 0.0f, 1.0f); clampedNewValue >= min && clampedNewValue <= max){
-        return {true, clampedNewValue != getValue(), clampedNewValue};
-    }
-    else if(clampedNewValue <= min){
-        if(getValue() >= min){
-            return {true, getValue() != min, min};
-        }
-        else if(clampedNewValue >= getValue()){
-            return {true, clampedNewValue != getValue(), clampedNewValue};
-        }
-        else{
-            return {false, false, 0.0f};
-        }
-    }
-    else if(clampedNewValue >= max){
-        if(getValue() <= max){
-            return {true, getValue() != max, max};
-        }
-        else if(clampedNewValue <= getValue()){
-            return {true, clampedNewValue != getValue(), clampedNewValue};
-        }
-        else{
-            return {false, false, 0.0f};
-        }
-    }
-    else{
-        return {false, false, 0.0f};
-    }
 }

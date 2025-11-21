@@ -232,6 +232,11 @@ class Widget: public WidgetTreeNode
                                          std::function<void(const Widget *,         const T &)>,
                                          std::function<void(const Widget *, void *, const T &)>>;
 
+        template<typename T> using VarCheckFunc = std::variant<std::nullptr_t,
+                                         std::function<bool(                        const T &)>,
+                                         std::function<bool(const Widget *,         const T &)>,
+                                         std::function<bool(const Widget *, void *, const T &)>>;
+
     public:
         template<typename T> struct Margin final
         {
@@ -365,6 +370,11 @@ class Widget: public WidgetTreeNode
         template<typename T> static bool  hasUpdateFunc(const Widget::VarUpdateFunc<T> &);
         template<typename T> static void execUpdateFunc(const Widget::VarUpdateFunc<T> &, const Widget *,         const T &);
         template<typename T> static void execUpdateFunc(const Widget::VarUpdateFunc<T> &, const Widget *, void *, const T &);
+
+    public:
+        template<typename T> static bool  hasCheckFunc(const Widget::VarCheckFunc<T> &);
+        template<typename T> static bool execCheckFunc(const Widget::VarCheckFunc<T> &, const Widget *,         const T &);
+        template<typename T> static bool execCheckFunc(const Widget::VarCheckFunc<T> &, const Widget *, void *, const T &);
 
     private:
         class RecursionDetector final
