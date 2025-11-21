@@ -358,14 +358,14 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               return str_printf("IMG (%d, %d)", m_img.w(), m_img.h());
           },
 
-          .font{.size = 12},
+          .font{.id = 1, .size = 12},
           .parent{&m_srcWidget},
       }}
 
     , m_roiInfo
       {{
           .x = [this]{ return m_imgSize.dx(); },
-          .y = [this]{ return m_imgSize.dy() + m_imgSize.h() + 20; },
+          .y = [this]{ return m_imgSize.dy() + m_imgSize.h() + 5; },
 
           .textFunc = [this]
           {
@@ -373,7 +373,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               return str_printf("ROI (%d, %d, %d, %d)", r.x, r.y, r.w, r.h);
           },
 
-          .font{.size = 12},
+          .font{.id = 1, .size = 12},
           .parent{&m_srcWidget},
       }}
 
