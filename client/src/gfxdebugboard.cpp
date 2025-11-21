@@ -46,8 +46,10 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
     , m_srcWidget
       {{
-          .w = std::nullopt,
-          .h = std::nullopt,
+          .x = 0,
+          .y = 0,
+          .w = 200,
+          .h = h(),
 
           .parent{this},
       }}
@@ -56,7 +58,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
       {{
           .x = 20,
           .y = 20,
-          .w = 120,
+          .w = [this]{ return m_srcWidget.w() - 40; },
           .h = 120,
 
           .parent{&m_srcWidget},
@@ -380,9 +382,9 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
     , m_dstWidget
       {{
-          .x = [this]{ return m_srcWidget.dx() + m_srcWidget.w(); },
-          .w = [this]{ return w() - m_dstWidget.dx(); },
-          .h = [this]{ return h(); },
+          .x = [this]{ return       m_srcWidget.dx() + m_srcWidget.w(); },
+          .w = [this]{ return w() - m_srcWidget.dx() - m_srcWidget.w(); },
+          .h = h(),
 
           .parent{this},
       }}
