@@ -107,7 +107,7 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                 }
                 else if(const auto mbar = m.create(m_bar.roi(this)); mbar.in(event.button.x, event.button.y)){
                     m_sliderState = BEVENT_ON;
-                    if(const auto newValue = [&event, startDstX = mbar.x - mbar.ro->x, startDstY = mbar.y - mbar.ro->y, this]() -> float
+                    if(const auto newValue = std::clamp<float>([&event, startDstX = mbar.x - mbar.ro->x, startDstY = mbar.y - mbar.ro->y, this]() -> float
                     {
                         if(vbar()){
                             return ((event.button.y - startDstY) * 1.0f) / std::max<int>(1, m_bar.h());
@@ -115,7 +115,7 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                         else{
                             return ((event.button.x - startDstX) * 1.0f) / std::max<int>(1, m_bar.w());
                         }
-                    }();
+                    }(), 0.0f, 1.0f);
 
                     Widget::execCheckFunc<float>(m_checkFunc, this, newValue)){
                         setValue(newValue, true);
@@ -143,7 +143,7 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                 if(event.motion.state & SDL_BUTTON_LMASK){
                     if(inSlider(event.motion.x, event.motion.y, m) || focus()){
                         m_sliderState = BEVENT_DOWN;
-                        if(const auto newValue = getValue() + [&event, this]() -> float
+                        if(const auto newValue = std::clamp<float>(getValue() + [&event, this]() -> float
                         {
                             if(vbar()){
                                 return pixel2Value(event.motion.yrel);
@@ -151,7 +151,7 @@ bool SliderBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
                             else{
                                 return pixel2Value(event.motion.xrel);
                             }
-                        }();
+                        }(), 0.0f, 1.0f);
 
                         Widget::execCheckFunc<float>(m_checkFunc, this, newValue)){
                             setValue(newValue, true);
