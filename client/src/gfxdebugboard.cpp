@@ -48,7 +48,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
       {{
           .x = 0,
           .y = 0,
-          .w = 200,
+          .w = 150,
           .h = h(),
 
           .parent{this},
