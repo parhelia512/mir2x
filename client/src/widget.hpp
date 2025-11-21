@@ -46,6 +46,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         using alias_VarDir         = VarTypeHelper<       dir8_t>;
         using alias_VarInt         = VarTypeHelper<          int>;
         using alias_VarU32         = VarTypeHelper<     uint32_t>;
+        using alias_VarDecimal     = VarTypeHelper<        float>;
         using alias_VarSize        = VarTypeHelper<          int>;
         using alias_VarBool        = VarTypeHelper<         bool>;
         using alias_VarBlendMode   = VarTypeHelper<SDL_BlendMode>;
@@ -58,6 +59,7 @@ class WidgetTreeNode // tree concept, used by class Widget only
         struct VarDir        : public alias_VarDir        { using alias_VarDir        ::alias_VarDir        ; };
         struct VarInt        : public alias_VarInt        { using alias_VarInt        ::alias_VarInt        ; };
         struct VarU32        : public alias_VarU32        { using alias_VarU32        ::alias_VarU32        ; };
+        struct VarDecimal    : public alias_VarDecimal    { using alias_VarDecimal    ::alias_VarDecimal    ; };
         struct VarSize       : public alias_VarSize       { using alias_VarSize       ::alias_VarSize       ; };
         struct VarBool       : public alias_VarBool       { using alias_VarBool       ::alias_VarBool       ; };
         struct VarBlendMode  : public alias_VarBlendMode  { using alias_VarBlendMode  ::alias_VarBlendMode  ; };
@@ -198,6 +200,7 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarInt;
         using WidgetTreeNode::VarIntOpt;
         using WidgetTreeNode::VarU32;
+        using WidgetTreeNode::VarDecimal;
         using WidgetTreeNode::VarSize;
         using WidgetTreeNode::VarSizeOpt;
         using WidgetTreeNode::VarBool;
@@ -335,6 +338,7 @@ class Widget: public WidgetTreeNode
         static dir8_t        evalDir        (const Widget::VarDir         &, const Widget *, const void * = nullptr);
         static int           evalInt        (const Widget::VarInt         &, const Widget *, const void * = nullptr);
         static uint32_t      evalU32        (const Widget::VarU32         &, const Widget *, const void * = nullptr);
+        static float         evalDecimal    (const Widget::VarDecimal     &, const Widget *, const void * = nullptr);
         static int           evalSize       (const Widget::VarSize        &, const Widget *, const void * = nullptr);
         static bool          evalBool       (const Widget::VarBool        &, const Widget *, const void * = nullptr);
         static SDL_BlendMode evalBlendMode  (const Widget::VarBlendMode   &, const Widget *, const void * = nullptr);

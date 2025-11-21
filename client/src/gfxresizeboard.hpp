@@ -99,15 +99,43 @@ class GfxResizeBoard: public Widget
         }
 
     public:
-            Widget *gfxWidget() const
-            {
-                return Widget::evalGetter(m_getter, this);
-            }
+        Widget *gfxWidget() const
+        {
+            return Widget::evalGetter(m_getter, this);
+        }
 
-            Widget::ROI gfxCropROI() const
+        void setGfxWidget(Widget::VarGetter<Widget *> getter)
+        {
+            m_getter = std::move(getter);
+        }
+
+    public:
+        Widget::ROI gfxCropROI() const
+        {
+            return m_vr.roi(this, nullptr);
+        }
+
+        void setGfxCropROI(Widget::VarROI vr)
+        {
+            m_vr = std::move(vr);
+        }
+
+    public:
+        Widget::ROI gfxResizeROI() const
+        {
+            return Widget::ROI
             {
-                return m_vr.roi(this, nullptr);
-            }
+                .x = margin(2),
+                .y = margin(0),
+                .w = Widget::evalSize(m_resize.w, this),
+                .h = Widget::evalSize(m_resize.h, this),
+            };
+        }
+
+        void setGfxResizeROI(Widget::VarSize2D resize)
+        {
+            m_resize = std::move(resize);
+        }
 
     public:
         int margin(int index) const

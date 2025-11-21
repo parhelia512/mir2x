@@ -378,22 +378,184 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .parent{&m_srcWidget},
       }}
 
-    , m_dstBoard
+    , m_dstWidget
       {{
-          .x = [this]{ return m_srcWidget.dx() + m_srcWidget.w() + 20; },
-          .y = [this]{ return m_srcWidget.dy(); },
+          .x = [this]{ return m_srcWidget.dx() + m_srcWidget.w(); },
+          .w = [this]{ return w() - m_dstWidget.dx(); },
+          .h = [this]{ return h(); },
 
+          .parent{this},
+      }}
+
+    , m_dstCanvas
+      {{
+          .x = 20,
+          .y = 20,
+          .w = [this]{ return m_dstWidget.w() - 40; },
+          .h = [this]{ return m_dstWidget.h() - 40; },
+
+          .parent{&m_dstWidget},
+      }}
+
+    , m_resizeBoard
+      {{
           .getter = &m_img,
-          .vr
+          .bgDrawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
           {
-              .x = [this]{ return getROI().x; },
-              .y = [this]{ return getROI().y; },
-              .w = [this]{ return getROI().w; },
-              .h = [this]{ return getROI().h; },
+              g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(0XF0), dstDrawX, dstDrawY, self->w(), self->h());
+              g_sdlDevice->drawRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+          },
+          .parent{&m_dstCanvas},
+      }}
+
+    , m_marginHSlider_0
+      {{
+          .bar
+          {
+              .x = [this]{ return m_dstCanvas.dx()                      ; },
+              .y = [this]{ return m_dstCanvas.dy() + m_dstCanvas.h() - 1; },
+              .w = [this]{ return                    m_dstCanvas.w()    ; },
+              .h = 1,
+              .v = false,
           },
 
-          .resize{200, 200},
-          .parent{this},
+          .slider
+          {
+              .w = 10,
+              .h = 10,
+          },
+
+          .value = 0.333f,
+
+          .sliderWidget
+           {
+              .dir = DIR_UPLEFT,
+              .widget = new ShapeCropBoard
+              {{
+                  .w = 10,
+                  .h = 10,
+
+                  .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+                  {
+                      g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+                  },
+              }},
+              .autoDelete = true,
+           },
+
+           .parent{&m_dstWidget},
+      }}
+
+    , m_marginHSlider_1
+      {{
+          .bar
+          {
+              .x = [this]{ return m_dstCanvas.dx()                      ; },
+              .y = [this]{ return m_dstCanvas.dy() + m_dstCanvas.h() - 1; },
+              .w = [this]{ return                    m_dstCanvas.w()    ; },
+              .h = 1,
+              .v = false,
+          },
+
+          .slider
+          {
+              .w = 10,
+              .h = 10,
+          },
+
+          .value = 0.666f,
+
+          .sliderWidget
+           {
+              .dir = DIR_UPLEFT,
+              .widget = new ShapeCropBoard
+              {{
+                  .w = 10,
+                  .h = 10,
+
+                  .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+                  {
+                      g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+                  },
+              }},
+              .autoDelete = true,
+           },
+
+           .parent{&m_dstWidget},
+      }}
+
+    , m_marginVSlider_0
+      {{
+          .bar
+          {
+              .x = [this]{ return m_dstCanvas.dx() + m_dstCanvas.w() - 1; },
+              .y = [this]{ return m_dstCanvas.dy()                      ; },
+              .w = 1,
+              .h = [this]{ return                    m_dstCanvas.h()    ; },
+          },
+
+          .slider
+          {
+              .w = 10,
+              .h = 10,
+          },
+
+          .value = 0.333f,
+
+          .sliderWidget
+          {
+             .dir = DIR_UPLEFT,
+             .widget = new ShapeCropBoard
+             {{
+                 .w = 10,
+                 .h = 10,
+
+                 .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+                 {
+                     g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+                 },
+             }},
+             .autoDelete = true,
+          },
+
+          .parent{&m_dstWidget},
+      }}
+
+    , m_marginVSlider_1
+      {{
+          .bar
+          {
+              .x = [this]{ return m_dstCanvas.dx() + m_dstCanvas.w() - 1; },
+              .y = [this]{ return m_dstCanvas.dy()                      ; },
+              .w = 1,
+              .h = [this]{ return                    m_dstCanvas. h()   ; },
+          },
+
+          .slider
+          {
+              .w = 10,
+              .h = 10,
+          },
+
+          .value = 0.666f,
+
+          .sliderWidget
+          {
+             .dir = DIR_UPLEFT,
+             .widget = new ShapeCropBoard
+             {{
+                 .w = 10,
+                 .h = 10,
+
+                 .drawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
+                 {
+                     g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
+                 },
+             }},
+             .autoDelete = true,
+          },
+
+          .parent{&m_dstWidget},
       }}
 {
     m_img.setSize([this]{ return m_imgCanvas.w() * m_imgResizeHSlider.getValue(); },

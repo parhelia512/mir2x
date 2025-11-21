@@ -66,6 +66,8 @@ class SliderBase: public Widget
             SliderArgs slider {};
 
             float value = 0.0f;
+            Widget::VarDecimal min = 0.0f;
+            Widget::VarDecimal max = 1.0f;
 
             BarBgWidget                          bgWidget {};
             MarginContainer::ContainedWidget    barWidget {};
@@ -77,7 +79,11 @@ class SliderBase: public Widget
 
     private:
         float m_value;
-        int   m_sliderState = BEVENT_OFF;
+        Widget::VarDecimal m_min;
+        Widget::VarDecimal m_max;
+
+    private:
+        int m_sliderState = BEVENT_OFF;
 
     private:
         const std::optional<std::pair<Widget::VarInt, Widget::VarInt>> m_bgOff;
@@ -120,8 +126,24 @@ class SliderBase: public Widget
         }
 
     public:
-        void setValue(float, bool);
+        void setValue(float, bool); // force set
         void addValue(float, bool);
+
+    public:
+        std::pair<float, float> getRange() const
+        {
+            return // still can return min > max
+            {
+                std::clamp<float>(Widget::evalDecimal(m_min, this), 0.0f, 1.0f),
+                std::clamp<float>(Widget::evalDecimal(m_max, this), 0.0f, 1.0f),
+            };
+        }
+
+        void setRange(Widget::VarDecimal min, Widget::VarDecimal max)
+        {
+            m_min = std::move(min);
+            m_max = std::move(max);
+        }
 
     protected:
         float pixel2Value(int) const;
@@ -144,4 +166,7 @@ class SliderBase: public Widget
     private:
         int widgetXFromBar(int barX) const { return std::min<int>({barX, sliderXAtValueFromBar(0.0f, barX), bgXFromBar(barX).value_or(INT_MAX)}); }
         int widgetYFromBar(int barY) const { return std::min<int>({barY, sliderYAtValueFromBar(0.0f, barY), bgYFromBar(barY).value_or(INT_MAX)}); }
+
+    private:
+        std::tuple<bool, bool, float> dryRunChangeValue(float) const; // return {canChange, changed, newValue}
 };

@@ -251,6 +251,34 @@ uint32_t Widget::evalU32(const Widget::VarU32 &varU32, const Widget *widget, con
     varU32);
 }
 
+float Widget::evalDecimal(const Widget::VarDecimal &varDecimal, const Widget *widget, const void *arg)
+{
+    return std::visit(VarDispatcher
+    {
+        [](float varg)
+        {
+            return varg;
+        },
+
+        [](const std::function<float()> &varg)
+        {
+            return varg ? varg() : 0.0f;
+        },
+
+        [widget](const std::function<float(const Widget *)> &varg)
+        {
+            return varg ? varg(widget) : 0.0f;
+        },
+
+        [widget, arg](const std::function<float(const Widget *, const void *)> &varg)
+        {
+            return varg ? varg(widget, arg) : 0.0f;
+        },
+    },
+
+    varDecimal);
+}
+
 int Widget::evalSize(const Widget::VarSize &varSize, const Widget *widget, const void *arg)
 {
     return std::visit(VarDispatcher

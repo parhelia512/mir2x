@@ -28,7 +28,6 @@ class GfxDebugBoard: public Widget
     private:
         Widget          m_srcWidget;
         Widget                  m_imgCanvas;
-
         MarginWrapper                   m_imgContainer;
         ShapeCropBoard                  m_imgFrame;
 
@@ -37,14 +36,21 @@ class GfxDebugBoard: public Widget
 
         SliderBase              m_cropHSlider_0;
         SliderBase              m_cropHSlider_1;
-
         SliderBase              m_cropVSlider_0;
         SliderBase              m_cropVSlider_1;
 
         TextBoard               m_imgSize;
         TextBoard               m_roiInfo;
 
-        GfxResizeBoard  m_dstBoard;
+    private:
+        Widget          m_dstWidget;
+        Widget                  m_dstCanvas;
+        GfxResizeBoard                  m_resizeBoard;
+
+        SliderBase              m_marginHSlider_0;
+        SliderBase              m_marginHSlider_1;
+        SliderBase              m_marginVSlider_0;
+        SliderBase              m_marginVSlider_1;
 
     public:
         GfxDebugBoard(GfxDebugBoard::InitArgs);

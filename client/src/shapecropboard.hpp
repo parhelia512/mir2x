@@ -16,7 +16,9 @@ class ShapeCropBoard: public Widget
             Widget::VarSize h = 0;
 
             Widget::VarDrawFunc drawFunc = nullptr;
-            Widget::WADPair parent {};
+
+            Widget::InstAttrs attrs {};
+            Widget::WADPair  parent {};
         };
 
     private:
