@@ -412,8 +412,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
           .resize
           {
-              .w = 100,
-              .h = 100,
+              .w = [this]{ return m_dstCanvas.w(); },
+              .h = [this]{ return m_dstCanvas.h(); },
           },
 
           .bgDrawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
