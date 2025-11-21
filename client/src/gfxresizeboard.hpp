@@ -149,7 +149,7 @@ class GfxResizeBoard: public Widget
             };
         }
 
-        void setGfxResizeROI(Widget::VarSize2D resize)
+        void setGfxResize(Widget::VarSize2D resize)
         {
             m_resize = std::move(resize);
         }

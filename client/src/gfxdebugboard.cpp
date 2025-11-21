@@ -410,12 +410,6 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               .h = [this]{ return getROI().h; },
           },
 
-          .resize
-          {
-              .w = [this]{ return m_dstCanvas.w(); },
-              .h = [this]{ return m_dstCanvas.h(); },
-          },
-
           .bgDrawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
           {
               g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(0XF0), dstDrawX, dstDrawY, self->w(), self->h());
@@ -605,6 +599,12 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
         .down  = [this]{ return (1.0f - std::max<float>(m_marginVSlider_0.getValue(), m_marginVSlider_1.getValue())) * m_dstCanvas.h(); },
         .left  = [this]{ return         std::min<float>(m_marginHSlider_0.getValue(), m_marginHSlider_1.getValue())  * m_dstCanvas.w(); },
         .right = [this]{ return (1.0f - std::max<float>(m_marginHSlider_0.getValue(), m_marginHSlider_1.getValue())) * m_dstCanvas.w(); },
+    });
+
+    m_resizeBoard.setGfxResize(Widget::VarSize2D
+    {
+        .w = [this]{ return m_dstCanvas.w() - m_resizeBoard.margin(2) - m_resizeBoard.margin(3); },
+        .h = [this]{ return m_dstCanvas.h() - m_resizeBoard.margin(0) - m_resizeBoard.margin(1); },
     });
 }
 
