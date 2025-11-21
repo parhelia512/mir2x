@@ -422,6 +422,26 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               g_sdlDevice->drawRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
           },
 
+          .fgDrawFunc = [this](const Widget *self, int dstDrawX, int dstDrawY)
+          {
+              const int w = self->w();
+              const int h = self->h();
+
+              const float hr0 = m_marginHSlider_0.getValue();
+              const float hr1 = m_marginHSlider_1.getValue();
+
+              const float vr0 = m_marginVSlider_0.getValue();
+              const float vr1 = m_marginVSlider_1.getValue();
+
+              g_sdlDevice->drawRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, w, h);
+
+              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX + hr0 * w, dstDrawY, dstDrawX + hr0 * w, dstDrawY + h - 1);
+              g_sdlDevice->drawLine(colorf::RED_A255, dstDrawX + hr1 * w, dstDrawY, dstDrawX + hr1 * w, dstDrawY + h - 1);
+
+              g_sdlDevice->drawLine(colorf::BLUE_A255, dstDrawX, dstDrawY + vr0 * h, dstDrawX + w - 1, dstDrawY + vr0 * h);
+              g_sdlDevice->drawLine(colorf::BLUE_A255, dstDrawX, dstDrawY + vr1 * h, dstDrawX + w - 1, dstDrawY + vr1 * h);
+          },
+
           .parent{&m_dstCanvas},
       }}
 
