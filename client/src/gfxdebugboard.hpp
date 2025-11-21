@@ -55,6 +55,10 @@ class GfxDebugBoard: public Widget
     public:
         GfxDebugBoard(GfxDebugBoard::InitArgs);
 
+    private:
+        bool checkResizeW(float, float) const;
+        bool checkResizeH(float, float) const;
+
     public:
         Widget::ROI getROI() const; // take img's DIR_UPLEFT as (0, 0)
 };

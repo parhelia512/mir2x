@@ -454,6 +454,10 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           },
 
           .value = 0.333f,
+          .checkFunc = [this](float newValue) -> bool
+          {
+              return checkResizeW(newValue, m_marginHSlider_1.getValue());
+          },
 
           .sliderWidget
            {
@@ -492,6 +496,10 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           },
 
           .value = 0.666f,
+          .checkFunc = [this](float newValue) -> bool
+          {
+              return checkResizeW(newValue, m_marginHSlider_0.getValue());
+          },
 
           .sliderWidget
            {
@@ -529,6 +537,10 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           },
 
           .value = 0.333f,
+          .checkFunc = [this](float newValue) -> bool
+          {
+              return checkResizeH(newValue, m_marginVSlider_1.getValue());
+          },
 
           .sliderWidget
           {
@@ -566,6 +578,10 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           },
 
           .value = 0.666f,
+          .checkFunc = [this](float newValue) -> bool
+          {
+              return checkResizeH(newValue, m_marginVSlider_0.getValue());
+          },
 
           .sliderWidget
           {
@@ -630,4 +646,24 @@ Widget::ROI GfxDebugBoard::getROI() const
         .w = std::abs(x0 - x1),
         .h = std::abs(y0 - y1),
     };
+}
+
+bool GfxDebugBoard::checkResizeW(float value0, float value1) const
+{
+    const auto roi = getROI();
+
+    const float newDistance = m_dstCanvas.w() * std::abs(value0 - value1);
+    const float minDistance = std::max<int>(roi.x, 0) + std::max<int>(m_img.w() - roi.x - roi.w, 0);
+
+    return newDistance >= minDistance;
+}
+
+bool GfxDebugBoard::checkResizeH(float value0, float value1) const
+{
+    const auto roi = getROI();
+
+    const float newDistance = m_dstCanvas.h() * std::abs(value0 - value1);
+    const float minDistance = std::max<int>(roi.y, 0) + std::max<int>(m_img.h() - roi.y - roi.h, 0);
+
+    return newDistance >= minDistance;
 }
