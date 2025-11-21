@@ -402,11 +402,26 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
     , m_resizeBoard
       {{
           .getter = &m_img,
+          .vr
+          {
+              .x = [this]{ return getROI().x; },
+              .y = [this]{ return getROI().y; },
+              .w = [this]{ return getROI().w; },
+              .h = [this]{ return getROI().h; },
+          },
+
+          .resize
+          {
+              .w = 100,
+              .h = 100,
+          },
+
           .bgDrawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
           {
               g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(0XF0), dstDrawX, dstDrawY, self->w(), self->h());
               g_sdlDevice->drawRectangle(colorf::WHITE + colorf::A_SHF(0X80), dstDrawX, dstDrawY, self->w(), self->h());
           },
+
           .parent{&m_dstCanvas},
       }}
 
