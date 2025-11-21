@@ -121,6 +121,23 @@ class GfxResizeBoard: public Widget
         }
 
     public:
+        Widget::IntMargin gfxMargin() const
+        {
+            return Widget::IntMargin
+            {
+                .up    = margin(0),
+                .down  = margin(1),
+                .left  = margin(2),
+                .right = margin(3),
+            };
+        }
+
+        void setGfxMargin(Widget::VarMargin margin)
+        {
+            m_margin = std::move(margin);
+        }
+
+    public:
         Widget::ROI gfxResizeROI() const
         {
             return Widget::ROI
