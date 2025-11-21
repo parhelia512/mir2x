@@ -46,11 +46,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
     , m_srcWidget
       {{
-          .x = 0,
-          .y = 0,
           .w = 150,
           .h = h(),
-
           .parent{this},
       }}
 
@@ -603,8 +600,8 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
 
     m_resizeBoard.setGfxResize(Widget::VarSize2D
     {
-        .w = [this]{ return m_dstCanvas.w() - m_resizeBoard.margin(2) - m_resizeBoard.margin(3); },
-        .h = [this]{ return m_dstCanvas.h() - m_resizeBoard.margin(0) - m_resizeBoard.margin(1); },
+        .w = [this]{ return m_dstCanvas.w() - m_resizeBoard.margin(2) - m_resizeBoard.margin(3) - std::max<int>(getROI().x, 0) - std::max<int>(m_img.w() - getROI().x - getROI().w, 0); },
+        .h = [this]{ return m_dstCanvas.h() - m_resizeBoard.margin(0) - m_resizeBoard.margin(1) - std::max<int>(getROI().y, 0) - std::max<int>(m_img.h() - getROI().y - getROI().h, 0); },
     });
 }
 
