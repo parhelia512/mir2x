@@ -358,7 +358,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               return str_printf("TEX (%d, %d)", SDLDeviceHelper::getTextureWidth(m_img.getTexture(), 0), SDLDeviceHelper::getTextureHeight(m_img.getTexture(), 0));
           },
 
-          .font{.id = 1, .size = 12},
+          .font{.id = 1, .size = 10},
           .parent{&m_srcWidget},
       }}
 
@@ -372,14 +372,14 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               return str_printf("IMG (%d, %d)", m_img.w(), m_img.h());
           },
 
-          .font{.id = 1, .size = 12},
+          .font{.id = 1, .size = 10},
           .parent{&m_srcWidget},
       }}
 
     , m_roiInfo
       {{
           .x = [this]{ return m_imgSize.dx(); },
-          .y = [this]{ return m_imgSize.dy() + m_imgSize.h() + 5; },
+          .y = [this]{ return m_imgSize.dy() + m_imgSize.h() + 20; },
 
           .textFunc = [this]
           {
@@ -387,7 +387,18 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
               return str_printf("ROI (%d, %d, %d, %d)", r.x, r.y, r.w, r.h);
           },
 
-          .font{.id = 1, .size = 12},
+          .font{.id = 1, .size = 10},
+          .parent{&m_srcWidget},
+      }}
+
+    , m_marginInfo
+      {{
+          .x = [this]{ return m_roiInfo.dx(); },
+          .y = [this]{ return m_roiInfo.dy() + m_roiInfo.h() + 20; },
+
+          // set textFunc later
+
+          .font{.id = 1, .size = 10},
           .parent{&m_srcWidget},
       }}
 
@@ -632,6 +643,11 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
     {
         .w = [this]{ return m_dstCanvas.w() - m_resizeBoard.margin(2) - m_resizeBoard.margin(3) - std::max<int>(getROI().x, 0) - std::max<int>(m_img.w() - getROI().x - getROI().w, 0); },
         .h = [this]{ return m_dstCanvas.h() - m_resizeBoard.margin(0) - m_resizeBoard.margin(1) - std::max<int>(getROI().y, 0) - std::max<int>(m_img.h() - getROI().y - getROI().h, 0); },
+    });
+
+    m_marginInfo.setTextFunc([this]
+    {
+        return str_printf("MARGIN (%d, %d, %d, %d)", m_resizeBoard.margin(0), m_resizeBoard.margin(1), m_resizeBoard.margin(2), m_resizeBoard.margin(3));
     });
 }
 
