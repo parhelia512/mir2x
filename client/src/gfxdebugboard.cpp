@@ -348,10 +348,24 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .parent{&m_srcWidget},
       }}
 
-    , m_imgSize
+    , m_texSize
       {{
           .x = [this]{ return m_imgCanvas.dx(); },
           .y = [this]{ return m_imgCanvas.dy() + m_imgCanvas.h() + 20; },
+
+          .textFunc = [this]
+          {
+              return str_printf("TEX (%d, %d)", SDLDeviceHelper::getTextureWidth(m_img.getTexture(), 0), SDLDeviceHelper::getTextureHeight(m_img.getTexture(), 0));
+          },
+
+          .font{.id = 1, .size = 12},
+          .parent{&m_srcWidget},
+      }}
+
+    , m_imgSize
+      {{
+          .x = [this]{ return m_texSize.dx(); },
+          .y = [this]{ return m_texSize.dy() + m_texSize.h() + 20; },
 
           .textFunc = [this]
           {

@@ -39,6 +39,7 @@ class GfxDebugBoard: public Widget
         SliderBase              m_cropVSlider_0;
         SliderBase              m_cropVSlider_1;
 
+        TextBoard               m_texSize;
         TextBoard               m_imgSize;
         TextBoard               m_roiInfo;
 
