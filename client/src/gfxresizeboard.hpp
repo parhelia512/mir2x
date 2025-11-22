@@ -168,11 +168,6 @@ class GfxResizeBoard: public Widget
                 return;
             }
 
-            const auto r = self.gfxCropROI();
-            if(!r){
-                return;
-            }
-
             const auto fnOp = [gfxWidget, m = std::cref(m), &func](const Widget::ROI &cr, int dx, int dy, std::optional<std::pair<int, int>> dupSize = std::nullopt)
             {
                 if(!cr){
@@ -194,8 +189,11 @@ class GfxResizeBoard: public Widget
                 }
             };
 
+            const auto r = self.gfxCropROI();
+
             const int mx = self.margin(2);
             const int my = self.margin(0);
+
             const int ox = std::max<int>(r.x, 0);
             const int oy = std::max<int>(r.y, 0);
 
