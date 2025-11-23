@@ -30,15 +30,6 @@ GUIManager::GUIManager(ProcessRun *argProc)
           argProc,
       }
 
-    , m_gfxDebugBoard
-      {{
-          .dir = DIR_NONE,
-          .x = []{ return g_sdlDevice->getRendererWidth () / 2; },
-          .y = []{ return g_sdlDevice->getRendererHeight() / 2; },
-
-          .parent{this},
-      }}
-
     , m_friendChatBoard
       {
           g_sdlDevice->getRendererWidth()  / 2 - 250,
