@@ -8,7 +8,7 @@
 #include "notifyboard.hpp"
 #include "passwordbox.hpp"
 #include "tritexbutton.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 #include "inputstringboard.hpp"
 
 class ProcessSelectChar: public Process
@@ -31,7 +31,7 @@ class ProcessSelectChar: public Process
         TritexButton m_exit;
 
     private:
-        ShapeCropBoard m_notifyBoardBg;
+        GfxShapeBoard m_notifyBoardBg;
         NotifyBoard    m_notifyBoard;
 
     private:

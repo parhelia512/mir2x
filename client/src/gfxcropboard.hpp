@@ -1,6 +1,6 @@
 #pragma once
 #include "widget.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class GfxCropBoard: public Widget
 {
@@ -31,8 +31,8 @@ class GfxCropBoard: public Widget
         Widget::VarMargin m_margin;
 
     private:
-        ShapeCropBoard *m_bgBoard;
-        ShapeCropBoard *m_fgBoard;
+        GfxShapeBoard *m_bgBoard;
+        GfxShapeBoard *m_fgBoard;
 
     public:
         GfxCropBoard(GfxCropBoard::InitArgs args)
@@ -50,7 +50,7 @@ class GfxCropBoard: public Widget
             , m_vr    (std::move(args.vr    ))
             , m_margin(std::move(args.margin))
 
-            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new ShapeCropBoard
+            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new GfxShapeBoard
               {{
                   .w = [this]{ return w(); },
                   .h = [this]{ return h(); },
@@ -59,7 +59,7 @@ class GfxCropBoard: public Widget
 
               }} : nullptr)
 
-            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new ShapeCropBoard
+            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new GfxShapeBoard
               {{
                   .w = [this]{ return w(); },
                   .h = [this]{ return h(); },

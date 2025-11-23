@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "widget.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class TexAniBoard: public Widget
 {
@@ -18,7 +18,7 @@ class TexAniBoard: public Widget
         double m_accuTime = 0;
 
     private:
-        ShapeCropBoard m_cropArea;
+        GfxShapeBoard m_cropArea;
 
     public:
         TexAniBoard(

@@ -4,7 +4,7 @@
 #include "labelboard.hpp"
 #include "layoutboard.hpp"
 #include "imageboard.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 #include "friendchatboardconst.hpp"
 
 struct ChatPreviewItem: public Widget
@@ -43,7 +43,7 @@ struct ChatPreviewItem: public Widget
     LayoutBoard message;
     Widget      messageClip;
 
-    ShapeCropBoard selected;
+    GfxShapeBoard selected;
 
     ChatPreviewItem(
             Widget::VarDir,

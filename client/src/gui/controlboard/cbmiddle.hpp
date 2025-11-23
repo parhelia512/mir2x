@@ -9,7 +9,7 @@
 #include "tritexbutton.hpp"
 #include "cropviewboard.hpp"
 #include "alphaonbutton.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 #include "gfxresizeboard.hpp"
 #include "cbface.hpp"
 
@@ -27,7 +27,7 @@ class CBMiddle: public Widget
         LayoutBoard &m_logBoard;
 
     private:
-        ShapeCropBoard m_bg;
+        GfxShapeBoard m_bg;
 
     private:
         CBFace m_face;

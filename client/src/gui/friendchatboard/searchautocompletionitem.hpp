@@ -3,7 +3,7 @@
 #include "widget.hpp"
 #include "labelboard.hpp"
 #include "imageboard.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 #include "friendchatboardconst.hpp"
 
 struct SearchAutoCompletionItem: public Widget
@@ -34,7 +34,7 @@ struct SearchAutoCompletionItem: public Widget
     const bool byID; // when clicked, fill input automatically by ID if true, or name if false
     const SDChatPeer candidate;
 
-    ShapeCropBoard background;
+    GfxShapeBoard background;
 
     ImageBoard icon;
     LabelBoard label;

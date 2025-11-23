@@ -6,7 +6,7 @@
 #include "passwordbox.hpp"
 #include "layoutboard.hpp"
 #include "tritexbutton.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class InputStringBoard: public Widget
 {
@@ -20,7 +20,7 @@ class InputStringBoard: public Widget
         LayoutBoard m_textInfo;
 
     private:
-        ShapeCropBoard m_inputBg;
+        GfxShapeBoard m_inputBg;
         PasswordBox    m_input;
 
     private:

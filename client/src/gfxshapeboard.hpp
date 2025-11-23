@@ -3,7 +3,7 @@
 #include <functional>
 #include "widget.hpp"
 
-class ShapeCropBoard: public Widget
+class GfxShapeBoard: public Widget
 {
     private:
         struct InitArgs final
@@ -25,7 +25,7 @@ class ShapeCropBoard: public Widget
         Widget::VarDrawFunc m_drawFunc;
 
     public:
-        explicit ShapeCropBoard(ShapeCropBoard::InitArgs);
+        explicit GfxShapeBoard(GfxShapeBoard::InitArgs);
 
     public:
         void drawDefault(Widget::ROIMap) const override;

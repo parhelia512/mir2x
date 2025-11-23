@@ -143,7 +143,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
 
         .childList
         {
-            {new ShapeCropBoard
+            {new GfxShapeBoard
             {{
                 .w = [this](const Widget *)
                 {
@@ -208,12 +208,12 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
                     }
 
                     Widget *menuWidget = nullptr;
-                    ShapeCropBoard *background = nullptr;
+                    GfxShapeBoard *background = nullptr;
 
                     self->foreachChild([&menuWidget, &background](Widget *child, bool)
                     {
 
-                        if(auto p = dynamic_cast<ShapeCropBoard *>(child)){
+                        if(auto p = dynamic_cast<GfxShapeBoard *>(child)){
                             background = p;
                         }
                         else{

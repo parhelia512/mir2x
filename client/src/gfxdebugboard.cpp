@@ -135,7 +135,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .sliderWidget
            {
               .dir = DIR_UPLEFT,
-              .widget = new ShapeCropBoard
+              .widget = new GfxShapeBoard
               {{
                   .w = 10,
                   .h = 10,
@@ -177,7 +177,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .sliderWidget
            {
               .dir = DIR_UPLEFT,
-              .widget = new ShapeCropBoard
+              .widget = new GfxShapeBoard
               {{
                   .w = 10,
                   .h = 10,
@@ -220,7 +220,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .sliderWidget
            {
               .dir = DIR_UPLEFT,
-              .widget = new ShapeCropBoard
+              .widget = new GfxShapeBoard
               {{
                   .w = 10,
                   .h = 10,
@@ -258,7 +258,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .sliderWidget
            {
               .dir = DIR_UPLEFT,
-              .widget = new ShapeCropBoard
+              .widget = new GfxShapeBoard
               {{
                   .w = 10,
                   .h = 10,
@@ -295,7 +295,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .sliderWidget
           {
              .dir = DIR_UPLEFT,
-             .widget = new ShapeCropBoard
+             .widget = new GfxShapeBoard
              {{
                  .w = 10,
                  .h = 10,
@@ -332,7 +332,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .sliderWidget
           {
              .dir = DIR_UPLEFT,
-             .widget = new ShapeCropBoard
+             .widget = new GfxShapeBoard
              {{
                  .w = 10,
                  .h = 10,
@@ -498,7 +498,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .sliderWidget
            {
               .dir = DIR_UPLEFT,
-              .widget = new ShapeCropBoard
+              .widget = new GfxShapeBoard
               {{
                   .w = 10,
                   .h = 10,
@@ -540,7 +540,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .sliderWidget
            {
               .dir = DIR_UPLEFT,
-              .widget = new ShapeCropBoard
+              .widget = new GfxShapeBoard
               {{
                   .w = 10,
                   .h = 10,
@@ -581,7 +581,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .sliderWidget
           {
              .dir = DIR_UPLEFT,
-             .widget = new ShapeCropBoard
+             .widget = new GfxShapeBoard
              {{
                  .w = 10,
                  .h = 10,
@@ -622,7 +622,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .sliderWidget
           {
              .dir = DIR_UPLEFT,
-             .widget = new ShapeCropBoard
+             .widget = new GfxShapeBoard
              {{
                  .w = 10,
                  .h = 10,

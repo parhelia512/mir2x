@@ -4,7 +4,7 @@
 #include "labelboard.hpp"
 #include "layoutboard.hpp"
 #include "trigfxbutton.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class ChatItemRef: public Widget
 {
@@ -35,11 +35,11 @@ class ChatItemRef: public Widget
         uint32_t m_crossBgColor;
 
     private:
-        ShapeCropBoard m_background; // round corner rectangle
+        GfxShapeBoard m_background; // round corner rectangle
 
     private:
         LabelBoard     m_cross;
-        ShapeCropBoard m_crossBg;        // round cover under x
+        GfxShapeBoard m_crossBg;        // round cover under x
         Widget         m_crossButtonGfx; // merge cross and crossBg to be a single gfx-widget, then use it in TrigfxButton
         TrigfxButton   m_crossButton;    //
 

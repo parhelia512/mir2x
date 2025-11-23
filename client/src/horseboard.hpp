@@ -4,7 +4,7 @@
 #include "texslider.hpp"
 #include "imageboard.hpp"
 #include "tritexbutton.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class ProcessRun;
 class HorseBoard: public Widget
@@ -13,7 +13,7 @@ class HorseBoard: public Widget
         ProcessRun *m_processRun;
 
     private:
-        ShapeCropBoard m_greyBg;
+        GfxShapeBoard m_greyBg;
         ImageBoard     m_imageBg;
 
     private:

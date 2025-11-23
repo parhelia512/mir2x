@@ -4,7 +4,7 @@
 #include "sliderbase.hpp"
 #include "imageboard.hpp"
 #include "marginwrapper.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 #include "gfxresizeboard.hpp"
 
 class GfxDebugBoard: public Widget
@@ -20,7 +20,7 @@ class GfxDebugBoard: public Widget
         };
 
     private:
-        ShapeCropBoard m_bg;
+        GfxShapeBoard m_bg;
 
     private:
         ImageBoard m_img;
@@ -29,7 +29,7 @@ class GfxDebugBoard: public Widget
         Widget          m_srcWidget;
         Widget                  m_imgCanvas;
         MarginWrapper                   m_imgContainer;
-        ShapeCropBoard                  m_imgFrame;
+        GfxShapeBoard                  m_imgFrame;
 
         SliderBase              m_imgResizeHSlider;
         SliderBase              m_imgResizeVSlider;

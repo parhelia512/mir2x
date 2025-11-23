@@ -4,7 +4,7 @@
 #include "serdesmsg.hpp"
 #include "widget.hpp"
 #include "imageboard.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class ProcessRun;
 class CBFace: public Widget
@@ -23,7 +23,7 @@ class CBFace: public Widget
         ImageBoard m_hpBar;
 
     private:
-        ShapeCropBoard m_drawBuffIDList;
+        GfxShapeBoard m_drawBuffIDList;
 
     public:
         CBFace( Widget::VarDir,

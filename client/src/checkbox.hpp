@@ -3,7 +3,7 @@
 #include "widget.hpp"
 #include "sdldevice.hpp"
 #include "imageboard.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class CheckBox: public Widget
 {
@@ -20,7 +20,7 @@ class CheckBox: public Widget
 
     private:
         ImageBoard     m_img;
-        ShapeCropBoard m_box;
+        GfxShapeBoard m_box;
 
     public:
         CheckBox(

@@ -1,6 +1,6 @@
 #pragma once
 #include "widget.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class MarginContainer: public Widget
 {
@@ -36,8 +36,8 @@ class MarginContainer: public Widget
         ContainedWidget m_contained;
 
     private:
-        ShapeCropBoard *m_bgBoard;
-        ShapeCropBoard *m_fgBoard;
+        GfxShapeBoard *m_bgBoard;
+        GfxShapeBoard *m_fgBoard;
 
     public:
         MarginContainer(MarginContainer::InitArgs args)
@@ -54,7 +54,7 @@ class MarginContainer: public Widget
               }}
 
             , m_contained(std::move(args.contained))
-            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new ShapeCropBoard
+            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new GfxShapeBoard
               {{
                   .w = [this]{ return w(); },
                   .h = [this]{ return h(); },
@@ -63,7 +63,7 @@ class MarginContainer: public Widget
 
               }} : nullptr)
 
-            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new ShapeCropBoard
+            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new GfxShapeBoard
               {{
                   .w = [this]{ return w(); },
                   .h = [this]{ return h(); },

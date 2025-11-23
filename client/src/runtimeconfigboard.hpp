@@ -14,7 +14,7 @@
 #include "tritexbutton.hpp"
 #include "trigfxbutton.hpp"
 #include "texsliderbar.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 #include "baseframeboard.hpp"
 
 class ProcessRun;
@@ -189,7 +189,7 @@ class RuntimeConfigBoard: public Widget
                 };
 
             private:
-                ShapeCropBoard m_buttonMask;
+                GfxShapeBoard m_buttonMask;
 
             private:
                 Widget *m_selectedHeader = nullptr;
@@ -215,7 +215,7 @@ class RuntimeConfigBoard: public Widget
         BaseFrameBoard m_frameBoard;
 
     private:
-        ShapeCropBoard m_leftMenuBackground;
+        GfxShapeBoard m_leftMenuBackground;
         LayoutBoard    m_leftMenu;
 
     private:

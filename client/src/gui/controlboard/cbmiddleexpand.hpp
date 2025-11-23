@@ -1,6 +1,6 @@
 #pragma once
 #include "widget.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 #include "cropviewboard.hpp"
 #include "imageboard.hpp"
 #include "gfxresizeboard.hpp"
@@ -20,7 +20,7 @@ class CBMiddleExpand: public Widget
         LayoutBoard &m_logBoard;
 
     private:
-        ShapeCropBoard m_bg;
+        GfxShapeBoard m_bg;
 
     private:
         CropViewBoard m_logView;

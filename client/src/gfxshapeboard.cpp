@@ -1,7 +1,7 @@
 #include "sdldevice.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
-ShapeCropBoard::ShapeCropBoard(ShapeCropBoard::InitArgs args)
+GfxShapeBoard::GfxShapeBoard(GfxShapeBoard::InitArgs args)
     : Widget
       {{
           .dir = std::move(args.dir),
@@ -21,7 +21,7 @@ ShapeCropBoard::ShapeCropBoard(ShapeCropBoard::InitArgs args)
     , m_drawFunc(std::move(args.drawFunc))
 {}
 
-void ShapeCropBoard::drawDefault(Widget::ROIMap m) const
+void GfxShapeBoard::drawDefault(Widget::ROIMap m) const
 {
     if(!m.calibrate(this)){
         return;

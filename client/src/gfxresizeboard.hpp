@@ -34,8 +34,8 @@ class GfxResizeBoard: public Widget
         Widget::VarMargin m_margin;
 
     private:
-        ShapeCropBoard *m_bgBoard;
-        ShapeCropBoard *m_fgBoard;
+        GfxShapeBoard *m_bgBoard;
+        GfxShapeBoard *m_fgBoard;
 
     public:
         GfxResizeBoard(GfxResizeBoard::InitArgs args)
@@ -56,7 +56,7 @@ class GfxResizeBoard: public Widget
             , m_resize(std::move(args.resize))
             , m_margin(std::move(args.margin))
 
-            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new ShapeCropBoard
+            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new GfxShapeBoard
               {{
                   .w = [this]{ return w(); },
                   .h = [this]{ return h(); },
@@ -65,7 +65,7 @@ class GfxResizeBoard: public Widget
 
               }} : nullptr)
 
-            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new ShapeCropBoard
+            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new GfxShapeBoard
               {{
                   .w = [this]{ return w(); },
                   .h = [this]{ return h(); },

@@ -11,7 +11,7 @@
 #include "passwordbox.hpp"
 #include "notifyboard.hpp"
 #include "tritexbutton.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class ProcessLogin: public Process
 {
@@ -32,7 +32,7 @@ class ProcessLogin: public Process
         TextBoard m_buildSignature;
 
     private:
-        ShapeCropBoard m_notifyBoardBg;
+        GfxShapeBoard m_notifyBoardBg;
         NotifyBoard    m_notifyBoard;
 
     public:

@@ -4,7 +4,7 @@
 #include <functional>
 #include <type_traits>
 #include "widget.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class MarginWrapper: public Widget
 {
@@ -33,8 +33,8 @@ class MarginWrapper: public Widget
         Widget::WADPair m_wrapped;
 
     private:
-        ShapeCropBoard *m_bgBoard;
-        ShapeCropBoard *m_fgBoard;
+        GfxShapeBoard *m_bgBoard;
+        GfxShapeBoard *m_fgBoard;
 
     public:
         explicit MarginWrapper(MarginWrapper::InitArgs args)
@@ -54,7 +54,7 @@ class MarginWrapper: public Widget
 
             , m_margin(std::move(args.margin))
             , m_wrapped(std::move(args.wrapped))
-            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new ShapeCropBoard
+            , m_bgBoard(Widget::hasDrawFunc(args.bgDrawFunc) ? new GfxShapeBoard
               {{
                   .w = [this]{ return w(); },
                   .h = [this]{ return h(); },
@@ -63,7 +63,7 @@ class MarginWrapper: public Widget
 
               }} : nullptr)
 
-            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new ShapeCropBoard
+            , m_fgBoard(Widget::hasDrawFunc(args.fgDrawFunc) ? new GfxShapeBoard
               {{
                   .w = [this]{ return w(); },
                   .h = [this]{ return h(); },

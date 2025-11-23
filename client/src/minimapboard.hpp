@@ -4,7 +4,7 @@
 #include "itemflex.hpp"
 #include "tritexbutton.hpp"
 #include "marginwrapper.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class ProcessRun;
 class MiniMapBoard: public Widget
@@ -35,11 +35,11 @@ class MiniMapBoard: public Widget
         ProcessRun *m_processRun;
 
     private:
-        ShapeCropBoard m_bg;
+        GfxShapeBoard m_bg;
         ImageBoard m_mapImage;
 
     private:
-        ShapeCropBoard m_canvas;
+        GfxShapeBoard m_canvas;
 
     private:
         ImageBoard m_cornerUpLeft;

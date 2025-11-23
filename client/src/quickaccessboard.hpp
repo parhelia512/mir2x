@@ -3,7 +3,7 @@
 #include <cstdint>
 #include "widget.hpp"
 #include "tritexbutton.hpp"
-#include "shapecropboard.hpp"
+#include "gfxshapeboard.hpp"
 
 class ProcessRun;
 class QuickAccessBoard: public Widget
@@ -14,7 +14,7 @@ class QuickAccessBoard: public Widget
             int         slot;
             ProcessRun *proc;
 
-            ShapeCropBoard bg;
+            GfxShapeBoard bg;
             ImageBoard     item;
             TextBoard      count;
 
