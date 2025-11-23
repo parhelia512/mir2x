@@ -365,7 +365,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
     , m_imgSize
       {{
           .x = [this]{ return m_texSize.dx(); },
-          .y = [this]{ return m_texSize.dy() + m_texSize.h() + 20; },
+          .y = [this]{ return m_texSize.dy() + m_texSize.h() + 15; },
 
           .textFunc = [this]
           {
@@ -379,7 +379,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
     , m_roiInfo
       {{
           .x = [this]{ return m_imgSize.dx(); },
-          .y = [this]{ return m_imgSize.dy() + m_imgSize.h() + 20; },
+          .y = [this]{ return m_imgSize.dy() + m_imgSize.h() + 15; },
 
           .textFunc = [this]
           {
@@ -391,10 +391,21 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .parent{&m_srcWidget},
       }}
 
-    , m_marginInfo
+    , m_resizeInfo
       {{
           .x = [this]{ return m_roiInfo.dx(); },
-          .y = [this]{ return m_roiInfo.dy() + m_roiInfo.h() + 20; },
+          .y = [this]{ return m_roiInfo.dy() + m_roiInfo.h() + 15; },
+
+          // set textFunc later
+
+          .font{.id = 1, .size = 10},
+          .parent{&m_srcWidget},
+      }}
+
+    , m_marginInfo
+      {{
+          .x = [this]{ return m_resizeInfo.dx(); },
+          .y = [this]{ return m_resizeInfo.dy() + m_resizeInfo.h() + 15; },
 
           // set textFunc later
 
@@ -643,6 +654,11 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
     {
         .w = [this]{ return m_dstCanvas.w() - m_resizeBoard.margin(2) - m_resizeBoard.margin(3) - std::max<int>(getROI().x, 0) - std::max<int>(m_img.w() - getROI().x - getROI().w, 0); },
         .h = [this]{ return m_dstCanvas.h() - m_resizeBoard.margin(0) - m_resizeBoard.margin(1) - std::max<int>(getROI().y, 0) - std::max<int>(m_img.h() - getROI().y - getROI().h, 0); },
+    });
+
+    m_resizeInfo.setTextFunc([this]
+    {
+        return str_printf("RESIZE (%d, %d)", m_resizeBoard.w(), m_resizeBoard.h());
     });
 
     m_marginInfo.setTextFunc([this]

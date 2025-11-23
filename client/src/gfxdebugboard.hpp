@@ -42,6 +42,7 @@ class GfxDebugBoard: public Widget
         TextBoard               m_texSize;
         TextBoard               m_imgSize;
         TextBoard               m_roiInfo;
+        TextBoard               m_resizeInfo;
         TextBoard               m_marginInfo;
 
     private:
