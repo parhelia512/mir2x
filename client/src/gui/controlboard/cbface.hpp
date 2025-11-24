@@ -24,7 +24,7 @@ class CBFace: public Widget
 
     private:
         GfxCropBoard m_face;
-        ImageBoard   m_hpBar;
+        GfxShapeBoard m_hpBar;
 
     private:
         GfxShapeBoard m_drawBuffIDList;

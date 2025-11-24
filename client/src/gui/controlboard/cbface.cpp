@@ -68,9 +68,9 @@ CBFace::CBFace(
           .w = [this]{ return to_dround(getHPRatio() * m_face.w()); },
           .h = CBFace::BAR_HEIGHT,
 
-          .texLoadFunc = []
+          .drawFunc = [](const Widget *self, int drawDstX, int drawDstY)
           {
-              return g_progUseDB->retrieve(0X00000015);
+              g_sdlDevice->fillRectangle(colorf::RED_A255, drawDstX, drawDstY, self->w(), self->h());
           },
 
           .parent{this},
