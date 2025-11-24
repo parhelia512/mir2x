@@ -25,6 +25,9 @@ CBFace::CBFace(
           .x = std::move(argX),
           .y = std::move(argY),
 
+          .w = 82, // this is the window to show face + hp bar in controlboard
+          .h = 97,
+
           .parent
           {
               .widget = argParent,
@@ -35,7 +38,9 @@ CBFace::CBFace(
     , m_processRun(argProc)
     , m_faceFull
       {{
-          .texLoadFunc = [this](const Widget *)
+          // size: 84 x 94
+          // width has 2 empty pixels at right side
+          .texLoadFunc = [this]
           {
               if(auto texPtr = g_progUseDB->retrieve(getFaceTexID())){
                   return texPtr;
@@ -46,13 +51,13 @@ CBFace::CBFace(
 
     , m_face
       {{
-          .y = CBFace::BAR_HEIGHT,
+          .y = CBFace::BAR_HEIGHT, // 3
 
           .getter = &m_faceFull,
           .vr
           {
-              .w = [this]{ return m_faceFull.w() - 2; },
-              .h = [this]{ return m_faceFull.h()    ; },
+              .w = [this]{ return m_faceFull.w() - 2; }, // 82
+              .h = [this]{ return m_faceFull.h()    ; }, // 94
           },
 
           .parent{this},
@@ -60,14 +65,10 @@ CBFace::CBFace(
 
     , m_hpBar
       {{
-          .w = [this](const Widget *)
-          {
-              return to_dround(getHPRatio() * m_face.w());
-          },
-
+          .w = [this]{ return to_dround(getHPRatio() * m_face.w()); },
           .h = CBFace::BAR_HEIGHT,
 
-          .texLoadFunc = [](const Widget *)
+          .texLoadFunc = []
           {
               return g_progUseDB->retrieve(0X00000015);
           },

@@ -11,7 +11,7 @@ class ProcessRun;
 class CBFace: public Widget
 {
     private:
-        constexpr static int BAR_HEIGHT = 5;
+        constexpr static int BAR_HEIGHT = 3;
 
     private:
         ProcessRun *m_processRun;
