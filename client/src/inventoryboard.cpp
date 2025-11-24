@@ -252,9 +252,12 @@ void InventoryBoard::drawDefault(Widget::ROIMap m) const
         return;
     }
 
+    const auto startOffX = m.x - m.ro->x;
+    const auto startOffY = m.y - m.ro->y;
+
     const auto startRow = getStartRow();
     const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-    const auto cursorOnIndex = getPackBinIndex(mousePX, mousePY);
+    const auto cursorOnIndex = getPackBinIndex(mousePX - startOffX, mousePY - startOffY);
     for(int i = 0; i < std::ssize(myHeroPtr->getInvPack().getPackBinList()); ++i){
         const auto fillColor = [i, cursorOnIndex, this]() -> uint32_t
         {
@@ -497,10 +500,11 @@ int InventoryBoard::getPackBinIndex(int locPX, int locPY) const
 
     const auto startRow = getStartRow();
     const auto myHeroPtr = m_processRun->getMyHero();
-    const auto &packBinListCRef = myHeroPtr->getInvPack().getPackBinList();
-    for(int i = 0; i < to_d(packBinListCRef.size()); ++i){
-        const auto &binCRef = packBinListCRef.at(i);
-        if(mathf::pointInRectangle<int>(gridX, gridY, binCRef.x, binCRef.y - startRow, binCRef.w, binCRef.h)){
+
+    const auto &packBinList = myHeroPtr->getInvPack().getPackBinList();
+    for(int i = 0; i < std::ssize(packBinList); ++i){
+        const auto &bin = packBinList.at(i);
+        if(mathf::pointInRectangle<int>(gridX, gridY, bin.x, bin.y - startRow, bin.w, bin.h)){
             return i;
         }
     }
