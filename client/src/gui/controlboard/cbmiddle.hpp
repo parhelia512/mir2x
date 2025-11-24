@@ -7,7 +7,7 @@
 #include "texslider.hpp"
 #include "layoutboard.hpp"
 #include "tritexbutton.hpp"
-#include "cropviewboard.hpp"
+#include "gfxcropboard.hpp"
 #include "alphaonbutton.hpp"
 #include "gfxshapeboard.hpp"
 #include "gfxresizeboard.hpp"
@@ -43,7 +43,7 @@ class CBMiddle: public Widget
         TexSlider m_slider;
 
     private:
-        CropViewBoard m_logView;
+        GfxCropBoard m_logView;
 
     public:
         CBMiddle(

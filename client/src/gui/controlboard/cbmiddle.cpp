@@ -145,23 +145,20 @@ CBMiddle::CBMiddle(
       }}
 
     , m_logView
-      {
-          DIR_UPLEFT,
-          9,
-          11,
+      {{
+          .x = 7,
+          .y = 15,
 
-          std::addressof(m_logBoard),
+          .getter = std::addressof(m_logBoard),
+          .vr
+          {
+              .y = [this]{ return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
+              .w = [this]{ return m_logBoard.w(); },
+              .h = 83, // log window height
+          },
 
-          0,
-          [this](const Widget *) { return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
-          [this](const Widget *) { return m_logBoard.w(); },
-          83,
-
-          {},
-
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     setH([this]{ return m_bgImgFull.h(); });
 }
