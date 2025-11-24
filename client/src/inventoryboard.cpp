@@ -102,6 +102,59 @@ InventoryBoard::InventoryBoard(InventoryBoard::InitArgs args)
 
           .parent{this},
       }}
+
+    , m_invOpTitle
+      {{
+          .dir = DIR_NONE,
+          .x = 238,
+          .y = 25,
+
+          .textFunc = [this] -> std::string
+          {
+              switch(m_sdInvOp.invOp){
+                  case INVOP_NONE  : return "【背包】";
+                  case INVOP_TRADE : return "【请选择出售物品】";
+                  case INVOP_SECURE: return "【请选择存储物品】";
+                  case INVOP_REPAIR: return "【请选择修理物品】";
+                  default: return {};
+              }
+          },
+
+          .font
+          {
+              .id = 1,
+              .size = 12,
+          },
+
+          .parent{this},
+      }}
+
+    , m_goldStr
+      {{
+          .dir = DIR_NONE,
+          .x = 132,
+          .y = 486,
+
+          .textFunc = [this] -> std::string
+          {
+              return str_ksep([this]() -> int
+              {
+                  if(auto p = m_processRun->getMyHero()){
+                      return p->getGold();
+                  }
+                  return 0;
+              }(), ',');
+          },
+
+          .font
+          {
+              .id = 1,
+              .size = 12,
+              .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+          },
+
+          .parent{this},
+      }}
 {
     setShow(false);
     auto texPtr = g_progUseDB->retrieve(0X0000001B);
@@ -219,9 +272,8 @@ void InventoryBoard::drawDefault(Widget::ROIMap m) const
         drawItem(m.x, m.y, startRow, packBinListCRef.at(i), fillColor);
     }
 
-    drawGold();
-    drawInvOpTitle();
-
+    drawChild(&m_goldStr    , m);
+    drawChild(&m_invOpTitle , m);
     drawChild(&m_wmdAniBoard, m);
     drawChild(&m_slider     , m);
     drawChild(&m_closeButton, m);
@@ -394,17 +446,6 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, Wid
     }
 }
 
-std::string InventoryBoard::getGoldStr() const
-{
-    return str_ksep([this]() -> int
-    {
-        if(auto p = m_processRun->getMyHero()){
-            return p->getGold();
-        }
-        return 0;
-    }(), ',');
-}
-
 size_t InventoryBoard::getRowCount() const
 {
     const auto &packBinList = m_processRun->getMyHero()->getInvPack().getPackBinList();
@@ -426,47 +467,6 @@ size_t InventoryBoard::getStartRow() const
         return 0;
     }
     return std::lround((rowCount - SYS_INVGRIDGH) * m_slider.getValue());
-}
-
-void InventoryBoard::drawGold() const
-{
-    const LabelBoard goldBoard
-    {{
-        .label = to_u8cstr(getGoldStr()),
-        .font
-        {
-            .id = 1,
-            .size = 12,
-            .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-        },
-    }};
-    // goldBoard.drawAt(DIR_NONE, m.x + 132, m.y + 486);
-    goldBoard.draw({.dir=DIR_NONE, .x=132, .y=486});
-}
-
-void InventoryBoard::drawInvOpTitle() const
-{
-    const LabelBoard title
-    {{
-        .label = [this]() -> const char8_t *
-        {
-            switch(m_sdInvOp.invOp){
-                case INVOP_NONE  : return u8"【背包】";
-                case INVOP_TRADE : return u8"【请选择出售物品】";
-                case INVOP_SECURE: return u8"【请选择存储物品】";
-                case INVOP_REPAIR: return u8"【请选择修理物品】";
-                default: throw fflreach();
-            }
-        }(),
-
-        .font
-        {
-            .id = 1,
-            .size = 12,
-        },
-    }};
-    // title.drawAt(DIR_NONE, m.x + 238, m.y + 25);
-    title.draw({.dir=DIR_NONE, .x=238, .y=25});
 }
 
 void InventoryBoard::drawInvOpCost() const

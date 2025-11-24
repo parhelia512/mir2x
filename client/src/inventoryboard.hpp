@@ -10,6 +10,7 @@
 #include "widget.hpp"
 #include "texslider.hpp"
 #include "labelboard.hpp"
+#include "textboard.hpp"
 #include "wmdaniboard.hpp"
 #include "tritexbutton.hpp"
 
@@ -56,6 +57,10 @@ class InventoryBoard: public Widget
 
     private:
         TritexButton m_invOpButton;
+        TextBoard    m_invOpTitle;
+
+    private:
+        TextBoard m_goldStr;
 
     public:
         InventoryBoard(InventoryBoard::InitArgs);
@@ -74,9 +79,6 @@ class InventoryBoard: public Widget
 
     public:
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
-
-    private:
-        std::string getGoldStr() const;
 
     private:
         size_t getStartRow() const;
