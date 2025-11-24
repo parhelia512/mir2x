@@ -63,9 +63,9 @@ CBMiddle::CBMiddle(
 
     , m_face
       {
-          DIR_UPLEFT,
-          [this]{ return w() - 100; },
-          18,
+          DIR_DOWNRIGHT,
+          [this]{ return w() - 19; },
+          [this]{ return h() - 20; },
 
           argProc,
 
