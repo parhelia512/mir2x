@@ -55,8 +55,8 @@ CBTitle::CBTitle(
     , m_level
       {
           DIR_NONE,
-          [this](const Widget *){ return w() / 2; },
-          20,
+          46,
+          25,
 
           argProc,
           [this](Widget *, int) // double-click
