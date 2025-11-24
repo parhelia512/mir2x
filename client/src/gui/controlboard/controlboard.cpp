@@ -29,6 +29,14 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
               }
           },
 
+          .attrs
+          {
+              .inst
+              {
+                  .moveOnFocus = false,
+              },
+          },
+
           .parent
           {
               .widget = argParent,
