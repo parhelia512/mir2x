@@ -244,4 +244,8 @@ class LayoutBoard: public Widget
 
     public:
         static const char * findAttrValue(const std::unordered_map<std::string, std::string> &, const char *, const char * = nullptr);
+
+    public:
+        std::tuple<int, int, int     > getCursorLoc() const;  // -> cursor (par, x, y)
+        std::tuple<int, int, int, int> getCursorPLoc() const; // -> cursor ROI
 };

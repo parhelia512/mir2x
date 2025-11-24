@@ -169,7 +169,7 @@ CBMiddle::CBMiddle(
           .getter = std::addressof(m_cmdBoard),
           .vr
           {
-              .w = 343,
+              .w = [this]{ return w() - 456 + 343; },
               .h = 17,
           },
 
