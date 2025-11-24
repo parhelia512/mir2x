@@ -86,10 +86,10 @@ class ControlBoard: public Widget
         CBLeft  m_left;
         CBRight m_right;
 
-        CBTitle m_title;
-
         CBMiddle       m_middle;
         CBMiddleExpand m_middleExpand;
+
+        CBTitle m_title;
 
     public:
         ControlBoard(

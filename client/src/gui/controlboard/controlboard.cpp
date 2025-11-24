@@ -81,24 +81,6 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           false,
       }
 
-    , m_title
-      {
-          DIR_UP,
-          [this](const Widget *)
-          {
-              return (w() - m_left.w() - m_right.w()) / 2;
-          },
-
-          [this](const Widget *)
-          {
-              return CBTitle::UP_HEIGHT;
-          },
-
-          argProc,
-          this,
-          false,
-      }
-
     , m_middle
       {
           DIR_DOWNLEFT,
@@ -141,6 +123,21 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           },
 
           argProc,
+          this,
+          false,
+      }
+
+    , m_title
+      {
+          DIR_UP,
+          [this](const Widget *)
+          {
+              return (w() - m_left.w() - m_right.w()) / 2;
+          },
+
+          CBTitle::UP_HEIGHT,
+          argProc,
+
           this,
           false,
       }

@@ -9,6 +9,9 @@
 class ProcessRun;
 class CBLevel: public ButtonBase
 {
+    protected:
+        using ButtonBase::TriggerCBFunc;
+
     private:
         ProcessRun *m_processRun;
 
@@ -23,7 +26,7 @@ class CBLevel: public ButtonBase
                 Widget::VarInt,
 
                 ProcessRun *,
-                std::function<void(Widget *, int)>,
+                CBLevel::TriggerCBFunc,
 
                 Widget * = nullptr,
                 bool     = false);

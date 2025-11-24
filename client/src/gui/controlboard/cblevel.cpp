@@ -10,7 +10,7 @@ CBLevel::CBLevel(
         Widget::VarInt argY,
 
         ProcessRun *argProc,
-        std::function<void(Widget *, int)> argOnClick,
+        CBLevel::TriggerCBFunc argOnClick,
 
         Widget *argParent,
         bool    argAutoDelete)
@@ -55,7 +55,6 @@ CBLevel::CBLevel(
               }
           },
 
-          .blendMode = SDL_BLENDMODE_NONE,
           .parent{this},
       }}
 
@@ -78,7 +77,6 @@ CBLevel::CBLevel(
               .color = colorf::YELLOW + colorf::A_SHF(255),
           },
 
-          .blendMode = SDL_BLENDMODE_NONE,
           .parent{this},
       }}
 {}
