@@ -1,5 +1,6 @@
 #include "log.hpp"
 #include "controlboard.hpp"
+#include "processrun.hpp"
 
 extern Log *g_log;
 extern SDLDevice *g_sdlDevice;
@@ -56,8 +57,11 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           .lineAlign = LALIGN_JUSTIFY,
       }}
 
-    , m_cmdLine
+    , m_cmdBoard
       {{
+          .canEdit = true,
+          .enableIME = true,
+
           .font
           {
               .id = 1,
@@ -65,6 +69,7 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           },
 
           .lineAlign = LALIGN_JUSTIFY,
+          .onCR = [this]{ onInputDone(); },
       }}
 
     , m_left
@@ -230,3 +235,41 @@ TritexButton *ControlBoard::getButton(const std::string_view &buttonName)
 
 void ControlBoard::onClickSwitchModeButton(int)
 {}
+
+void ControlBoard::onInputDone()
+{
+    if(!m_cmdBoard.hasToken()){
+        return;
+    }
+
+    const std::string fullInput = m_cmdBoard.getXML();
+
+    m_cmdBoard.clear();
+    m_cmdBoard.setFocus(false);
+
+    switch(fullInput[0]){
+        case '!': // broadcast
+            {
+                break;
+            }
+        case '@': // user command
+            {
+                if(m_processRun){
+                    m_processRun->userCommand(fullInput.c_str() + 1);
+                }
+                break;
+            }
+        case '$': // lua command for super user
+            {
+                if(m_processRun){
+                    m_processRun->luaCommand(fullInput.c_str() + 1);
+                }
+                break;
+            }
+        default: // normal talk
+            {
+                addLog(0, fullInput.c_str());
+                break;
+            }
+    }
+}

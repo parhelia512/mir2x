@@ -55,6 +55,7 @@ CBMiddle::CBMiddle(
 
     , m_processRun(argProc)
     , m_logBoard(hasParent<ControlBoard>()->m_logBoard)
+    , m_cmdBoard(hasParent<ControlBoard>()->m_cmdBoard)
 
     , m_bg
       {{
@@ -159,9 +160,25 @@ CBMiddle::CBMiddle(
 
           .parent{this},
       }}
+
+    , m_cmdView
+      {{
+          .x = 7,
+          .y = 105,
+
+          .getter = std::addressof(m_cmdBoard),
+          .vr
+          {
+              .w = 343,
+              .h = 17,
+          },
+
+          .parent{this},
+      }}
 {
     setH([this]{ return m_bgImgFull.h(); });
 
+    moveFront(&m_cmdView);
     moveFront(&m_logView);
     moveFront(&m_face);
     moveFront(&m_bg);
@@ -183,7 +200,7 @@ bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, Widget::R
                 switch(event.key.keysym.sym){
                     case SDLK_RETURN:
                         {
-                            return valid && hasParent<ControlBoard>()->m_cmdLine.consumeFocus(true);
+                            return valid && hasParent<ControlBoard>()->m_cmdBoard.consumeFocus(true);
                         }
                     default:
                         {

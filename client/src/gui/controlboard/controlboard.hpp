@@ -80,7 +80,7 @@ class ControlBoard: public Widget
 
     private:
         LayoutBoard m_logBoard;
-        LayoutBoard m_cmdLine;
+        LayoutBoard m_cmdBoard;
 
     private:
         CBLeft  m_left;
@@ -109,4 +109,7 @@ class ControlBoard: public Widget
 
     private:
        void onClickSwitchModeButton(int);
+
+    private:
+       void onInputDone();
 };

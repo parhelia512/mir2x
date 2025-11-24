@@ -25,6 +25,7 @@ class CBMiddle: public Widget
 
     private:
         LayoutBoard &m_logBoard;
+        LayoutBoard &m_cmdBoard;
 
     private:
         GfxShapeBoard m_bg;
@@ -44,6 +45,7 @@ class CBMiddle: public Widget
 
     private:
         GfxCropBoard m_logView;
+        GfxCropBoard m_cmdView;
 
     public:
         CBMiddle(

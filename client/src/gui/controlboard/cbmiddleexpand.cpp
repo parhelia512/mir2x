@@ -187,7 +187,7 @@ bool CBMiddleExpand::processEventDefault(const SDL_Event &event, bool valid, Wid
                 switch(event.key.keysym.sym){
                     case SDLK_RETURN:
                         {
-                            return valid && hasParent<ControlBoard>()->m_cmdLine.consumeFocus(true);
+                            return valid && hasParent<ControlBoard>()->m_cmdBoard.consumeFocus(true);
                         }
                     default:
                         {
