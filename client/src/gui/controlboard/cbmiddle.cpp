@@ -161,6 +161,10 @@ CBMiddle::CBMiddle(
       }}
 {
     setH([this]{ return m_bgImgFull.h(); });
+
+    moveFront(&m_logView);
+    moveFront(&m_face);
+    moveFront(&m_bg);
 }
 
 bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)

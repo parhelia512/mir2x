@@ -151,6 +151,9 @@ class WidgetTreeNode // tree concept, used by class Widget only
         auto firstChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>;
         auto  lastChild(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), Widget>;
 
+    // public:
+    //     void setOrder(std::initializer_list<const Widget *>);
+
     public:
         void clearChild(std::invocable<const Widget *, bool> auto);
         void clearChild()

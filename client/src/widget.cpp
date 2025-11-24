@@ -70,6 +70,53 @@ void WidgetTreeNode::moveBack(const Widget *widget)
     std::rotate(pivot, std::next(pivot), m_childList.end());
 }
 
+// void WidgetTreeNode::setOrder(std::initializer_list<const Widget *> partialOrder)
+// {
+//     // only reorders the specified children in partialOrder, preserving positions of unspecified children
+//     // this is not a well-defined sort
+//     //
+//     // e.g. [A B C D]
+//     //      [C A]
+//     //    ->[C B A D]
+//
+//     if(m_inLoop){
+//         throw fflerror("can not modify child list while in loop");
+//     }
+//
+//     std::unordered_map<const Widget *, bool> cachedAutoDelete;
+//     for(const auto widget: partialOrder){
+//         bool found = false;
+//         for(const auto [child, autoDelete]: m_childList){
+//             if(child == widget){
+//                 if(cachedAutoDelete.try_emplace(child, autoDelete).second){
+//                     found = true;
+//                     break;
+//                 }
+//                 else{
+//                     throw fflerror("duplicate child widget");
+//                 }
+//             }
+//         }
+//
+//         if(!found){
+//             throw fflerror("invalid child widget");
+//         }
+//     }
+//
+//     size_t i = 0;
+//     for(auto &[widget, autoDelete]: m_childList){
+//         if(!cachedAutoDelete.contains(widget)){
+//             continue;
+//         }
+//
+//         if(widget != partialOrder.begin()[i]){
+//             widget = const_cast<Widget *>(partialOrder.begin()[i]);
+//             autoDelete = cachedAutoDelete.at(widget);
+//         }
+//         i++;
+//     }
+// }
+
 void WidgetTreeNode::execDeath() noexcept
 {
     for(auto &child: m_childList){
