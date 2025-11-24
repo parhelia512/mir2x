@@ -254,9 +254,8 @@ void InventoryBoard::drawDefault(Widget::ROIMap m) const
 
     const auto startRow = getStartRow();
     const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
-    const auto &packBinListCRef = myHeroPtr->getInvPack().getPackBinList();
     const auto cursorOnIndex = getPackBinIndex(mousePX, mousePY);
-    for(int i = 0; i < to_d(packBinListCRef.size()); ++i){
+    for(int i = 0; i < std::ssize(myHeroPtr->getInvPack().getPackBinList()); ++i){
         const auto fillColor = [i, cursorOnIndex, this]() -> uint32_t
         {
             if(i == cursorOnIndex){
@@ -269,7 +268,7 @@ void InventoryBoard::drawDefault(Widget::ROIMap m) const
                 return 0;
             }
         }();
-        drawItem(m.x, m.y, startRow, packBinListCRef.at(i), fillColor);
+        drawItem(m.x, m.y, startRow, myHeroPtr->getInvPack().getPackBinList().at(i), fillColor);
     }
 
     drawChild(&m_goldStr    , m);
@@ -290,7 +289,7 @@ void InventoryBoard::drawDefault(Widget::ROIMap m) const
     }
 
     if(cursorOnIndex >= 0){
-        drawItemHoverText(packBinListCRef.at(cursorOnIndex));
+        drawItemHoverText(myHeroPtr->getInvPack().getPackBinList().at(cursorOnIndex));
     }
 }
 
