@@ -64,8 +64,8 @@ CBMiddle::CBMiddle(
     , m_face
       {
           DIR_UPLEFT,
-          0,
-          0,
+          [this]{ return w() - 266; },
+          18,
           86,
           96,
 

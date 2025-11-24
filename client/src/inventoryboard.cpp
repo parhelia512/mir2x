@@ -325,6 +325,9 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, Wid
         }
     }
 
+    const auto startXOff = m.x - m.ro->x;
+    const auto startYOff = m.y - m.ro->y;
+
     switch(event.type){
         case SDL_KEYDOWN:
             {
@@ -370,7 +373,7 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, Wid
                         {
                             if(m.in(event.button.x, event.button.y)){
                                 if(m_sdInvOp.invOp == INVOP_NONE){
-                                    if(const int selectedPackIndex = getPackBinIndex(event.button.x, event.button.y); selectedPackIndex >= 0){
+                                    if(const int selectedPackIndex = getPackBinIndex(event.button.x - startXOff, event.button.y - startYOff); selectedPackIndex >= 0){
                                         auto selectedPackBin = invPackRef.getPackBinList().at(selectedPackIndex);
                                         invPackRef.setGrabbedItem(selectedPackBin.item);
                                         invPackRef.remove(selectedPackBin.item);
@@ -390,7 +393,7 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, Wid
                                     }
                                 }
                                 else{
-                                    if(const int selectedPackIndex = getPackBinIndex(event.button.x, event.button.y); selectedPackIndex >= 0){
+                                    if(const int selectedPackIndex = getPackBinIndex(event.button.x - startXOff, event.button.y - startYOff); selectedPackIndex >= 0){
                                         m_selectedIndex = selectedPackIndex;
                                         const auto &selectedItem = invPackRef.getPackBinList().at(selectedPackIndex);
 
@@ -415,7 +418,7 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, Wid
                     case SDL_BUTTON_RIGHT:
                         {
                             if(m.in(event.button.x, event.button.y)){
-                                if(const int selectedPackIndex = getPackBinIndex(event.button.x, event.button.y); selectedPackIndex >= 0){
+                                if(const int selectedPackIndex = getPackBinIndex(event.button.x - startXOff, event.button.y - startYOff); selectedPackIndex >= 0){
                                     const auto &packBin = invPackRef.getPackBinList().at(selectedPackIndex);
                                     packBinConsume(packBin);
                                 }
