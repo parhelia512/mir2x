@@ -130,12 +130,16 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
     , m_title
       {
           DIR_UP,
-          [this](const Widget *)
+          [this]
           {
-              return (w() - m_left.w() - m_right.w()) / 2;
+              const auto  fullW =         w();
+              const auto  leftW = m_left .w();
+              const auto rightW = m_right.w();
+
+              return leftW + (fullW - leftW - rightW) / 2;
           },
 
-          CBTitle::UP_HEIGHT,
+          0,
           argProc,
 
           this,
