@@ -86,10 +86,7 @@ CBFace::CBFace(
               drawBuffIDList(drawDstX, drawDstY, self->w(), self->h());
           },
       }}
-{
-    setSize([this]{ return m_face.w(); },
-            [this]{ return m_face.h() + CBFace::BAR_HEIGHT; });
-}
+{}
 
 double CBFace::getHPRatio() const
 {
