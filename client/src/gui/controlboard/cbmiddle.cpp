@@ -64,10 +64,8 @@ CBMiddle::CBMiddle(
     , m_face
       {
           DIR_UPLEFT,
-          [this]{ return w() - 10; },
+          [this]{ return w() - 100; },
           18,
-          86,
-          96,
 
           argProc,
 

@@ -4,6 +4,7 @@
 #include "serdesmsg.hpp"
 #include "widget.hpp"
 #include "imageboard.hpp"
+#include "gfxcropboard.hpp"
 #include "gfxshapeboard.hpp"
 
 class ProcessRun;
@@ -19,8 +20,11 @@ class CBFace: public Widget
         double m_accuTime = 0;
 
     private:
-        ImageBoard m_face;
-        ImageBoard m_hpBar;
+        ImageBoard m_faceFull;
+
+    private:
+        GfxCropBoard m_face;
+        ImageBoard   m_hpBar;
 
     private:
         GfxShapeBoard m_drawBuffIDList;
@@ -29,9 +33,6 @@ class CBFace: public Widget
         CBFace( Widget::VarDir,
                 Widget::VarInt,
                 Widget::VarInt,
-
-                Widget::VarSizeOpt,
-                Widget::VarSizeOpt,
 
                 ProcessRun *,
 

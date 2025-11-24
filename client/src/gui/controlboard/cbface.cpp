@@ -13,9 +13,6 @@ CBFace::CBFace(
         Widget::VarInt argX,
         Widget::VarInt argY,
 
-        Widget::VarSizeOpt argW,
-        Widget::VarSizeOpt argH,
-
         ProcessRun *argProc,
 
         Widget *argParent,
@@ -27,8 +24,6 @@ CBFace::CBFace(
 
           .x = std::move(argX),
           .y = std::move(argY),
-          .w = std::move(argW),
-          .h = std::move(argH),
 
           .parent
           {
@@ -38,11 +33,8 @@ CBFace::CBFace(
       }}
 
     , m_processRun(argProc)
-    , m_face
+    , m_faceFull
       {{
-          .w = [this](const Widget *){ return w(); },
-          .h = [this](const Widget *){ return h(); },
-
           .texLoadFunc = [this](const Widget *)
           {
               if(auto texPtr = g_progUseDB->retrieve(getFaceTexID())){
@@ -50,8 +42,19 @@ CBFace::CBFace(
               }
               return g_progUseDB->retrieve(0X010007CF);
           },
+      }}
 
-          .blendMode = SDL_BLENDMODE_NONE,
+    , m_face
+      {{
+          .y = CBFace::BAR_HEIGHT,
+
+          .getter = &m_faceFull,
+          .vr
+          {
+              .w = [this]{ return m_faceFull.w() - 2; },
+              .h = [this]{ return m_faceFull.h()    ; },
+          },
+
           .parent{this},
       }}
 
@@ -59,7 +62,7 @@ CBFace::CBFace(
       {{
           .w = [this](const Widget *)
           {
-              return to_dround(getHPRatio() * w());
+              return to_dround(getHPRatio() * m_face.w());
           },
 
           .h = CBFace::BAR_HEIGHT,
@@ -69,7 +72,6 @@ CBFace::CBFace(
               return g_progUseDB->retrieve(0X00000015);
           },
 
-          .blendMode = SDL_BLENDMODE_NONE,
           .parent{this},
       }}
 
@@ -83,7 +85,10 @@ CBFace::CBFace(
               drawBuffIDList(drawDstX, drawDstY, self->w(), self->h());
           },
       }}
-{}
+{
+    setSize([this]{ return m_face.w(); },
+            [this]{ return m_face.h() + CBFace::BAR_HEIGHT; });
+}
 
 double CBFace::getHPRatio() const
 {
