@@ -38,8 +38,8 @@ CBTitle::CBTitle(
     , m_arcAni
       {
           DIR_UPLEFT,
-          54,
-          7,
+          46,
+          8,
 
           0X04000000,
           4,
@@ -56,7 +56,7 @@ CBTitle::CBTitle(
       {
           DIR_NONE,
           [this](const Widget *){ return w() / 2; },
-          10,
+          20,
 
           argProc,
           [this](Widget *, int) // double-click
