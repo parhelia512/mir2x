@@ -1,7 +1,7 @@
 #pragma once
 #include "widget.hpp"
 #include "gfxshapeboard.hpp"
-#include "cropviewboard.hpp"
+#include "gfxcropboard.hpp"
 #include "imageboard.hpp"
 #include "gfxresizeboard.hpp"
 #include "tritexbutton.hpp"
@@ -23,7 +23,7 @@ class CBMiddleExpand: public Widget
         GfxShapeBoard m_bg;
 
     private:
-        CropViewBoard m_logView;
+        GfxCropBoard m_logView;
 
     private:
         ImageBoard     m_bgImgFull;
