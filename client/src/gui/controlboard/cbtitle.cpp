@@ -37,9 +37,9 @@ CBTitle::CBTitle(
 
     , m_arcAni
       {
-          DIR_UP,
-          20,
-          30,
+          DIR_UPLEFT,
+          64,
+          7,
 
           0X04000000,
           4,
