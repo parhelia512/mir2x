@@ -111,7 +111,7 @@ CBMiddle::CBMiddle(
 
     , m_switchMode
       {{
-          .x = [this](const Widget *){ return w() - 17; },
+          .x = [this](const Widget *){ return w() - 15; },
           .y = 3,
 
           .texIDList
