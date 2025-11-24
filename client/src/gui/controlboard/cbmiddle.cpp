@@ -38,6 +38,14 @@ CBMiddle::CBMiddle(
           .y = std::move(argY),
           .w = std::move(argW),
 
+          .attrs
+          {
+              .inst
+              {
+                  .moveOnFocus = false,
+              },
+          },
+
           .parent
           {
               .widget = argParent,
@@ -126,11 +134,10 @@ CBMiddle::CBMiddle(
       {{
           .bar
           {
-              .x = [this]{ return w() - 178; },
+              .x = [this]{ return w() - 10; },
               .y = 40,
               .w = 5,
               .h = 60,
-              .v = true,
           },
 
           .index = 2,
