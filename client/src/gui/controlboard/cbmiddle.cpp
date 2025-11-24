@@ -38,10 +38,6 @@ CBMiddle::CBMiddle(
           .y = std::move(argY),
           .w = std::move(argW),
 
-          .attrs
-          {
-              .inst{.show = false,},
-          },
           .parent
           {
               .widget = argParent,
