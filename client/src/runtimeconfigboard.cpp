@@ -205,8 +205,8 @@ RuntimeConfigBoard::PullMenu::PullMenu(
 
           .resize
           {
-              .w = fflcheck(argTitleBgWidth , argTitleBgWidth  >= 0),
-              .h = fflcheck(argTitleBgHeight, argTitleBgHeight >= 0),
+              fflcheck(argTitleBgWidth , argTitleBgWidth  >= 0),
+              fflcheck(argTitleBgHeight, argTitleBgHeight >= 0),
           },
 
           .parent{this},

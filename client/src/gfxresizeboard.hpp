@@ -78,7 +78,7 @@ class GfxResizeBoard: public Widget
             {
                 const auto vx = Widget::evalInt (m_vr    .x, this);
                 const auto vw = Widget::evalSize(m_vr    .w, this);
-                const auto rw = Widget::evalSize(m_resize.w, this);
+                const auto rw = m_resize.w(this);
 
                 if(auto gfxPtr = gfxWidget()){ return margin(2) + std::max<int>(vx, 0) + rw + std::max<int>(gfxPtr->w() - (vx + vw), 0) + margin(3); }
                 else                         { return margin(2) + std::max<int>(vx, 0) + rw                                             + margin(3); }
@@ -88,7 +88,7 @@ class GfxResizeBoard: public Widget
             {
                 const auto vy = Widget::evalInt (m_vr    .y, this);
                 const auto vh = Widget::evalSize(m_vr    .h, this);
-                const auto rh = Widget::evalSize(m_resize.h, this);
+                const auto rh = m_resize.h(this);
 
                 if(auto gfxPtr = gfxWidget()){ return margin(0) + std::max<int>(vy, 0) + rh + std::max<int>(gfxPtr->h() - (vy + vh), 0) + margin(1); }
                 else                         { return margin(0) + std::max<int>(vy, 0) + rh                                             + margin(1); }
@@ -144,8 +144,8 @@ class GfxResizeBoard: public Widget
             {
                 .x = margin(2),
                 .y = margin(0),
-                .w = Widget::evalSize(m_resize.w, this),
-                .h = Widget::evalSize(m_resize.h, this),
+                .w = m_resize.w(this),
+                .h = m_resize.h(this),
             };
         }
 
@@ -199,8 +199,8 @@ class GfxResizeBoard: public Widget
 
             const int cw = gfxWidget->w();
             const int ch = gfxWidget->h();
-            const int rw = Widget::evalSize(self.m_resize.w, &self);
-            const int rh = Widget::evalSize(self.m_resize.h, &self);
+
+            const auto [rw, rh] = self.m_resize.size(&self);
 
             fnOp({        0,         0,            r.x,            r.y}, mx          , my                                                          ); // top-left
             fnOp({      r.x,         0,            r.w,            r.y}, mx + ox     , my          , std::make_pair(rw            ,            r.y)); // top-middle

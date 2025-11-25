@@ -103,8 +103,8 @@ CBMiddle::CBMiddle(
 
           .resize
           {
-              .w = [this]{ return             w() - (m_bgImgFull.w() - 287); },
-              .h = [this]{ return m_bgImgFull.h()                          ; },
+              [this]{ return             w() - (m_bgImgFull.w() - 287); },
+              [this]{ return m_bgImgFull.h()                          ; },
           },
 
           .parent{this},

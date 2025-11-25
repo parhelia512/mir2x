@@ -101,8 +101,8 @@ class ModalStringBoardImpl: public Widget
 
                   .resize
                   {
-                      .w = [this]{ return m_image.w(); },
-                      .h = [this]{ return std::max<int>(m_minH, 84 + m_board.h() + 30 * 2); }, // add 30 pixels as top/bottom margin of m_board
+                      [this]{ return m_image.w(); },
+                      [this]{ return std::max<int>(m_minH, 84 + m_board.h() + 30 * 2); }, // add 30 pixels as top/bottom margin of m_board
                   },
 
                   .parent{this},

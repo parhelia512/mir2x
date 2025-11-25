@@ -38,8 +38,8 @@ BaseFrameBoard::BaseFrameBoard(BaseFrameBoard::InitArgs args)
 
           .resize
           {
-              .w = [this]{ return w() - 2 * m_cornerSize; },
-              .h = [this]{ return h() - 2 * m_cornerSize; },
+              [this]{ return w() - 2 * m_cornerSize; },
+              [this]{ return h() - 2 * m_cornerSize; },
           },
 
           .parent{this},

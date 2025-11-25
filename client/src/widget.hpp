@@ -212,17 +212,7 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarTexLoadFunc;
 
     public:
-        struct VarSize2D final
-        {
-            Widget::VarSize w = 0;
-            Widget::VarSize h = 0;
-        };
-
-        struct IntSize2D final
-        {
-            int w = 0;
-            int h = 0;
-        };
+#include "widget.v2d.hpp"
 
     public:
         using VarDrawFunc = std::variant<std::nullptr_t,

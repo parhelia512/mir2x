@@ -49,8 +49,8 @@ NPCChatFrame::NPCChatFrame(
 
           .resize
           {
-              .w = [this]{ return w() - (m_frame.w() - 300); },
-              .h = [this]{ return h() - (m_frame.h() - 110); },
+              [this]{ return w() - (m_frame.w() - 300); },
+              [this]{ return h() - (m_frame.h() - 110); },
           },
 
           .parent{this},

@@ -68,8 +68,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
 
           .resize
           {
-              .w = [this]{ return w() - (m_frame.w() - 230); },
-              .h = [this]{ return h() - (m_frame.h() - 250); },
+              [this]{ return w() - (m_frame.w() - 230); },
+              [this]{ return h() - (m_frame.h() - 250); },
           },
 
           .parent{this},
@@ -94,8 +94,8 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
 
           .resize
           {
-              .w = [this](){ return w() - (m_background.w() - 510); },
-              .h = [this](){ return h() - (m_background.h() - 187); },
+              [this](){ return w() - (m_background.w() - 510); },
+              [this](){ return h() - (m_background.h() - 187); },
           },
 
           .parent{this},
