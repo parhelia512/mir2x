@@ -30,10 +30,10 @@ BaseFrameBoard::BaseFrameBoard(BaseFrameBoard::InitArgs args)
           .getter = &m_frame,
           .vr
           {
-              .x = m_cornerSize,
-              .y = m_cornerSize,
-              .w = m_frame.w() - 2 * m_cornerSize,
-              .h = m_frame.h() - 2 * m_cornerSize,
+              m_cornerSize,
+              m_cornerSize,
+              m_frame.w() - 2 * m_cornerSize,
+              m_frame.h() - 2 * m_cornerSize,
           },
 
           .resize

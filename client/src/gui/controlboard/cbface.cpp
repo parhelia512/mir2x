@@ -56,8 +56,8 @@ CBFace::CBFace(
           .getter = &m_faceFull,
           .vr
           {
-              .w = [this]{ return m_faceFull.w() - 2; }, // 82
-              .h = [this]{ return m_faceFull.h()    ; }, // 94
+              [this]{ return m_faceFull.w() - 2; }, // 82
+              [this]{ return m_faceFull.h()    ; }, // 94
           },
 
           .parent{this},

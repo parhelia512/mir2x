@@ -181,8 +181,8 @@ RuntimeConfigBoard::PullMenu::PullMenu(
           .getter = &m_label,
           .vr
           {
-              .w = [argLabelWidth]{fflassert(argLabelWidth >= 0); return argLabelWidth; }(),
-              .h = m_label.h(),
+              fflcheck(argLabelWidth, argLabelWidth >= 0),
+              m_label.h(),
           },
           .parent{this},
       }}
@@ -227,8 +227,8 @@ RuntimeConfigBoard::PullMenu::PullMenu(
           .getter = &m_menuTitle,
           .vr
           {
-              .w = m_menuTitleBackground.w() - 6,
-              .h = std::min<int>(m_menuTitleBackground.h() - 4, m_menuTitle.h()),
+              m_menuTitleBackground.w() - 6,
+              std::min<int>(m_menuTitleBackground.h() - 4, m_menuTitle.h()),
           },
 
           .attrs
@@ -369,8 +369,8 @@ RuntimeConfigBoard::LabelSliderBar::LabelSliderBar(
           .getter = &m_label,
           .vr
           {
-              .w = fflcheck(argLabelWidth, argLabelWidth >= 0),
-              .h = m_label.h(),
+              fflcheck(argLabelWidth, argLabelWidth >= 0),
+              m_label.h(),
           },
           .parent{this},
       }}

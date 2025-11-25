@@ -435,13 +435,7 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
     , m_resizeBoard
       {{
           .getter = &m_img,
-          .vr
-          {
-              .x = [this]{ return getROI().x; },
-              .y = [this]{ return getROI().y; },
-              .w = [this]{ return getROI().w; },
-              .h = [this]{ return getROI().h; },
-          },
+          .vr{[this]{ return getROI(); }},
 
           .bgDrawFunc = [](const Widget *self, int dstDrawX, int dstDrawY)
           {

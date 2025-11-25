@@ -89,7 +89,7 @@ template<std::unsigned_integral KeyT, typename ResT, bool ThreadSafe = false> cl
         {
             std::lock_guard<InnMutex> lockGurad(m_lock);
             if(auto p = m_elemList.find(key); p != m_elemList.end()){
-                if(m_resMax > 0){
+                if((m_resMax > 0) && (p->second.keyiter != m_keyList.begin())){
                     m_keyList.erase(p->second.keyiter);
                     m_keyList.push_front(key);
                     p->second.keyiter = m_keyList.begin();

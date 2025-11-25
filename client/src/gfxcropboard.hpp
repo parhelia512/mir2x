@@ -138,10 +138,10 @@ class GfxCropBoard: public Widget
         }
 
     public:
-        int gfxCropX() const { return Widget::evalInt (m_vr.x, this); }
-        int gfxCropY() const { return Widget::evalInt (m_vr.y, this); }
-        int gfxCropW() const { return Widget::evalSize(m_vr.w, this); }
-        int gfxCropH() const { return Widget::evalSize(m_vr.h, this); }
+        int gfxCropX() const { return m_vr.roi(this).x; }
+        int gfxCropY() const { return m_vr.roi(this).y; }
+        int gfxCropW() const { return m_vr.roi(this).w; }
+        int gfxCropH() const { return m_vr.roi(this).h; }
 
     public:
         int margin(int index) const

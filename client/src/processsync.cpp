@@ -30,8 +30,8 @@ ProcessSync::ProcessSync()
           .getter = &m_barFull,
           .vr
           {
-              .w = [this]{ return m_barFull.w() * m_ratio / 100; },
-              .h = [this]{ return m_barFull.h()                ; },
+              [this]{ return m_barFull.w() * m_ratio / 100; },
+              [this]{ return m_barFull.h()                ; },
           },
 
           .parent{&m_canvas},

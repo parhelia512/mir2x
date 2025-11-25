@@ -53,8 +53,10 @@ CBLeft::CBLeft(
           .getter = &m_bgFull,
           .vr
           {
-              .w = [this]{ return w(); },
-              .h = [this]{ return h(); },
+              0,
+              0,
+              [this]{ return w(); },
+              [this]{ return h(); },
           },
           .parent{this},
       }}
@@ -76,13 +78,14 @@ CBLeft::CBLeft(
           .getter = &m_hpFull,
           .vr
           {
-              .y = [this]
+              0,
+              [this]
               {
                   return m_hpFull.h() - m_hp.gfxCropH();
               },
 
-              .w = m_hpFull.w(),
-              .h = [this] -> int
+              m_hpFull.w(),
+              [this] -> int
               {
                   if(auto myHero = m_processRun->getMyHero()){
                       return to_dround(m_hpFull.h() * myHero->getHealthRatio().at(0));
@@ -111,13 +114,14 @@ CBLeft::CBLeft(
           .getter = &m_mpFull,
           .vr
           {
-              .y = [this](const Widget *)
+              0,
+              [this]
               {
                   return m_mpFull.h() - m_mp.gfxCropH();
               },
 
-              .w = m_mpFull.w(),
-              .h = [this](const Widget *) -> int
+              m_mpFull.w(),
+              [this]
               {
                   if(auto myHero = m_processRun->getMyHero()){
                       return to_dround(m_mpFull.h() * myHero->getHealthRatio().at(1));
@@ -146,13 +150,14 @@ CBLeft::CBLeft(
           .getter = &m_levelBarFull,
           .vr
           {
-              .y = [this]
+              0,
+              [this]
               {
                   return m_levelBarFull.h() - m_levelBar.gfxCropH();
               },
 
-              .w = m_levelBarFull.w(),
-              .h = [this] -> int
+              m_levelBarFull.w(),
+              [this]
               {
                   if(auto myHero = m_processRun->getMyHero()){
                       return to_dround(m_levelBarFull.h() * myHero->getLevelRatio());
@@ -181,13 +186,14 @@ CBLeft::CBLeft(
           .getter = &m_inventoryBarFull,
           .vr
           {
-              .y = [this]
+              0,
+              [this]
               {
                   return m_inventoryBarFull.h() - m_inventoryBar.gfxCropH();
               },
 
-              .w = m_inventoryBarFull.w(),
-              .h = [this] -> int
+              m_inventoryBarFull.w(),
+              [this] -> int
               {
                   if(auto myHero = m_processRun->getMyHero()){
                       return to_dround(m_inventoryBarFull.h() * myHero->getInventoryRatio());
@@ -276,20 +282,21 @@ CBLeft::CBLeft(
           .getter = &m_mapGLocFull,
           .vr
           {
-              .x = [this]
+              [this]
               {
                   if(m_mapGLocFull.w() < m_mapGLocMaxWidth){
                       return 0;
                   }
                   return to_d(m_mapGLocPixelSpeed * m_mapGLocAccuTime / 1000.0) % (m_mapGLocFull.w() - m_mapGLocMaxWidth);
               },
+              0,
 
-              .w = [this]
+              [this]
               {
                   return std::min<int>(m_mapGLocFull.w(), m_mapGLocMaxWidth);
               },
 
-              .h = [this](const Widget *)
+              [this](const Widget *)
               {
                   return m_mapGLocFull.h();
               },

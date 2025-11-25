@@ -153,9 +153,10 @@ CBMiddle::CBMiddle(
           .getter = std::addressof(m_logBoard),
           .vr
           {
-              .y = [this]{ return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
-              .w = [this]{ return m_logBoard.w(); },
-              .h = 83, // log window height
+              0,
+              [this]{ return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
+              [this]{ return m_logBoard.w(); },
+              83, // log window height
           },
 
           .parent{this},
@@ -169,8 +170,8 @@ CBMiddle::CBMiddle(
           .getter = std::addressof(m_cmdBoard),
           .vr
           {
-              .w = [this]{ return w() - 456 + 343; },
-              .h = 17,
+              [this]{ return w() - 456 + 343; },
+              17,
           },
 
           .parent{this},

@@ -198,17 +198,6 @@ void WidgetTreeNode::purge()
     });
 }
 
-Widget::VarROI Widget::ROI::asVarROI() const
-{
-    return Widget::VarROI
-    {
-        .x = x,
-        .y = y,
-        .w = w,
-        .h = h,
-    };
-}
-
 dir8_t Widget::evalDir(const Widget::VarDir &varDir, const Widget *widget, const void *arg)
 {
     const auto fnValidDir = [](dir8_t argDir)

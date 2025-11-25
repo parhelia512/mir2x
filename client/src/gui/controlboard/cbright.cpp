@@ -54,9 +54,11 @@ CBRight::CBRight(
           .getter = &m_bgFull,
           .vr
           {
-              .x = [this]{ return m_bgFull.w() - w(); },
-              .w = [this]{ return w(); },
-              .h = [this]{ return h(); },
+              [this]{ return m_bgFull.w() - w(); },
+              0,
+
+              [this]{ return w(); },
+              [this]{ return h(); },
           },
           .parent{this},
       }}

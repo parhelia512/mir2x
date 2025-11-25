@@ -50,8 +50,8 @@ TexSliderBar::TexSliderBar(
           .getter = &m_slotImage,
           .vr
           {
-          /* brdCropW */ .w =  argHSlider ? 3 : m_slotImage.w(),
-          /* brdCropH */ .h = !argHSlider ? 3 : m_slotImage.h(),
+          /* brdCropW */  argHSlider ? 3 : m_slotImage.w(),
+          /* brdCropH */ !argHSlider ? 3 : m_slotImage.h(),
           },
           .parent{this},
       }}
@@ -61,11 +61,11 @@ TexSliderBar::TexSliderBar(
           .getter = &m_slotImage,
           .vr
           {
-              /* brdCropX */ .x =  argHSlider ? 3 : 0,
-              /* brdCropY */ .y = !argHSlider ? 3 : 0,
+              /* brdCropX */  argHSlider ? 3 : 0,
+              /* brdCropY */ !argHSlider ? 3 : 0,
 
-              /* brdCropW */ .w =  argHSlider ? m_slotImage.w() - 6 : m_slotImage.w(),
-              /* brdCropH */ .h = !argHSlider ? m_slotImage.h() - 6 : m_slotImage.h(),
+              /* brdCropW */  argHSlider ? m_slotImage.w() - 6 : m_slotImage.w(),
+              /* brdCropH */ !argHSlider ? m_slotImage.h() - 6 : m_slotImage.h(),
           },
       }}
 
@@ -78,11 +78,11 @@ TexSliderBar::TexSliderBar(
           .getter = &m_slotImage,
           .vr
           {
-              /* brdCropX */ .x =  argHSlider ? m_slotImage.w() - 3 : 0,
-              /* brdCropY */ .y = !argHSlider ? m_slotImage.h() - 3 : 0,
+              /* brdCropX */  argHSlider ? m_slotImage.w() - 3 : 0,
+              /* brdCropY */ !argHSlider ? m_slotImage.h() - 3 : 0,
 
-              /* brdCropW */ .w =  argHSlider ? 3 : m_slotImage.w(),
-              /* brdCropW */ .h = !argHSlider ? 3 : m_slotImage.h(),
+              /* brdCropW */  argHSlider ? 3 : m_slotImage.w(),
+              /* brdCropW */ !argHSlider ? 3 : m_slotImage.h(),
           },
           .parent{this},
       }}

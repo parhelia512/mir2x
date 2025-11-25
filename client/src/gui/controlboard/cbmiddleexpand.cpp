@@ -57,9 +57,10 @@ CBMiddleExpand::CBMiddleExpand(
           .getter = std::addressof(m_logBoard),
           .vr
           {
-              .y = [this]{ return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
-              .w = [this]{ return m_logBoard.w(); },
-              .h = 83,
+              0,
+              [this]{ return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
+              [this]{ return m_logBoard.w(); },
+              83,
           },
 
           .parent{this},

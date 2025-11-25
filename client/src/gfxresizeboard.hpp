@@ -76,8 +76,8 @@ class GfxResizeBoard: public Widget
         {
             setSize([this]
             {
-                const auto vx = Widget::evalInt (m_vr    .x, this);
-                const auto vw = Widget::evalSize(m_vr    .w, this);
+                const auto vx = m_vr.x(this);
+                const auto vw = m_vr.w(this);
                 const auto rw = m_resize.w(this);
 
                 if(auto gfxPtr = gfxWidget()){ return margin(2) + std::max<int>(vx, 0) + rw + std::max<int>(gfxPtr->w() - (vx + vw), 0) + margin(3); }
@@ -86,8 +86,8 @@ class GfxResizeBoard: public Widget
 
             [this]
             {
-                const auto vy = Widget::evalInt (m_vr    .y, this);
-                const auto vh = Widget::evalSize(m_vr    .h, this);
+                const auto vy = m_vr.y(this);
+                const auto vh = m_vr.h(this);
                 const auto rh = m_resize.h(this);
 
                 if(auto gfxPtr = gfxWidget()){ return margin(0) + std::max<int>(vy, 0) + rh + std::max<int>(gfxPtr->h() - (vy + vh), 0) + margin(1); }
@@ -178,7 +178,7 @@ class GfxResizeBoard: public Widget
                 const int dh = dupSize.has_value() ? dupSize->second : cr.h;
 
                 if(const auto cm = m.get().create({dx, dy, dw, dh})){
-                    GfxCropBoard crop{{.getter = gfxWidget, .vr = cr.asVarROI()}};
+                    GfxCropBoard crop{{.getter = gfxWidget, .vr{cr}}};
                     if(dupSize.has_value()){
                         GfxDupBoard dup{{.w = dupSize->first, .h = dupSize->second, .getter = &crop}};
                         func(&dup, cm);

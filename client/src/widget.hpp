@@ -212,7 +212,8 @@ class Widget: public WidgetTreeNode
         using WidgetTreeNode::VarTexLoadFunc;
 
     public:
-#include "widget.v2d.hpp"
+#include "widget.offset2d.hpp"
+#include "widget.size2d.hpp"
 
     public:
         using VarDrawFunc = std::variant<std::nullptr_t,
@@ -533,4 +534,4 @@ class Widget: public WidgetTreeNode
         virtual std::string dumpTree() const;
 };
 
-#include "widget.imp.hpp"
+#include "widget.implement.hpp"

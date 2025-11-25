@@ -1,5 +1,3 @@
-struct VarROI; // for ROI::asVarROI()
-
 struct ROI final
 {
     int x = 0;
@@ -38,27 +36,153 @@ struct ROI final
         mathf::cropSegment<int>(y, h, r.y, r.h);
         return *this;
     }
-
-    Widget::VarROI asVarROI() const; // defines in widget.cpp
 };
 
-struct VarROI final
+class VarROI final
 {
-    Widget::VarInt  x = 0;
-    Widget::VarInt  y = 0;
-    Widget::VarSize w = 0;
-    Widget::VarSize h = 0;
+    private:
+        std::variant<Widget::VarGetter<Widget::ROI>, std::tuple<Widget::VarOffset2D, Widget::VarSize2D>> m_varROI;
 
-    Widget::ROI roi(const Widget *widget, const void *arg) const
-    {
-        return
+    public:
+        VarROI()
+            : m_varROI(Widget::ROI
+              {
+                  .x = 0,
+                  .y = 0,
+                  .w = 0,
+                  .h = 0,
+              })
+        {}
+
+    public:
+        VarROI(Widget::VarGetter<Widget::ROI> arg)
+            : m_varROI(std::in_place_type<Widget::VarGetter<Widget::ROI>>, std::move(arg))
+        {}
+
+        VarROI(Widget::VarOffset2D argOff, Widget::VarSize2D argSize)
+            : m_varROI(std::in_place_type<std::tuple<Widget::VarOffset2D, Widget::VarSize2D>>, std::move(argOff), std::move(argSize))
+        {}
+
+        VarROI(Widget::VarSize2D argSize)
+            : m_varROI(std::in_place_type<std::tuple<Widget::VarOffset2D, Widget::VarSize2D>>, Widget::VarOffset2D{}, std::move(argSize))
+        {}
+
+        VarROI(Widget::VarOffset2D argOff, Widget::VarSize argW, Widget::VarSize argH)
+            : m_varROI(std::in_place_type<std::tuple<Widget::VarOffset2D, Widget::VarSize2D>>, std::move(argOff), Widget::VarSize2D(std::move(argW), std::move(argH)))
+        {}
+
+        VarROI(Widget::VarSize argW, Widget::VarSize argH)
+            : m_varROI(std::in_place_type<std::tuple<Widget::VarOffset2D, Widget::VarSize2D>>, Widget::VarOffset2D{}, Widget::VarSize2D(std::move(argW), std::move(argH)))
+        {}
+
+        VarROI(Widget::VarInt argX, Widget::VarInt argY, Widget::VarSize2D argSize)
+            : m_varROI(std::in_place_type<std::tuple<Widget::VarOffset2D, Widget::VarSize2D>>, Widget::VarOffset2D(std::move(argX), std::move(argY)), std::move(argSize))
+        {}
+
+        VarROI(Widget::VarInt argX, Widget::VarInt argY, Widget::VarSize argW, Widget::VarSize argH)
+            : m_varROI(std::in_place_type<std::tuple<Widget::VarOffset2D, Widget::VarSize2D>>, Widget::VarOffset2D(std::move(argX), std::move(argY)), Widget::VarSize2D(std::move(argW), std::move(argH)))
+        {}
+
+    public:
+        Widget::ROI roi(const Widget *widget, const void *arg = nullptr) const
         {
-            .x = Widget::evalInt (x, widget, arg),
-            .y = Widget::evalInt (y, widget, arg),
-            .w = Widget::evalSize(w, widget, arg),
-            .h = Widget::evalSize(h, widget, arg),
-        };
-    }
+            return std::visit(VarDispatcher
+            {
+                [widget, arg](const Widget::VarGetter<Widget::ROI> &varg)
+                {
+                    return Widget::evalGetter<Widget::ROI>(varg, widget, arg);
+                },
+
+                [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
+                {
+                    const auto [x, y] = std::get<0>(varg).offset(widget, arg);
+                    const auto [w, h] = std::get<1>(varg).  size(widget, arg);
+
+                    return Widget::ROI
+                    {
+                        .x = x,
+                        .y = y,
+                        .w = w,
+                        .h = h,
+                    };
+                },
+            },
+
+            m_varROI);
+        }
+
+    public:
+        int x(const Widget *widget, const void *arg = nullptr) const
+        {
+            return std::visit(VarDispatcher
+            {
+                [widget, arg](const Widget::VarGetter<Widget::ROI> &varg)
+                {
+                    return Widget::evalGetter<Widget::ROI>(varg, widget, arg).x;
+                },
+
+                [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
+                {
+                    return std::get<0>(varg).offset(widget, arg).x;
+                },
+            },
+
+            m_varROI);
+        }
+
+        int y(const Widget *widget, const void *arg = nullptr) const
+        {
+            return std::visit(VarDispatcher
+            {
+                [widget, arg](const Widget::VarGetter<Widget::ROI> &varg)
+                {
+                    return Widget::evalGetter<Widget::ROI>(varg, widget, arg).y;
+                },
+
+                [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
+                {
+                    return std::get<0>(varg).offset(widget, arg).y;
+                },
+            },
+
+            m_varROI);
+        }
+
+        int w(const Widget *widget, const void *arg = nullptr) const
+        {
+            return std::visit(VarDispatcher
+            {
+                [widget, arg](const Widget::VarGetter<Widget::ROI> &varg)
+                {
+                    return Widget::evalGetter<Widget::ROI>(varg, widget, arg).w;
+                },
+
+                [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
+                {
+                    return std::get<1>(varg).size(widget, arg).w;
+                },
+            },
+
+            m_varROI);
+        }
+
+        int h(const Widget *widget, const void *arg = nullptr) const
+        {
+            return std::visit(VarDispatcher
+            {
+                [widget, arg](const Widget::VarGetter<Widget::ROI> &varg)
+                {
+                    return Widget::evalGetter<Widget::ROI>(varg, widget, arg).h;
+                },
+
+                [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
+                {
+                    return std::get<1>(varg).size(widget, arg).h;
+                },
+            },
+
+            m_varROI);
+        }
 };
 
 class VarROIOpt final
@@ -71,12 +195,8 @@ class VarROIOpt final
         VarROIOpt(std::nullopt_t): VarROIOpt() {};
 
     public:
-        VarROIOpt(Widget::VarSize argW, Widget::VarSize argH)
-            : VarROIOpt(0, 0, std::move(argW), std::move(argH))
-        {}
-
-        VarROIOpt(Widget::VarInt argX, Widget::VarInt argY, Widget::VarSize argW, Widget::VarSize argH)
-            : m_varROIOpt(Widget::VarROI{std::move(argX), std::move(argY), std::move(argW), std::move(argH)})
+        template<typename... Args> explicit VarROIOpt(Args&&... args)
+            : m_varROIOpt(Widget::VarROI(std::forward<Args>(args)...))
         {}
 
     public:

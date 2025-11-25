@@ -83,8 +83,9 @@ class ModalStringBoardImpl: public Widget
                   .getter = &m_image,
                   .vr
                   {
-                      .w = [this]{ return m_image.w(); },
-                      .h = 180,
+                      {},
+                      [this]{ return m_image.w(); },
+                      180,
                   },
               }}
 
@@ -116,9 +117,10 @@ class ModalStringBoardImpl: public Widget
                   .getter = &m_image,
                   .vr
                   {
-                      .y = [this]{ return m_image.h() - 40; },
-                      .w = [this]{ return m_image.w(); },
-                      .h = 40,
+                      0,
+                      [this]{ return m_image.h() - 40; },
+                      [this]{ return m_image.w(); },
+                      40,
                   },
 
                   .parent{this},
