@@ -543,4 +543,4 @@ class Widget: public WidgetTreeNode
         virtual std::string dumpTree() const;
 };
 
-#include "widget.impl.hpp"
+#include "widget.imp.hpp"
