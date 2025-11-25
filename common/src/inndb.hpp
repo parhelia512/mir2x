@@ -106,7 +106,7 @@ template<std::unsigned_integral KeyT, typename ResT, bool ThreadSafe = false> cl
             }
 
             auto newRes = loadResource(key);
-            auto emplaced = m_elemList.emplace(key, newRes.has_value() ? ResElement
+            auto emplaced = m_elemList.try_emplace(key, newRes.has_value() ? ResElement
             {
                 .weight  = std::get<1>(newRes.value()),
                 .res     = std::move(std::get<0>(newRes.value())),
@@ -121,8 +121,8 @@ template<std::unsigned_integral KeyT, typename ResT, bool ThreadSafe = false> cl
             if(m_resMax > 0){
                 m_resSum += emplaced->second.weight;
                 while(m_resSum > m_resMax){
-                    fflassert(!m_keyList.empty());
-                    fflassert(!m_elemList.empty());
+                    fflassert(m_keyList.size() > 1); // not only >=1 since we just emplaced one element
+                    fflassert(m_elemList.size() > 1);
 
                     auto poldest = m_elemList.find(m_keyList.back());
 
