@@ -11,11 +11,7 @@ class VarSize2D final
 
     public:
         VarSize2D()
-            : m_varSize(Widget::IntSize2D
-              {
-                  .w = 0,
-                  .h = 0,
-              })
+            : m_varSize(std::make_tuple(0, 0)) // prefer decoupled size
         {}
 
         VarSize2D(Widget::VarGetter<Widget::IntSize2D> arg)
@@ -27,36 +23,36 @@ class VarSize2D final
         {}
 
     public:
-        int w(const Widget *widget, const void * data = nullptr) const
+        int w(const Widget *widget, const void * arg = nullptr) const
         {
             return std::visit(VarDispatcher
             {
-                [widget, data](const Widget::VarGetter<Widget::IntSize2D> &varg)
+                [widget, arg](const Widget::VarGetter<Widget::IntSize2D> &varg)
                 {
-                    return std::max<int>(Widget::evalGetter<Widget::IntSize2D>(varg, widget, data).w, 0);
+                    return std::max<int>(Widget::evalGetter<Widget::IntSize2D>(varg, widget, arg).w, 0);
                 },
 
-                [widget, data](const std::tuple<Widget::VarSize, Widget::VarSize> &varg)
+                [widget, arg](const std::tuple<Widget::VarSize, Widget::VarSize> &varg)
                 {
-                    return Widget::evalSize(std::get<0>(varg), widget, data);
+                    return Widget::evalSize(std::get<0>(varg), widget, arg);
                 },
             },
 
             m_varSize);
         }
 
-        int h(const Widget *widget, const void * data = nullptr) const
+        int h(const Widget *widget, const void * arg = nullptr) const
         {
             return std::visit(VarDispatcher
             {
-                [widget, data](const Widget::VarGetter<Widget::IntSize2D> &varg)
+                [widget, arg](const Widget::VarGetter<Widget::IntSize2D> &varg)
                 {
-                    return std::max<int>(Widget::evalGetter<Widget::IntSize2D>(varg, widget, data).h, 0);
+                    return std::max<int>(Widget::evalGetter<Widget::IntSize2D>(varg, widget, arg).h, 0);
                 },
 
-                [widget, data](const std::tuple<Widget::VarSize, Widget::VarSize> &varg)
+                [widget, arg](const std::tuple<Widget::VarSize, Widget::VarSize> &varg)
                 {
-                    return Widget::evalSize(std::get<1>(varg), widget, data);
+                    return Widget::evalSize(std::get<1>(varg), widget, arg);
                 },
             },
 
@@ -64,13 +60,13 @@ class VarSize2D final
         }
 
     public:
-        Widget::IntSize2D size(const Widget *widget, const void * data = nullptr) const
+        Widget::IntSize2D size(const Widget *widget, const void * arg = nullptr) const
         {
             return std::visit(VarDispatcher
             {
-                [widget, data](const Widget::VarGetter<Widget::IntSize2D> &varg)
+                [widget, arg](const Widget::VarGetter<Widget::IntSize2D> &varg)
                 {
-                    const auto [w, h] = Widget::evalGetter<Widget::IntSize2D>(varg, widget, data);
+                    const auto [w, h] = Widget::evalGetter<Widget::IntSize2D>(varg, widget, arg);
                     return Widget::IntSize2D
                     {
                         .w = std::max<int>(w, 0),
@@ -78,16 +74,22 @@ class VarSize2D final
                     };
                 },
 
-                [widget, data](const std::tuple<Widget::VarSize, Widget::VarSize> &varg)
+                [widget, arg](const std::tuple<Widget::VarSize, Widget::VarSize> &varg)
                 {
                     return Widget::IntSize2D
                     {
-                        .w = Widget::evalSize(std::get<0>(varg), widget, data),
-                        .h = Widget::evalSize(std::get<1>(varg), widget, data),
+                        .w = Widget::evalSize(std::get<0>(varg), widget, arg),
+                        .h = Widget::evalSize(std::get<1>(varg), widget, arg),
                     };
                 },
             },
 
             m_varSize);
+        }
+
+    public:
+        bool combined() const
+        {
+            return std::holds_alternative<Widget::VarGetter<Widget::IntSize2D>>(m_varSize);
         }
 };

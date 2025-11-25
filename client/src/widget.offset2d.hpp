@@ -11,11 +11,7 @@ class VarOffset2D final
 
     public:
         VarOffset2D()
-            : m_varOffset(Widget::IntOffset2D
-              {
-                  .x = 0,
-                  .y = 0,
-              })
+            : m_varOffset(std::make_tuple(0, 0)) // prefer decoupled offset
         {}
 
         VarOffset2D(Widget::VarGetter<Widget::IntOffset2D> arg)
@@ -27,36 +23,36 @@ class VarOffset2D final
         {}
 
     public:
-        int x(const Widget *widget, const void * data = nullptr) const
+        int x(const Widget *widget, const void * arg = nullptr) const
         {
             return std::visit(VarDispatcher
             {
-                [widget, data](const Widget::VarGetter<Widget::IntOffset2D> &varg)
+                [widget, arg](const Widget::VarGetter<Widget::IntOffset2D> &varg)
                 {
-                    return Widget::evalGetter<Widget::IntOffset2D>(varg, widget, data).x;
+                    return Widget::evalGetter<Widget::IntOffset2D>(varg, widget, arg).x;
                 },
 
-                [widget, data](const std::tuple<Widget::VarInt, Widget::VarInt> &varg)
+                [widget, arg](const std::tuple<Widget::VarInt, Widget::VarInt> &varg)
                 {
-                    return Widget::evalInt(std::get<0>(varg), widget, data);
+                    return Widget::evalInt(std::get<0>(varg), widget, arg);
                 },
             },
 
             m_varOffset);
         }
 
-        int y(const Widget *widget, const void * data = nullptr) const
+        int y(const Widget *widget, const void * arg = nullptr) const
         {
             return std::visit(VarDispatcher
             {
-                [widget, data](const Widget::VarGetter<Widget::IntOffset2D> &varg)
+                [widget, arg](const Widget::VarGetter<Widget::IntOffset2D> &varg)
                 {
-                    return Widget::evalGetter<Widget::IntOffset2D>(varg, widget, data).y;
+                    return Widget::evalGetter<Widget::IntOffset2D>(varg, widget, arg).y;
                 },
 
-                [widget, data](const std::tuple<Widget::VarInt, Widget::VarInt> &varg)
+                [widget, arg](const std::tuple<Widget::VarInt, Widget::VarInt> &varg)
                 {
-                    return Widget::evalInt(std::get<1>(varg), widget, data);
+                    return Widget::evalInt(std::get<1>(varg), widget, arg);
                 },
             },
 
@@ -64,25 +60,31 @@ class VarOffset2D final
         }
 
     public:
-        Widget::IntOffset2D offset(const Widget *widget, const void * data = nullptr) const
+        Widget::IntOffset2D offset(const Widget *widget, const void * arg = nullptr) const
         {
             return std::visit(VarDispatcher
             {
-                [widget, data](const Widget::VarGetter<Widget::IntOffset2D> &varg)
+                [widget, arg](const Widget::VarGetter<Widget::IntOffset2D> &varg)
                 {
-                    return Widget::evalGetter<Widget::IntOffset2D>(varg, widget, data);
+                    return Widget::evalGetter<Widget::IntOffset2D>(varg, widget, arg);
                 },
 
-                [widget, data](const std::tuple<Widget::VarInt, Widget::VarInt> &varg)
+                [widget, arg](const std::tuple<Widget::VarInt, Widget::VarInt> &varg)
                 {
                     return Widget::IntOffset2D
                     {
-                        .x = Widget::evalInt(std::get<0>(varg), widget, data),
-                        .y = Widget::evalInt(std::get<1>(varg), widget, data),
+                        .x = Widget::evalInt(std::get<0>(varg), widget, arg),
+                        .y = Widget::evalInt(std::get<1>(varg), widget, arg),
                     };
                 },
             },
 
             m_varOffset);
+        }
+
+    public:
+        bool combined() const
+        {
+            return std::holds_alternative<Widget::VarGetter<Widget::IntOffset2D>>(m_varOffset);
         }
 };

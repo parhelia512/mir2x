@@ -123,7 +123,8 @@ class VarROI final
 
                 [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
                 {
-                    return std::get<0>(varg).offset(widget, arg).x;
+                    if(std::get<0>(varg).combined()){ return std::get<0>(varg).offset(widget, arg).x; }
+                    else                            { return std::get<0>(varg).     x(widget, arg)  ; }
                 },
             },
 
@@ -141,7 +142,8 @@ class VarROI final
 
                 [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
                 {
-                    return std::get<0>(varg).offset(widget, arg).y;
+                    if(std::get<0>(varg).combined()){ return std::get<0>(varg).offset(widget, arg).y; }
+                    else                            { return std::get<0>(varg).     y(widget, arg)  ; }
                 },
             },
 
@@ -159,7 +161,8 @@ class VarROI final
 
                 [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
                 {
-                    return std::get<1>(varg).size(widget, arg).w;
+                    if(std::get<1>(varg).combined()){ return std::get<1>(varg).size(widget, arg).w; }
+                    else                            { return std::get<1>(varg).   w(widget, arg)  ; }
                 },
             },
 
@@ -177,11 +180,54 @@ class VarROI final
 
                 [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
                 {
-                    return std::get<1>(varg).size(widget, arg).h;
+                    if(std::get<1>(varg).combined()){ return std::get<1>(varg).size(widget, arg).h; }
+                    else                            { return std::get<1>(varg).   h(widget, arg)  ; }
                 },
             },
 
             m_varROI);
+        }
+
+    public:
+        bool combinedOffset() const
+        {
+            return std::visit(VarDispatcher
+            {
+                [](const Widget::VarGetter<Widget::ROI> &)
+                {
+                    return true;
+                },
+
+                [](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
+                {
+                    return std::get<0>(varg).combined();
+                },
+            },
+
+            m_varROI);
+        }
+
+        bool combinedSize() const
+        {
+            return std::visit(VarDispatcher
+            {
+                [](const Widget::VarGetter<Widget::ROI> &)
+                {
+                    return true;
+                },
+
+                [](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
+                {
+                    return std::get<1>(varg).combined();
+                },
+            },
+
+            m_varROI);
+        }
+
+        bool combinedROI() const
+        {
+            return std::holds_alternative<Widget::VarGetter<Widget::ROI>>(m_varROI);
         }
 };
 
