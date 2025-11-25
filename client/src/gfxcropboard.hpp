@@ -132,16 +132,26 @@ class GfxCropBoard: public Widget
         }
 
     public:
-        Widget::ROI gfxCropROI() const
-        {
-            return m_vr.roi(this, nullptr);
-        }
+        int gfxCropX() const { return m_vr.x(this); }
+        int gfxCropY() const { return m_vr.y(this); }
+        int gfxCropW() const { return m_vr.w(this); }
+        int gfxCropH() const { return m_vr.h(this); }
 
     public:
-        int gfxCropX() const { return m_vr.roi(this).x; }
-        int gfxCropY() const { return m_vr.roi(this).y; }
-        int gfxCropW() const { return m_vr.roi(this).w; }
-        int gfxCropH() const { return m_vr.roi(this).h; }
+        Widget::IntOffset2D gfxCropOffset() const
+        {
+            return m_vr.offset(this);
+        }
+
+        Widget::IntSize2D gfxCropSize() const
+        {
+            return m_vr.size(this);
+        }
+
+        Widget::ROI gfxCropROI() const
+        {
+            return m_vr.roi(this);
+        }
 
     public:
         int margin(int index) const

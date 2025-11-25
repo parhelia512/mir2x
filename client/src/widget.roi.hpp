@@ -5,6 +5,16 @@ struct ROI final
     int w = 0;
     int h = 0;
 
+    Widget::IntOffset2D offset() const noexcept
+    {
+        return {x, y};
+    }
+
+    Widget::IntSize2D size() const noexcept
+    {
+        return {w, h};
+    }
+
     bool empty() const noexcept
     {
         return w <= 0 || h <= 0;
@@ -105,6 +115,42 @@ class VarROI final
                         .w = w,
                         .h = h,
                     };
+                },
+            },
+
+            m_varROI);
+        }
+
+        Widget::IntOffset2D offset(const Widget *widget, const void *arg = nullptr) const
+        {
+            return std::visit(VarDispatcher
+            {
+                [widget, arg](const Widget::VarGetter<Widget::ROI> &varg)
+                {
+                    return Widget::evalGetter<Widget::ROI>(varg, widget, arg).offset();
+                },
+
+                [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
+                {
+                    return std::get<0>(varg).offset(widget, arg);
+                },
+            },
+
+            m_varROI);
+        }
+
+        Widget::IntSize2D size(const Widget *widget, const void *arg = nullptr) const
+        {
+            return std::visit(VarDispatcher
+            {
+                [widget, arg](const Widget::VarGetter<Widget::ROI> &varg)
+                {
+                    return Widget::evalGetter<Widget::ROI>(varg, widget, arg).size();
+                },
+
+                [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
+                {
+                    return std::get<1>(varg).size(widget, arg);
                 },
             },
 
