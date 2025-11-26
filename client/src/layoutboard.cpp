@@ -756,7 +756,7 @@ std::string LayoutBoard::getText() const
 {
     std::vector<std::string> lines;
     for(const auto &node: m_parNodeList){
-        if(text.empty()){
+        if(node.tpset->empty()){
             lines.push_back({});
         }
         else{

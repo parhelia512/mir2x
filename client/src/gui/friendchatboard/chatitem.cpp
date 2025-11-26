@@ -299,7 +299,7 @@ bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, Widget::R
                 [this](Widget *item) // create new menu board whenever click a new chat item
                 {
                     if(const auto op = std::any_cast<std::string>(item->data()); op == "引用"){
-                        std::string textStr = message.getText(false);
+                        std::string textStr = message.getText();
                         fflassert(utf8f::valid(textStr));
 
                         if(const auto size = utf8::distance(textStr.begin(), textStr.end()); size > 50){
@@ -308,7 +308,7 @@ bool ChatItem::processEventDefault(const SDL_Event &event, bool valid, Widget::R
                             textStr.resize(std::distance(textStr.begin(), p));
                             textStr.append("...");
                         }
-                        hasParent<ChatPage>()->enableChatRef(msgID.value(), "<layout>" + xmlf::toParString("%s：%s", name.getText(false).c_str(), textStr.c_str()) + "</layout>");
+                        hasParent<ChatPage>()->enableChatRef(msgID.value(), "<layout>" + xmlf::toParString("%s：%s", name.getText().c_str(), textStr.c_str()) + "</layout>");
                     }
                 },
             }),

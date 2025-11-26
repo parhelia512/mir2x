@@ -55,7 +55,7 @@ CBTitle::CBTitle(
     , m_level
       {
           DIR_NONE,
-          64,
+          63,
           25,
 
           argProc,

@@ -66,9 +66,9 @@ class LabelBoard: public Widget
             return m_tpset.getXML();
         }
 
-        std::string getText(bool textOnly) const
+        std::string getText() const
         {
-            return m_tpset.getText(textOnly);
+            return m_tpset.getText();
         }
 
     public:
