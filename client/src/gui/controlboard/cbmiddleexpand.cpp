@@ -130,7 +130,7 @@ CBMiddleExpand::CBMiddleExpand(
               .x = [this]{ return w() - 10; },
               .y = 40,
               .w = 5,
-              .h = [this]{ return h() - m_bgImgFull.h() + 222; }
+              .h = [this]{ return h() - m_bgImgFull.h() + 223; }
            },
 
           .index = 2,
