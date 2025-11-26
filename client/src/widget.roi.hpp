@@ -55,13 +55,7 @@ class VarROI final
 
     public:
         VarROI()
-            : m_varROI(Widget::ROI
-              {
-                  .x = 0,
-                  .y = 0,
-                  .w = 0,
-                  .h = 0,
-              })
+            : m_varROI(std::tuple<Widget::VarOffset2D, Widget::VarSize2D>{}) // prefer decoupled roi
         {}
 
     public:
