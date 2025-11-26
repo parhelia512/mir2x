@@ -28,6 +28,10 @@ class CBMiddle: public Widget
         LayoutBoard &m_cmdBoard;
 
     private:
+        int m_cmdBoardCropX = 0;
+        int m_cmdBoardCropY = 0;
+
+    private:
         GfxShapeBoard m_bg;
 
     private:
@@ -61,4 +65,13 @@ class CBMiddle: public Widget
 
     public:
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
+
+    private:
+        void onCmdCursorMove();
+
+    private:
+        Widget::IntSize2D getCmdWindowSize() const
+        {
+            return {w() - 456 + 343, 17};
+        }
 };

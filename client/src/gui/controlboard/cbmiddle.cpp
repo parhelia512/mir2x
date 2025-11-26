@@ -170,8 +170,10 @@ CBMiddle::CBMiddle(
           .getter = std::addressof(m_cmdBoard),
           .vr
           {
-              [this]{ return w() - 456 + 343; },
-              17,
+              Widget::VarInt([this]{ return m_cmdBoardCropX; }),
+              Widget::VarInt([this]{ return m_cmdBoardCropY; }),
+
+              [this]{ return getCmdWindowSize(); },
           },
 
           .parent{this},
@@ -217,4 +219,8 @@ bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, Widget::R
                 return false;
             }
     }
+}
+
+void CBMiddle::onCmdCursorMove()
+{
 }

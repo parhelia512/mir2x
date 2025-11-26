@@ -69,7 +69,18 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           },
 
           .lineAlign = LALIGN_JUSTIFY,
-          .onCR = [this]{ onInputDone(); },
+
+          .onCR = [this]
+          {
+              onInputDone();
+          },
+
+          .onCursorMove = [this]
+          {
+              if(m_middle.show()){
+                  m_middle.onCmdCursorMove();
+              }
+          },
       }}
 
     , m_left
