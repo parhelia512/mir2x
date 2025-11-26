@@ -259,11 +259,13 @@ void ControlBoard::onClickSwitchModeButton(int)
         case CBM_DEF:
             {
                 m_mode = CBM_EXPAND;
+                m_middleExpand.afterResize();
                 break;
             }
         case CBM_EXPAND:
             {
                 m_mode = CBM_DEF;
+                m_middle.afterResize();
                 break;
             }
         default:
