@@ -42,7 +42,7 @@ class LayoutBoard: public Widget
 
             std::function<void()> onTab;
             std::function<void()> onCR;
-            std::function<void(bool)> onCursorMove; // onCursorMove(beforeMove)
+            std::function<void()> onCursorMove;
             std::function<void(const std::unordered_map<std::string, std::string> &, int)> onClickText;
 
             Widget::WADPair parent {};
@@ -118,7 +118,7 @@ class LayoutBoard: public Widget
     private:
         const std::function<void()> m_onTab;
         const std::function<void()> m_onCR;
-        const std::function<void(bool)> m_onCursorMove;
+        const std::function<void()> m_onCursorMove; // after cursor moved
         const std::function<void(const std::unordered_map<std::string, std::string> &, int)> m_eventCB;
 
     public:

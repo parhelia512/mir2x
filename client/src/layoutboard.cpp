@@ -468,6 +468,9 @@ void LayoutBoard::setLineWidth(int argLineWidth)
     setupStartY(0);
     if(m_canEdit){
         std::tie(m_cursorLoc.x, m_cursorLoc.y) = ithParIterator(m_cursorLoc.par)->tpset->cursorOff2Loc(cursorOff);
+        if(m_onCursorMove){
+            m_onCursorMove();
+        }
     }
 }
 
@@ -512,6 +515,10 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                                 m_cursorLoc.par++;
                                 m_cursorLoc.x = 0;
                                 m_cursorLoc.y = 0;
+
+                                if(m_onCursorMove){
+                                    m_onCursorMove();
+                                }
                             }
                             else{
                                 if(m_onCR){
@@ -536,6 +543,10 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                                 std::tie(m_cursorLoc.x, m_cursorLoc.y) = ithParIterator(m_cursorLoc.par)->tpset->prevCursorLoc(m_cursorLoc.x, m_cursorLoc.y);
                             }
 
+                            if(m_onCursorMove){
+                                m_onCursorMove();
+                            }
+
                             m_cursorBlink = 0.0;
                             return consumeFocus(true);
                         }
@@ -551,6 +562,10 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                             }
                             else{
                                 std::tie(m_cursorLoc.x, m_cursorLoc.y) = par->tpset->nextCursorLoc(m_cursorLoc.x, m_cursorLoc.y);
+                            }
+
+                            if(m_onCursorMove){
+                                m_onCursorMove();
                             }
 
                             m_cursorBlink = 0.0;
@@ -581,6 +596,11 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                             }
 
                             setupStartY(m_cursorLoc.par);
+
+                            if(m_onCursorMove){
+                                m_onCursorMove();
+                            }
+
                             m_cursorBlink = 0.0;
                             return consumeFocus(true);
                         }
@@ -598,7 +618,12 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                                 for(size_t i = 0, count = utf8::distance(s.begin(), s.end()); i < count; ++i){
                                     std::tie(m_cursorLoc.x, m_cursorLoc.y) = ithParIterator(m_cursorLoc.par)->tpset->nextCursorLoc(m_cursorLoc.x, m_cursorLoc.y);
                                 }
+
                                 setupStartY(m_cursorLoc.par);
+
+                                if(m_onCursorMove){
+                                    m_onCursorMove();
+                                }
                             };
 
                             if(!g_clientArgParser->disableIME && m_imeEnabled && g_imeBoard->active() && (keyChar >= 'a' && keyChar <= 'z')){
