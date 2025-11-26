@@ -18,6 +18,10 @@ class ControlBoard;
 class CBMiddle: public Widget
 {
     private:
+        constexpr static int LOG_WINDOW_HEIGHT = 83;
+        constexpr static int CMD_WINDOW_HEIGHT = 17;
+
+    private:
         friend class ControlBoard;
 
     private:
@@ -71,8 +75,6 @@ class CBMiddle: public Widget
         void onCmdCursorMove();
 
     private:
-        Widget::IntSize2D getCmdWindowSize() const
-        {
-            return {w() - 456 + 343, 17};
-        }
+        int getCmdWindowWidth() const { return w() - 456 + 343; }
+        int getLogWindowWidth() const { return w() - 456 + 343; }
 };

@@ -154,9 +154,9 @@ CBMiddle::CBMiddle(
           .vr
           {
               0,
-              [this]{ return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
-              [this]{ return m_logBoard.w(); },
-              83, // log window height
+              [this]{ return std::max<int>(0, to_dround((m_logBoard.h() - LOG_WINDOW_HEIGHT) * m_slider.getValue())); },
+              [this]{ return getLogWindowWidth(); },
+              LOG_WINDOW_HEIGHT,
           },
 
           .parent{this},
@@ -170,9 +170,11 @@ CBMiddle::CBMiddle(
           .getter = std::addressof(m_cmdBoard),
           .vr
           {
-              Widget::VarInt   ([this]{ return m_cmdBoardCropX   ; }),
-              Widget::VarInt   ([this]{ return m_cmdBoardCropY   ; }),
-              Widget::VarSize2D{[this]{ return getCmdWindowSize(); }},
+              [this]{ return m_cmdBoardCropX ; },
+              [this]{ return m_cmdBoardCropY ; },
+
+              [this]{ return getCmdWindowWidth(); },
+              CMD_WINDOW_HEIGHT,
           },
 
           .parent{this},
@@ -228,13 +230,14 @@ void CBMiddle::onCmdCR()
 
 void CBMiddle::onCmdCursorMove()
 {
+    const auto cmdBoardCropW = getCmdWindowWidth();
     const auto cursorROI = Widget::makeROI(m_cmdBoard.getCursorPLoc());
 
     if(cursorROI.x + cursorROI.w <= m_cmdBoardCropX){
         m_cmdBoardCropX = cursorROI.x;
     }
 
-    if(cursorROI.x >= m_cmdBoardCropX + getCmdWindowSize().w){
-        m_cmdBoardCropX = cursorROI.x + cursorROI.w - getCmdWindowSize().w;
+    if(cursorROI.x >= m_cmdBoardCropX + cmdBoardCropW){
+        m_cmdBoardCropX = cursorROI.x + cursorROI.w - cmdBoardCropW;
     }
 }
