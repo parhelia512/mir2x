@@ -156,8 +156,6 @@ CBMiddleExpand::CBMiddleExpand(
 
     , m_cmdView
       {{
-          .dir = DIR_DOWNLEFT,
-
           .x = CMD_WINDOW_X,
           .y = CMD_WINDOW_Y + (h() - m_bgImgFull.h()),
 
