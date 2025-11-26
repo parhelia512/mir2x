@@ -254,7 +254,24 @@ TritexButton *ControlBoard::getButton(const std::string_view &buttonName)
 }
 
 void ControlBoard::onClickSwitchModeButton(int)
-{}
+{
+    switch(m_mode){
+        case CBM_DEF:
+            {
+                m_mode = CBM_EXPAND;
+                break;
+            }
+        case CBM_EXPAND:
+            {
+                m_mode = CBM_DEF;
+                break;
+            }
+        default:
+            {
+                break;
+            }
+    }
+}
 
 void ControlBoard::onInputDone()
 {
