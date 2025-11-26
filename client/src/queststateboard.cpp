@@ -132,7 +132,7 @@ QuestStateBoard::QuestStateBoard(
     setShow(false);
 }
 
-void QuestStateBoard::update(double fUpdateTime)
+void QuestStateBoard::updateDefault(double fUpdateTime)
 {
     if(m_loadRequested){
         m_loadRequested = false;

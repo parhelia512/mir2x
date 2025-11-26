@@ -110,7 +110,7 @@ PlayerStateBoard::PlayerStateBoard(int argX, int argY, ProcessRun *runPtr, Widge
     }
 }
 
-void PlayerStateBoard::update(double)
+void PlayerStateBoard::updateDefault(double)
 {
 }
 

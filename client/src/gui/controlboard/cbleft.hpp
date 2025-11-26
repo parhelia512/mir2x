@@ -65,9 +65,9 @@ class CBLeft: public Widget
         std::string getMapGLocStr() const;
 
     protected:
-        void update(double fUpdateTime) override
+        void updateDefault(double fUpdateTime) override
         {
             m_mapGLocAccuTime += fUpdateTime;
-            Widget::update(fUpdateTime);
+            Widget::updateDefault(fUpdateTime);
         }
 };

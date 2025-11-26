@@ -556,6 +556,16 @@ int Widget::ySizeOff(dir8_t argDir, int argH)
 
 void Widget::update(double fUpdateTime)
 {
+    if(m_attrs.inst.update){
+        return m_attrs.inst.update(fUpdateTime);
+    }
+    else{
+        return updateDefault(fUpdateTime);
+    }
+}
+
+void Widget::updateDefault(double fUpdateTime)
+{
     foreachChild(false, [fUpdateTime, this](Widget *widget, bool)
     {
         widget->update(fUpdateTime);

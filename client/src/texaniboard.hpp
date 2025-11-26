@@ -37,7 +37,7 @@ class TexAniBoard: public Widget
                 bool     = false);
 
     public:
-        void update(double fUpdateTime) override
+        void updateDefault(double fUpdateTime) override
         {
             m_accuTime += fUpdateTime;
         }

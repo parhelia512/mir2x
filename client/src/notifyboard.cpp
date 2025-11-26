@@ -84,7 +84,7 @@ void NotifyBoard::addLog(const char8_t * format, ...)
     m_boardList.back().typeset->loadXML(xmlString.c_str());
 }
 
-void NotifyBoard::update(double)
+void NotifyBoard::updateDefault(double)
 {
     if(m_showTime > 0){
         while(!m_boardList.empty()){

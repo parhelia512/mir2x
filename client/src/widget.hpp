@@ -294,6 +294,7 @@ class Widget: public WidgetTreeNode
 
             std::function<void(      Widget *                                         )> afterResize  = nullptr;
             std::function<bool(      Widget *, const SDL_Event &, bool, Widget::ROIMap)> processEvent = nullptr;
+            std::function<void(      Widget *, double                                 )> update       = nullptr;
             std::function<void(const Widget *,                          Widget::ROIMap)> draw         = nullptr;
         };
 
@@ -425,7 +426,8 @@ class Widget: public WidgetTreeNode
         static int ySizeOff(dir8_t, int);
 
     public:
-        virtual void update(double);
+        virtual void update       (double) final;
+        virtual void updateDefault(double);
 
     public:
         virtual bool processEvent      (const SDL_Event &, bool, Widget::ROIMap) final;

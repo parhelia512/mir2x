@@ -133,7 +133,7 @@ class LayoutBoard: public Widget
         size_t addLayoutXML(int, const Widget::IntMargin &, const char *, size_t = 0);
 
     public:
-        void update(double ms) override
+        void updateDefault(double ms) override
         {
             for(const auto &node: m_parNodeList){
                 node.tpset->update(ms);

@@ -72,7 +72,7 @@ class InventoryBoard: public Widget
         void drawItem(int, int, size_t, const PackBin &, uint32_t) const;
 
     public:
-        void update(double) override;
+        void updateDefault(double) override;
 
     public:
         void drawDefault(Widget::ROIMap) const override;

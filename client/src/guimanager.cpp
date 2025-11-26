@@ -179,9 +179,9 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
     }
 }
 
-void GUIManager::update(double fUpdateTime)
+void GUIManager::updateDefault(double fUpdateTime)
 {
-    Widget::update(fUpdateTime);
+    Widget::updateDefault(fUpdateTime);
     m_controlBoard.update(fUpdateTime);
     m_NPCChatBoard.update(fUpdateTime);
     if(!g_clientArgParser->disableIME){

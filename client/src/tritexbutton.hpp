@@ -94,7 +94,7 @@ class TritexButton: public ButtonBase
         }
 
     public:
-        void update(double fUpdateTime) override
+        void updateDefault(double fUpdateTime) override
         {
             if(m_blinkTime.has_value()){
                 m_accuBlinkTime += fUpdateTime;

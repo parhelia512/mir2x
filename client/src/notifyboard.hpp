@@ -92,7 +92,7 @@ class NotifyBoard: public Widget
         }
 
     public:
-        void update(double) override;
+        void updateDefault(double) override;
 
     public:
         void drawDefault(Widget::ROIMap) const override;

@@ -48,7 +48,7 @@ class CBFace: public Widget
         void drawBuffIDList(int, int, int, int) const;
 
     private:
-        void update(double fUpdateTime) override
+        void updateDefault(double fUpdateTime) override
         {
             m_accuTime += fUpdateTime;
         }

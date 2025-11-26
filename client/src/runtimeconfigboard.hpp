@@ -58,7 +58,7 @@ class RuntimeConfigBoard: public Widget
                     bool     = false);
 
             public:
-                void update(double fUpdateTime) override
+                void updateDefault(double fUpdateTime) override
                 {
                     m_input.update(fUpdateTime);
                 }

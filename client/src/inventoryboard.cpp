@@ -232,7 +232,7 @@ void InventoryBoard::drawItem(int dstX, int dstY, size_t startRow, const PackBin
     }
 }
 
-void InventoryBoard::update(double fUpdateTime)
+void InventoryBoard::updateDefault(double fUpdateTime)
 {
     m_wmdAniBoard.update(fUpdateTime);
 }

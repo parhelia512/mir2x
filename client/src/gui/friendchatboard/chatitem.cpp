@@ -252,7 +252,7 @@ void ChatItem::setMaxWidth(int argWidth)
     message.setLineWidth(argWidth - ChatItem::AVATAR_WIDTH - ChatItem::GAP - ChatItem::TRIANGLE_WIDTH - ChatItem::MESSAGE_MARGIN * 2);
 }
 
-void ChatItem::update(double fUpdateTime)
+void ChatItem::updateDefault(double fUpdateTime)
 {
     accuTime += fUpdateTime;
 }

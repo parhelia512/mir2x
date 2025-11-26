@@ -35,7 +35,7 @@ class PlayerStateBoard: public Widget
         PlayerStateBoard(int, int, ProcessRun *, Widget * = nullptr, bool = false);
 
     public:
-        void update(double) override;
+        void updateDefault(double) override;
 
     public:
         void drawDefault(Widget::ROIMap) const override;
