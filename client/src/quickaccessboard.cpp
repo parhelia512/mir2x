@@ -34,14 +34,6 @@ QuickAccessBoard::Grid::Grid(
           .w = std::move(argW),
           .h = std::move(argH),
 
-          .attrs
-          {
-              .inst
-              {
-                  .show = false, // hide by default
-              },
-          },
-
           .parent
           {
               .widget = argParent,
@@ -127,8 +119,17 @@ QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
 
           .x = argX,
           .y = argY,
-          .w = {},
-          .h = {},
+
+          .w = std::nullopt,
+          .h = std::nullopt,
+
+          .attrs
+          {
+              .inst
+              {
+                  .show = false, // hide by default
+              },
+          },
 
           .parent
           {
@@ -173,10 +174,10 @@ QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
         addChild(new Grid
         {
             DIR_UPLEFT,
-            std::get<0>(getGridLoc(slot)),
-            std::get<1>(getGridLoc(slot)),
-            std::get<2>(getGridLoc(slot)),
-            std::get<3>(getGridLoc(slot)),
+            getGridLoc(slot).x,
+            getGridLoc(slot).y,
+            getGridLoc(slot).w,
+            getGridLoc(slot).h,
 
             slot,
             m_processRun,

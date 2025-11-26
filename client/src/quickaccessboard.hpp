@@ -56,7 +56,7 @@ class QuickAccessBoard: public Widget
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     public:
-        static std::tuple<int, int, int, int> getGridLoc(int slot)
+        Widget::ROI getGridLoc(int slot)
         {
             fflassert(slot >= 0, slot);
             fflassert(slot <  6, slot);
