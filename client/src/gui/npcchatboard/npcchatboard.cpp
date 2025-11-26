@@ -108,7 +108,7 @@ NPCChatBoard::NPCChatBoard(
 
           .lineAlign = LALIGN_JUSTIFY,
 
-          .onEvent = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
+          .onClickText = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
           {
               if(event == BEVENT_RELEASE){
                   if(const auto id = LayoutBoard::findAttrValue(attrList, "id", nullptr)){

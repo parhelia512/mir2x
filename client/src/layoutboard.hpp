@@ -42,7 +42,8 @@ class LayoutBoard: public Widget
 
             std::function<void()> onTab;
             std::function<void()> onCR;
-            std::function<void(const std::unordered_map<std::string, std::string> &, int)> onEvent;
+            std::function<void(bool)> onCursorMove; // onCursorMove(beforeMove)
+            std::function<void(const std::unordered_map<std::string, std::string> &, int)> onClickText;
 
             Widget::WADPair parent {};
         };
@@ -117,6 +118,7 @@ class LayoutBoard: public Widget
     private:
         const std::function<void()> m_onTab;
         const std::function<void()> m_onCR;
+        const std::function<void(bool)> m_onCursorMove;
         const std::function<void(const std::unordered_map<std::string, std::string> &, int)> m_eventCB;
 
     public:
@@ -246,6 +248,7 @@ class LayoutBoard: public Widget
         static const char * findAttrValue(const std::unordered_map<std::string, std::string> &, const char *, const char * = nullptr);
 
     public:
-        std::tuple<int, int, int     > getCursorLoc() const;  // -> cursor (par, x, y)
-        std::tuple<int, int, int, int> getCursorPLoc() const; // -> cursor ROI
+        std::tuple<int, int          > getCursorOff() const;  // -> cursor: par, off
+        std::tuple<int, int, int     > getCursorLoc() const;  // -> cursor: par, x, y
+        std::tuple<int, int, int, int> getCursorPLoc() const; // -> cursor: ROI
 };

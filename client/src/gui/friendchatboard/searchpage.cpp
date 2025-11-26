@@ -60,7 +60,7 @@ SearchPage::SearchPage(Widget::VarDir argDir,
               .size = 15,
           },
 
-          .onEvent = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
+          .onClickText = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
           {
               if(event == BEVENT_RELEASE){
                   if(const auto id = LayoutBoard::findAttrValue(attrList, "id", nullptr)){
@@ -136,7 +136,7 @@ void SearchPage::appendFriendItem(const SDChatPeer &candidate)
                     .size = 12,
                 },
 
-                .onEvent = [candidate, this](const std::unordered_map<std::string, std::string> &attrList, int event)
+                .onClickText= [candidate, this](const std::unordered_map<std::string, std::string> &attrList, int event)
                 {
                     if(event == BEVENT_PRESS){
                         if(const auto id = LayoutBoard::findAttrValue(attrList, "id"); to_sv(id) == "add"){

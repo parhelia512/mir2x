@@ -108,9 +108,10 @@ LayoutBoard::LayoutBoard(LayoutBoard::InitArgs args)
     , m_cursorWidth(args.cursor.width)
     , m_cursorColor(std::move(args.cursor.color))
 
-    , m_onTab  (std::move(args.onTab))
-    , m_onCR   (std::move(args.onCR))
-    , m_eventCB(std::move(args.onEvent))
+    , m_onTab(std::move(args.onTab))
+    , m_onCR(std::move(args.onCR))
+    , m_onCursorMove(std::move(args.onCursorMove))
+    , m_eventCB(std::move(args.onClickText))
 {
     if(str_haschar(args.initXML)){
         loadXML(args.initXML, args.parLimit);
@@ -744,6 +745,14 @@ const char * LayoutBoard::findAttrValue(const std::unordered_map<std::string, st
         return p->second.c_str();
     }
     return valDefault;
+}
+
+std::tuple<int, int> LayoutBoard::getCursorOff() const
+{
+    if(!cursorLocValid(m_cursorLoc)){
+        throw fflerror("invalid cursor location: par %d, x %d, y %d", m_cursorLoc.par, m_cursorLoc.x, m_cursorLoc.y);
+    }
+    return {m_cursorLoc.par, ithParIterator(m_cursorLoc.par)->tpset->cursorLoc2Off(m_cursorLoc.x, m_cursorLoc.y)};
 }
 
 std::tuple<int, int, int> LayoutBoard::getCursorLoc() const

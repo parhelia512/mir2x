@@ -96,7 +96,7 @@ ChatItem::ChatItem(
               .size = 12,
           },
 
-          .onEvent = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
+          .onClickText = [this](const std::unordered_map<std::string, std::string> &attrList, int event)
           {
               if(event != BEVENT_RELEASE){
                   return;
