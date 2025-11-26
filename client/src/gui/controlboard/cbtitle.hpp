@@ -7,7 +7,7 @@
 //                     |
 //                     v
 //       +-----+      ---
-//      /       \      19
+//      /       \      21
 //  +--/  TITLE  \--+ ---
 //  | /           \ |  ^
 //  +---------------+  |
@@ -16,7 +16,7 @@ class ProcessRun;
 class CBTitle: public Widget
 {
     public:
-        constexpr static int UP_HEIGHT = 19;
+        constexpr static int UP_HEIGHT = 21;
 
     private:
         ProcessRun *m_processRun;
