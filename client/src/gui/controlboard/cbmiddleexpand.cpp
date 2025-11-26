@@ -47,7 +47,10 @@ CBMiddleExpand::CBMiddleExpand(
 
                   .afterResize = [](Widget *self)
                   {
-                      dynamic_cast<CBMiddleExpand *>(self)->m_cmdBoard.setLineWidth(dynamic_cast<CBMiddleExpand *>(self)->getCmdWindowWidth());
+                      if(auto expanded = dynamic_cast<CBMiddleExpand *>(self)){
+                          expanded->m_logBoard.setLineWidth(expanded->getLogWindowWidth());
+                          expanded->m_cmdBoard.setLineWidth(expanded->getCmdWindowWidth());
+                      }
                   },
               },
           },

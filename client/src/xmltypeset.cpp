@@ -975,7 +975,7 @@ size_t XMLTypeset::insertUTF8String(int x, int y, const char *text)
         throw fflerror("invalid cursor location: (%d, %d)", x, y);
     }
 
-    const std::string xmlText = xmlf::toParString(text);
+    const std::string xmlText = xmlf::toParString("%s", text);
     if(m_paragraph->empty()){
         m_paragraph->loadXML(xmlText.c_str());
         if(m_paragraph->leafCount() > 0){

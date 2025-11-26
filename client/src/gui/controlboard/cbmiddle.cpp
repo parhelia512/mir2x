@@ -50,7 +50,10 @@ CBMiddle::CBMiddle(
                   .moveOnFocus = false,
                   .afterResize = [](Widget *self)
                   {
-                      dynamic_cast<CBMiddle *>(self)->m_cmdBoard.setLineWidth(0);
+                      if(auto middle = dynamic_cast<CBMiddle *>(self)){
+                          middle->m_logBoard.setLineWidth(middle->getLogWindowWidth());
+                          middle->m_cmdBoard.setLineWidth(0);
+                      }
                   },
               },
           },

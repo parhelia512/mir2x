@@ -172,7 +172,9 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           this,
           false,
       }
-{}
+{
+    m_logBoard.setLineWidth(m_middle.getLogWindowWidth());
+}
 
 void ControlBoard::addXMLLog(const char *log)
 {
