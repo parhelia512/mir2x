@@ -220,6 +220,12 @@ bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, Widget::R
     }
 }
 
+void CBMiddle::onCmdCR()
+{
+    m_cmdBoardCropX = 0;
+    m_cmdBoardCropY = 0;
+}
+
 void CBMiddle::onCmdCursorMove()
 {
     const auto cursorROI = Widget::makeROI(m_cmdBoard.getCursorPLoc());

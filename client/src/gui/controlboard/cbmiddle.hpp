@@ -67,6 +67,7 @@ class CBMiddle: public Widget
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     private:
+        void onCmdCR();
         void onCmdCursorMove();
 
     private:

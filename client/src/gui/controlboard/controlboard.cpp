@@ -268,6 +268,10 @@ void ControlBoard::onInputDone()
     m_cmdBoard.clear();
     m_cmdBoard.setFocus(false);
 
+    if(m_middle.show()){
+        m_middle.onCmdCR();
+    }
+
     switch(fullStr[0]){
         case '!': // broadcast
             {
