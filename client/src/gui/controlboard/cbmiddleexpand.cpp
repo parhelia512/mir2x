@@ -26,6 +26,17 @@ CBMiddleExpand::CBMiddleExpand(
           .y = std::move(argY),
           .w = std::move(argW),
 
+          .attrs
+          {
+              .inst
+              {
+                  .afterResize = [](Widget *self)
+                  {
+                      dynamic_cast<CBMiddleExpand *>(self)->m_cmdBoard.setLineWidth(dynamic_cast<CBMiddleExpand *>(self)->getCmdWindowWidth());
+                  },
+              },
+          },
+
           .parent
           {
               .widget = argParent,

@@ -43,6 +43,10 @@ CBMiddle::CBMiddle(
               .inst
               {
                   .moveOnFocus = false,
+                  .afterResize = [](Widget *self)
+                  {
+                      dynamic_cast<CBMiddle *>(self)->m_cmdBoard.setLineWidth(0);
+                  },
               },
           },
 
