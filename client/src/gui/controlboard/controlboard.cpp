@@ -87,7 +87,7 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
       {
           DIR_DOWNLEFT,
           0,
-          [this](const Widget *){ return h() - 1; },
+          [this]{ return h() - 1; },
 
           argProc,
           this,
@@ -97,8 +97,8 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
     , m_right
       {
           DIR_DOWNRIGHT,
-          [this](const Widget *){ return w() - 1; },
-          [this](const Widget *){ return h() - 1; },
+          [this]{ return w() - 1; },
+          [this]{ return h() - 1; },
 
           argProc,
           this,
@@ -108,17 +108,17 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
     , m_middle
       {
           DIR_DOWNLEFT,
-          [this](const Widget *)
+          [this]
           {
               return m_left.w();
           },
 
-          [this](const Widget *)
+          [this]
           {
               return h() - 1;
           },
 
-          [this](const Widget *)
+          [this]
           {
               return w() - m_left.w() - m_right.w();
           },
@@ -131,17 +131,17 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
     , m_middleExpand
       {
           DIR_DOWNLEFT,
-          [this](const Widget *)
+          [this]
           {
               return m_left.w();
           },
 
-          [this](const Widget *)
+          [this]
           {
               return h() - 1;
           },
 
-          [this](const Widget *)
+          [this]
           {
               return w() - m_left.w() - m_right.w();
           },
