@@ -34,6 +34,14 @@ QuickAccessBoard::Grid::Grid(
           .w = std::move(argW),
           .h = std::move(argH),
 
+          .attrs
+          {
+              .inst
+              {
+                  .show = false, // hide by default
+              },
+          },
+
           .parent
           {
               .widget = argParent,
