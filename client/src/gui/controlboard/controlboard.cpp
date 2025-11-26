@@ -171,6 +171,15 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
       }
 {}
 
+void ControlBoard::addXMLLog(const char *log)
+{
+    fflassert(str_haschar(log));
+    m_logBoard.addLayoutXML(m_logBoard.parCount(), {0, 0, 0, 0}, log);
+
+    m_middle      .m_slider.setValue(1.0f, false);
+    m_middleExpand.m_slider.setValue(1.0f, false);
+}
+
 void ControlBoard::addParLog(const char *log)
 {
     fflassert(str_haschar(log));
@@ -280,7 +289,7 @@ void ControlBoard::onInputDone()
             }
         default: // normal talk
             {
-                addParLog(fullXML.c_str());
+                addXMLLog(fullXML.c_str());
                 break;
             }
     }

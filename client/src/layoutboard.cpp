@@ -142,55 +142,8 @@ void LayoutBoard::updateGfx()
 void LayoutBoard::loadXML(const char *xmlString, size_t parLimit)
 {
     fflassert(str_haschar(xmlString));
-
     m_parNodeList.clear();
-    tinyxml2::XMLDocument xmlDoc(true, tinyxml2::PEDANTIC_WHITESPACE);
-
-    if(xmlDoc.Parse(xmlString) != tinyxml2::XML_SUCCESS){
-        throw fflerror("parse xml failed: %s", xmlString ? xmlString : "(null)");
-    }
-
-    bool layoutXML = false;
-    const auto rootElem = xmlDoc.RootElement();
-
-    for(const char *cstr: {"layout", "Layout", "LAYOUT"}){
-        if(to_sv(rootElem->Name()) == cstr){
-            layoutXML = true;
-            break;
-        }
-    }
-
-    if(!layoutXML){
-        throw fflerror("string is not layout xml");
-    }
-
-    if(rootElem->FirstAttribute()){
-        g_log->addLog(LOGTYPE_WARNING, "Layout XML doesn't accept attributes, ignored");
-    }
-
-    size_t addedParCount = 0;
-    for(auto p = rootElem->FirstChild(); p && (parLimit == 0 || addedParCount < parLimit); p = p->NextSibling()){
-        if(!p->ToElement()){
-            g_log->addLog(LOGTYPE_WARNING, "Not an element: %s", p->Value());
-            continue;
-        }
-
-        bool parXML = false;
-        for(const char *cstr: {"par", "Par", "PAR"}){
-            if(to_sv(p->Value()) == cstr){
-                parXML = true;
-                break;
-            }
-        }
-
-        if(!parXML){
-            g_log->addLog(LOGTYPE_WARNING, "Not a paragraph element: %s", p->Value());
-            continue;
-        }
-
-        addPar(parCount(), m_parNodeConfig.margin, p);
-        addedParCount++;
-    }
+    addLayoutXML(0, m_parNodeConfig.margin, xmlString, parLimit);
 }
 
 void LayoutBoard::addPar(int loc, const Widget::IntMargin &parMargin, const tinyxml2::XMLNode *node)
@@ -391,6 +344,57 @@ void LayoutBoard::addParXML(int loc, const Widget::IntMargin &parMargin, const c
     }
 
     addPar(loc, parMargin, xmlDoc.RootElement());
+}
+
+size_t LayoutBoard::addLayoutXML(int loc, const Widget::IntMargin &parMargin, const char *xmlString, size_t parLimit)
+{
+    tinyxml2::XMLDocument xmlDoc(true, tinyxml2::PEDANTIC_WHITESPACE);
+    if(xmlDoc.Parse(xmlString) != tinyxml2::XML_SUCCESS){
+        throw fflerror("parse xml failed: %s", xmlString ? xmlString : "(null)");
+    }
+
+    bool layoutXML = false;
+    const auto rootElem = xmlDoc.RootElement();
+
+    for(const char *cstr: {"layout", "Layout", "LAYOUT"}){
+        if(to_sv(rootElem->Name()) == cstr){
+            layoutXML = true;
+            break;
+        }
+    }
+
+    if(!layoutXML){
+        throw fflerror("string is not layout xml");
+    }
+
+    if(rootElem->FirstAttribute()){
+        g_log->addLog(LOGTYPE_WARNING, "Layout XML doesn't accept attributes, ignored");
+    }
+
+    size_t addedParCount = 0;
+    for(auto p = rootElem->FirstChild(); p && (parLimit == 0 || addedParCount < parLimit); p = p->NextSibling()){
+        if(!p->ToElement()){
+            g_log->addLog(LOGTYPE_WARNING, "Not an element: %s", p->Value());
+            continue;
+        }
+
+        bool parXML = false;
+        for(const char *cstr: {"par", "Par", "PAR"}){
+            if(to_sv(p->Value()) == cstr){
+                parXML = true;
+                break;
+            }
+        }
+
+        if(!parXML){
+            g_log->addLog(LOGTYPE_WARNING, "Not a paragraph element: %s", p->Value());
+            continue;
+        }
+
+        addPar(loc++, parMargin, p);
+        addedParCount++;
+    }
+    return addedParCount;
 }
 
 void LayoutBoard::drawDefault(Widget::ROIMap m) const

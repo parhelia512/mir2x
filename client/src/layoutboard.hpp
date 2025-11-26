@@ -129,7 +129,8 @@ class LayoutBoard: public Widget
         void loadXML(const char *, size_t = 0);
 
     public:
-        void addParXML(int, const Widget::IntMargin &, const char *);
+        void   addParXML   (int, const Widget::IntMargin &, const char *);
+        size_t addLayoutXML(int, const Widget::IntMargin &, const char *, size_t = 0);
 
     public:
         void update(double ms) override

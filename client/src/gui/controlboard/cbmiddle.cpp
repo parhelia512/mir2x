@@ -170,10 +170,9 @@ CBMiddle::CBMiddle(
           .getter = std::addressof(m_cmdBoard),
           .vr
           {
-              Widget::VarInt([this]{ return m_cmdBoardCropX; }),
-              Widget::VarInt([this]{ return m_cmdBoardCropY; }),
-
-              [this]{ return getCmdWindowSize(); },
+              Widget::VarInt   ([this]{ return m_cmdBoardCropX   ; }),
+              Widget::VarInt   ([this]{ return m_cmdBoardCropY   ; }),
+              Widget::VarSize2D{[this]{ return getCmdWindowSize(); }},
           },
 
           .parent{this},
@@ -223,4 +222,13 @@ bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, Widget::R
 
 void CBMiddle::onCmdCursorMove()
 {
+    const auto cursorROI = Widget::makeROI(m_cmdBoard.getCursorPLoc());
+
+    if(cursorROI.x + cursorROI.w <= m_cmdBoardCropX){
+        m_cmdBoardCropX = cursorROI.x;
+    }
+
+    if(cursorROI.x >= m_cmdBoardCropX + getCmdWindowSize().w){
+        m_cmdBoardCropX = cursorROI.x + cursorROI.w - getCmdWindowSize().w;
+    }
 }

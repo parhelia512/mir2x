@@ -99,6 +99,7 @@ class ControlBoard: public Widget
                 bool     = false);
 
     public:
+        void addXMLLog(const char *);
         void addParLog(const char *);
 
     public:
