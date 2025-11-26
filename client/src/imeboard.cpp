@@ -58,7 +58,7 @@ IMEBoard::IMEBoard(
     updateSize();
 }
 
-void IMEBoard::update(double)
+void IMEBoard::updateDefault(double)
 {
     // in processEventDefault we only post request to IME
     // all IME changes need to be polled in update(), or we can do it by callback

@@ -64,7 +64,7 @@ class IMEBoard: public Widget
                 bool     = false);  // autoDelete
 
     public:
-        void update(double) override;
+        void updateDefault(double) override;
 
     public:
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
