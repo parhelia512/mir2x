@@ -265,11 +265,11 @@ void CBMiddleExpand::onCmdCursorMove()
     const auto cmdBoardCropH = CMD_WINDOW_HEIGHT;
     const auto cursorROI = Widget::makeROI(m_cmdBoard.getCursorPLoc());
 
-    if(cursorROI.y + cursorROI.h <= m_cmdBoardCropY){
+    if(cursorROI.y < m_cmdBoardCropY){
         m_cmdBoardCropY = cursorROI.y;
     }
 
-    if(cursorROI.y >= m_cmdBoardCropY + cmdBoardCropH){
+    if(cursorROI.y + cursorROI.h > m_cmdBoardCropY + cmdBoardCropH){
         m_cmdBoardCropY = cursorROI.y + cursorROI.h - cmdBoardCropH;
     }
 }
