@@ -1,6 +1,7 @@
 #include "widget.hpp"
 #include "cbtitle.hpp"
 #include "pngtexdb.hpp"
+#include "controlboard.hpp"
 
 extern PNGTexDB *g_progUseDB;
 
@@ -59,9 +60,9 @@ CBTitle::CBTitle(
           25,
 
           argProc,
-          [this](Widget *, int) // double-click
+          [this](Widget *self, int) // double-click
           {
-
+              self->hasParent<ControlBoard>()->m_mode = CBM_HIDE;
           },
 
           this,

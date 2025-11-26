@@ -69,6 +69,7 @@ class ProcessRun;
 class ControlBoard: public Widget
 {
     private:
+        friend class CBTitle;
         friend class CBMiddle;
         friend class CBMiddleExpand;
 
