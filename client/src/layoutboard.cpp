@@ -752,16 +752,18 @@ std::string LayoutBoard::getXML() const
     return xmlString;
 }
 
-std::string LayoutBoard::getText(bool textOnly) const
+std::string LayoutBoard::getText() const
 {
-    std::string text;
+    std::vector<std::string> lines;
     for(const auto &node: m_parNodeList){
-        if(!text.empty()){
-            text.append(" ");
+        if(text.empty()){
+            lines.push_back({});
         }
-        text.append(node.tpset->getText(textOnly));
+        else{
+            lines.push_back(node.tpset->getText());
+        }
     }
-    return text;
+    return str_join(lines, "\n");
 }
 
 const char * LayoutBoard::findAttrValue(const std::unordered_map<std::string, std::string> &attrList, const char *key, const char *valDefault)

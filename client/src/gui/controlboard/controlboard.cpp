@@ -242,12 +242,13 @@ void ControlBoard::onInputDone()
         return;
     }
 
-    const std::string fullInput = m_cmdBoard.getXML();
+    const std::string fullXML = m_cmdBoard.getXML();
+    const std::string fullStr = str_trim(m_cmdBoard.getText(), true, false);
 
     m_cmdBoard.clear();
     m_cmdBoard.setFocus(false);
 
-    switch(fullInput[0]){
+    switch(fullStr[0]){
         case '!': // broadcast
             {
                 break;
@@ -255,20 +256,20 @@ void ControlBoard::onInputDone()
         case '@': // user command
             {
                 if(m_processRun){
-                    m_processRun->userCommand(fullInput.c_str() + 1);
+                    m_processRun->userCommand(fullStr.c_str() + 1);
                 }
                 break;
             }
         case '$': // lua command for super user
             {
                 if(m_processRun){
-                    m_processRun->luaCommand(fullInput.c_str() + 1);
+                    m_processRun->luaCommand(fullStr.c_str() + 1);
                 }
                 break;
             }
         default: // normal talk
             {
-                addLog(0, fullInput.c_str());
+                addParLog(fullXML.c_str());
                 break;
             }
     }

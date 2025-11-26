@@ -189,17 +189,21 @@ inline std::string str_tolower(const std::string &s)
     return str_tolower(s.begin(), s.end());
 }
 
-inline std::string str_trim(std::string s)
+inline std::string str_trim(std::string s, bool left = true, bool right = true)
 {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch)
-    {
-        return !std::isspace(ch);
-    }));
+    if(left){
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch)
+        {
+            return !std::isspace(ch);
+        }));
+    }
 
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch)
-    {
-        return !std::isspace(ch);
-    }).base(), s.end());
+    if(right){
+        s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch)
+        {
+            return !std::isspace(ch);
+        }).base(), s.end());
+    }
 
     return s;
 }

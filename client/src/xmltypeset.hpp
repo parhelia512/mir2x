@@ -330,7 +330,7 @@ class XMLTypeset // means XMLParagraph typeset
         }
 
     public:
-        std::string getText(bool) const;
+        std::string getText() const;
 
     public:
         const tinyxml2::XMLNode *getXMLNode() const

@@ -1223,7 +1223,7 @@ void XMLTypeset::update(double fMS)
     }
 }
 
-std::string XMLTypeset::getText(bool textOnly) const
+std::string XMLTypeset::getText() const
 {
     std::string plainString;
     for(int i = 0; i < m_paragraph->leafCount(); ++i){
@@ -1235,16 +1235,12 @@ std::string XMLTypeset::getText(bool textOnly) const
                 }
             case LEAF_IMAGE:
                 {
-                    if(!textOnly){
-                        plainString += str_printf("\\image{0x%016" PRIx64 "}", m_paragraph->leaf(i).imageU64Key());
-                    }
+                    plainString += str_printf("\\image{0x%016llx}", to_llu(m_paragraph->leaf(i).imageU64Key()));
                     break;
                 }
             case LEAF_EMOJI:
                 {
-                    if(!textOnly){
-                        plainString += str_printf("\\emoji{0x%016" PRIu64 "}", to_u64(m_paragraph->leaf(i).emojiU32Key()));
-                    }
+                    plainString += str_printf("\\emoji{0x%016llx}", to_llu(m_paragraph->leaf(i).emojiU32Key()));
                     break;
                 }
             default:
