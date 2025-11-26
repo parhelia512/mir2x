@@ -112,7 +112,7 @@ CBMiddle::CBMiddle(
 
     , m_switchMode
       {{
-          .x = [this](const Widget *){ return w() - 15; },
+          .x = [this]{ return w() - 15; },
           .y = 3,
 
           .texIDList
@@ -123,9 +123,7 @@ CBMiddle::CBMiddle(
 
           .onTrigger = [this](Widget *, int clickCount)
           {
-              if(auto parptr = hasParent<ControlBoard>()){
-                  parptr->onClickSwitchModeButton(clickCount);
-              }
+              hasParent<ControlBoard>()->onClickSwitchModeButton(clickCount);
           },
 
           .parent{this},

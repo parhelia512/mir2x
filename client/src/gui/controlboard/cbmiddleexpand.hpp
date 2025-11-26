@@ -46,7 +46,7 @@ class CBMiddleExpand: public Widget
         GfxResizeBoard m_bgImg;
 
     private:
-        TritexButton m_buttonSwitchMode;
+        TritexButton m_switchMode;
 
     private:
         TritexButton m_buttonEmoji;

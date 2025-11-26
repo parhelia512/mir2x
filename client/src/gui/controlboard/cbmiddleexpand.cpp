@@ -76,9 +76,9 @@ CBMiddleExpand::CBMiddleExpand(
           .parent{this},
       }}
 
-    , m_buttonSwitchMode
+    , m_switchMode
       {{
-          .x = [this]{ return w() - 178; },
+          .x = [this]{ return w() - 15; },
           .y = 3,
 
           .texIDList
@@ -87,9 +87,9 @@ CBMiddleExpand::CBMiddleExpand(
               .down = 0X00000029,
           },
 
-          .onTrigger = [this](Widget *, int clickDone)
+          .onTrigger = [this](Widget *, int clickCount)
           {
-              hasParent<ControlBoard>()->onClickSwitchModeButton(clickDone);
+              hasParent<ControlBoard>()->onClickSwitchModeButton(clickCount);
           },
 
           .parent{this},
@@ -97,7 +97,7 @@ CBMiddleExpand::CBMiddleExpand(
 
     , m_buttonEmoji
       {{
-          .x = [this]{ return w() - 178; },
+          .x = [this]{ return w() - 90; },
           .y = 87,
 
           .texIDList
@@ -111,7 +111,7 @@ CBMiddleExpand::CBMiddleExpand(
 
     , m_buttonMute
       {{
-          .x = [this]{ return w() - 220; },
+          .x = [this]{ return w() - 55; },
           .y = 87,
 
           .texIDList
@@ -127,11 +127,10 @@ CBMiddleExpand::CBMiddleExpand(
       {{
            .bar
            {
-              .x = [this]{ return w() - 176; },
+              .x = [this]{ return w() - 10; },
               .y = 40,
               .w = 5,
-              .h = 60,
-              .v = true,
+              .h = [this]{ return h() - m_bgImgFull.h() + 220; }
            },
 
           .index = 2,
@@ -157,8 +156,10 @@ CBMiddleExpand::CBMiddleExpand(
 
     , m_cmdView
       {{
+          .dir = DIR_DOWNLEFT,
+
           .x = CMD_WINDOW_X,
-          .y = CMD_WINDOW_Y,
+          .y = CMD_WINDOW_Y + (h() - m_bgImgFull.h()),
 
           .getter = std::addressof(m_cmdBoard),
           .vr
