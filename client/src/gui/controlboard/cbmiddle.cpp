@@ -147,8 +147,8 @@ CBMiddle::CBMiddle(
 
     , m_logView
       {{
-          .x = 7,
-          .y = 15,
+          .x = LOG_WINDOW_X,
+          .y = LOG_WINDOW_Y,
 
           .getter = std::addressof(m_logBoard),
           .vr
@@ -164,14 +164,14 @@ CBMiddle::CBMiddle(
 
     , m_cmdView
       {{
-          .x = 7,
-          .y = 105,
+          .x = CMD_WINDOW_X,
+          .y = CMD_WINDOW_Y,
 
           .getter = std::addressof(m_cmdBoard),
           .vr
           {
               [this]{ return m_cmdBoardCropX ; },
-              [this]{ return m_cmdBoardCropY ; },
+              0,
 
               [this]{ return getCmdWindowWidth(); },
               CMD_WINDOW_HEIGHT,
@@ -225,7 +225,6 @@ bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, Widget::R
 void CBMiddle::onCmdCR()
 {
     m_cmdBoardCropX = 0;
-    m_cmdBoardCropY = 0;
 }
 
 void CBMiddle::onCmdCursorMove()

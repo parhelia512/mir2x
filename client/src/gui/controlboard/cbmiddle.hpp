@@ -18,8 +18,17 @@ class ControlBoard;
 class CBMiddle: public Widget
 {
     private:
-        constexpr static int LOG_WINDOW_HEIGHT = 83;
-        constexpr static int CMD_WINDOW_HEIGHT = 17;
+        constexpr static int LOG_WINDOW_WIDTH_ORIG = 344;
+        constexpr static int CMD_WINDOW_WIDTH_ORIG = 344;
+
+        constexpr static int LOG_WINDOW_HEIGHT = 84;
+        constexpr static int CMD_WINDOW_HEIGHT = 15;
+
+        constexpr static int LOG_WINDOW_X =  7;
+        constexpr static int LOG_WINDOW_Y = 15;
+
+        constexpr static int CMD_WINDOW_X =   7;
+        constexpr static int CMD_WINDOW_Y = 106;
 
     private:
         friend class ControlBoard;
@@ -33,7 +42,6 @@ class CBMiddle: public Widget
 
     private:
         int m_cmdBoardCropX = 0;
-        int m_cmdBoardCropY = 0;
 
     private:
         GfxShapeBoard m_bg;
@@ -75,6 +83,6 @@ class CBMiddle: public Widget
         void onCmdCursorMove();
 
     private:
-        int getCmdWindowWidth() const { return w() - 456 + 343; }
-        int getLogWindowWidth() const { return w() - 456 + 343; }
+        int getLogWindowWidth() const { return w() - m_bgImgFull.w() + LOG_WINDOW_WIDTH_ORIG; }
+        int getCmdWindowWidth() const { return w() - m_bgImgFull.w() + CMD_WINDOW_WIDTH_ORIG; }
 };

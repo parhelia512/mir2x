@@ -34,7 +34,9 @@ CBMiddleExpand::CBMiddleExpand(
       }}
 
     , m_processRun(argProc)
+
     , m_logBoard(hasParent<ControlBoard>()->m_logBoard)
+    , m_cmdBoard(hasParent<ControlBoard>()->m_cmdBoard)
 
     , m_bg
       {{
@@ -44,23 +46,6 @@ CBMiddleExpand::CBMiddleExpand(
           .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               g_sdlDevice->fillRectangle(colorf::A_SHF(0XF0), drawDstX, drawDstY, self->w(), self->h());
-          },
-
-          .parent{this},
-      }}
-
-    , m_logView
-      {{
-          .x = 7,
-          .y = 15,
-
-          .getter = std::addressof(m_logBoard),
-          .vr
-          {
-              0,
-              [this]{ return std::max<int>(0, to_dround((m_logBoard.h() - 83) * m_slider.getValue())); },
-              [this]{ return m_logBoard.w(); },
-              83,
           },
 
           .parent{this},
@@ -152,6 +137,41 @@ CBMiddleExpand::CBMiddleExpand(
           .index = 2,
           .parent{this},
       }}
+
+    , m_logView
+      {{
+          .x = LOG_WINDOW_X,
+          .y = LOG_WINDOW_Y,
+
+          .getter = std::addressof(m_logBoard),
+          .vr
+          {
+              0,
+              [this]{ return std::max<int>(0, to_dround((m_logBoard.h() - getLogWindowHeight()) * m_slider.getValue())); },
+              [this]{ return getLogWindowWidth (); },
+              [this]{ return getLogWindowHeight(); },
+          },
+
+          .parent{this},
+      }}
+
+    , m_cmdView
+      {{
+          .x = CMD_WINDOW_X,
+          .y = CMD_WINDOW_Y,
+
+          .getter = std::addressof(m_cmdBoard),
+          .vr
+          {
+              0,
+              [this]{ return m_cmdBoardCropY ; },
+
+              [this]{ return getCmdWindowWidth(); },
+              CMD_WINDOW_HEIGHT,
+          },
+
+          .parent{this},
+      }}
 {
     setH([this]
     {
@@ -170,6 +190,10 @@ CBMiddleExpand::CBMiddleExpand(
                 }
         }
     });
+
+    moveFront(&m_cmdView);
+    moveFront(&m_logView);
+    moveFront(&m_bg);
 }
 
 bool CBMiddleExpand::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
