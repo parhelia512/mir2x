@@ -12,7 +12,7 @@ struct ROI final
 
     Widget::IntSize2D size() const noexcept
     {
-        return {w, h};
+        return {std::max<int>(w, 0), std::max<int>(h, 0)};
     }
 
     bool empty() const noexcept
@@ -163,8 +163,7 @@ class VarROI final
 
                 [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
                 {
-                    if(std::get<0>(varg).combined()){ return std::get<0>(varg).offset(widget, arg).x; }
-                    else                            { return std::get<0>(varg).     x(widget, arg)  ; }
+                    return std::get<0>(varg).x(widget, arg);
                 },
             },
 
@@ -182,8 +181,7 @@ class VarROI final
 
                 [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
                 {
-                    if(std::get<0>(varg).combined()){ return std::get<0>(varg).offset(widget, arg).y; }
-                    else                            { return std::get<0>(varg).     y(widget, arg)  ; }
+                    return std::get<0>(varg).y(widget, arg);
                 },
             },
 
@@ -201,8 +199,7 @@ class VarROI final
 
                 [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
                 {
-                    if(std::get<1>(varg).combined()){ return std::get<1>(varg).size(widget, arg).w; }
-                    else                            { return std::get<1>(varg).   w(widget, arg)  ; }
+                    return std::get<1>(varg).w(widget, arg);
                 },
             },
 
@@ -220,8 +217,7 @@ class VarROI final
 
                 [widget, arg](const std::tuple<Widget::VarOffset2D, Widget::VarSize2D> &varg)
                 {
-                    if(std::get<1>(varg).combined()){ return std::get<1>(varg).size(widget, arg).h; }
-                    else                            { return std::get<1>(varg).   h(widget, arg)  ; }
+                    return std::get<1>(varg).h(widget, arg);
                 },
             },
 
@@ -327,17 +323,26 @@ class ROIOpt final
         ROIOpt(std::nullopt_t): ROIOpt() {};
 
     public:
-        ROIOpt(int argW, int argH)
-            : ROIOpt(0, 0, argW, argH)
+        ROIOpt(const Widget::ROI &roi)
+            : m_roiOpt(roi)
         {}
 
+    public:
         ROIOpt(int argX, int argY, int argW, int argH)
             : m_roiOpt(Widget::ROI{argX, argY, argW, argH})
         {}
 
     public:
-        ROIOpt(const Widget::ROI &roi)
-            : m_roiOpt(roi)
+        ROIOpt(int argW, int argH)
+            : ROIOpt(0, 0, argW, argH)
+        {}
+
+        ROIOpt(Widget::IntSize2D size)
+            : ROIOpt(0, 0, size.w, size.h)
+        {}
+
+        ROIOpt(Widget::IntOffset2D offset, Widget::IntSize2D size)
+            : ROIOpt(offset.x, offset.y, size.w, size.h)
         {}
 
     public:
