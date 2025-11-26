@@ -80,6 +80,9 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
               if(m_middle.show()){
                   m_middle.onCmdCursorMove();
               }
+              else if(m_middleExpand.show()){
+                    m_middleExpand.onCmdCursorMove();
+              }
           },
       }}
 
@@ -289,6 +292,9 @@ void ControlBoard::onInputDone()
 
     if(m_middle.show()){
         m_middle.onCmdCR();
+    }
+    else if(m_middleExpand.show()){
+        m_middleExpand.onCmdCR();
     }
 
     switch(fullStr[0]){

@@ -79,4 +79,8 @@ class CBMiddleExpand: public Widget
         int getLogWindowWidth () const { return w() - m_bgImgFull.w() + LOG_WINDOW_WIDTH_ORIG ; }
         int getLogWindowHeight() const { return h() - m_bgImgFull.h() + LOG_WINDOW_HEIGHT_ORIG; }
         int getCmdWindowWidth () const { return w() - m_bgImgFull.w() + CMD_WINDOW_WIDTH_ORIG ; }
+
+    private:
+        void onCmdCR();
+        void onCmdCursorMove();
 };
