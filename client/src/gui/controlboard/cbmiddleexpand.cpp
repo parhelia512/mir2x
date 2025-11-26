@@ -157,7 +157,7 @@ CBMiddleExpand::CBMiddleExpand(
     , m_cmdView
       {{
           .x = CMD_WINDOW_X,
-          .y = CMD_WINDOW_Y + (h() - m_bgImgFull.h()),
+          .y = [this]{ return CMD_WINDOW_Y + (h() - m_bgImgFull.h()); },
 
           .getter = std::addressof(m_cmdBoard),
           .vr
