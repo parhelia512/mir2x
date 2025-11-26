@@ -30,6 +30,21 @@ CBMiddleExpand::CBMiddleExpand(
           {
               .inst
               {
+                  .show = [](const Widget *self)
+                  {
+                      switch(self->hasParent<ControlBoard>()->m_mode){
+                          case CBM_EXPAND:
+                          case CBM_MAXIMIZE:
+                              {
+                                  return true;
+                              }
+                          default:
+                              {
+                                  return false;
+                              }
+                      }
+                  },
+
                   .afterResize = [](Widget *self)
                   {
                       dynamic_cast<CBMiddleExpand *>(self)->m_cmdBoard.setLineWidth(dynamic_cast<CBMiddleExpand *>(self)->getCmdWindowWidth());

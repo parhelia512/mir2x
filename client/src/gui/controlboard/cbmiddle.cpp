@@ -42,6 +42,11 @@ CBMiddle::CBMiddle(
           {
               .inst
               {
+                  .show = [](const Widget *self)
+                  {
+                      return self->hasParent<ControlBoard>()->m_mode == CBM_DEF;
+                  },
+
                   .moveOnFocus = false,
                   .afterResize = [](Widget *self)
                   {
