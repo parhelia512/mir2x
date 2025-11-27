@@ -44,7 +44,7 @@ CBMiddle::CBMiddle(
               {
                   .show = [](const Widget *self)
                   {
-                      if(const auto cb = self->hasParent<ControlBoard>(); !cb->m_hide && !cb->m_expand){
+                      if(const auto cb = self->hasParent<ControlBoard>(); !cb->m_minimize && !cb->m_expand){
                           return true;
                       }
                       return false;

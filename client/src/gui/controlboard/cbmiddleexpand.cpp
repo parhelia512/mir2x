@@ -32,7 +32,7 @@ CBMiddleExpand::CBMiddleExpand(
               {
                   .show = [](const Widget *self)
                   {
-                      if(const auto cb = self->hasParent<ControlBoard>(); !cb->m_hide && cb->m_expand){
+                      if(const auto cb = self->hasParent<ControlBoard>(); !cb->m_minimize && cb->m_expand){
                           return true;
                       }
                       return false;
@@ -196,8 +196,8 @@ CBMiddleExpand::CBMiddleExpand(
 {
     setH([this]
     {
-        if(const auto cb = hasParent<ControlBoard>(); !cb->m_hide && cb->m_expand){
-            if(cb->m_maxmize){
+        if(const auto cb = hasParent<ControlBoard>(); !cb->m_minimize && cb->m_expand){
+            if(cb->m_maximize){
                 return g_sdlDevice->getRendererHeight();
             }
             else{

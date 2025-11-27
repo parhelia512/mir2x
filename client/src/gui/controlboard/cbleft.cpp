@@ -37,7 +37,7 @@ CBLeft::CBLeft(
               {
                   .show = [](const Widget *self)
                   {
-                      return self->hasParent<ControlBoard>()->m_hide == false;
+                      return self->hasParent<ControlBoard>()->m_minimize == false;
                   },
               },
           },

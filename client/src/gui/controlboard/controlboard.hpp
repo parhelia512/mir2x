@@ -79,9 +79,9 @@ class ControlBoard: public Widget
         ProcessRun *m_processRun;
 
     private:
-        bool m_expand  = false;
-        bool m_hide    = false;
-        bool m_maxmize = false;
+        bool m_expand   = false;
+        bool m_maximize = false;
+        bool m_minimize = false;
 
     private:
         LayoutBoard m_logBoard;

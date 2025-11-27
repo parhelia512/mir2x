@@ -14,7 +14,7 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           .w = [this]{ return g_sdlDevice->getRendererWidth ()    ; },
           .h = [this]
           {
-              if(m_hide){
+              if(m_minimize){
                   return CBTitle::UP_HEIGHT + 10;
               }
 
