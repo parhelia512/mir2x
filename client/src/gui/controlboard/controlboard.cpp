@@ -315,8 +315,5 @@ void ControlBoard::onInputDone()
 
 int ControlBoard::shiftHeight() const
 {
-    if(m_minimize){
-        return 0;
-    }
-    return CBMiddle::CB_MIDDLE_TEX_HEIGHT;
+    return m_minimize ? 0 : CBMiddle::CB_MIDDLE_TEX_HEIGHT;
 }
