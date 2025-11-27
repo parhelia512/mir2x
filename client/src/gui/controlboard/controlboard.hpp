@@ -48,14 +48,6 @@
 //
 // |---fixed---|-------------repeat---------------|---fixed------|
 
-enum CBMode: int
-{
-    CBM_DEF, // default
-    CBM_HIDE,
-    CBM_EXPAND,
-    CBM_MAXIMIZE,
-};
-
 enum
 {
     CBLOG_DEF = 0,
@@ -118,4 +110,10 @@ class ControlBoard: public Widget
 
     private:
        void onInputDone();
+
+    public:
+       bool minimized() const
+       {
+           return m_minimize;
+       }
 };

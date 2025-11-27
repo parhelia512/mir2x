@@ -101,7 +101,15 @@ void ProcessRun::scrollMap()
 {
     const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
     const auto showWindowW = rendererW;
-    const auto showWindowH = rendererH - getWidget("ControlBoard")->h();
+    const auto showWindowH = rendererH - [this]
+    {
+        if(const auto cb = dynamic_cast<ControlBoard *>(getWidget("ControlBoard")); cb->minimized()){
+            return 0;
+        }
+        else{
+            return cb->h();
+        }
+    }();
 
     const int nViewX = getMyHero()->x() * SYS_MAPGRIDXP - showWindowW / 2;
     const int nViewY = getMyHero()->y() * SYS_MAPGRIDYP - showWindowH / 2;
