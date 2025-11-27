@@ -112,8 +112,5 @@ class ControlBoard: public Widget
        void onInputDone();
 
     public:
-       bool minimized() const
-       {
-           return m_minimize;
-       }
+       int shiftHeight() const;
 };

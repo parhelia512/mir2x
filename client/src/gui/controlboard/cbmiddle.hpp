@@ -17,6 +17,9 @@ class ProcessRun;
 class ControlBoard;
 class CBMiddle: public Widget
 {
+    public:
+        constexpr static int CB_MIDDLE_TEX_HEIGHT = 131;
+
     private:
         constexpr static int LOG_WINDOW_WIDTH_ORIG = 344;
         constexpr static int CMD_WINDOW_WIDTH_ORIG = 344;
