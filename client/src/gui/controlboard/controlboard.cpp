@@ -14,19 +14,16 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
           .w = [this]{ return g_sdlDevice->getRendererWidth ()    ; },
           .h = [this]
           {
-              switch(m_mode){
-                  case CBM_HIDE:
-                      {
-                          return CBTitle::UP_HEIGHT + 10;
-                      }
-                  case CBM_DEF:
-                      {
-                          return m_middle.h() + CBTitle::UP_HEIGHT;
-                      }
-                  default:
-                      {
-                          return m_middleExpand.h() + CBTitle::UP_HEIGHT;
-                      }
+              if(m_hide){
+                  return CBTitle::UP_HEIGHT + 10;
+              }
+
+              else if(m_expand){
+                  return m_middleExpand.h() + CBTitle::UP_HEIGHT;
+              }
+
+              else{
+                  return m_middle.h() + CBTitle::UP_HEIGHT;
               }
           },
 
@@ -260,23 +257,13 @@ TritexButton *ControlBoard::getButton(const std::string_view &buttonName)
 
 void ControlBoard::onClickSwitchModeButton(int)
 {
-    switch(m_mode){
-        case CBM_DEF:
-            {
-                m_mode = CBM_EXPAND;
-                m_middleExpand.afterResize();
-                break;
-            }
-        case CBM_EXPAND:
-            {
-                m_mode = CBM_DEF;
-                m_middle.afterResize();
-                break;
-            }
-        default:
-            {
-                break;
-            }
+    if(m_expand){
+        m_expand = false;
+        m_middle.afterResize();
+    }
+    else{
+        m_expand = true;
+        m_middleExpand.afterResize();
     }
 }
 

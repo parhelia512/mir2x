@@ -79,7 +79,9 @@ class ControlBoard: public Widget
         ProcessRun *m_processRun;
 
     private:
-        CBMode m_mode = CBM_DEF;
+        bool m_expand  = false;
+        bool m_hide    = false;
+        bool m_maxmize = false;
 
     private:
         LayoutBoard m_logBoard;

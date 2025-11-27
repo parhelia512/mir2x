@@ -32,17 +32,10 @@ CBMiddleExpand::CBMiddleExpand(
               {
                   .show = [](const Widget *self)
                   {
-                      switch(self->hasParent<ControlBoard>()->m_mode){
-                          case CBM_EXPAND:
-                          case CBM_MAXIMIZE:
-                              {
-                                  return true;
-                              }
-                          default:
-                              {
-                                  return false;
-                              }
+                      if(const auto cb = self->hasParent<ControlBoard>(); !cb->m_hide && cb->m_expand){
+                          return true;
                       }
+                      return false;
                   },
 
                   .afterResize = [](Widget *self)
@@ -203,20 +196,15 @@ CBMiddleExpand::CBMiddleExpand(
 {
     setH([this]
     {
-        switch(hasParent<ControlBoard>()->m_mode){
-            case CBM_EXPAND:
-                {
-                    return std::min<int>(400, g_sdlDevice->getRendererHeight());
-                }
-            case CBM_MAXIMIZE:
-                {
-                    return g_sdlDevice->getRendererHeight();
-                }
-            default:
-                {
-                    return 0;
-                }
+        if(const auto cb = hasParent<ControlBoard>(); !cb->m_hide && cb->m_expand){
+            if(cb->m_maxmize){
+                return g_sdlDevice->getRendererHeight();
+            }
+            else{
+                return std::min<int>(400, g_sdlDevice->getRendererHeight());
+            }
         }
+        return 0;
     });
 
     moveFront(&m_cmdView);

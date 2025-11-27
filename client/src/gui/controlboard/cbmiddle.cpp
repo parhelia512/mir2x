@@ -44,7 +44,10 @@ CBMiddle::CBMiddle(
               {
                   .show = [](const Widget *self)
                   {
-                      return self->hasParent<ControlBoard>()->m_mode == CBM_DEF;
+                      if(const auto cb = self->hasParent<ControlBoard>(); !cb->m_hide && !cb->m_expand){
+                          return true;
+                      }
+                      return false;
                   },
 
                   .moveOnFocus = false,

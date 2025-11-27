@@ -62,7 +62,7 @@ CBTitle::CBTitle(
           argProc,
           [this](Widget *self, int) // double-click
           {
-              self->hasParent<ControlBoard>()->m_mode = CBM_HIDE;
+              auto &hide = self->hasParent<ControlBoard>()->m_hide; hide = !hide;
           },
 
           this,
