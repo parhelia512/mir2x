@@ -1614,9 +1614,9 @@ void ProcessRun::centerMyHero()
     const auto fnSetOff = [this, nX, nY, nDirection, currFrame, frameCount](int stepLen)
     {
         const auto [rendererWidth, rendererHeight] = g_sdlDevice->getRendererSize();
-        const auto controlBoardPtr = dynamic_cast<ControlBoard *>(getWidget("ControlBoard"));
+
         const auto showWindowW = rendererWidth;
-        const auto showWindowH = rendererHeight - controlBoardPtr->h();
+        const auto showWindowH = rendererHeight - dynamic_cast<ControlBoard *>(getWidget("ControlBoard"))->shiftHeight();
 
         switch(stepLen){
             case 0:
