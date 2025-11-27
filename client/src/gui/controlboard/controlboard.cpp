@@ -17,7 +17,7 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
               switch(m_mode){
                   case CBM_HIDE:
                       {
-                          return CBTitle::UP_HEIGHT;
+                          return CBTitle::UP_HEIGHT + 10;
                       }
                   case CBM_DEF:
                       {
