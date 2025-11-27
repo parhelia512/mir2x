@@ -114,6 +114,7 @@ CBMiddleExpand::CBMiddleExpand(
               hasParent<ControlBoard>()->onClickSwitchModeButton(clickCount);
           },
 
+          .onClickDone{false},
           .parent{this},
       }}
 
