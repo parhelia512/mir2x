@@ -1,3 +1,9 @@
+FIND_PROGRAM(GIT_LFS_EXECUTABLE git-lfs)
+
+IF(NOT GIT_LFS_EXECUTABLE)
+    MESSAGE(FATAL_ERROR "git-lfs not found, install git-lfs before building mir2x_data")
+ENDIF()
+
 INCLUDE(ExternalProject)
 
 ExternalProject_Add(
