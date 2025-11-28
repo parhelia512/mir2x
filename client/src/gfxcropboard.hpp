@@ -181,7 +181,7 @@ class GfxCropBoard: public Widget
             const auto r = gfxCropROI();
             attrs.push_back(str_printf(R"("roi":{"x":%d,"y":%d,"w":%d,"h":%d})", r.x, r.y, r.w, r.h));
 
-            const atuo m = margin();
+            const auto m = margin();
             attrs.push_back(str_printf(R"("margin":{"up":%d,"down":%d,"left":%d,"right":%d})", m.up, m.down, m.left, m.right));
 
             return attrs;
