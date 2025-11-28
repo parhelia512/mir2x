@@ -228,7 +228,7 @@ template<typename Func> Widget::VarSize Widget::transform(Widget::VarSize varSiz
         return func(std::get<int>(varSize));
     }
     else{
-        return [varSize = std::move(varSize), func = std::forward<Func>(func)](const Widget *widget)
+        return [varSize = std::move(varSize), func = std::decay_t<Func>(std::forward<Func>(func))](const Widget *widget)
         {
             return func(std::get<std::function<int(const Widget *)>>(varSize)(widget));
         };
