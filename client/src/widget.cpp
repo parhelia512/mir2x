@@ -1043,5 +1043,9 @@ std::string Widget::dumpTree() const
         attrs.push_back(str_printf(R"("children":[%s])", str_join(childAttrs, ",").c_str()));
     }
 
+    if(auto extraAttrs = dumpTreeExt(); !extraAttrs.empty()){
+        attrs.insert(attrs.end(), extraAttrs.begin(), extraAttrs.end());
+    }
+
     return str_printf("{%s}", str_join(attrs, ",").c_str());
 }

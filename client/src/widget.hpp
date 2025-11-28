@@ -509,7 +509,8 @@ class Widget: public WidgetTreeNode
         virtual void setSize(Widget::VarSizeOpt, Widget::VarSizeOpt) final;
 
     public:
-        virtual std::string dumpTree() const;
+        virtual std::string dumpTree() const final;
+        virtual std::vector<std::string> dumpTreeExt() const { return {}; }
 };
 
 #include "widget.implement.hpp"

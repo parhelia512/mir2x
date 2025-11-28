@@ -158,4 +158,32 @@ class GfxCropBoard: public Widget
         {
             return Widget::evalSize(m_margin[index], this);
         }
+
+        Widget::IntMargin margin() const
+        {
+            return
+            {
+                .up    = margin(0),
+                .down  = margin(1),
+                .left  = margin(2),
+                .right = margin(3),
+            };
+        }
+
+    public:
+        std::vector<std::string> dumpTreeExt() const override
+        {
+            std::vector<std::string> attrs;
+            if(const auto widget = gfxWidget()){
+                attrs.push_back(str_printf(R"("gfxWidget":{"name":"%s","id":%llu})", widget->name().c_str(), to_llu(widget->id())));
+            }
+
+            const auto r = gfxCropROI();
+            attrs.push_back(str_printf(R"("roi":{"x":%d,"y":%d,"w":%d,"h":%d})", r.x, r.y, r.w, r.h));
+
+            const atuo m = margin();
+            attrs.push_back(str_printf(R"("margin":{"up":%d,"down":%d,"left":%d,"right":%d})", m.up, m.down, m.left, m.right));
+
+            return attrs;
+        }
 };
