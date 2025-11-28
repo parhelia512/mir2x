@@ -175,7 +175,7 @@ class GfxCropBoard: public Widget
         {
             std::vector<std::string> attrs;
             if(const auto widget = gfxWidget()){
-                attrs.push_back(str_printf(R"("gfxWidget":{"name":"%s","id":%llu})", widget->name().c_str(), to_llu(widget->id())));
+                attrs.push_back(str_printf(R"("gfxWidget":{"name":"%s","id":%llu})", widget->name(), to_llu(widget->id())));
             }
 
             const auto r = gfxCropROI();

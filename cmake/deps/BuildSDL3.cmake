@@ -4,7 +4,7 @@ ExternalProject_Add(
     sdl3
 
     GIT_REPOSITORY "https://github.com/libsdl-org/SDL.git"
-    GIT_TAG        "3.2.26"
+    GIT_TAG        "release-3.2.26"
 
     SOURCE_DIR "${MIR2X_3RD_PARTY_DIR}/sdl3"
     INSTALL_DIR "${MIR2X_3RD_PARTY_DIR}/sdl3/build/install"
