@@ -445,8 +445,8 @@ class Widget: public WidgetTreeNode
         virtual int h() const;
 
     public:
-        const auto &varw() const { return m_w; }
-        const auto &varh() const { return m_h; }
+        const auto &varW() const { return m_w; }
+        const auto &varH() const { return m_h; }
 
     public:
         int dx() const;
