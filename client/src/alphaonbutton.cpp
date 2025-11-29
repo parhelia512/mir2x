@@ -56,7 +56,6 @@ AlphaOnButton::AlphaOnButton(AlphaOnButton::InitArgs args)
               return (getState() == BEVENT_DOWN) ? g_progUseDB->retrieve(Widget::evalU32(m_downTexID, this)) : nullptr;
           },
 
-          .blendMode = SDL_BLENDMODE_NONE,
           .parent{this},
       }}
 {
