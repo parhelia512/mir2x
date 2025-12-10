@@ -4,24 +4,43 @@
 #include <cstdint>
 #include "colorf.hpp"
 #include "ime.hpp"
+#include "widget.hpp"
 #include "labelboard.hpp"
 
 class IMEBoard: public Widget
 {
     private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+            Widget::VarInt x   = 0;
+            Widget::VarInt y   = 0;
+
+            Widget::FontConfig font
+            {
+                .id = 1,
+                .size = 12,
+                .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+            };
+
+            Widget::VarU32 fontColorHover   = colorf::RGBA(0XFF, 0X00, 0X00, 0XFF);
+            Widget::VarU32 fontColorPressed = colorf::RGBA(0X00, 0X00, 0XFF, 0XFF);
+            Widget::VarU32 separatorColor   = colorf::RGBA(0XFF, 0XFF, 0X00, 0X30);
+
+            Widget::WADPair parent {};
+        };
+
+    private:
         IME m_ime;
         bool m_active = true; // needs this because IME is used not only in ProcessRun
 
     private:
-        const uint8_t m_font;
-        const uint8_t m_fontSize;
-        const uint8_t m_fontStyle;
+        const Widget::FontConfig m_font;
 
-        const uint32_t m_fontColor;
-        const uint32_t m_fontColorHover;
-        const uint32_t m_fontColorPressed;
-
-        const uint32_t m_separatorColor;
+    private:
+        const Widget::VarU32 m_fontColorHover;
+        const Widget::VarU32 m_fontColorPressed;
+        const Widget::VarU32 m_separatorColor;
 
     private:
         const size_t m_fontTokenHeight;
@@ -42,26 +61,10 @@ class IMEBoard: public Widget
 
     private:
         std::vector<std::string> m_candidateList;
-        std::vector<std::unique_ptr<LabelBoard>> m_labelBoardList;
+        std::vector<std::unique_ptr<LabelBoard>> m_boardList;
 
     public:
-        IMEBoard(
-                dir8_t, // dir
-                int,    // x
-                int,    // y
-
-                uint8_t =  1, // font
-                uint8_t = 12, // fontSize
-                uint8_t =  0, // fontStyle
-
-                uint32_t = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF), // fontColor
-                uint32_t = colorf::RGBA(0XFF, 0X00, 0X00, 0XFF), // fontColorHover
-                uint32_t = colorf::RGBA(0X00, 0X00, 0XFF, 0XFF), // fontColorPressed
-
-                uint32_t = colorf::RGBA(0XFF, 0XFF, 0X00, 0X30), // separatorColor
-
-                Widget * = nullptr, // parent
-                bool     = false);  // autoDelete
+        IMEBoard(IMEBoard::InitArgs);
 
     public:
         void updateDefault(double) override;
@@ -77,7 +80,6 @@ class IMEBoard: public Widget
         void dropFocus();
 
     private:
-        void updateSize();
         void prepareLabelBoardList();
 
     private:

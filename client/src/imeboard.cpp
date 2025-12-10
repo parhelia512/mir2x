@@ -6,56 +6,34 @@
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-IMEBoard::IMEBoard(
-        dir8_t argDir,
-        int argX,
-        int argY,
-
-        uint8_t font,
-        uint8_t fontSize,
-        uint8_t fontStyle,
-
-        uint32_t fontColor,
-        uint32_t fontColorHover,
-        uint32_t fontColorPressed,
-
-        uint32_t separatorColor,
-
-        Widget *parent,
-        bool autoDelete)
-
+IMEBoard::IMEBoard(IMEBoard::InitArgs args)
     : Widget
       {{
-          .dir = argDir,
-          .x = argX,
-          .y = argY,
-          .parent
-          {
-              .widget = parent,
-              .autoDelete = autoDelete,
-          }
+          .dir = std::move(args.dir),
+
+          .x = std::move(args.x),
+          .y = std::move(args.y),
+
+          .parent = std::move(args.parent),
       }}
 
-    , m_font(font)
-    , m_fontSize(fontSize)
-    , m_fontStyle(fontStyle)
+    , m_font(std::move(args.font))
 
-    , m_fontColor(fontColor)
-    , m_fontColorHover(fontColorHover)
-    , m_fontColorPressed(fontColorPressed)
-
-    , m_separatorColor(separatorColor)
+    , m_fontColorHover  (std::move(args.fontColorHover  ))
+    , m_fontColorPressed(std::move(args.fontColorPressed))
+    , m_separatorColor  (std::move(args.separatorColor  ))
 
     , m_fontTokenHeight([this]() -> size_t
       {
-          return LabelBoard{{.label = u8" ", .font{.id = m_font, .size = m_fontSize, .style = m_fontStyle}}}.h();
+          return LabelBoard{{.label = u8" ", .font{m_font}}}.h();
       }())
 
     , m_inputWidget(nullptr)
-    , m_onCommit(nullptr)
+    , m_onCommit   (nullptr)
 {
     dropFocus();
-    updateSize();
+    setSize([this]{ return std::max<int>(SDLDeviceHelper::getTextureWidth (g_progUseDB->retrieve(0X09000100), 338), m_startX * 2 + totalLabelWidth()); },
+            [this]{ return std::max<int>(SDLDeviceHelper::getTextureHeight(g_progUseDB->retrieve(0X09000100),  53), m_startY * 2 + m_fontTokenHeight + m_separatorSpace + m_fontTokenHeight); });
 }
 
 void IMEBoard::updateDefault(double)
@@ -78,32 +56,16 @@ void IMEBoard::updateDefault(double)
         }
     }
     else{
-        for(auto &p: m_labelBoardList){
+        for(auto &p: m_boardList){
             this->removeChild(p.get(), false);
         }
 
-        m_labelBoardList.clear();
+        m_boardList.clear();
         m_candidateList = currCandidateList;
 
         m_startIndex = 0;
         prepareLabelBoardList();
     }
-}
-
-void IMEBoard::updateSize()
-{
-    const auto [minW, minH] = []() -> std::tuple<int, int>
-    {
-        if(auto frame = g_progUseDB->retrieve(0X09000100)){
-            return SDLDeviceHelper::getTextureSize(frame);
-        }
-        else{
-            return {338, 53}; // texture size of 0X09000100
-        }
-    }();
-
-    setW(std::max<int>(minW, m_startX * 2 + totalLabelWidth()));
-    setH(std::max<int>(minH, m_startY * 2 + m_fontTokenHeight + m_separatorSpace + m_fontTokenHeight));
 }
 
 void IMEBoard::prepareLabelBoardList()
@@ -112,30 +74,22 @@ void IMEBoard::prepareLabelBoardList()
     int startY = m_startY + m_fontTokenHeight + m_separatorSpace;
 
     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-        if(i >= m_labelBoardList.size()){
-            m_labelBoardList.resize(i + 1);
+        if(i >= m_boardList.size()){
+            m_boardList.resize(i + 1);
         }
 
-        if(!m_labelBoardList[i]){
-            m_labelBoardList[i] = std::unique_ptr<LabelBoard>(new LabelBoard
+        if(!m_boardList[i]){
+            m_boardList[i] = std::unique_ptr<LabelBoard>(new LabelBoard
             {{
                 .label = str_printf(u8"%zu. %s", i + 1 - m_startIndex, m_candidateList[i].c_str()).c_str(),
-                .font
-                {
-                    .id = m_font,
-                    .size = m_fontSize,
-                    .style = m_fontStyle,
-                    .color = m_fontColor,
-                },
+                .font = m_font,
                 .parent{this},
             }});
         }
 
-        m_labelBoardList[i]->moveTo(startX, startY);
-        startX += m_labelBoardList[i]->w() + m_candidateSpace;
+        m_boardList[i]->moveTo(startX, startY);
+        startX += m_boardList[i]->w() + m_candidateSpace;
     }
-
-    updateSize();
 }
 
 size_t IMEBoard::totalLabelWidth() const
@@ -144,9 +98,9 @@ size_t IMEBoard::totalLabelWidth() const
         return 0;
     }
 
-    size_t totalWidth = m_labelBoardList[m_startIndex]->w();
+    size_t totalWidth = m_boardList[m_startIndex]->w();
     for(size_t i = m_startIndex + 1; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-        totalWidth += (m_candidateSpace + m_labelBoardList[i]->w());
+        totalWidth += (m_candidateSpace + m_boardList[i]->w());
     }
 
     return totalWidth;
@@ -245,8 +199,8 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::R
             {
                 if(event.button.button == SDL_BUTTON_LEFT){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                        m_labelBoardList[i]->setFontColor(m_fontColor);
-                        if(m.create(m_labelBoardList.at(i)->roi()).in(event.button.x, event.button.y)){
+                        m_boardList[i]->setFontColor(Widget::evalU32(m_font.color, this));
+                        if(m.create(m_boardList.at(i)->roi()).in(event.button.x, event.button.y)){
                             m_ime.select(i);
                         }
                     }
@@ -261,11 +215,11 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::R
                 }
 
                 for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                    if(m.create(m_labelBoardList.at(i)->roi()).in(event.button.x, event.button.y)){
-                        m_labelBoardList.at(i)->setFontColor(m_fontColorPressed);
+                    if(m.create(m_boardList.at(i)->roi()).in(event.button.x, event.button.y)){
+                        m_boardList.at(i)->setFontColor(Widget::evalU32(m_fontColorPressed, this));
                     }
                     else{
-                        m_labelBoardList.at(i)->setFontColor(m_fontColor);
+                        m_boardList.at(i)->setFontColor(Widget::evalU32(m_font.color, this));
                     }
                 }
                 return true;
@@ -287,11 +241,11 @@ bool IMEBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::R
                 }
                 else if(m.in(event.motion.x, event.motion.y)){
                     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-                        if(m.create(m_labelBoardList.at(i)->roi()).in(event.motion.x, event.motion.y)){
-                            m_labelBoardList.at(i)->setFontColor(m_fontColorHover);
+                        if(m.create(m_boardList.at(i)->roi()).in(event.motion.x, event.motion.y)){
+                            m_boardList.at(i)->setFontColor(Widget::evalU32(m_fontColorHover, this));
                         }
                         else{
-                            m_labelBoardList.at(i)->setFontColor(m_fontColor);
+                            m_boardList.at(i)->setFontColor(Widget::evalU32(m_font.color, this));
                         }
                     }
                 }
@@ -377,20 +331,15 @@ void IMEBoard::drawDefault(Widget::ROIMap m) const
             .y = m.y + to_d(m_startY),
 
             .label = to_u8cstr(m_ime.result()),
-            .font
-            {
-                .id = m_font,
-                .size = m_fontSize,
-                .style = m_fontStyle,
-                .color = m_fontColor,
-            }}}.drawRoot({});
+            .font = m_font,
+            }}.drawRoot({});
 
-    g_sdlDevice->drawLine(m_separatorColor,
+    g_sdlDevice->drawLine(Widget::evalU32(m_separatorColor, this),
             m.x      , m.y + m_startY + m_fontTokenHeight + m_separatorSpace / 2,
             m.y + w(), m.y + m_startY + m_fontTokenHeight + m_separatorSpace / 2);
 
     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
-        drawChild(m_labelBoardList.at(i).get(), m);
+        drawChild(m_boardList.at(i).get(), m);
     }
 
     if(auto tex = g_progUseDB->retrieve(0X09000006)){
@@ -404,11 +353,11 @@ void IMEBoard::drawDefault(Widget::ROIMap m) const
 
 void IMEBoard::gainFocus(std::string prefix, std::string input, Widget *pwidget, std::function<void(std::string)> onCommit)
 {
-    for(auto &p: m_labelBoardList){
+    for(auto &p: m_boardList){
         this->removeChild(p.get(), false);
     }
 
-    m_labelBoardList.clear();
+    m_boardList.clear();
     m_candidateList.clear();
 
     m_ime.assign(prefix, input);
@@ -426,11 +375,11 @@ void IMEBoard::gainFocus(std::string prefix, std::string input, Widget *pwidget,
 
 void IMEBoard::dropFocus()
 {
-    for(auto &p: m_labelBoardList){
+    for(auto &p: m_boardList){
         this->removeChild(p.get(), false);
     }
 
-    m_labelBoardList.clear();
+    m_boardList.clear();
     m_candidateList.clear();
 
     m_ime.clear();

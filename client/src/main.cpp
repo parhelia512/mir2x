@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
         g_client          = new Client();       // loads fontex resource
 
         if(!g_clientArgParser->disableIME){
-            g_imeBoard = new IMEBoard(DIR_UPLEFT, 0, 0);
+            g_imeBoard = new IMEBoard{{}};
         }
 
         g_notifyBoard = new NotifyBoard(DIR_UPLEFT, 0, 0, 10240, 0, 15, 0, colorf::RED + colorf::A_SHF(255), 0, 5);
