@@ -1,7 +1,7 @@
 #include <algorithm>
-#include "imeboard.hpp"
-#include "pngtexdb.hpp"
 #include "sdldevice.hpp"
+#include "pngtexdb.hpp"
+#include "imeboard.hpp"
 
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
@@ -34,6 +34,7 @@ IMEBoard::IMEBoard(IMEBoard::InitArgs args)
     , m_upLeftCorner
       {{
           .texLoadFunc = []{ return g_progUseDB->retrieve(0X09000006); },
+          .parent{this},
       }}
 
     , m_downRightCorner
@@ -41,7 +42,9 @@ IMEBoard::IMEBoard(IMEBoard::InitArgs args)
           .dir = DIR_DOWNRIGHT,
           .x = [this]{ return w() - 1; },
           .y = [this]{ return h() - 1; },
+
           .texLoadFunc = []{ return g_progUseDB->retrieve(0X09000009); },
+          .parent{this},
       }}
 
     , m_bgImg
@@ -55,23 +58,25 @@ IMEBoard::IMEBoard(IMEBoard::InitArgs args)
           .vr
           {
               m_upLeftCorner.w(),
-              0,
+              10,
               m_bgImg.w() - m_upLeftCorner.w() - m_downRightCorner.w(),
-              m_bgImg.h(),
+              m_bgImg.h() - 10 * 2,
           },
 
           .resize
           {
               [this]{ return w() - m_upLeftCorner.w() - m_downRightCorner.w(); },
-              [this]{ return h(); },
+              [this]{ return h() - 10 * 2; },
           },
 
           .bgDrawFunc = [this](int drawDstX, int drawDstY)
           {
               g_sdlDevice->drawLine(Widget::evalU32(m_separatorColor, this),
-                      drawDstX      , drawDstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2,
-                      drawDstX + w(), drawDstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2);
+                      drawDstX          , drawDstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2,
+                      drawDstX + w() - 1, drawDstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2);
           },
+
+          .parent{this},
       }}
 {
     dropFocus();
