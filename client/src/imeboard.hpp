@@ -6,6 +6,8 @@
 #include "ime.hpp"
 #include "widget.hpp"
 #include "labelboard.hpp"
+#include "imageboard.hpp"
+#include "gfxresizeboard.hpp"
 
 class IMEBoard: public Widget
 {
@@ -62,6 +64,13 @@ class IMEBoard: public Widget
     private:
         std::vector<std::string> m_candidateList;
         std::vector<std::unique_ptr<LabelBoard>> m_boardList;
+
+    private:
+        ImageBoard m_upLeftCorner;
+        ImageBoard m_downRightCorner;
+
+        ImageBoard m_bgImg;
+        GfxResizeBoard m_bg;
 
     public:
         IMEBoard(IMEBoard::InitArgs);

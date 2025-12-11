@@ -30,10 +30,53 @@ IMEBoard::IMEBoard(IMEBoard::InitArgs args)
 
     , m_inputWidget(nullptr)
     , m_onCommit   (nullptr)
+
+    , m_upLeftCorner
+      {{
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X09000006); },
+      }}
+
+    , m_downRightCorner
+      {{
+          .dir = DIR_DOWNRIGHT,
+          .x = [this]{ return w() - 1; },
+          .y = [this]{ return h() - 1; },
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X09000009); },
+      }}
+
+    , m_bgImg
+      {{
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X09000100); }, // size: 338 x 53
+      }}
+
+    , m_bg
+      {{
+          .getter = &m_bgImg,
+          .vr
+          {
+              m_upLeftCorner.w(),
+              0,
+              m_bgImg.w() - m_upLeftCorner.w() - m_downRightCorner.w(),
+              m_bgImg.h(),
+          },
+
+          .resize
+          {
+              [this]{ return w() - m_upLeftCorner.w() - m_downRightCorner.w(); },
+              [this]{ return h(); },
+          },
+
+          .bgDrawFunc = [this](int drawDstX, int drawDstY)
+          {
+              g_sdlDevice->drawLine(Widget::evalU32(m_separatorColor, this),
+                      drawDstX      , drawDstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2,
+                      drawDstX + w(), drawDstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2);
+          },
+      }}
 {
     dropFocus();
-    setSize([this]{ return std::max<int>(SDLDeviceHelper::getTextureWidth (g_progUseDB->retrieve(0X09000100), 338), m_startX * 2 + totalLabelWidth()); },
-            [this]{ return std::max<int>(SDLDeviceHelper::getTextureHeight(g_progUseDB->retrieve(0X09000100),  53), m_startY * 2 + m_fontTokenHeight + m_separatorSpace + m_fontTokenHeight); });
+    setSize([this]{ return std::max<int>(m_bgImg.w(), m_startX * 2 + totalLabelWidth()); },
+            [this]{ return std::max<int>(m_bgImg.h(), m_startY * 2 + m_fontTokenHeight + m_separatorSpace + m_fontTokenHeight); });
 }
 
 void IMEBoard::updateDefault(double)
@@ -70,8 +113,8 @@ void IMEBoard::updateDefault(double)
 
 void IMEBoard::prepareLabelBoardList()
 {
-    int startX = m_startX;
-    int startY = m_startY + m_fontTokenHeight + m_separatorSpace;
+    /**/  int startX = m_startX;
+    const int startY = m_startY + m_fontTokenHeight + m_separatorSpace;
 
     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
         if(i >= m_boardList.size()){
@@ -286,69 +329,21 @@ void IMEBoard::drawDefault(Widget::ROIMap m) const
         return;
     }
 
-    if(auto frame = g_progUseDB->retrieve(0X09000100)){
-        // tex  +-----+-----------------------+-----+
-        //      |     |                       |     |
-        //      +-----+-----------------------+-----+ size:(338, 53)
-        //      |<--->|       repeatWidth     |<--->|
-        //    marginWidth                   marginWidth
-        //
-        // ime  +-----+-----+-----+-----+-----+-----+
-        //      |     |  0  |  1  |  2  | ... |     |
-        //      +-----+-----+-----+-----+-----+-----+ size:(w(), h())
-        //      |<--->|      coveredWidth     |<--->|
-        //    marginWidth                   marginWidth
+    drawChild(&m_bg, m);
 
-        const auto [texW, texH] = SDLDeviceHelper::getTextureSize(frame);
+    const LabelBoard imeResult
+    {{
+        .label = to_u8cstr(m_ime.result()),
+        .font = m_font,
+    }};
 
-        fflassert(w() >= texW, w(), texW);
-        fflassert(h() >= texH, h(), texH);
-
-        const auto repeatWidth = std::min<int>(300, texW);
-        const auto marginWidth = (texW + 1 - repeatWidth) / 2;
-        const auto coveredWidth = w() - marginWidth * 2;
-
-        g_sdlDevice->drawTexture(frame, m.x,                     m.y, marginWidth, h(),                         0, 0, marginWidth, texH);
-        g_sdlDevice->drawTexture(frame, m.x + w() - marginWidth, m.y, marginWidth, h(), marginWidth + repeatWidth, 0, marginWidth, texH);
-
-        const auto repeat = (coveredWidth + 1) / repeatWidth;
-        for(int i = 0; i < repeat; ++i){
-            const auto dstCurrWidth = [i, repeat, coveredWidth]()
-            {
-                if(i + 1 == repeat){
-                    return coveredWidth - (coveredWidth / repeat) * i;
-                }
-                else{
-                    return coveredWidth / repeat;
-                }
-            }();
-            g_sdlDevice->drawTexture(frame, m.x + marginWidth + (coveredWidth / repeat) * i, m.y, dstCurrWidth, h(), marginWidth, 0, repeatWidth, texH);
-        }
-    }
-
-    LabelBoard{{
-            .x = m.x + to_d(m_startX),
-            .y = m.y + to_d(m_startY),
-
-            .label = to_u8cstr(m_ime.result()),
-            .font = m_font,
-            }}.drawRoot({});
-
-    g_sdlDevice->drawLine(Widget::evalU32(m_separatorColor, this),
-            m.x      , m.y + m_startY + m_fontTokenHeight + m_separatorSpace / 2,
-            m.y + w(), m.y + m_startY + m_fontTokenHeight + m_separatorSpace / 2);
-
+    drawAsChild(&imeResult, DIR_UPLEFT, m_startX, m_startY, m);
     for(size_t i = m_startIndex; i < std::min<size_t>(m_startIndex + 9, m_candidateList.size()); ++i){
         drawChild(m_boardList.at(i).get(), m);
     }
 
-    if(auto tex = g_progUseDB->retrieve(0X09000006)){
-        g_sdlDevice->drawTexture(tex, m.x, m.y);
-    }
-
-    if(auto tex = g_progUseDB->retrieve(0X09000009)){
-        g_sdlDevice->drawTexture(tex, DIR_DOWNRIGHT,  m.x + w(), m.y + h());
-    }
+    drawChild(&m_upLeftCorner   , m);
+    drawChild(&m_downRightCorner, m);
 }
 
 void IMEBoard::gainFocus(std::string prefix, std::string input, Widget *pwidget, std::function<void(std::string)> onCommit)
