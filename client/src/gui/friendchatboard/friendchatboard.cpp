@@ -852,7 +852,10 @@ bool FriendChatBoard::processEventDefault(const SDL_Event &event, bool valid, Wi
                     }
                 }
 
-                m_dragIndex = getEdgeDragIndex(event.button.x, event.button.y);
+                const auto mapXDiff = m.x - m.ro->x;
+                const auto mapYDiff = m.y - m.ro->y;
+
+                m_dragIndex = getEdgeDragIndex(event.button.x - mapXDiff, event.button.y - mapYDiff);
                 return consumeFocus(m.in(event.button.x, event.button.y));
             }
         case SDL_MOUSEBUTTONUP:
@@ -1429,7 +1432,7 @@ void FriendChatBoard::onAddFriendRejected(const SDChatPeer &argCP)
     m_processRun->addCBParLog(u8R"###(<par bgcolor="rgb(0x00, 0x80, 0x00)"><t color="red">%s</t>已经拒绝了你的好友请求。</par>)###", to_cstr(argCP.name));
 }
 
-std::optional<int> FriendChatBoard::getEdgeDragIndex(int eventX, int eventY) const
+std::optional<int> FriendChatBoard::getEdgeDragIndex(int eventDX, int eventDY) const
 {
     // ->|w0|<----w1------->|w2|<-   |
     //   x0 x1              x2       v
@@ -1447,11 +1450,11 @@ std::optional<int> FriendChatBoard::getEdgeDragIndex(int eventX, int eventY) con
     //                               ^
     //                               |
 
-    const int x0 = eventX;
+    const int x0 = 0;
     const int x1 = x0       + UIPage_DRAGBORDER[2];
     const int x2 = x0 + w() - UIPage_DRAGBORDER[3];
 
-    const int y0 = eventY;
+    const int y0 = 0;
     const int y1 = y0       + UIPage_DRAGBORDER[0];
     const int y2 = y0 + h() - UIPage_DRAGBORDER[1];
 
@@ -1463,13 +1466,13 @@ std::optional<int> FriendChatBoard::getEdgeDragIndex(int eventX, int eventY) con
     const int h1 = h() - UIPage_DRAGBORDER[0] - UIPage_DRAGBORDER[1];
     const int h2 =                              UIPage_DRAGBORDER[1];
 
-    if     (mathf::pointInRectangle<int>(eventX, eventY, x0, y0, w0, h0)) return 0;
-    else if(mathf::pointInRectangle<int>(eventX, eventY, x1, y0, w1, h0)) return 1;
-    else if(mathf::pointInRectangle<int>(eventX, eventY, x2, y0, w2, h0)) return 2;
-    else if(mathf::pointInRectangle<int>(eventX, eventY, x0, y1, w0, h1)) return 3;
-    else if(mathf::pointInRectangle<int>(eventX, eventY, x2, y1, w2, h1)) return 4;
-    else if(mathf::pointInRectangle<int>(eventX, eventY, x0, y2, w0, h2)) return 5;
-    else if(mathf::pointInRectangle<int>(eventX, eventY, x1, y2, w1, h2)) return 6;
-    else if(mathf::pointInRectangle<int>(eventX, eventY, x2, y2, w2, h2)) return 7;
+    if     (mathf::pointInRectangle<int>(eventDX, eventDY, x0, y0, w0, h0)) return 0;
+    else if(mathf::pointInRectangle<int>(eventDX, eventDY, x1, y0, w1, h0)) return 1;
+    else if(mathf::pointInRectangle<int>(eventDX, eventDY, x2, y0, w2, h0)) return 2;
+    else if(mathf::pointInRectangle<int>(eventDX, eventDY, x0, y1, w0, h1)) return 3;
+    else if(mathf::pointInRectangle<int>(eventDX, eventDY, x2, y1, w2, h1)) return 4;
+    else if(mathf::pointInRectangle<int>(eventDX, eventDY, x0, y2, w0, h2)) return 5;
+    else if(mathf::pointInRectangle<int>(eventDX, eventDY, x1, y2, w1, h2)) return 6;
+    else if(mathf::pointInRectangle<int>(eventDX, eventDY, x2, y2, w2, h2)) return 7;
     else                                                                  return std::nullopt;
 }
