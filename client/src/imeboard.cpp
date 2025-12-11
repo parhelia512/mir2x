@@ -69,7 +69,7 @@ IMEBoard::IMEBoard(IMEBoard::InitArgs args)
               [this]{ return h() - 10 * 2; },
           },
 
-          .bgDrawFunc = [this](int drawDstX, int drawDstY)
+          .fgDrawFunc = [this](int drawDstX, int drawDstY)
           {
               g_sdlDevice->drawLine(Widget::evalU32(m_separatorColor, this),
                       drawDstX          , drawDstY + m_startY + m_fontTokenHeight + m_separatorSpace / 2,

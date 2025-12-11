@@ -175,7 +175,9 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
     Widget::drawDefault(m);
 
     if(!g_clientArgParser->disableIME){
-        g_imeBoard->drawRoot({});
+        if(g_imeBoard->show()){
+            g_imeBoard->drawRoot({});
+        }
     }
 }
 
