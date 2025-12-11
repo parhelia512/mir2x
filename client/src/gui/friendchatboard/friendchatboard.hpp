@@ -9,6 +9,7 @@
 #include "labelboard.hpp"
 #include "imageboard.hpp"
 #include "tritexbutton.hpp"
+#include "gfxshapeboard.hpp"
 #include "gfxresizeboard.hpp"
 #include "friendchatboardconst.hpp"
 
@@ -69,6 +70,9 @@ class FriendChatBoard: public Widget
 
     private:
         TritexButton m_close;
+
+    private:
+        GfxShapeBoard m_dragArea;
 
     private:
         int m_uiLastPage = UIPage_CHATPREVIEW;

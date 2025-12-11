@@ -120,6 +120,22 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
           .parent{this},
       }}
 
+    , m_dragArea
+      {{
+          .w = [this]{ return w(); },
+          .h = [this]{ return h(); },
+          .drawFunc = [this](int drawDstX, int drawDstY)
+          {
+              if(m_dragIndex.has_value()){
+                  g_sdlDevice->fillRectangle(colorf::RGBA(231, 231, 189, 64), drawDstX                             , drawDstY                             , w()                 , UIPage_DRAGBORDER[0]);
+                  g_sdlDevice->fillRectangle(colorf::RGBA(231, 231, 189, 64), drawDstX                             , drawDstY + h() - UIPage_DRAGBORDER[1], w()                 , UIPage_DRAGBORDER[1]);
+                  g_sdlDevice->fillRectangle(colorf::RGBA(231, 231, 189, 64), drawDstX                             , drawDstY                             , UIPage_DRAGBORDER[2], h()                 );
+                  g_sdlDevice->fillRectangle(colorf::RGBA(231, 231, 189, 64), drawDstX + w() - UIPage_DRAGBORDER[3], drawDstY                             , UIPage_DRAGBORDER[3], h()                 );
+              }
+          },
+          .parent{this},
+      }}
+
     , m_uiPageList
       {
           UIPage // UIPage_CHAT
@@ -784,6 +800,7 @@ void FriendChatBoard::drawDefault(Widget::ROIMap m) const
         static_cast<const Widget *>( m_uiPageList[m_uiPage].control),
         static_cast<const Widget *>( m_uiPageList[m_uiPage].slider),
         static_cast<const Widget *>(&m_close),
+        static_cast<const Widget *>(&m_dragArea),
     }){
         int drawDstX = m.x;
         int drawDstY = m.y;
