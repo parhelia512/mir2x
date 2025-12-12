@@ -19,8 +19,9 @@ NPCChatOrigFrame::NPCChatOrigFrame(
 
           .x = std::move(argX),
           .y = std::move(argY),
-          .w = {},
-          .h = {},
+
+          .w = std::nullopt,
+          .h = std::nullopt,
 
           .parent
           {
@@ -31,12 +32,7 @@ NPCChatOrigFrame::NPCChatOrigFrame(
 
     , m_up
       {{
-          .texLoadFunc = [] -> SDL_Texture *
-          {
-              return g_progUseDB->retrieve(0X00000051);
-          },
-
-          .blendMode = SDL_BLENDMODE_NONE,
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000051); },
           .parent{this},
       }}
 
@@ -45,12 +41,7 @@ NPCChatOrigFrame::NPCChatOrigFrame(
           .x = 0,
           .y = [this]{ return m_up.h(); },
 
-          .texLoadFunc = [] -> SDL_Texture *
-          {
-              return g_progUseDB->retrieve(0X00000053);
-          },
-
-          .blendMode = SDL_BLENDMODE_NONE,
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000053); },
           .parent{this},
       }}
 {}

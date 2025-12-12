@@ -4,13 +4,13 @@
 #include "imageboard.hpp"
 #include "layoutboard.hpp"
 #include "tritexbutton.hpp"
-#include "gfxresizeboard.hpp"
+#include "npcchatframe.hpp"
 
 class ProcessRun;
 class NPCChatBoard: public Widget
 {
     private:
-        const int m_margin;
+        const int m_margin = 35;
 
     private:
         uint64_t m_npcUID = 0;
@@ -18,6 +18,9 @@ class NPCChatBoard: public Widget
 
     private:
         ProcessRun *m_processRun;
+
+    private:
+        NPCChatFrame m_bg;
 
     private:
         ImageBoard m_face;

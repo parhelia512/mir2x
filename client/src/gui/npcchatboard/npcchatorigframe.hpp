@@ -10,9 +10,9 @@ class NPCChatOrigFrame: public Widget
 
     public:
         NPCChatOrigFrame(
-                Widget::VarDir,
-                Widget::VarInt,
-                Widget::VarInt,
+                Widget::VarDir = DIR_UPLEFT,
+                Widget::VarInt = 0,
+                Widget::VarInt = 0,
 
                 Widget * = nullptr,
                 bool     = false);

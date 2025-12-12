@@ -56,26 +56,33 @@ NPCChatBoard::NPCChatBoard(
           }
       }}
 
-    , m_margin(35)
     , m_processRun(argProc)
+
+    , m_bg
+      {
+          DIR_UPLEFT,
+          0,
+          0,
+
+          [this]{ return w(); },
+          [this]{ return h(); },
+
+          this,
+          false,
+      }
 
     , m_face
       {{
           .x = m_margin,
           .y = m_margin,
 
-          .texLoadFunc = [this](const Widget *)
-          {
-              return g_progUseDB->retrieve(getNPCFaceKey());
-          },
-
-          .blendMode = SDL_BLENDMODE_NONE,
+          .texLoadFunc = [this]{ return g_progUseDB->retrieve(getNPCFaceKey()); },
           .parent{this},
       }}
 
     , m_chatBoard
       {{
-          .dir = [this](const Widget *)
+          .dir = [this]
           {
               if(g_progUseDB->retrieve(getNPCFaceKey())){
                   return DIR_LEFT;
@@ -85,7 +92,7 @@ NPCChatBoard::NPCChatBoard(
               }
           },
 
-          .x = [this](const Widget *)
+          .x = [this]
           {
               if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
                   return m_margin * 2 + SDLDeviceHelper::getTextureWidth(texPtr);
@@ -126,8 +133,8 @@ NPCChatBoard::NPCChatBoard(
 
     , m_buttonClose
       {{
-          .x = [this](const Widget *){ return w() - 40; },
-          .y = [this](const Widget *){ return h() - 43; },
+          .x = [this]{ return w() - 40; },
+          .y = [this]{ return h() - 43; },
 
           .texIDList
           {
@@ -146,12 +153,12 @@ NPCChatBoard::NPCChatBoard(
     fflassert(m_margin >= 0);
     setShow(false);
 
-    m_face.setShow([this](const Widget *) -> bool
+    m_face.setShow([this] -> bool
     {
         return g_progUseDB->retrieve(getNPCFaceKey());
     });
 
-    setSize([this](const Widget *)
+    setSize([this]
     {
         if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
             return m_margin * 3 + SDLDeviceHelper::getTextureWidth(texPtr) + m_chatBoard.w();
@@ -161,7 +168,7 @@ NPCChatBoard::NPCChatBoard(
         }
     },
 
-    [this](const Widget *)
+    [this]
     {
         if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
             return m_margin * 2 + std::max<int>(SDLDeviceHelper::getTextureWidth(texPtr), m_chatBoard.w());

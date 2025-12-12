@@ -28,13 +28,7 @@ NPCChatFrame::NPCChatFrame(
           }
       }}
 
-    , m_frame
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-      }
-
+    , m_frame{}
     , m_board
       {{
           .getter = &m_frame,
