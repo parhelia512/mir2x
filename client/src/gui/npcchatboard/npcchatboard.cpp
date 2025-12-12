@@ -171,10 +171,10 @@ NPCChatBoard::NPCChatBoard(
     [this]
     {
         if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
-            return m_margin * 2 + std::max<int>(SDLDeviceHelper::getTextureWidth(texPtr), m_chatBoard.w());
+            return m_margin * 2 + std::max<int>(SDLDeviceHelper::getTextureHeight(texPtr), m_chatBoard.h());
         }
         else{
-            return m_margin * 2 + m_chatBoard.w();
+            return m_margin * 2 + m_chatBoard.h();
         }
     });
 }
