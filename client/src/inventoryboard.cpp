@@ -384,7 +384,7 @@ bool InventoryBoard::processEventDefault(const SDL_Event &event, bool valid, Wid
                                         }
                                     }
                                     else if(lastGrabbedItem){
-                                        const auto [gridX, gridY] = getInvGrid(event.button.x, event.button.y);
+                                        const auto [gridX, gridY] = getInvGrid(event.button.x - startXOff, event.button.y - startYOff);
                                         const auto [gridW, gridH] = InvPack::getPackBinSize(lastGrabbedItem.itemID);
                                         const auto startGridX = gridX - gridW / 2; // can give an invalid (x, y)
                                         const auto startGridY = gridY - gridH / 2;
@@ -494,9 +494,9 @@ void InventoryBoard::drawInvOpCost() const
     queryResultBoard.draw({.dir=DIR_NONE, .x=132, .y=503});
 }
 
-int InventoryBoard::getPackBinIndex(int locPX, int locPY) const
+int InventoryBoard::getPackBinIndex(int locPDX, int locPDY) const
 {
-    const auto [gridX, gridY] = getInvGrid(locPX, locPY);
+    const auto [gridX, gridY] = getInvGrid(locPDX, locPDY);
     if(gridX < 0 || gridY < 0){
         return -1;
     }
@@ -514,19 +514,19 @@ int InventoryBoard::getPackBinIndex(int locPX, int locPY) const
     return -1;
 }
 
-std::tuple<int, int> InventoryBoard::getInvGrid(int locPX, int locPY) const
+std::tuple<int, int> InventoryBoard::getInvGrid(int locPDX, int locPDY) const
 {
-    const int gridPX0 = m_invGridX0; // + m.x;
-    const int gridPY0 = m_invGridY0; // + m.y;
+    const int gridPX0 = m_invGridX0;
+    const int gridPY0 = m_invGridY0;
 
-    if(!mathf::pointInRectangle<int>(locPX, locPY, gridPX0, gridPY0, SYS_INVGRIDGW * SYS_INVGRIDPW, SYS_INVGRIDGH * SYS_INVGRIDPH)){
+    if(!mathf::pointInRectangle<int>(locPDX, locPDY, gridPX0, gridPY0, SYS_INVGRIDGW * SYS_INVGRIDPW, SYS_INVGRIDGH * SYS_INVGRIDPH)){
         return {-1, -1};
     }
 
     return
     {
-        (locPX - gridPX0) / SYS_INVGRIDPW,
-        (locPY - gridPY0) / SYS_INVGRIDPH,
+        (locPDX - gridPX0) / SYS_INVGRIDPW,
+        (locPDY - gridPY0) / SYS_INVGRIDPH,
     };
 }
 
