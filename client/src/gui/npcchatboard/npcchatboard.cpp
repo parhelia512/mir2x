@@ -190,11 +190,14 @@ void NPCChatBoard::loadXML(uint64_t uid, const char *eventPath, const char *xmlS
 
     m_chatBoard.clear();
 
+    const int screenWidth = g_sdlDevice->getRendererWidth();
+    const int  boardWidth = std::max<int>(screenWidth / 3, 300);
+
     if(auto texPtr = g_progUseDB->retrieve(getNPCFaceKey())){
-        m_chatBoard.setLineWidth(w() - m_margin * 3 - SDLDeviceHelper::getTextureWidth(texPtr));
+        m_chatBoard.setLineWidth(boardWidth - m_margin * 3 - SDLDeviceHelper::getTextureWidth(texPtr));
     }
     else{
-        m_chatBoard.setLineWidth(w() - m_margin * 2);
+        m_chatBoard.setLineWidth(boardWidth - m_margin * 2);
     }
 
     m_chatBoard.loadXML(xmlString);
