@@ -126,11 +126,29 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
           .h = [this]{ return h(); },
           .drawFunc = [this](int drawDstX, int drawDstY)
           {
-              if(m_dragIndex.has_value()){
-                  g_sdlDevice->fillRectangle(colorf::RGBA(231, 231, 189, 64), drawDstX                             , drawDstY                             , w()                 , UIPage_DRAGBORDER[0]);
-                  g_sdlDevice->fillRectangle(colorf::RGBA(231, 231, 189, 64), drawDstX                             , drawDstY + h() - UIPage_DRAGBORDER[1], w()                 , UIPage_DRAGBORDER[1]);
-                  g_sdlDevice->fillRectangle(colorf::RGBA(231, 231, 189, 64), drawDstX                             , drawDstY                             , UIPage_DRAGBORDER[2], h()                 );
-                  g_sdlDevice->fillRectangle(colorf::RGBA(231, 231, 189, 64), drawDstX + w() - UIPage_DRAGBORDER[3], drawDstY                             , UIPage_DRAGBORDER[3], h()                 );
+              if(const auto [needDraw, drawColor] = [drawDstX, drawDstY, this] -> std::tuple<bool, uint32_t>
+              {
+                  if(m_dragIndex.has_value()){
+                      return {true, colorf::RGBA(231, 231, 189, 96)};
+                  }
+
+                  const auto [mousePX, mousePY] = SDLDeviceHelper::getMousePLoc();
+
+                  const auto eventDX = mousePX - drawDstX;
+                  const auto eventDY = mousePY - drawDstY;
+
+                  if(getEdgeDragIndex(eventDX, eventDY).has_value()){
+                      return {true, colorf::RGBA(255, 255, 255, 64)};
+                  }
+
+                  return {false, 0};
+              }();
+
+              needDraw){
+                  g_sdlDevice->fillRectangle(drawColor, drawDstX                             , drawDstY                             , w()                 , UIPage_DRAGBORDER[0]);
+                  g_sdlDevice->fillRectangle(drawColor, drawDstX                             , drawDstY + h() - UIPage_DRAGBORDER[1], w()                 , UIPage_DRAGBORDER[1]);
+                  g_sdlDevice->fillRectangle(drawColor, drawDstX                             , drawDstY                             , UIPage_DRAGBORDER[2], h()                 );
+                  g_sdlDevice->fillRectangle(drawColor, drawDstX + w() - UIPage_DRAGBORDER[3], drawDstY                             , UIPage_DRAGBORDER[3], h()                 );
               }
           },
           .parent{this},
