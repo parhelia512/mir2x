@@ -16,121 +16,15 @@
 #include "texsliderbar.hpp"
 #include "gfxshapeboard.hpp"
 #include "baseframeboard.hpp"
+#include "textinput.hpp"
+#include "pullmenu.hpp"
 
 class ProcessRun;
 class RuntimeConfigBoard: public Widget
 {
     private:
-        class TextInput: public Widget
-        {
-            private:
-                LabelBoard m_labelFirst;
-                LabelBoard m_labelSecond;
-
-            private:
-                ImageBoard     m_image;
-                GfxResizeBoard m_imageBg;
-
-            private:
-                InputLine m_input;
-
-            public:
-                TextInput(
-                    dir8_t,
-                    int,
-                    int,
-
-                    const char8_t *,
-                    const char8_t *,
-
-                    int, // argGapFirst
-                    int, // argGapSecond
-
-                    bool,
-
-                    int, // argInputW
-                    int, // argInputH
-
-                    std::function<void()> = nullptr,
-                    std::function<void()> = nullptr,
-
-                    Widget * = nullptr,
-                    bool     = false);
-
-            public:
-                void updateDefault(double fUpdateTime) override
-                {
-                    m_input.update(fUpdateTime);
-                }
-
-                bool processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m) override
-                {
-                    return m_input.processEvent(event, valid, m);
-                }
-        };
-
-    private:
-        class PullMenu: public Widget
-        {
-            private:
-                LabelBoard   m_label;
-                GfxCropBoard m_labelCrop;
-
-            private:
-                ImageBoard     m_menuTitleImage;
-                GfxResizeBoard m_menuTitleBackground;
-                LabelBoard     m_menuTitle;
-                GfxCropBoard   m_menuTitleCrop;
-
-            private:
-                ImageBoard m_imgOff;
-                ImageBoard m_imgOn;
-                ImageBoard m_imgDown;
-
-            private:
-                TrigfxButton m_button;
-
-            private:
-                MenuBoard m_menuList;
-
-            public:
-                PullMenu(dir8_t,
-                        int,
-                        int,
-
-                        const char8_t *, // label text
-                        int,             // label width
-
-                        int, // title background width
-                        int, // title background height
-
-                        std::initializer_list<std::tuple<Widget *, bool, bool>>,
-                        std::function<void(Widget *)>,
-
-                        Widget * = nullptr,
-                        bool     = false);
-
-            public:
-                void drawDefault(Widget::ROIMap) const override;
-
-            public:
-                bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
-
-            public:
-                LabelBoard *getMenuTitle()
-                {
-                    return &m_menuTitle;
-                }
-
-            public:
-                void setFocus(bool argFocus) override
-                {
-                    if(!argFocus){
-                        m_menuList.setShow(false);
-                    }
-                    return Widget::setFocus(argFocus);
-                }
-        };
+        friend class TextInput;
+        friend class PullMenu;
 
     private:
         class LabelSliderBar: public Widget
