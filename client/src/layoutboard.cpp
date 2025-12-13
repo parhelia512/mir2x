@@ -535,7 +535,7 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                             }
 
                             m_cursorBlink = 0.0;
-                            return consumeFocus(true);
+                            return true;
                         }
                     case SDLK_LEFT:
                         {
@@ -556,7 +556,7 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                             }
 
                             m_cursorBlink = 0.0;
-                            return consumeFocus(true);
+                            return true;
                         }
                     case SDLK_RIGHT:
                         {
@@ -577,7 +577,7 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                             }
 
                             m_cursorBlink = 0.0;
-                            return consumeFocus(true);
+                            return true;
                         }
                     case SDLK_BACKSPACE:
                         {
@@ -610,7 +610,7 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                             }
 
                             m_cursorBlink = 0.0;
-                            return consumeFocus(true);
+                            return true;
                         }
                     case SDLK_ESCAPE:
                         {
@@ -645,7 +645,7 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                             }
 
                             m_cursorBlink = 0.0;
-                            return consumeFocus(true);
+                            return true;
                         }
                 }
             }

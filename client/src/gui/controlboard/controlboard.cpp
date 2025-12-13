@@ -32,6 +32,12 @@ ControlBoard::ControlBoard(ProcessRun *argProc, Widget *argParent, bool argAutoD
               .inst
               {
                   .moveOnFocus = false,
+                  .update = [this](Widget *, double ms)
+                  {
+                      m_logBoard.update(ms);
+                      m_cmdBoard.update(ms);
+                      Widget::updateDefault(ms);
+                  },
               },
           },
 
