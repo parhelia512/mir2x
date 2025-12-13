@@ -43,8 +43,6 @@ QuestStateBoard::QuestStateBoard(
           {
               return g_progUseDB->retrieve(0X00000350);
           },
-
-          .blendMode = SDL_BLENDMODE_NONE,
           .parent{this},
       }}
 
