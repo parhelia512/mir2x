@@ -20,14 +20,6 @@
 #include "fflerror.hpp"
 #include "protocoldef.hpp"
 
-enum WidgetFocusPolicy: int
-{
-    WFP_NONE    = 0,
-    WFP_TAB     = 1 << 0,
-    WFP_CLICK   = 1 << 1,
-    WFP_WHEEL   = 1 << 2,
-};
-
 class Widget;        // size concept
 class WidgetTreeNode // tree concept, used by class Widget only
 {
@@ -75,9 +67,6 @@ class WidgetTreeNode // tree concept, used by class Widget only
         {
             using VarTypeHelper<T>::VarTypeHelper;
         };
-
-    protected:
-        using VarFocusProxy = VarGetter<Widget *>;
 
     private:
         friend class Widget;
@@ -285,9 +274,6 @@ class Widget: public WidgetTreeNode
 
             bool focus = false;
             bool moveOnFocus = true;
-
-            int focusPolicy = WFP_NONE;
-            Widget::VarFocusProxy focusProxy = nullptr;
 
             std::function<void(      Widget *                                         )> afterResize  = nullptr;
             std::function<bool(      Widget *, const SDL_Event &, bool, Widget::ROIMap)> processEvent = nullptr;
