@@ -499,6 +499,10 @@ bool LayoutBoard::processEventDefault(const SDL_Event &event, bool valid, Widget
                     return false;
                 }
 
+                if(!valid){
+                    return false;
+                }
+
                 switch(event.key.keysym.sym){
                     case SDLK_TAB:
                         {
