@@ -15,7 +15,7 @@
 #include "quickaccessboard.hpp"
 #include "playerstateboard.hpp"
 #include "inputstringboard.hpp"
-#include "runtimeconfigboard.hpp"
+#include "gui/runtimeconfigboard/runtimeconfigboard.hpp"
 #include "secureditemlistboard.hpp"
 
 class ProcessRun;

@@ -220,14 +220,22 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, Widget:
     }
 
     bool tookEvent = false;
+    const auto fnProcEventRoot = [&event, valid, &tookEvent](Widget *widget)
+    {
+        if(widget->show()){
+            tookEvent |= widget->processEventRoot(event, valid && !tookEvent, {});
+        }
+    };
+
     if(!g_clientArgParser->disableIME){
-        tookEvent |= g_imeBoard->processEventRoot(event, valid && !tookEvent, {});
+        fnProcEventRoot(g_imeBoard);
     }
 
-    tookEvent |=        Widget::processEventDefault(event, valid && !tookEvent, m );
-    tookEvent |= m_controlBoard.processEventRoot   (event, valid && !tookEvent, {});
-    tookEvent |= m_NPCChatBoard.processEventRoot   (event, valid && !tookEvent, {});
-    tookEvent |= m_miniMapBoard.processEventRoot   (event, valid && !tookEvent, {});
+    tookEvent |= Widget::processEventDefault(event, valid && !tookEvent, m);
+
+    fnProcEventRoot(&m_controlBoard);
+    fnProcEventRoot(&m_NPCChatBoard);
+    fnProcEventRoot(&m_miniMapBoard);
 
     return tookEvent;
 }
