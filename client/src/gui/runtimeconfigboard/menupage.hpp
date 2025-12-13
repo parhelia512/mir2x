@@ -7,7 +7,7 @@
 class MenuPage: public Widget
 {
     private:
-        GfxShapeBoard m_buttonMask;
+        GfxShapeBoard m_tabHeaderBg;
 
     private:
         Widget *m_selectedHeader = nullptr;

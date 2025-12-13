@@ -33,7 +33,7 @@ MenuPage::MenuPage(
           }
       }}
 
-    , m_buttonMask
+    , m_tabHeaderBg
       {{
           .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
@@ -99,7 +99,7 @@ MenuPage::MenuPage(
         }
     }
 
-    m_buttonMask.setSize([argSeperatorW = std::move(argSeperatorW), this]
+    m_tabHeaderBg.setSize([argSeperatorW = std::move(argSeperatorW), this]
     {
         if(argSeperatorW.has_value()){
             return Widget::evalSize(argSeperatorW.value(), this, nullptr);
