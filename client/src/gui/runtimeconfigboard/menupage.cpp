@@ -23,8 +23,8 @@ MenuPage::MenuPage(
 
           .x = argX,
           .y = argY,
-          .w = {},
-          .h = {},
+          .w = std::nullopt,
+          .h = std::nullopt,
 
           .parent
           {
