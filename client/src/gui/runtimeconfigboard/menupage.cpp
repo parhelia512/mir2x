@@ -109,6 +109,6 @@ MenuPage::MenuPage(
         }
     },
 
-    [this]{ return h(); });
+    h());
 }
 
