@@ -18,6 +18,8 @@
 #include "baseframeboard.hpp"
 #include "textinput.hpp"
 #include "pullmenu.hpp"
+#include "labelsliderbar.hpp"
+#include "menupage.hpp"
 
 class ProcessRun;
 class RuntimeConfigBoard: public Widget
@@ -25,82 +27,8 @@ class RuntimeConfigBoard: public Widget
     private:
         friend class TextInput;
         friend class PullMenu;
-
-    private:
-        class LabelSliderBar: public Widget
-        {
-            private:
-                LabelBoard   m_label;
-                GfxCropBoard m_labelCrop;
-
-            private:
-                TexSliderBar m_slider;
-
-            public:
-                LabelSliderBar(dir8_t,
-                        int,
-                        int,
-
-                        const char8_t *,
-                        int, // label width
-
-                        int, // slider index
-                        int, // slider width
-                        std::function<void(float)>,
-
-                        Widget * = nullptr,
-                        bool     = false);
-
-            public:
-                TexSliderBar *getSlider()
-                {
-                    return &m_slider;
-                }
-        };
-
-    private:
-        class MenuPage: public Widget
-        {
-            private:
-                class TabHeader: public Widget
-                {
-                    private:
-                        LabelBoard m_label;
-                        TrigfxButton m_button;
-
-                    public:
-                        TabHeader(dir8_t,
-                                int,
-                                int,
-
-                                const char8_t *,
-                                std::function<void(Widget *, int)>,
-
-                                std::any,
-
-                                Widget * = nullptr,
-                                bool     = false);
-                };
-
-            private:
-                GfxShapeBoard m_buttonMask;
-
-            private:
-                Widget *m_selectedHeader = nullptr;
-
-            public:
-                MenuPage(dir8_t,
-                        int,
-                        int,
-
-                        Widget::VarSizeOpt,
-                        int,
-
-                        std::initializer_list<std::tuple<const char8_t *, Widget *, bool>>,
-
-                        Widget * = nullptr,
-                        bool     = false);
-        };
+        friend class LabelSliderBar;
+        friend class MenuPage;
 
     private:
         SDRuntimeConfig m_sdRuntimeConfig;
