@@ -215,10 +215,14 @@ bool CBMiddle::processEventDefault(const SDL_Event &event, bool valid, Widget::R
     switch(event.type){
         case SDL_KEYDOWN:
             {
+                if(!valid){
+                    return false;
+                }
+
                 switch(event.key.keysym.sym){
                     case SDLK_RETURN:
                         {
-                            return valid && hasParent<ControlBoard>()->m_cmdBoard.consumeFocus(true);
+                            return hasParent<ControlBoard>()->m_cmdBoard.consumeFocus(true);
                         }
                     default:
                         {
