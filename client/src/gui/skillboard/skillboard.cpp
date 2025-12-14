@@ -50,7 +50,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
                   true,
               };
 
-              for(const auto &iconGfx: SkillBoard::getMagicIconGfxList()){
+              for(const auto &iconGfx: m_iconGfxList){
                   if(i == getSkillPageIndex(iconGfx.magicID)){
                       pagePtr->addIcon(iconGfx.magicID);
                   }
