@@ -4,16 +4,24 @@
 #include <memory>
 #include "strf.hpp"
 #include "mathf.hpp"
-#include "widget.hpp"
 #include "raiitimer.hpp"
+#include "dbcomid.hpp"
+#include "widget.hpp"
+#include "magicrecord.hpp"
 #include "labelboard.hpp"
 #include "texslider.hpp"
 #include "tritexbutton.hpp"
 #include "textshadowboard.hpp"
+#include "skillboardconfig.hpp"
 
+class SkillPage;
 class ProcessRun;
+
 class SkillBoard: public Widget
 {
+    public:
+        friend class SkillPage;
+
     public:
         struct MagicIconGfx
         {
@@ -31,150 +39,8 @@ class SkillBoard: public Widget
             }
         };
 
-    public:
-        class SkillBoardConfig final
-        {
-            private:
-                struct MagicConfig
-                {
-                    int level = -1;
-                    std::optional<char> key;
-                };
-
-            private:
-                std::unordered_map<uint32_t, MagicConfig> m_learnedMagicList;
-
-            public:
-                std::optional<char> getMagicKey  (uint32_t) const;
-                std::optional<int > getMagicLevel(uint32_t) const;
-
-            public:
-                bool hasMagicID(uint32_t magicID) const
-                {
-                    return m_learnedMagicList.count(magicID) > 0;
-                }
-
-            public:
-                void setMagicLevel(uint32_t, int);
-                void setMagicKey  (uint32_t, std::optional<char>);
-
-            public:
-                auto getMagicKeyList() const
-                {
-                    std::vector<std::tuple<uint32_t, char>> result;
-                    for(const auto &p: m_learnedMagicList){
-                        if(p.second.key.has_value()){
-                            result.emplace_back(p.first, p.second.key.value());
-                        }
-                    }
-
-                    std::sort(result.begin(), result.end());
-                    return result;
-                }
-
-            public:
-                uint32_t key2MagicID(char key) const
-                {
-                    for(const auto &p: m_learnedMagicList){
-                        if(p.second.key.has_value() && p.second.key.value() == key){
-                            return p.first;
-                        }
-                    }
-                    return 0;
-                }
-        };
-
     private:
-        class MagicIconButton: public Widget
-        {
-            // +-+-----+
-            // |A|     |
-            // +-+     |
-            // |       |
-            // +-------+-+
-            //         |1|
-            //         +-+
-
-            private:
-                const uint32_t m_magicID;
-
-            private:
-                SkillBoardConfig * const m_config;
-                ProcessRun       * const m_processRun;
-
-            private:
-                TritexButton m_icon;
-
-            public:
-                MagicIconButton(dir8_t, int, int, uint32_t, SkillBoardConfig *, ProcessRun *, Widget * = nullptr, bool = false);
-
-            public:
-                void drawDefault(Widget::ROIMap) const override;
-
-            public:
-                bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
-
-            public:
-                bool cursorOn() const
-                {
-                    return m_icon.getState() != BEVENT_OFF;
-                }
-
-            public:
-                uint32_t magicID() const
-                {
-                    return m_magicID;
-                }
-        };
-
-        class SkillPage: public Widget
-        {
-            private:
-                SkillBoardConfig * const m_config;
-                ProcessRun       * const m_processRun;
-
-            private:
-                const uint32_t m_pageImage;
-                std::vector<SkillBoard::MagicIconButton *> m_magicIconButtonList;
-
-            public:
-                SkillPage(uint32_t, SkillBoardConfig *, ProcessRun *proc, Widget *widgetPtr = nullptr, bool autoDelete = false);
-
-            public:
-                void addIcon(uint32_t argMagicID)
-                {
-                    for(auto buttonCPtr: m_magicIconButtonList){
-                        if(buttonCPtr->magicID() == argMagicID){
-                            return;
-                        }
-                    }
-
-                    fflassert(DBCOM_MAGICRECORD(argMagicID));
-                    const auto &iconGfx = SkillBoard::getMagicIconGfx(argMagicID);
-
-                    fflassert(iconGfx);
-                    m_magicIconButtonList.push_back(new SkillBoard::MagicIconButton
-                    {
-                        DIR_UPLEFT,
-                        iconGfx.x * 60 + 12,
-                        iconGfx.y * 65 + 13,
-                        argMagicID,
-                        m_config,
-                        m_processRun,
-                        this,
-                        true,
-                    });
-                }
-
-            public:
-                void drawDefault(Widget::ROIMap) const override;
-
-            public:
-                const auto &getMagicIconButtonList() const
-                {
-                    return m_magicIconButtonList;
-                }
-        };
+        ProcessRun *m_processRun;
 
     private:
         SkillBoardConfig m_config;
@@ -192,9 +58,6 @@ class SkillBoard: public Widget
 
     private:
         TritexButton m_closeButton;
-
-    private:
-        ProcessRun *m_processRun;
 
     public:
         SkillBoard(int, int, ProcessRun *, Widget * = nullptr, bool = false);

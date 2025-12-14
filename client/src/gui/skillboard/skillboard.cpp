@@ -2,221 +2,14 @@
 #include "pngtexdb.hpp"
 #include "sdldevice.hpp"
 #include "processrun.hpp"
+#include "skillpage.hpp"
 #include "skillboard.hpp"
 #include "tritexbutton.hpp"
+#include "magiciconbutton.hpp"
 #include "textshadowboard.hpp"
 
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
-
-std::optional<char> SkillBoard::SkillBoardConfig::getMagicKey(uint32_t magicID) const
-{
-    if(auto p = m_learnedMagicList.find(magicID); p != m_learnedMagicList.end()){
-        return p->second.key;
-    }
-    return {};
-}
-
-std::optional<int> SkillBoard::SkillBoardConfig::getMagicLevel(uint32_t magicID) const
-{
-    if(auto p = m_learnedMagicList.find(magicID); p != m_learnedMagicList.end()){
-        return p->second.level;
-    }
-    return {};
-}
-
-void SkillBoard::SkillBoardConfig::setMagicLevel(uint32_t magicID, int level)
-{
-    fflassert(DBCOM_MAGICRECORD(magicID));
-    fflassert(SkillBoard::getMagicIconGfx(magicID));
-
-    fflassert(level >= 1);
-    fflassert(level <= 3);
-
-    if(auto p = m_learnedMagicList.find(magicID); p != m_learnedMagicList.end()){
-        fflassert(level >= p->second.level);
-        p->second.level = level;
-    }
-    else{
-        m_learnedMagicList[magicID].level = level;
-    }
-}
-
-void SkillBoard::SkillBoardConfig::setMagicKey(uint32_t magicID, std::optional<char> key)
-{
-    fflassert(DBCOM_MAGICRECORD(magicID));
-    fflassert(SkillBoard::getMagicIconGfx(magicID));
-
-    fflassert(hasMagicID(magicID));
-    fflassert(!SkillBoard::getMagicIconGfx(magicID).passive);
-    fflassert(!key.has_value() || (key.value() >= 'a' && key.value() <= 'z') || (key.value() >= '0' && key.value() <= '9'));
-
-    m_learnedMagicList[magicID].key = key;
-    if(key.has_value()){
-        for(auto &p: m_learnedMagicList){
-            if((p.first != magicID) && p.second.key == key){
-                p.second.key.reset();
-            }
-        }
-    }
-}
-
-SkillBoard::MagicIconButton::MagicIconButton(
-        dir8_t argDir,
-
-        int argX,
-        int argY,
-
-        uint32_t argMagicID,
-
-        SkillBoardConfig *argConfigPtr,
-        ProcessRun       *argProc,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
-    : Widget
-      {{
-          .dir = argDir,
-
-          .x = argX,
-          .y = argY,
-
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
-      }}
-
-    , m_magicID([argMagicID]() -> uint32_t
-      {
-          fflassert(DBCOM_MAGICRECORD(argMagicID));
-          fflassert(SkillBoard::getMagicIconGfx(argMagicID));
-          return argMagicID;
-      }())
-
-    , m_config(argConfigPtr)
-    , m_processRun(argProc)
-
-    , m_icon
-      {{
-          .texIDList
-          {
-              .off  = SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
-              .on   = SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
-              .down = SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
-          },
-
-          .onClickDone = false,
-          .parent{this},
-      }}
-{
-    // leave some pixels to draw level label
-    // since level can change during run, can't get the exact size here
-    setW(m_icon.w() + 8);
-    setH(m_icon.h() + 8);
-}
-
-void SkillBoard::MagicIconButton::drawDefault(Widget::ROIMap m) const
-{
-    if(!m.calibrate(this)){
-        return;
-    }
-
-    if(const auto levelOpt = m_config->getMagicLevel(magicID()); levelOpt.has_value()){
-        Widget::drawDefault(m);
-
-        const LabelBoard magicLevel
-        {{
-            .label = str_printf(u8"%d", levelOpt.value()).c_str(),
-            .font
-            {
-                .id = 3,
-                .size = 12,
-                .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
-            },
-        }};
-        magicLevel.draw({.x=(m.x - m.ro->x) + (m_icon.w() - 2), .y=(m.y - m.ro->y) + (m_icon.h() - 1), .ro{m.ro}});
-
-        if(const auto keyOpt = m_config->getMagicKey(magicID()); keyOpt.has_value()){
-            const TextShadowBoard magicKey
-            {
-                DIR_UPLEFT,
-                0,
-                0,
-
-                2,
-                2,
-
-                [keyOpt, this](const Widget *)
-                {
-                    return str_printf("%c", std::toupper(keyOpt.value()));
-                },
-
-                3,
-                20,
-                0,
-
-                colorf::RGBA(0XFF, 0X80, 0X00, 0XE0),
-                colorf::RGBA(0X00, 0X00, 0X00, 0XE0),
-            };
-            magicKey.draw({.x=(m.x - m.ro->x + 2), .y=(m.y - m.ro->y + 2), .ro=m.ro});
-        }
-    }
-}
-
-SkillBoard::SkillPage::SkillPage(uint32_t pageImage, SkillBoardConfig *configPtr, ProcessRun *proc, Widget *argParent, bool argAutoDelete)
-    : Widget
-      {{
-          .x = SkillBoard::getPageRectange().at(0),
-          .y = SkillBoard::getPageRectange().at(1),
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
-      }}
-
-    , m_config(fflcheck(configPtr))
-    , m_processRun(fflcheck(proc))
-    , m_pageImage(pageImage)
-{
-    if(auto texPtr = g_progUseDB->retrieve(m_pageImage)){
-        setSize(SDLDeviceHelper::getTextureWidth(texPtr), SDLDeviceHelper::getTextureHeight(texPtr));
-    }
-
-    const auto r = SkillBoard::getPageRectange();
-    setSize(r[2], r[3]);
-}
-
-void SkillBoard::SkillPage::drawDefault(Widget::ROIMap m) const
-{
-    if(!m.calibrate(this)){
-        return;
-    }
-
-    if(auto texPtr = g_progUseDB->retrieve(m_pageImage)){
-        int dstXCrop = m.x;
-        int dstYCrop = m.y;
-        int srcXCrop = m.ro->x;
-        int srcYCrop = m.ro->y;
-        int srcWCrop = m.ro->w;
-        int srcHCrop = m.ro->h;
-
-        const auto [texW, texH] = SDLDeviceHelper::getTextureSize(texPtr);
-        if(mathf::cropROI(
-                    &srcXCrop, &srcYCrop,
-                    &srcWCrop, &srcHCrop,
-                    &dstXCrop, &dstYCrop,
-
-                    texW,
-                    texH)){
-            g_sdlDevice->drawTexture(texPtr, dstXCrop, dstYCrop, srcXCrop, srcYCrop, srcWCrop, srcHCrop);
-        }
-    }
-    Widget::drawDefault(m);
-}
 
 SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent, bool argAutoDelete)
     : Widget
@@ -231,15 +24,16 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           }
       }}
 
-    , m_skillPageList([runPtr, this]() -> std::vector<SkillBoard::SkillPage *>
+    , m_processRun(fflcheck(runPtr))
+    , m_skillPageList([runPtr, this]() -> std::vector<SkillPage *>
       {
-          std::vector<SkillBoard::SkillPage *> pageList;
+          std::vector<SkillPage *> pageList;
           pageList.reserve(8);
 
           for(int i = 0; i < 8; ++i){
-              auto pagePtr = new SkillBoard::SkillPage
+              auto pagePtr = new SkillPage
               {
-                  to_u32(0X05000010 + to_u32(i)),
+                  to_u32(0X05000010 + i),
                   &m_config,
                   runPtr,
                   this,
@@ -368,7 +162,6 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 
           .parent{this},
       }}
-    , m_processRun(fflcheck(runPtr))
 {
     setShow(false);
     if(auto texPtr = g_progUseDB->retrieve(0X05000000)){
@@ -396,34 +189,6 @@ void SkillBoard::drawDefault(Widget::ROIMap m) const
     const auto r = SkillBoard::getPageRectange();
     auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
     pagePtr->draw({.x=m.x + r[0], .y=m.y + r[1], .ro{r[0] - pagePtr->dx(), r[1] - pagePtr->dy(), r[2], r[3]}});
-}
-
-bool SkillBoard::MagicIconButton::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
-{
-    if(!show()){
-        return false;
-    }
-
-    if(!m.calibrate(this)){
-        return false;
-    }
-
-    const auto result = m_icon.processEventParent(event, valid, m);
-    if(event.type == SDL_KEYDOWN && cursorOn()){
-        if(const auto key = SDLDeviceHelper::getKeyChar(event, false); (key >= '0' && key <= '9') || (key >= 'a' && key <= 'z')){
-            if(m_config->hasMagicID(magicID())){
-                if(SkillBoard::getMagicIconGfx(magicID()).passive){
-                    m_processRun->addCBLog(CBLOG_SYS, u8"无法为被动技能设置快捷键：%s", to_cstr(DBCOM_MAGICRECORD(magicID()).name));
-                }
-                else{
-                    m_config->setMagicKey(magicID(), key);
-                    m_processRun->requestSetMagicKey(magicID(), key);
-                }
-            }
-            return consumeFocus(true);
-        }
-    }
-    return result;
 }
 
 bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
