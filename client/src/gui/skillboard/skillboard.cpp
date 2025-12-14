@@ -165,7 +165,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 {
     setShow(false);
     if(auto texPtr = g_progUseDB->retrieve(0X05000000)){
-        setSize(SDLDeviceHelper::getTextureHeight(texPtr), SDLDeviceHelper::getTextureWidth(texPtr));
+        setSize(SDLDeviceHelper::getTextureWidth(texPtr), SDLDeviceHelper::getTextureHeight(texPtr));
     }
     else{
         throw fflerror("no valid inventory frame texture");
