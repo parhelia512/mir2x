@@ -109,10 +109,6 @@ void MagicIconButton::drawDefault(Widget::ROIMap m) const
 
 bool MagicIconButton::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(!show()){
-        return false;
-    }
-
     if(!m.calibrate(this)){
         return false;
     }
