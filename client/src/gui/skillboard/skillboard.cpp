@@ -206,9 +206,6 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget:
         return consumeFocus(false);
     }
 
-    const auto remapXDiff = m.x - m.ro->x;
-    const auto remapYDiff = m.y - m.ro->y;
-
     if(m_closeButton.processEventParent(event, valid, m)){
         consumeFocus(false);
         return true;
@@ -226,6 +223,9 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget:
     if(m_slider.processEventParent(event, valid, m)){
         return consumeFocus(true);
     }
+
+    const auto remapXDiff = m.x - m.ro->x;
+    const auto remapYDiff = m.y - m.ro->y;
 
     bool captureEvent = false;
     if(const auto pageROI = m.create(Widget::makeROI(getPageRectange())); !pageROI.empty()){
