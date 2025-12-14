@@ -105,10 +105,9 @@ MenuPage::MenuPage(
             return Widget::evalSize(argSeperatorW.value(), this, nullptr);
         }
         else{
-            return w();
+            return maxChildCoverWExcept(&m_tabHeaderBg);
         }
     },
 
-    h());
+    [this]{ return maxChildCoverHExcept(&m_tabHeaderBg); });
 }
-

@@ -689,33 +689,45 @@ void Widget::afterResizeDefault()
 int Widget::w() const
 {
     const RecursionDetector hDetect(m_wCalc, name(), "w()");
-    return Widget::evalSizeOpt(m_w, this, [this]()
-    {
-        int maxW = 0;
-        foreachChild([&maxW](const Widget *widget, bool)
-        {
-            if(widget->localShow()){
-                maxW = std::max<int>(maxW, widget->dx() + widget->w());
-            }
-        });
-        return maxW;
-    });
+    return Widget::evalSizeOpt(m_w, this, [this]{ return maxChildCoverWExcept(nullptr); });
 }
 
 int Widget::h() const
 {
     const RecursionDetector hDetect(m_hCalc, name(), "h()");
-    return Widget::evalSizeOpt(m_h, this, [this]()
+    return Widget::evalSizeOpt(m_h, this, [this]{ return maxChildCoverHExcept(nullptr); });
+}
+
+int Widget::maxChildCoverWExcept(const Widget *except) const
+{
+    if(except){
+        fflassert(hasChild(except->id()));
+    }
+
+    int maxW = 0;
+    foreachChild([&maxW, except](const Widget *widget, bool)
     {
-        int maxH = 0;
-        foreachChild([&maxH](const Widget *widget, bool)
-        {
-            if(widget->localShow()){
-                maxH = std::max<int>(maxH, widget->dy() + widget->h());
-            }
-        });
-        return maxH;
+        if(widget != except && widget->localShow()){
+            maxW = std::max<int>(maxW, widget->dx() + widget->w());
+        }
     });
+    return maxW;
+}
+
+int Widget::maxChildCoverHExcept(const Widget *except) const
+{
+    if(except){
+        fflassert(hasChild(except->id()));
+    }
+
+    int maxH = 0;
+    foreachChild([&maxH, except](const Widget *widget, bool)
+    {
+        if(widget != except && widget->localShow()){
+            maxH = std::max<int>(maxH, widget->dy() + widget->h());
+        }
+    });
+    return maxH;
 }
 
 int Widget::dx() const

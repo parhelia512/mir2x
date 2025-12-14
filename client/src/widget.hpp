@@ -435,6 +435,10 @@ class Widget: public WidgetTreeNode
         const auto &varH() const { return m_h; }
 
     public:
+        int maxChildCoverWExcept(const Widget *) const;
+        int maxChildCoverHExcept(const Widget *) const;
+
+    public:
         int dx() const;
         int dy() const;
 
