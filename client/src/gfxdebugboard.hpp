@@ -16,6 +16,10 @@ class GfxDebugBoard: public Widget
             Widget::VarInt x = 0;
             Widget::VarInt y = 0;
 
+            bool hflip  = false;
+            bool vflip  = false;
+            int  rotate = 0;
+
             Widget::WADPair parent {};
         };
 

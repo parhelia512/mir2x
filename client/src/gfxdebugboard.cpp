@@ -41,7 +41,11 @@ GfxDebugBoard::GfxDebugBoard(GfxDebugBoard::InitArgs args)
           .texLoadFunc = []
           {
               return g_progUseDB->retrieve(0X18000001);
-          }
+          },
+
+          .hflip  = args.hflip,
+          .vflip  = args.vflip,
+          .rotate = args.rotate,
       }}
 
     , m_srcWidget
