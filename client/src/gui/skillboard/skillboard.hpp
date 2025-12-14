@@ -9,6 +9,7 @@
 #include "widget.hpp"
 #include "magicrecord.hpp"
 #include "labelboard.hpp"
+#include "imageboard.hpp"
 #include "texslider.hpp"
 #include "tritexbutton.hpp"
 #include "textshadowboard.hpp"
@@ -48,6 +49,9 @@ class SkillBoard: public Widget
 
     private:
         SkillBoardConfig m_config;
+
+    private:
+        ImageBoard m_bg;
 
     private:
         std::vector<SkillPage *> m_skillPageList;

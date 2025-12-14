@@ -5,7 +5,6 @@
 #include "widget.hpp"
 #include "menuboard.hpp"
 #include "imageboard.hpp"
-#include "gfxcutoutboard.hpp"
 #include "gfxresizeboard.hpp"
 #include "menubutton.hpp"
 #include "checklabel.hpp"

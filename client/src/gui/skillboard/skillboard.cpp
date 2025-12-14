@@ -25,6 +25,16 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
       }}
 
     , m_processRun(fflcheck(runPtr))
+    , m_bg
+      {{
+          .texLoadFunc = []
+          {
+              return g_progUseDB->retrieve(0X05000000);
+          },
+
+          .parent{this},
+      }}
+
     , m_skillPageList([runPtr, this]() -> std::vector<SkillPage *>
       {
           std::vector<SkillPage *> pageList;
@@ -164,12 +174,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
       }}
 {
     setShow(false);
-    if(auto texPtr = g_progUseDB->retrieve(0X05000000)){
-        setSize(SDLDeviceHelper::getTextureWidth(texPtr), SDLDeviceHelper::getTextureHeight(texPtr));
-    }
-    else{
-        throw fflerror("no valid inventory frame texture");
-    }
+    setSize([this]{ return m_bg.w(); }, [this]{ return m_bg.h(); });
 }
 
 void SkillBoard::drawDefault(Widget::ROIMap m) const
@@ -178,9 +183,7 @@ void SkillBoard::drawDefault(Widget::ROIMap m) const
         return;
     }
 
-    if(auto texPtr = g_progUseDB->retrieve(0X05000000)){
-        g_sdlDevice->drawTexture(texPtr, m.x, m.y);
-    }
+    drawChild(&m_bg, m);
 
     drawTabName(m);
 
