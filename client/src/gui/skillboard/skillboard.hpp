@@ -43,14 +43,16 @@ class SkillBoard: public Widget
         ProcessRun *m_processRun;
 
     private:
+        int m_selectedTabIndex =  0;
+        int m_cursorOnTabIndex = -1;
+
+    private:
         SkillBoardConfig m_config;
+
+    private:
         std::vector<SkillPage *> m_skillPageList;
 
     private:
-        // no need to introduce a new type
-        // use two tritex button to micmic the tab button
-        int m_selectedTabIndex =  0;
-        int m_cursorOnTabIndex = -1;
         std::vector<TritexButton *> m_tabButtonList;
 
     private:
@@ -100,8 +102,10 @@ class SkillBoard: public Widget
         }
 
     public:
-        /* */ SkillBoardConfig &getConfig()       { return m_config; }
-        const SkillBoardConfig &getConfig() const { return m_config; }
+        auto & getConfig(this auto && self)
+        {
+            return self.m_config;
+        }
 
     private:
         static int getSkillPageIndex(uint32_t magicID)
