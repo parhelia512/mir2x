@@ -63,7 +63,7 @@ class SkillBoard: public Widget
         SkillBoard(int, int, ProcessRun *, Widget * = nullptr, bool = false);
 
     public:
-        void drawTabName() const;
+        void drawTabName(Widget::ROIMap) const;
         void drawDefault(Widget::ROIMap) const override;
 
     public:

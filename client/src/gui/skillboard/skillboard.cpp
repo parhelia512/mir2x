@@ -174,11 +174,16 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 
 void SkillBoard::drawDefault(Widget::ROIMap m) const
 {
+    if(!m.calibrate(this)){
+        return;
+    }
+
     if(auto texPtr = g_progUseDB->retrieve(0X05000000)){
         g_sdlDevice->drawTexture(texPtr, m.x, m.y);
     }
 
-    drawTabName();
+    drawTabName(m);
+
     drawChild(&m_slider, m);
     drawChild(&m_closeButton, m);
 
@@ -193,7 +198,7 @@ void SkillBoard::drawDefault(Widget::ROIMap m) const
 
 bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
-    if(m.calibrate(this)){
+    if(!m.calibrate(this)){
         return false;
     }
 
@@ -279,7 +284,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget:
     }
 }
 
-void SkillBoard::drawTabName() const
+void SkillBoard::drawTabName(Widget::ROIMap m) const
 {
     const LabelBoard tabName
     {{
@@ -314,6 +319,6 @@ void SkillBoard::drawTabName() const
             .size = 12,
         },
     }};
-    // tabName.drawAt(DIR_UPLEFT, x() + 30, y() + 400);
-    tabName.draw({.x=30, .y=400});
+
+    drawAsChild(&tabName, DIR_UPLEFT, 30, 400, m);
 }
