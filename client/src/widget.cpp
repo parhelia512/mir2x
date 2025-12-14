@@ -554,23 +554,7 @@ bool Widget::processEventParent(const SDL_Event &event, bool valid, Widget::ROIM
         return false;
     }
 
-    if(!mathf::cropChildROI(
-                std::addressof(m.ro->x), std::addressof(m.ro->y),
-                std::addressof(m.ro->w), std::addressof(m.ro->h),
-
-                std::addressof(m.x),
-                std::addressof(m.y),
-
-                par->w(),
-                par->h(),
-
-                dx(),
-                dy(),
-                w(),
-                h())){
-        return false;
-    }
-    return processEvent(event, valid, m);
+    return processEvent(event, valid, m.create(this->roi(par)));
 }
 
 bool Widget::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
