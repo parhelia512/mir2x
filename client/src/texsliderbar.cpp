@@ -17,6 +17,7 @@ TexSliderBar::TexSliderBar(TexSliderBar::InitArgs args)
     , m_imgSlot
       {{
           .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000460); },
+          .vflip = vbar(), // for dark/light gfx effect only
           .rotate = vbar() ? 1 : 0,
       }}
 
