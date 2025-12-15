@@ -43,11 +43,15 @@ TexSliderBar::TexSliderBar(TexSliderBar::InitArgs args)
               /* h */ !vbar() ? m_imgSlot.h() : m_imgSlot.h() - 6,
           },
 
-          .resize
+          .resize = Widget::VarSize2D{[this] -> Widget::IntSize2D
           {
-              [this]{ return getBarROI(0, 0).w; },
-              [this]{ return getBarROI(0, 0).h; },
-          },
+              const auto roi = getBarROI(0, 0);
+              return
+              {
+                  vbar() ? m_imgSlot.w() : roi.w,
+                 !vbar() ? m_imgSlot.h() : roi.h,
+              };
+          }},
 
           .parent{&m_bg},
       }}
