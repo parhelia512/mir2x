@@ -14,8 +14,8 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
           .bar = std::move(args.bar),
           .slider
           {
-              .cx = [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->offX; },
-              .cy = [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->offY; },
+              .cx = [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->ox; },
+              .cy = [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->oy; },
 
               .w = [index = args.index, this]{ return SDLDeviceHelper::getTextureWidth (g_progUseDB->retrieve(TexSlider::getSliderTexInfo(index)->texID)); },
               .h = [index = args.index, this]{ return SDLDeviceHelper::getTextureHeight(g_progUseDB->retrieve(TexSlider::getSliderTexInfo(index)->texID)); },
@@ -89,8 +89,8 @@ TexSlider::TexSlider(TexSlider::InitArgs args)
 
                       DIR_NONE,
 
-                      [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->offX; },
-                      [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->offY; },
+                      [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->ox; },
+                      [index = args.index, this]{ return TexSlider::getSliderTexInfo(index)->oy; },
 
                       true},
                   }

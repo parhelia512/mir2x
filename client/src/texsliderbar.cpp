@@ -17,6 +17,7 @@ TexSliderBar::TexSliderBar(TexSliderBar::InitArgs args)
     , m_imgSlot
       {{
           .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000460); },
+
           .vflip = vbar(),
           .rotate = vbar() ? 1 : 0,
       }}
@@ -24,8 +25,15 @@ TexSliderBar::TexSliderBar(TexSliderBar::InitArgs args)
     , m_imgBar
       {{
           .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000470); },
+
           .vflip = vbar(),
           .rotate = vbar() ? 1 : 0,
+
+          .modColor = [this] -> uint32_t
+          {
+              if(active()){ return colorf::WHITE + colorf::A_SHF(0XFF); }
+              else        { return colorf::GREY  + colorf::A_SHF(0XFF); }
+          },
       }}
 
     , m_bg
@@ -63,8 +71,8 @@ TexSliderBar::TexSliderBar(TexSliderBar::InitArgs args)
           .x =  vbar() ? 2 : 3,
           .y = !vbar() ? 2 : 3,
 
-          .w = [this]{ return  vbar() ? m_imgBar.w() : getBarROI(0, 0).w  * getValue(); },
-          .h = [this]{ return !vbar() ? m_imgBar.h() : getBarROI(0, 0).h  * getValue(); },
+          .w = [this]{ return  vbar() ? m_imgBar.w() : (getBarROI(0, 0).w  * getValue()); },
+          .h = [this]{ return !vbar() ? m_imgBar.h() : (getBarROI(0, 0).h  * getValue()); },
 
           .getter = &m_imgBar,
           .parent{&m_bg},

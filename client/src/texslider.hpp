@@ -32,8 +32,8 @@ class TexSlider: public SliderBase
             // define the texture center
             // some slider textures are not in good shape then not using the (w / 2, h / 2)
 
-            const int offX;
-            const int offY;
+            const int ox;
+            const int oy;
 
             const int cover;
             const uint32_t texID;
