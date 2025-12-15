@@ -12,7 +12,7 @@
 #include "teamstateboard.hpp"
 #include "inventoryboard.hpp"
 #include "queststateboard.hpp"
-#include "quickaccessboard.hpp"
+#include "gui/quickaccessboard/quickaccessboard.hpp"
 #include "playerstateboard.hpp"
 #include "inputstringboard.hpp"
 #include "gui/runtimeconfigboard/runtimeconfigboard.hpp"

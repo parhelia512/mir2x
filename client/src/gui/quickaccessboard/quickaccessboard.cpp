@@ -5,105 +5,16 @@
 #include "sysconst.hpp"
 #include "sdldevice.hpp"
 #include "processrun.hpp"
+#include "widget.hpp"
+#include "quickaccessgrid.hpp"
 #include "quickaccessboard.hpp"
 
 extern PNGTexDB *g_itemDB;
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-QuickAccessBoard::Grid::Grid(
-        Widget::VarDir argDir,
-        Widget::VarInt argX,
-        Widget::VarInt argY,
-
-        Widget::VarSizeOpt argW,
-        Widget::VarSizeOpt argH,
-
-        int argSlot,
-        ProcessRun *argProc,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
-    : Widget
-      {{
-          .dir = std::move(argDir),
-
-          .x = std::move(argX),
-          .y = std::move(argY),
-          .w = std::move(argW),
-          .h = std::move(argH),
-
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
-      }}
-
-    , slot(argSlot)
-    , proc(argProc)
-
-    , bg
-      {{
-          .w = [this](const Widget *){ return w(); },
-          .h = [this](const Widget *){ return h(); },
-
-          .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
-          {
-              if(Widget::ROIMap({.x = drawDstX, .y = drawDstY, .ro = self->roi()}).in(SDLDeviceHelper::getMousePLoc())){
-                   g_sdlDevice->fillRectangle(colorf::WHITE + colorf::A_SHF(64), drawDstX, drawDstY, self->w(), self->h());
-               }
-          },
-
-          .parent{this},
-      }}
-
-    , item
-      {{
-          .dir = DIR_NONE,
-
-          .x = [this](const Widget *){ return w() / 2; },
-          .y = [this](const Widget *){ return h() / 2; },
-
-          .texLoadFunc = [this](const Widget *) -> SDL_Texture *
-          {
-              if(const auto &item = proc->getMyHero()->getBelt(slot)){
-                  return g_itemDB->retrieve(DBCOM_ITEMRECORD(item.itemID).pkgGfxID | 0X01000000);
-              }
-              return nullptr;
-          },
-
-          .blendMode = SDL_BLENDMODE_NONE,
-          .parent{this},
-      }}
-
-    , count
-      {{
-          .dir = DIR_UPRIGHT,
-          .x = [this](const Widget *){ return w() - 1; },
-          .y = 0,
-
-          .textFunc = [this](const Widget *) -> std::string
-          {
-              if(const auto &item = proc->getMyHero()->getBelt(slot); item && (item.count > 1)){
-                  return std::to_string(item.count);
-              }
-              return {};
-          },
-
-          .font
-          {
-              .id = 1,
-              .size = 10,
-          },
-
-          .blendMode = SDL_BLENDMODE_NONE,
-          .parent{this},
-      }}
-{}
-
-QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
+QuickAccessBoard::QuickAccessBoard(
+        dir8_t argDir,
 
         int argX,
         int argY,
@@ -141,12 +52,7 @@ QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
     , m_processRun(argProc)
     , m_bg
       {{
-          .texLoadFunc = [this](const Widget *)
-          {
-              return g_progUseDB->retrieve(m_texID);
-          },
-
-          .blendMode = SDL_BLENDMODE_NONE,
+          .texLoadFunc = [this]{ return g_progUseDB->retrieve(m_texID); },
           .parent{this},
       }}
 
@@ -171,9 +77,10 @@ QuickAccessBoard::QuickAccessBoard(dir8_t argDir,
       }}
 {
     for(int slot = 0; slot < 6; ++slot){
-        addChild(new Grid
+        addChild(new QuickAccessGrid
         {
             DIR_UPLEFT,
+
             getGridLoc(slot).x,
             getGridLoc(slot).y,
             getGridLoc(slot).w,
@@ -205,17 +112,7 @@ bool QuickAccessBoard::processEventDefault(const SDL_Event &event, bool valid, W
         case SDL_MOUSEMOTION:
             {
                 if((event.motion.state & SDL_BUTTON_LMASK) && (m.in(event.motion.x, event.motion.y) || focus())){
-                    const auto remapXDiff = m.x - m.ro->x;
-                    const auto remapYDiff = m.y - m.ro->y;
-
-                    const auto [rendererW, rendererH] = g_sdlDevice->getRendererSize();
-                    const int maxX = rendererW - w();
-                    const int maxY = rendererH - h();
-
-                    const int newX = std::max<int>(0, std::min<int>(maxX, remapXDiff + event.motion.xrel));
-                    const int newY = std::max<int>(0, std::min<int>(maxY, remapYDiff + event.motion.yrel));
-
-                    moveBy(newX - remapXDiff, newY - remapYDiff);
+                    moveBy(event.motion.xrel, event.motion.yrel, Widget::makeROI(0, 0, g_sdlDevice->getRendererSize()));
                     return consumeFocus(true);
                 }
                 return consumeFocus(false);

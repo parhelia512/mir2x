@@ -1,6 +1,6 @@
 #pragma once
-#include <tuple>
 #include <cstdint>
+#include <tuple>
 #include "widget.hpp"
 #include "tritexbutton.hpp"
 #include "gfxshapeboard.hpp"
@@ -8,30 +8,6 @@
 class ProcessRun;
 class QuickAccessBoard: public Widget
 {
-    private:
-        struct Grid: public Widget
-        {
-            int         slot;
-            ProcessRun *proc;
-
-            GfxShapeBoard bg;
-            ImageBoard     item;
-            TextBoard      count;
-
-            Grid(   Widget::VarDir,
-                    Widget::VarInt,
-                    Widget::VarInt,
-
-                    Widget::VarSizeOpt,
-                    Widget::VarSizeOpt,
-
-                    int,
-                    ProcessRun *,
-
-                    Widget * = nullptr,
-                    bool     = false);
-        };
-
     private:
         constexpr static uint32_t m_texID = 0X00000060;
 
