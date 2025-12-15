@@ -45,8 +45,10 @@ ProcessSync::ProcessSync()
 
     , m_barText
       {{
-          .x = 400,
-          .y = 536,
+          .dir = DIR_NONE,
+
+          .x = m_bar.dx() + (m_barFull.w() / 2),
+          .y = m_bar.dy() + (m_bar    .h() / 2),
 
           .textFunc = "Connecting...",
           .font
