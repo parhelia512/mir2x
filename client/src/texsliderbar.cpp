@@ -48,11 +48,10 @@ TexSliderBar::TexSliderBar(TexSliderBar::InitArgs args)
 
     , m_bar
       {{
-          .w = [this]{ return  vbar() ? m_imgBar.w() : (getBarROI(0, 0).w - 1) * getValue(); },
-          .h = [this]{ return !vbar() ? m_imgBar.h() : (getBarROI(0, 0).h - 1) * getValue(); },
+          .w = [this]{ return  vbar() ? m_imgBar.w() : getBarROI(0, 0).w  * getValue(); },
+          .h = [this]{ return !vbar() ? m_imgBar.h() : getBarROI(0, 0).h  * getValue(); },
 
           .getter = &m_imgBar,
-          .parent{this},
       }}
 {
     setBarBgWidget(             0,              0, &m_bar , false);

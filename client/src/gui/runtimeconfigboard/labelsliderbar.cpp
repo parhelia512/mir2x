@@ -55,7 +55,7 @@ LabelSliderBar::LabelSliderBar(
           .bar
           {
               .w = fflcheck(argSliderWidth, argSliderWidth >= 0),
-              .h = 9,
+              .h = TexSliderBar::SLOT_FIXED_EDGE_SIZE,
               .v = false,
           },
 
