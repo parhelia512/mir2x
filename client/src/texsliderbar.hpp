@@ -13,18 +13,18 @@
 //
 //   |<-3->|             v
 //   +-----------------  -
-//   |                   2
+//   |        border     2
 //   |     +-----------  -  -
-//   |     |             ^  ^
-//   |     |                |
-//   |     |                5
-//   |     |                |
-//   |     |                v  v
+//   |     |             ^  ^          ---- 1 pixel dark
+//   |     |                |          --+
+//   |     |                5          --+- 3 pixel gray and can repeat
+//   |     |                |          --+
+//   |     |                v  v       ---- 1 pixel light
 //   |     +-----------     -  -
-//   |                         2
+//   |        border           2
 //   +-----------------        -
 //                             ^
-
+//
 class TexSliderBar: public TexSlider
 {
     public:
@@ -48,8 +48,8 @@ class TexSliderBar: public TexSlider
         };
 
     private:
-        ImageBoard m_imgSlot; // pixels are as above
-        ImageBoard m_imgBar;  // 5 pixels height, horizontal direction is identical
+        ImageBoard m_imgSlot;
+        ImageBoard m_imgBar; // 5 pixels height, horizontal direction is identical
 
         GfxResizeBoard m_slot;
         GfxDupBoard    m_bar;

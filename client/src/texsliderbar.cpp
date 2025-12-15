@@ -1,6 +1,4 @@
 #include "pngtexdb.hpp"
-#include "imageboard.hpp"
-#include "gfxresizeboard.hpp"
 #include "texsliderbar.hpp"
 
 extern PNGTexDB *g_progUseDB;
