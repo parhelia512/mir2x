@@ -26,6 +26,12 @@ TexSliderBar::TexSliderBar(TexSliderBar::InitArgs args)
           .rotate = vbar() ? 1 : 0,
       }}
 
+    , m_bg
+      {{
+          .w = std::nullopt,
+          .h = std::nullopt,
+      }}
+
     , m_slot
       {{
           .getter = &m_imgSlot,
@@ -42,16 +48,21 @@ TexSliderBar::TexSliderBar(TexSliderBar::InitArgs args)
               [this]{ return getBarROI(0, 0).w; },
               [this]{ return getBarROI(0, 0).h; },
           },
+
+          .parent{&m_bg},
       }}
 
     , m_bar
       {{
+          .x =  vbar() ? 2 : 3,
+          .y = !vbar() ? 2 : 3,
+
           .w = [this]{ return  vbar() ? m_imgBar.w() : getBarROI(0, 0).w  * getValue(); },
           .h = [this]{ return !vbar() ? m_imgBar.h() : getBarROI(0, 0).h  * getValue(); },
 
           .getter = &m_imgBar,
+          .parent{&m_bg},
       }}
 {
-    setBarBgWidget(             0,              0, &m_bar , false);
-    setBarBgWidget(vbar() ? 2 : 3, vbar() ? 3 : 2, &m_slot, false);
+    setBarBgWidget(m_bar.dx(), m_bar.dy(), &m_bg, false);
 }

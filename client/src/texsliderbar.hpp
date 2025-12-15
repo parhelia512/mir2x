@@ -51,8 +51,12 @@ class TexSliderBar: public TexSlider
         ImageBoard m_imgSlot;
         ImageBoard m_imgBar; // 5 pixels height, horizontal direction is identical
 
+    public:
+        Widget m_bg;
+
+    private:
         GfxResizeBoard m_slot;
-        GfxDupBoard    m_bar;
+        GfxDupBoard m_bar;
 
     public:
         TexSliderBar(TexSliderBar::InitArgs);
