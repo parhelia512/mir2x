@@ -38,6 +38,32 @@ GUIManager::GUIManager(ProcessRun *argProc)
           this,
       }
 
+    , m_bar1
+      {{
+          .bar
+          {
+              .x = 20,
+              .y = 20,
+              .w = 5,
+              .h = 100,
+              .v = true,
+          },
+          .index = 1,
+      }}
+
+    , m_bar2
+      {{
+          .bar
+          {
+              .x = 50,
+              .y = 70,
+              .w = 100,
+              .h = 5,
+              .v = false,
+          },
+          .index = 1,
+      }}
+
     , m_horseBoard
       {
           DIR_UPLEFT,
@@ -179,6 +205,9 @@ void GUIManager::drawDefault(Widget::ROIMap m) const
             g_imeBoard->drawRoot({});
         }
     }
+
+    m_bar1.drawRoot({});
+    m_bar2.drawRoot({});
 }
 
 void GUIManager::updateDefault(double fUpdateTime)
@@ -236,6 +265,9 @@ bool GUIManager::processEventDefault(const SDL_Event &event, bool valid, Widget:
     fnProcEventRoot(&m_controlBoard);
     fnProcEventRoot(&m_NPCChatBoard);
     fnProcEventRoot(&m_miniMapBoard);
+
+    fnProcEventRoot(&m_bar1);
+    fnProcEventRoot(&m_bar2);
 
     return tookEvent;
 }

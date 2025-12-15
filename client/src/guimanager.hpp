@@ -31,6 +31,9 @@ class GUIManager: public Widget
     private:
         FriendChatBoard m_friendChatBoard;
 
+        TexSliderBar m_bar1;
+        TexSliderBar m_bar2;
+
     private:
         HorseBoard m_horseBoard;
         SkillBoard m_skillBoard;
