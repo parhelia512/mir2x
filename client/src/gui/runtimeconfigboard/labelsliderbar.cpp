@@ -51,19 +51,19 @@ LabelSliderBar::LabelSliderBar(
       }}
 
     , m_slider
-      {
-          DIR_UPLEFT,
-          0,
-          0,
-          [argSliderWidth]{fflassert(argSliderWidth >= 0); return argSliderWidth; }(),
+      {{
+          .bar
+          {
+              .w = fflcheck(argSliderWidth, argSliderWidth >= 0),
+              .h = 9,
+              .v = false,
+          },
 
-          true,
-          argSliderIndex,
-          std::move(argOnValueChange),
+          .index = argSliderIndex,
+          .onChange = std::move(argOnValueChange),
 
-          this,
-          false,
-      }
+          .parent{this},
+      }}
 {
     setW(m_labelCrop.w() + m_slider.w());
     setH(std::max<int>({m_labelCrop.h(), m_slider.h()}));

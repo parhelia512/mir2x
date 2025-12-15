@@ -1,141 +1,60 @@
 #include "pngtexdb.hpp"
+#include "imageboard.hpp"
+#include "gfxresizeboard.hpp"
 #include "texsliderbar.hpp"
 
 extern PNGTexDB *g_progUseDB;
-TexSliderBar::TexSliderBar(
-        dir8_t argDir,
 
-        int argX,
-        int argY,
-        int argSize,
-
-        bool argHSlider,
-        int  argSliderIndex,
-
-        std::function<void(float)> argOnChanged,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
-    : Widget
+TexSliderBar::TexSliderBar(TexSliderBar::InitArgs args)
+    : TexSlider
       {{
-          .dir = argDir,
-          .x = argX,
-          .y = argY,
+          .bar = std::move(args.bar),
+          .index = args.index,
+          .value = args.value,
 
-          .w =  argHSlider ? [argSize]{ fflassert(argSize >= 6, argSize); return argSize; }() : SDLDeviceHelper::getTextureHeight(g_progUseDB->retrieve(0X00000460)),
-          .h = !argHSlider ? [argSize]{ fflassert(argSize >= 6, argSize); return argSize; }() : SDLDeviceHelper::getTextureHeight(g_progUseDB->retrieve(0X00000460)),
-
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .onChange = std::move(args.onChange),
+          .parent = std::move(args.parent),
       }}
 
-    , m_slotImage
+    , m_imgSlot
       {{
           .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000460); },
-          .rotate = argHSlider ? 0 : 1,
+          .rotate = vbar() ? 1 : 0,
       }}
 
-    , m_barImage
+    , m_imgBar
       {{
           .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000470); },
-          .rotate = argHSlider ? 0 : 1,
+          .rotate = vbar() ? 1 : 0,
       }}
 
-    , m_slotCropLeft
+    , m_slot
       {{
-          .getter = &m_slotImage,
+          .getter = &m_imgSlot,
           .vr
           {
-          /* brdCropW */  argHSlider ? 3 : m_slotImage.w(),
-          /* brdCropH */ !argHSlider ? 3 : m_slotImage.h(),
+              /* x */  vbar() ? 0 : 3,
+              /* y */ !vbar() ? 0 : 3,
+              /* w */  vbar() ? m_imgSlot.w() : m_imgSlot.w() - 6,
+              /* h */ !vbar() ? m_imgSlot.h() : m_imgSlot.h() - 6,
           },
-          .parent{this},
-      }}
 
-    , m_slotCropMiddle
-      {{
-          .getter = &m_slotImage,
-          .vr
+          .resize
           {
-              /* brdCropX */  argHSlider ? 3 : 0,
-              /* brdCropY */ !argHSlider ? 3 : 0,
-
-              /* brdCropW */  argHSlider ? m_slotImage.w() - 6 : m_slotImage.w(),
-              /* brdCropH */ !argHSlider ? m_slotImage.h() - 6 : m_slotImage.h(),
+              [this]{ return getBarROI(0, 0).w; },
+              [this]{ return getBarROI(0, 0).h; },
           },
       }}
 
-    , m_slotCropRight
+    , m_bar
       {{
-          .dir = DIR_DOWNRIGHT,
-          .x = w() - 1,
-          .y = h() - 1,
+          .w = [this]{ return  vbar() ? m_imgBar.w() : (getBarROI(0, 0).w - 1) * getValue(); },
+          .h = [this]{ return !vbar() ? m_imgBar.h() : (getBarROI(0, 0).h - 1) * getValue(); },
 
-          .getter = &m_slotImage,
-          .vr
-          {
-              /* brdCropX */  argHSlider ? m_slotImage.w() - 3 : 0,
-              /* brdCropY */ !argHSlider ? m_slotImage.h() - 3 : 0,
-
-              /* brdCropW */  argHSlider ? 3 : m_slotImage.w(),
-              /* brdCropW */ !argHSlider ? 3 : m_slotImage.h(),
-          },
+          .getter = &m_imgBar,
           .parent{this},
       }}
-
-    , m_slotMidCropDup
-      {{
-          /* x */ .x =  argHSlider ? 3 : 0,
-          /* y */ .y = !argHSlider ? 3 : 0,
-
-          /* w */ .w =  argHSlider ? w() - 6 : w(),
-          /* h */ .h = !argHSlider ? h() - 6 : h(),
-
-          .getter = &m_slotCropMiddle,
-          .parent{this},
-      }}
-
-    , m_barCropDup
-      {{
-          /* x */ .x =  argHSlider ? 3 : 2,
-          /* y */ .y = !argHSlider ? 3 : 2,
-
-          /* w */ .w =  argHSlider ? 0 : m_barImage.w(),
-          /* h */ .h = !argHSlider ? 0 : m_barImage.h(),
-
-          .getter = &m_barImage,
-          .parent{this},
-      }}
-
-    , m_slider
-      {{
-          .bar
-          {
-              .dir = DIR_NONE,
-
-              .x = w() / 2,
-              .y = h() / 2,
-              .w = w() - 6,
-              .h = h() - 6,
-              .v = !argHSlider,
-          },
-          .index = argSliderIndex,
-
-          .onChange = [argHSlider, argOnChanged = std::move(argOnChanged), this](float val)
-          {
-              argOnChanged(val);
-              if(argHSlider){
-                  m_barCropDup.setW(to_dround(val * (w() - 6)));
-              }
-              else{
-                  m_barCropDup.setH(to_dround(val * (h() - 6)));
-              }
-          },
-
-          .parent{this},
-      }}
-{}
+{
+    setBarBgWidget(             0,              0, &m_bar , false);
+    setBarBgWidget(vbar() ? 2 : 3, vbar() ? 3 : 2, &m_slot, false);
+}

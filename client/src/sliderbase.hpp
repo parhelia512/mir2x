@@ -84,7 +84,7 @@ class SliderBase: public Widget
         Widget::VarCheckFunc<float> m_checkFunc;
 
     private:
-        const std::optional<std::pair<Widget::VarInt, Widget::VarInt>> m_bgOff;
+        std::optional<std::pair<Widget::VarInt, Widget::VarInt>> m_bgOff;
 
     private:
         const BarArgs m_barArgs;
@@ -131,11 +131,17 @@ class SliderBase: public Widget
         float pixel2Value(int) const;
 
     public:
+        Widget::ROI getBarROI(int, int) const;
+
+    public:
         Widget::ROI getSliderROI(int, int) const;
         std::tuple<int, int> getValueCenter(int, int) const;
 
     protected:
         bool inSlider(int, int, Widget::ROIMap) const;
+
+    public:
+        void setBarBgWidget(Widget::VarInt, Widget::VarInt, Widget *, bool);
 
     private:
         int sliderXAtValueFromBar(float, int) const; // only depends on barArgs and sliderArgs

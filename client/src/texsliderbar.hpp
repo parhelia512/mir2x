@@ -3,55 +3,34 @@
 #include "widget.hpp"
 #include "texslider.hpp"
 #include "imageboard.hpp"
-#include "gfxcropboard.hpp"
 #include "gfxdupboard.hpp"
+#include "gfxresizeboard.hpp"
 
-class TexSliderBar: public Widget
+class TexSliderBar: public TexSlider
 {
-    private:
-        ImageBoard m_slotImage;
-        ImageBoard m_barImage;
+    protected:
+        using TexSlider::BarArgs;
+        using TexSlider::BarBgWidget;
 
     private:
-        GfxCropBoard m_slotCropLeft;
-        GfxCropBoard m_slotCropMiddle;
-        GfxCropBoard m_slotCropRight;
+        struct InitArgs final
+        {
+            BarArgs bar {};
+
+            int index = 0;
+            float value = 0.0f;
+
+            Widget::VarUpdateFunc<float> onChange = nullptr;
+            Widget::WADPair parent {};
+        };
 
     private:
-        GfxDupBoard m_slotMidCropDup;
-        GfxDupBoard m_barCropDup;
+        ImageBoard m_imgSlot;
+        ImageBoard m_imgBar;
 
-    private:
-        TexSlider m_slider;
+        GfxResizeBoard m_slot;
+        GfxDupBoard    m_bar;
 
     public:
-        TexSliderBar(dir8_t,
-                int,
-                int,
-                int,
-
-                bool,
-                int,
-
-                std::function<void(float)>,
-
-                Widget * = nullptr,
-                bool     = false);
-
-    public:
-        float getValue() const
-        {
-            return m_slider.getValue();
-        }
-
-        void setValue(float val, bool triggerCallback)
-        {
-            m_slider.setValue(val, triggerCallback);
-            if(m_slider.vbar()){
-                m_barCropDup.setH(to_dround(val * (h() - 6)));
-            }
-            else{
-                m_barCropDup.setW(to_dround(val * (w() - 6)));
-            }
-        }
+        TexSliderBar(TexSliderBar::InitArgs);
 };

@@ -13,11 +13,7 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
       }}
 
     , m_value(fflcheck(args.value, args.value >= 0.0f && args.value <= 1.0f))
-
     , m_checkFunc(std::move(args.checkFunc))
-    , m_bgOff(args.bgWidget.widget
-            ? std::make_optional(std::make_pair(std::move(args.bgWidget.ox), std::move(args.bgWidget.oy)))
-            : std::nullopt)
 
     , m_barArgs(std::move(args.bar))
     , m_sliderArgs(std::move(args.slider))
@@ -78,9 +74,7 @@ SliderBase::SliderBase(SliderBase::InitArgs args)
             [this]{ return std::max<int>(Widget::evalSize(m_barArgs.h, this), sliderYAtValueFromBar(1.0f, 0) + m_slider.h()) - widgetYFromBar(0); });
 
     if(args.bgWidget.widget){
-        addChildAt(args.bgWidget.widget, DIR_UPLEFT,
-                [this]{ return -1 * widgetXFromBar(0) - Widget::evalInt(m_bgOff->first , this); },
-                [this]{ return -1 * widgetYFromBar(0) - Widget::evalInt(m_bgOff->second, this); }, args.bgWidget.autoDelete);
+        setBarBgWidget(std::move(args.bgWidget.ox), std::move(args.bgWidget.oy), args.bgWidget.widget, args.bgWidget.autoDelete);
     }
 }
 
@@ -201,6 +195,17 @@ float SliderBase::pixel2Value(int pixel) const
     return pixel * 1.0f / std::max<int>(vbar() ? (m_bar.h() - 1) : (m_bar.w() - 1), 1);
 }
 
+Widget::ROI SliderBase::getBarROI(int startDstX, int startDstY) const
+{
+    return Widget::ROI
+    {
+        .x = startDstX + m_bar.dx(),
+        .y = startDstY + m_bar.dy(),
+        .w =             m_bar. w(),
+        .h =             m_bar. h(),
+    };
+}
+
 Widget::ROI SliderBase::getSliderROI(int startDstX, int startDstY) const
 {
     return Widget::ROI
@@ -227,6 +232,17 @@ bool SliderBase::inSlider(int eventX, int eventY, Widget::ROIMap m) const
         return false;
     }
     return m.create(m_slider.roi(this)).in(eventX, eventY);
+}
+
+void SliderBase::setBarBgWidget(Widget::VarInt ox, Widget::VarInt oy, Widget *bgWidget, bool autoDelete)
+{
+    if(bgWidget){
+        m_bgOff = std::make_optional(std::make_pair(std::move(ox), std::move(oy)));
+        addChildAt(bgWidget, DIR_UPLEFT,
+                [this]{ return -1 * widgetXFromBar(0) - Widget::evalInt(m_bgOff->first , this); },
+                [this]{ return -1 * widgetYFromBar(0) - Widget::evalInt(m_bgOff->second, this); }, autoDelete);
+        moveFront(bgWidget);
+    }
 }
 
 int SliderBase::sliderXAtValueFromBar(float value, int barX) const
