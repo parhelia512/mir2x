@@ -61,7 +61,7 @@ QuickAccessGrid::QuickAccessGrid(
           .x = [this]{ return w() / 2; },
           .y = [this]{ return h() / 2; },
 
-          .texLoadFunc = [this](const Widget *) -> SDL_Texture *
+          .texLoadFunc = [this] -> SDL_Texture *
           {
               if(const auto &item = proc->getMyHero()->getBelt(slot)){
                   return g_itemDB->retrieve(DBCOM_ITEMRECORD(item.itemID).pkgGfxID | 0X01000000);
