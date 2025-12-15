@@ -17,13 +17,14 @@ TexSliderBar::TexSliderBar(TexSliderBar::InitArgs args)
     , m_imgSlot
       {{
           .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000460); },
-          .vflip = vbar(), // for dark/light gfx effect only
+          .vflip = vbar(),
           .rotate = vbar() ? 1 : 0,
       }}
 
     , m_imgBar
       {{
           .texLoadFunc = []{ return g_progUseDB->retrieve(0X00000470); },
+          .vflip = vbar(),
           .rotate = vbar() ? 1 : 0,
       }}
 
