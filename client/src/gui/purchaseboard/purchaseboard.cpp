@@ -224,9 +224,9 @@ PurchaseBoard::PurchaseBoard(ProcessRun *argProc, Widget *argParent, bool argAut
           .bar
           {
               .x = 266,
-              .y = 27,
-              .w = 5,
-              .h = 123,
+              .y = 25,
+              .w = 7,
+              .h = 125,
           },
 
           .index = 0,
