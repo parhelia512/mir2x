@@ -254,7 +254,7 @@ void PurchaseBoard::drawDefault(Widget::ROIMap m) const
 
     TextBoard label
     {{
-        .textFunc = [&itemName]{ return str_haschar(itemName) ? itemName : "???"; },
+        .textFunc = [&itemName]{ return to_cstr(itemName); },
         .font
         {
             .id = 1,
