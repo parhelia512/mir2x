@@ -2,7 +2,6 @@
 #include "pngtexdb.hpp"
 #include "sdldevice.hpp"
 #include "processrun.hpp"
-#include "purchaseboard.hpp"
 #include "inputstringboard.hpp"
 
 extern PNGTexDB *g_itemDB;

@@ -8,7 +8,7 @@
 #include "gui/npcchatboard/npcchatboard.hpp"
 #include "gui/friendchatboard/friendchatboard.hpp"
 #include "gui/controlboard/controlboard.hpp"
-#include "purchaseboard.hpp"
+#include "gui/purchaseboard/purchaseboard.hpp"
 #include "teamstateboard.hpp"
 #include "inventoryboard.hpp"
 #include "queststateboard.hpp"
