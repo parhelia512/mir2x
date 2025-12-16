@@ -296,6 +296,14 @@ std::optional<SDLDeviceHelper::SDLEventPLoc> SDLDeviceHelper::getEventPLoc(const
                     event.button.y,
                 };
             }
+        case SDL_MOUSEWHEEL:
+            {
+                return SDLDeviceHelper::SDLEventPLoc
+                {
+                    event.wheel.mouseX,
+                    event.wheel.mouseY,
+                };
+            }
         default:
             {
                 return {};

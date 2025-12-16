@@ -28,9 +28,41 @@ class PurchaseBoard: public Widget
         constexpr static int m_startX = 19;
         constexpr static int m_startY = 15;
 
-        constexpr static int m_boxW  = 57 - 19;
-        constexpr static int m_boxH  = 53 - 15;
-        constexpr static int m_lineH = 57 - 15;
+        constexpr static int m_boxW = 57 - 19;
+        constexpr static int m_boxH = 53 - 15;
+
+        constexpr static int m_lineW = 252 - 19;
+        constexpr static int m_lineH =  57 - 15;
+
+    private:
+        constexpr static Widget::ROI m_ext1GridArea
+        {
+            .x = 313,
+            .y =  41,
+            .w = 152,
+            .h = 114,
+        };
+
+        constexpr static Widget::ROI m_ext2GridArea
+        {
+            .x = 303,
+            .y =  16,
+
+            .w = m_boxW,
+            .h = m_boxH,
+        };
+
+        constexpr static Widget::ROI m_ext2PriceArea
+        {
+            .x = 350,
+            .y =  16,
+
+            .w = 150,
+            .h = m_boxH,
+        };
+
+    private:
+        ProcessRun *m_processRun;
 
     private:
         uint64_t m_npcUID = 0;
@@ -45,6 +77,9 @@ class PurchaseBoard: public Widget
     private:
         int m_selected = 0;
         std::vector<uint32_t> m_itemList;
+
+    private:
+        ImageBoard m_bg;
 
     private:
         TritexButton m_buttonClose;
@@ -62,9 +97,6 @@ class PurchaseBoard: public Widget
 
     private:
         TexSlider m_slider;
-
-    private:
-        ProcessRun *m_processRun;
 
     public:
         PurchaseBoard(ProcessRun *, Widget * = nullptr, bool = false);
@@ -92,19 +124,19 @@ class PurchaseBoard: public Widget
         void setSellItemList(SDSellItemList);
 
     private:
-        int extendedBoardGfxID() const;
+        int extendedBoardGfxID() const; // Ext1: unpackable, Ext2: packable
 
     private:
         int extendedPageCount() const;
 
     private:
-        int getExt1PageGrid() const;
+        int getExt1PageGrid(int, int) const;
         static std::tuple<int, int, int, int> getExt1PageGridLoc(int, int);
 
     private:
-        void drawt1(Widget::ROIMap) const;
-        void drawt2(Widget::ROIMap) const;
-        void drawt1GridHoverText(int) const;
+        void drawExt1(Widget::ROIMap) const;
+        void drawExt2(Widget::ROIMap) const;
+        void drawExt1GridHoverText(int) const;
 
     private:
         std::tuple<uint32_t, uint32_t> getExtSelectedItemSeqID() const;
@@ -113,7 +145,7 @@ class PurchaseBoard: public Widget
         size_t getItemPrice(int) const;
 
     private:
-        void drawItemInGrid(const char8_t *, uint32_t, int, int) const;
+        void drawItemInGrid(const char8_t *, uint32_t, int, int, Widget::ROIMap) const;
 
     private:
         static SDL_Texture *getItemTexture(const char8_t *, uint32_t);
