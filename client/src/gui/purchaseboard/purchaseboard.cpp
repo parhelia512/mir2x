@@ -632,9 +632,7 @@ void PurchaseBoard::drawExt1(Widget::ROIMap m) const
 
 void PurchaseBoard::drawExt2(Widget::ROIMap m) const
 {
-    if(extendedBoardGfxID() != 2){
-        throw fflreach();
-    }
+    fflassert(extendedBoardGfxID() == 2);
 
     const auto [extItemID, extSeqID] = getExtSelectedItemSeqID();
     if(extSeqID){
@@ -666,7 +664,7 @@ void PurchaseBoard::drawExt2(Widget::ROIMap m) const
             .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
         },
     }};
-    drawAsChild(&price, DIR_LEFT, m_ext2PriceArea.x + 3, m_ext2PriceArea.y + m_ext2PriceArea.w / 2, m);
+    drawAsChild(&price, DIR_LEFT, m_ext2PriceArea.x + 3, m_ext2PriceArea.y + m_ext2PriceArea.h / 2, m);
 }
 
 std::tuple<uint32_t, uint32_t> PurchaseBoard::getExtSelectedItemSeqID() const
