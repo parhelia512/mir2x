@@ -421,6 +421,10 @@ void MiniMapBoard::flipExtended()
     m_buttonAlpha     .setOff();
     m_buttonExtend    .setOff();
     m_buttonAutoCenter.setOff();
+
+    if(!m_autoCenter){
+        normalizeMapImagePLoc();
+    }
 }
 
 void MiniMapBoard::flipAutoCenter()

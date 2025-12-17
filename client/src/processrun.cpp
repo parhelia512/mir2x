@@ -842,11 +842,8 @@ void ProcessRun::loadMap(uint64_t newMapUID, int centerGX, int centerGY)
 
     fnUpdateLoadRatio(100);
     if(auto boardPtr = dynamic_cast<MiniMapBoard *>(getWidget("MiniMapBoard"))){
-        if(boardPtr->show()){
-            if(!boardPtr->getMiniMapTexture()){
-                boardPtr->setShow(false);
-                addCBLog(CBLOG_ERR, u8"没有可用的地图");
-            }
+        if(!boardPtr->getMiniMapTexture()){
+            addCBLog(CBLOG_ERR, u8"没有可用的地图"); // don't need to flip minimap show explicitly
         }
     }
 
