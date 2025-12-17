@@ -135,7 +135,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
         {
             {new GfxShapeBoard
             {{
-                .w = [this](const Widget *)
+                .w = [this]
                 {
                     if(m_canvas.varW().has_value()){
                         return m_canvas.w();
@@ -153,7 +153,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
                     return foundIter->first->w();
                 },
 
-                .h = [argWidget, argAddSeparator, this](const Widget *)
+                .h = [argWidget, argAddSeparator, this]
                 {
                     return upperItemSpace(argWidget) + argWidget->h() + lowerItemSpace(argWidget) + (argAddSeparator ? m_separatorSpace : 0);
                 },
@@ -177,7 +177,7 @@ void MenuBoard::appendMenu(Widget *argWidget, bool argAddSeparator, bool argAuto
                 },
             }}, DIR_UPLEFT, 0, 0, true},
 
-            {argWidget, DIR_UPLEFT, 0, [argWidget, this](const Widget *)
+            {argWidget, DIR_UPLEFT, 0, [argWidget, this]
             {
                 return upperItemSpace(argWidget);
             }, argAutoDelete},
