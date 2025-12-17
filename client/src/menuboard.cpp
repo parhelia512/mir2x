@@ -48,7 +48,7 @@ MenuBoard::MenuBoard(
       {{
           .fixed = Widget::transform(std::move(argVarW), [argMargin, this](int w)
           {
-              return std::max<int>(0, w - Widget::evalSize(argMargin[2], this) - Widget::evalSize(argMargin[3], this));
+              return std::max<int>(0, w - argMargin.left - argMargin.right);
           }),
       }}
 
