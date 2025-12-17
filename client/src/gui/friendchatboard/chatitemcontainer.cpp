@@ -48,12 +48,11 @@ ChatItemContainer::ChatItemContainer(
               return -1 * to_dround((self->h() - this->h()) * FriendChatBoard::getParentBoard(this)->m_uiPageList[UIPage_CHAT].slider->getValue());
           },
 
-          .length = [this](const Widget *)
+          .fixed = [this](const Widget *)
           {
               return w();
           },
 
-          .hbox = false,
           .itemSpace = ChatItemContainer::ITEM_SPACE,
           .parent{this},
       }}

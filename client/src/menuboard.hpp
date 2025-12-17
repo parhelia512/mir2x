@@ -33,7 +33,7 @@ class MenuBoard: public Widget
                 Widget::VarInt,
 
                 Widget::VarSizeOpt,
-                std::array<Widget::VarSize, 4> = {},
+                Widget::IntMargin = {},
 
                 int = 0,
                 int = 0,

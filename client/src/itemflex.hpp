@@ -13,9 +13,9 @@ class ItemFlex: public Widget
             Widget::VarInt x = 0;
             Widget::VarInt y = 0;
 
-            Widget::VarSizeOpt length = std::nullopt;
+            Widget::VarSizeOpt fixed = std::nullopt; // the other side to flexible edge
 
-            bool hbox = true;
+            bool v = true;
             Widget::VarSize itemSpace = 0;
 
             std::initializer_list<std::pair<Widget *, bool>> childList = {};
@@ -23,7 +23,7 @@ class ItemFlex: public Widget
         };
 
     private:
-        const bool m_hbox;
+        const bool m_vbox;
 
     private:
         Widget::VarSize m_itemSpace;
@@ -38,13 +38,13 @@ class ItemFlex: public Widget
                   .x = std::move(args.x),
                   .y = std::move(args.y),
 
-                  .w =  args.hbox ? Widget::VarSizeOpt{} : std::move(args.length),
-                  .h = !args.hbox ? Widget::VarSizeOpt{} : std::move(args.length),
+                  .w =  args.v ? std::move(args.fixed) : Widget::VarSizeOpt{},
+                  .h = !args.v ? std::move(args.fixed) : Widget::VarSizeOpt{},
 
                   .parent = std::move(args.parent),
               }}
 
-            , m_hbox(args.hbox)
+            , m_vbox(args.v)
             , m_itemSpace(std::move(args.itemSpace))
         {
             for(auto [widget, autoDelete]: args.childList){
@@ -56,7 +56,31 @@ class ItemFlex: public Widget
         void addChild(Widget *argWidget, bool argAutoDelete) override
         {
             m_origChildList.push_back(argWidget);
-            if(m_hbox){
+            if(m_vbox){
+                addChildAt(argWidget, DIR_UPLEFT, 0, [this](const Widget *self)
+                {
+                    const int itemSpace = std::max<int>(0, Widget::evalSize(m_itemSpace, this));
+                    int offset = 0;
+
+                    for(auto widget: m_origChildList){
+                        if(widget == self){
+                            break;
+                        }
+
+                        if(!widget->show()){
+                            continue;
+                        }
+
+                        offset += widget->h();
+                        offset += itemSpace;
+                    }
+
+                    return offset;
+                },
+
+                argAutoDelete);
+            }
+            else{
                 addChildAt(argWidget, DIR_UPLEFT, [this](const Widget *self)
                 {
                     const int itemSpace = std::max<int>(0, Widget::evalSize(m_itemSpace, this));
@@ -79,30 +103,6 @@ class ItemFlex: public Widget
                 },
 
                 0,
-                argAutoDelete);
-            }
-            else{
-                addChildAt(argWidget, DIR_UPLEFT, 0, [this](const Widget *self)
-                {
-                    const int itemSpace = std::max<int>(0, Widget::evalSize(m_itemSpace, this));
-                    int offset = 0;
-
-                    for(auto widget: m_origChildList){
-                        if(widget == self){
-                            break;
-                        }
-
-                        if(!widget->show()){
-                            continue;
-                        }
-
-                        offset += widget->h();
-                        offset += itemSpace;
-                    }
-
-                    return offset;
-                },
-
                 argAutoDelete);
             }
         }

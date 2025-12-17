@@ -11,7 +11,7 @@ MenuBoard::MenuBoard(
         Widget::VarInt argY,
 
         Widget::VarSizeOpt argVarW,
-        std::array<Widget::VarSize, 4> argMargin,
+        Widget::IntMargin argMargin,
 
         int argCorner,
         int argItemSpace,
@@ -26,10 +26,13 @@ MenuBoard::MenuBoard(
     : Widget
       {{
           .dir = std::move(argDir),
+
           .x = std::move(argX),
           .y = std::move(argY),
+
           .w = std::nullopt,
           .h = std::nullopt,
+
           .parent
           {
               .widget = argParent,
@@ -41,15 +44,12 @@ MenuBoard::MenuBoard(
     , m_separatorSpace(std::max<int>(0, argSeperatorSpace))
 
     , m_onClickMenu(std::move(argOnClickMenu))
-
     , m_canvas
       {{
-          .length = Widget::transform(std::move(argVarW), [argMargin, this](int w)
+          .fixed = Widget::transform(std::move(argVarW), [argMargin, this](int w)
           {
               return std::max<int>(0, w - Widget::evalSize(argMargin[2], this) - Widget::evalSize(argMargin[3], this));
           }),
-
-          .hbox = false,
       }}
 
     , m_wrapper
