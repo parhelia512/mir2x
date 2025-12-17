@@ -392,6 +392,8 @@ bool MiniMapBoard::processEventDefault(const SDL_Event &event, bool valid, Widge
 
                             m_mapImage_dx += event.motion.xrel;
                             m_mapImage_dy += event.motion.yrel;
+                            normalizeMapImagePLoc();
+
                             return consumeFocus(true);
                         }
                     }
@@ -537,6 +539,27 @@ void MiniMapBoard::zoomOnCanvasAt(int onCanvasPX, int onCanvasPY, double zoomFac
     m_autoCenter = false;
     m_mapImage_dx = oldDX + (std::get<0>(onImgOldPLoc) - onImgNewPX);
     m_mapImage_dy = oldDY + (std::get<1>(onImgOldPLoc) - onImgNewPY);
+    normalizeMapImagePLoc();
+}
+
+void MiniMapBoard::normalizeMapImagePLoc()
+{
+    fflassert(getMiniMapTexture());
+    fflassert(!m_autoCenter);
+
+    if(m_mapImage.w() <= m_canvas.w()){
+        m_mapImage_dx = (m_canvas.w() - m_mapImage.w()) / 2;
+    }
+    else{
+        m_mapImage_dx = std::clamp<int>(m_mapImage_dx, m_canvas.w() - m_mapImage.w(), 0); // never positive
+    }
+
+    if(m_mapImage.h() <= m_canvas.h()){
+        m_mapImage_dy = (m_canvas.h() - m_mapImage.h()) / 2;
+    }
+    else{
+        m_mapImage_dy = std::clamp<int>(m_mapImage_dy, m_canvas.h() - m_mapImage.h(), 0); // never positive
+    }
 }
 
 std::tuple<int, int> MiniMapBoard::onMapGLoc_from_onCanvasPLoc(const std::tuple<int, int> &onCanvasPLoc) const

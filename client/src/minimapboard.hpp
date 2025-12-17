@@ -74,6 +74,9 @@ class MiniMapBoard: public Widget
         void zoomOnCanvasAt(int, int, double);
 
     private:
+        void normalizeMapImagePLoc();
+
+    private:
         void drawCanvas(int, int);
 
     private:
