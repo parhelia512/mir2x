@@ -249,7 +249,9 @@ MiniMapBoard::MiniMapBoard(MiniMapBoard::InitArgs args)
           .x = [this]{ return w() - 1; },
           .y = [this]{ return h() - 1; },
 
+          .v = false,
           .itemSpace = 1,
+
           .childList
           {
               {&m_zoomFactorBoard , false},
