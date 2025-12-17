@@ -63,7 +63,6 @@ class MiniMapBoard: public Widget
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     public:
-        void setPLoc(){}
         void flipAlpha();
         void flipExtended();
         void flipAutoCenter();
