@@ -23,9 +23,6 @@ class MenuBoard: public Widget
         ItemFlex m_canvas; // holding all menu items
         MarginWrapper m_wrapper;
 
-    private:
-        GfxShapeBoard m_background;
-
     public:
         MenuBoard(
                 Widget::VarDir,

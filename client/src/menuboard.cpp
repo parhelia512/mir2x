@@ -57,31 +57,21 @@ MenuBoard::MenuBoard(
           .wrapped{&m_canvas},
           .margin
           {
-              .up = argMargin[0],
-              .down = argMargin[1],
-              .left = argMargin[2],
+              .up    = argMargin[0],
+              .down  = argMargin[1],
+              .left  = argMargin[2],
               .right = argMargin[3],
           },
-          .parent{this},
-      }}
 
-    , m_background
-      {{
-          .w = [this](const Widget *){ return m_wrapper.w(); },
-          .h = [this](const Widget *){ return m_wrapper.h(); },
-
-          .drawFunc = [argCorner](const Widget *self, int dstDrawX, int dstDrawY)
+          .bgDrawFunc = [argCorner](const Widget *self, int dstDrawX, int dstDrawY)
           {
-              g_sdlDevice->fillRectangle(colorf::BLACK + colorf::A_SHF(255), dstDrawX, dstDrawY, self->w(), self->h(), std::max<int>(0, argCorner));
-              g_sdlDevice->drawRectangle(colorf::GREY  + colorf::A_SHF(255), dstDrawX, dstDrawY, self->w(), self->h(), std::max<int>(0, argCorner));
+              g_sdlDevice->fillRectangle(colorf::BLACK_A255, dstDrawX, dstDrawY, self->w(), self->h(), std::max<int>(0, argCorner));
+              g_sdlDevice->drawRectangle(colorf:: GREY_A255, dstDrawX, dstDrawY, self->w(), self->h(), std::max<int>(0, argCorner));
           },
-
           .parent{this},
       }}
 {
     moveFront(&m_wrapper);
-    moveFront(&m_background);
-
     for(auto [widget, addSeparator, autoDelete]: argMenuItemList){
         appendMenu(widget, addSeparator, autoDelete);
     }
