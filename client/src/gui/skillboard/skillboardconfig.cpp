@@ -42,7 +42,7 @@ void SkillBoardConfig::setMagicKey(uint32_t magicID, std::optional<char> key)
     fflassert(SkillBoard::getMagicIconGfx(magicID));
 
     fflassert(hasMagicID(magicID));
-    fflassert(!SkillBoard::getMagicIconGfx(magicID).passive);
+    fflassert(!SkillBoard::getMagicIconGfx(magicID)->passive);
     fflassert(!key.has_value() || (key.value() >= 'a' && key.value() <= 'z') || (key.value() >= '0' && key.value() <= '9'));
 
     m_learnedMagicList[magicID].key = key;

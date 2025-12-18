@@ -20,17 +20,17 @@ MagicIconButton::MagicIconButton(MagicIconButton::InitArgs args)
       {{
           .texIDList
           {
-              .off  = SkillBoard::getMagicIconGfx(m_magicID).magicIcon,
-              .on   = SkillBoard::getMagicIconGfx(m_magicID).magicIcon,
-              .down = SkillBoard::getMagicIconGfx(m_magicID).magicIcon,
+              .off  = SkillBoard::getMagicIconGfx(m_magicID)->magicIcon,
+              .on   = SkillBoard::getMagicIconGfx(m_magicID)->magicIcon,
+              .down = SkillBoard::getMagicIconGfx(m_magicID)->magicIcon,
           },
 
           .onClickDone = false,
           .parent{this},
       }}
 {
-    moveTo(SkillBoard::getMagicIconGfx(m_magicID).x * 60 + 12,
-           SkillBoard::getMagicIconGfx(m_magicID).y * 65 + 13);
+    moveTo(SkillBoard::getMagicIconGfx(m_magicID)->x * 60 + 12,
+           SkillBoard::getMagicIconGfx(m_magicID)->y * 65 + 13);
 
     // leave some pixels to draw level label
     // since level can change during run, can't get the exact size here
@@ -90,7 +90,7 @@ bool MagicIconButton::processEventDefault(const SDL_Event &event, bool valid, Wi
     if(event.type == SDL_KEYDOWN && cursorOn()){
         if(const auto key = SDLDeviceHelper::getKeyChar(event, false); (key >= '0' && key <= '9') || (key >= 'a' && key <= 'z')){
             if(m_config->hasMagicID(magicID())){
-                if(SkillBoard::getMagicIconGfx(magicID()).passive){
+                if(SkillBoard::getMagicIconGfx(magicID())->passive){
                     m_processRun->addCBLog(CBLOG_SYS, u8"无法为被动技能设置快捷键：%s", to_cstr(DBCOM_MAGICRECORD(magicID()).name));
                 }
                 else{

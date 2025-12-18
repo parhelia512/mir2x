@@ -457,8 +457,8 @@ void ProcessRun::draw() const
     if(m_drawMagicKey){
         int magicKeyOffX = 0;
         for(const auto &[magicID, magicKey]: dynamic_cast<const SkillBoard *>(this->getWidget("SkillBoard"))->getConfig().getMagicKeyList()){
-            if(const auto &iconGfx = SkillBoard::getMagicIconGfx(magicID); iconGfx && iconGfx.magicIcon != SYS_U32NIL){
-                if(auto texPtr = g_progUseDB->retrieve(iconGfx.magicIcon + to_u32(0X00001000))){
+            if(const auto iconGfx = SkillBoard::getMagicIconGfx(magicID); iconGfx && iconGfx->magicIcon != SYS_U32NIL){
+                if(auto texPtr = g_progUseDB->retrieve(iconGfx->magicIcon + to_u32(0X00001000))){
                     g_sdlDevice->drawTexture(texPtr, magicKeyOffX, 0);
                     const auto coolDownAngle = getMyHero()->getMagicCoolDownAngle(magicID);
                     const auto colorRatio = [coolDownAngle]() -> float

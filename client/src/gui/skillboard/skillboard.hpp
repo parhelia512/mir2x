@@ -33,11 +33,6 @@ class SkillBoard: public Widget
             const int y = 0;
 
             const bool passive = false;
-
-            operator bool () const
-            {
-                return magicID != 0;
-            }
         };
 
         constexpr static MagicIconGfx m_iconGfxList []
@@ -221,15 +216,13 @@ class SkillBoard: public Widget
         }
 
     public:
-        static const MagicIconGfx &getMagicIconGfx(uint32_t magicID)
+        static const MagicIconGfx *getMagicIconGfx(uint32_t magicID)
         {
             for(const auto &magicGfx: m_iconGfxList){
                 if(magicGfx.magicID == magicID){
-                    return magicGfx;
+                    return std::addressof(magicGfx);
                 }
             }
-
-            const static MagicIconGfx s_emptyGfx {};
-            return s_emptyGfx;
+            return nullptr;
         }
 };
