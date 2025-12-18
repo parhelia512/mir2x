@@ -81,12 +81,12 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
                       .down = 0X05000030 + to_u32(i),
                   },
 
-                  .onOverIn = [i, this](Widget *)
+                  .onOverIn = [i, this]
                   {
                       m_cursorOnTabIndex = i;
                   },
 
-                  .onOverOut = [i, this](Widget *)
+                  .onOverOut = [i, this]
                   {
                       if(i != m_cursorOnTabIndex){
                           return;
@@ -94,7 +94,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
                       m_cursorOnTabIndex = -1;
                   },
 
-                  .onTrigger = [i, this](Widget *, int)
+                  .onTrigger = [i, this](int)
                   {
                       if(m_selectedTabIndex == i){
                           return;
