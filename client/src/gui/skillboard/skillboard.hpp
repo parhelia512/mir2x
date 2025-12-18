@@ -121,7 +121,7 @@ class SkillBoard: public Widget
             {DBCOM_MAGICID(u8"铁布衫"    ), 0X05001038, 3, 5, false},
             {DBCOM_MAGICID(u8"斗转星移"  ), 0X0500103E, 3, 6, false},
             {DBCOM_MAGICID(u8"破血狂杀"  ), 0X0500103C, 3, 7, false},
-            {DBCOM_MAGICID(u8"精神力战法"), 0X05001003, 4, 0, false},
+            {DBCOM_MAGICID(u8"精神力战法"), 0X05001003, 4, 0, true },
             {DBCOM_MAGICID(u8"空拳刀法"  ), 0X05001022, 4, 3, false},
         };
 
