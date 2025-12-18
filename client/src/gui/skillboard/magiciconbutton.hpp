@@ -16,6 +16,17 @@ class MagicIconButton: public Widget
     //         +-+
 
     private:
+        struct InitArgs final
+        {
+            uint32_t magicID = 0;
+
+            SkillBoardConfig *config = nullptr;
+            ProcessRun       *proc   = nullptr;
+
+            Widget::WADPair parent {};
+        };
+
+    private:
         const uint32_t m_magicID;
 
     private:
@@ -26,7 +37,7 @@ class MagicIconButton: public Widget
         TritexButton m_icon;
 
     public:
-        MagicIconButton(dir8_t, int, int, uint32_t, SkillBoardConfig *, ProcessRun *, Widget * = nullptr, bool = false);
+        MagicIconButton(MagicIconButton::InitArgs);
 
     public:
         void drawDefault(Widget::ROIMap) const override;

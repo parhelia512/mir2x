@@ -3,56 +3,40 @@
 #include "processrun.hpp"
 #include "textboard.hpp"
 
-MagicIconButton::MagicIconButton(
-        dir8_t argDir,
-
-        int argX,
-        int argY,
-
-        uint32_t argMagicID,
-
-        SkillBoardConfig *argConfigPtr,
-        ProcessRun       *argProc,
-
-        Widget *argParent,
-        bool    argAutoDelete)
-
+MagicIconButton::MagicIconButton(MagicIconButton::InitArgs args)
     : Widget
       {{
-          .dir = argDir,
-
-          .x = argX,
-          .y = argY,
-
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .parent = std::move(args.parent),
       }}
 
-    , m_magicID(fflcheck(argMagicID, DBCOM_MAGICRECORD(argMagicID) && SkillBoard::getMagicIconGfx(argMagicID)))
+    , m_magicID(fflcheck(args.magicID, true
+                && DBCOM_MAGICRECORD(args.magicID)
+                && SkillBoard::getMagicIconGfx(args.magicID)))
 
-    , m_config(argConfigPtr)
-    , m_processRun(argProc)
+    , m_config(fflcheck(args.config))
+    , m_processRun(fflcheck(args.proc))
 
     , m_icon
       {{
           .texIDList
           {
-              .off  = SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
-              .on   = SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
-              .down = SkillBoard::getMagicIconGfx(argMagicID).magicIcon,
+              .off  = SkillBoard::getMagicIconGfx(m_magicID).magicIcon,
+              .on   = SkillBoard::getMagicIconGfx(m_magicID).magicIcon,
+              .down = SkillBoard::getMagicIconGfx(m_magicID).magicIcon,
           },
 
           .onClickDone = false,
           .parent{this},
       }}
 {
+    moveTo(SkillBoard::getMagicIconGfx(m_magicID).x * 60 + 12,
+           SkillBoard::getMagicIconGfx(m_magicID).y * 65 + 13);
+
     // leave some pixels to draw level label
     // since level can change during run, can't get the exact size here
-    setW(m_icon.w() + 8);
-    setH(m_icon.h() + 8);
+
+    setSize(m_icon.w() + 8,
+            m_icon.h() + 8);
 }
 
 void MagicIconButton::drawDefault(Widget::ROIMap m) const

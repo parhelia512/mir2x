@@ -39,18 +39,17 @@ void SkillPage::addIcon(uint32_t argMagicID)
     }
 
     fflassert(DBCOM_MAGICRECORD(argMagicID));
-    const auto &iconGfx = SkillBoard::getMagicIconGfx(argMagicID);
-
-    fflassert(iconGfx);
     m_magicIconButtonList.push_back(new MagicIconButton
-    {
-        DIR_UPLEFT,
-        iconGfx.x * 60 + 12,
-        iconGfx.y * 65 + 13,
-        argMagicID,
-        m_config,
-        m_processRun,
-        this,
-        true,
-    });
+    {{
+        .magicID = argMagicID,
+
+        .config = m_config,
+        .proc   = m_processRun,
+
+        .parent
+        {
+            .widget = this,
+            .autoDelete = true,
+        },
+    }});
 }
