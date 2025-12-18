@@ -103,13 +103,14 @@ ChatItemContainer::ChatItemContainer(
               .widget = std::addressof(nomsg),
           },
 
-          .bgDrawFunc = [this](const Widget *self, int startDstX, int startDstY)
+          .bgDrawFunc = [this](int startDstX, int startDstY)
           {
+              const auto roi = nomsg.roi(this);
               g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64),
-                      startDstX - ChatItemContainer::BACKGROUND_MARGIN + (self->w() - nomsg.w()) / 2,
-                      startDstY,
-                      nomsg.w() + ChatItemContainer::BACKGROUND_MARGIN * 2,
-                      nomsg.h() + ChatItemContainer::BACKGROUND_MARGIN * 2, ChatItemContainer::BACKGROUND_CORNER);
+                      startDstX + roi.x - ChatItemContainer::BACKGROUND_MARGIN,
+                      startDstY + roi.y - ChatItemContainer::BACKGROUND_MARGIN,
+                      roi.w + ChatItemContainer::BACKGROUND_MARGIN * 2,
+                      roi.h + ChatItemContainer::BACKGROUND_MARGIN * 2, ChatItemContainer::BACKGROUND_CORNER);
           },
       }}
 
