@@ -19,15 +19,15 @@ class SkillPage: public Widget
 
             uint32_t pageTexID = SYS_U32NIL;
 
-            ProcessRun *proc = nullptr;
             SkillBoardConfig *config = nullptr;
+            ProcessRun       *proc   = nullptr;
 
             Widget::WADPair parent {};
         };
 
     private:
-        ProcessRun       * const m_processRun;
         SkillBoardConfig * const m_config;
+        ProcessRun       * const m_processRun;
 
     private:
         std::vector<MagicIconButton *> m_magicIconButtonList;

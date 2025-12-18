@@ -13,12 +13,13 @@ SkillPage::SkillPage(SkillPage::InitArgs args)
 
           .x = std::move(args.x),
           .y = std::move(args.y),
+          .w = SkillBoard::getPageRectange().w,
 
           .parent = std::move(args.parent),
       }}
 
-    , m_processRun(fflcheck(args.proc))
-    , m_config(fflcheck(args.config))
+    , m_config    (fflcheck(args.config))
+    , m_processRun(fflcheck(args.proc  ))
 
     , m_bg
       {{
@@ -26,8 +27,18 @@ SkillPage::SkillPage(SkillPage::InitArgs args)
           .parent{this},
       }}
 {
-    setSize([this]{ return m_bg.w(); },
-            [this]{ return m_bg.h(); });
+    setH([this]
+    {
+        const auto low  = std::min<int>(m_bg.h(), SkillBoard::getPageRectange().h);
+        const auto high = std::max<int>(m_bg.h(), SkillBoard::getPageRectange().h);
+
+        int maxButtonReachY = 0;
+        for(const auto button: m_magicIconButtonList){
+            maxButtonReachY = std::max<int>(maxButtonReachY, button->dy() + button->h());
+        }
+
+        return std::clamp<int>(maxButtonReachY + 10, low, high); // give 10 pixels of bottom margin
+    });
 }
 
 void SkillPage::addIcon(uint32_t argMagicID)

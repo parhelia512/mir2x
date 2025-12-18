@@ -41,8 +41,8 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
               {{
                   .pageTexID = to_u32(0X05000010 + i),
 
-                  .proc = m_processRun,
                   .config = std::addressof(m_config),
+                  .proc = m_processRun,
 
                   .parent
                   {

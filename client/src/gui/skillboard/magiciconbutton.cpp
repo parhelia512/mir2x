@@ -13,8 +13,8 @@ MagicIconButton::MagicIconButton(MagicIconButton::InitArgs args)
                 && DBCOM_MAGICRECORD(args.magicID)
                 && SkillBoard::getMagicIconGfx(args.magicID)))
 
-    , m_config(fflcheck(args.config))
-    , m_processRun(fflcheck(args.proc))
+    , m_config    (fflcheck(args.config))
+    , m_processRun(fflcheck(args.proc  ))
 
     , m_icon
       {{
