@@ -40,6 +40,10 @@ ButtonBase::ButtonBase(ButtonBase::InitArgs args)
 
 bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
+    if(!m.calibrate(this)){
+        return false;
+    }
+
     if(!valid){
         if(m_radioMode){
             if(getState() == BEVENT_ON){
@@ -68,10 +72,6 @@ bool ButtonBase::processEventDefault(const SDL_Event &event, bool valid, Widget:
             }
         }
         return consumeFocus(false);
-    }
-
-    if(!m.calibrate(this)){
-        return false;
     }
 
     switch(event.type){

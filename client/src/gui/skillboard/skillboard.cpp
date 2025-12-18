@@ -100,6 +100,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
                           return;
                       }
 
+                      m_cursorOnTabIndex = -1, // radio mode button won't call onOverOut when pressed
                       m_tabButtonList.at(m_selectedTabIndex)->setOff();
 
                       m_selectedTabIndex = i;
