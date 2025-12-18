@@ -222,7 +222,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget:
     }
 
     if(m_slider.processEventParent(event, valid, m)){
-        return consumeFocus(true);
+        return true;
     }
 
     const auto remapXDiff = m.x - m.ro->x;
