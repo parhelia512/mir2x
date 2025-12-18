@@ -6,29 +6,29 @@
 extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 
-SkillPage::SkillPage(uint32_t argPageTexID, SkillBoardConfig *argConfig, ProcessRun *argProc, Widget *argParent, bool argAutoDelete)
+SkillPage::SkillPage(SkillPage::InitArgs args)
     : Widget
       {{
-          .x = SkillBoard::getPageRectange().x,
-          .y = SkillBoard::getPageRectange().y,
-          .w = SkillBoard::getPageRectange().w,
-          .h = SkillBoard::getPageRectange().h,
+          .dir = std::move(args.dir),
 
-          .parent
-          {
-              .widget = argParent,
-              .autoDelete = argAutoDelete,
-          }
+          .x = std::move(args.x),
+          .y = std::move(args.y),
+
+          .parent = std::move(args.parent),
       }}
 
-    , m_config(fflcheck(argConfig))
-    , m_processRun(fflcheck(argProc))
+    , m_processRun(fflcheck(args.proc))
+    , m_config(fflcheck(args.config))
+
     , m_bg
       {{
-          .texLoadFunc = [argPageTexID]{ return g_progUseDB->retrieve(argPageTexID); },
+          .texLoadFunc = [texID = args.pageTexID]{ return g_progUseDB->retrieve(texID); },
           .parent{this},
       }}
-{}
+{
+    setSize([this]{ return m_bg.w(); },
+            [this]{ return m_bg.h(); });
+}
 
 void SkillPage::addIcon(uint32_t argMagicID)
 {

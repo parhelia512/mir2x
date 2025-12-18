@@ -31,20 +31,37 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           .parent{this},
       }}
 
-    , m_skillPageList([runPtr, this]() -> std::vector<SkillPage *>
+    , m_skillPageList([this]() -> std::vector<SkillPage *>
       {
           std::vector<SkillPage *> pageList;
           pageList.reserve(8);
 
           for(int i = 0; i < 8; ++i){
               auto pagePtr = new SkillPage
-              {
-                  to_u32(0X05000010 + i),
-                  &m_config,
-                  runPtr,
-                  this,
-                  true,
-              };
+              {{
+                  .pageTexID = to_u32(0X05000010 + i),
+
+                  .proc = m_processRun,
+                  .config = std::addressof(m_config),
+
+                  .parent
+                  {
+                      .widget = new Widget
+                      {{
+                          .x = SkillBoard::getPageRectange().x,
+                          .y = SkillBoard::getPageRectange().y,
+                          .w = SkillBoard::getPageRectange().w,
+                          .h = SkillBoard::getPageRectange().h,
+
+                          .parent
+                          {
+                              .widget = this,
+                              .autoDelete = true,
+                          },
+                      }},
+                      .autoDelete = true,
+                  },
+              }};
 
               for(const auto &iconGfx: m_iconGfxList){
                   if(i == getSkillPageIndex(iconGfx.magicID)){
@@ -106,9 +123,8 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
                       m_selectedTabIndex = i;
                       m_slider.setValue(0, false);
 
-                      const auto r = getPageRectange();
                       for(auto pagePtr: m_skillPageList){
-                          pagePtr->moveTo(r.x, r.y);
+                          pagePtr->moveTo(0, 0);
                       }
                   },
 
@@ -139,11 +155,11 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           .index = 0,
           .onChange = [this](float value)
           {
-              const auto r = SkillBoard::getPageRectange();
+              auto canvasH = SkillBoard::getPageRectange().h;
               auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
 
-              if(r.h < pagePtr->h()){
-                  pagePtr->moveTo(r.x, r.y - to_d((pagePtr->h() - r.h) * value));
+              if(pagePtr->h() > canvasH){
+                  pagePtr->moveTo(0, to_d((canvasH - pagePtr->h()) * value));
               }
           },
 
