@@ -200,10 +200,9 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           .bar
           {
               .x = 564,
-              .y = 62,
+              .y = 53,
               .w = 9,
-              .h = 277,
-              .v = true,
+              .h = 297,
           },
 
           .index = 3,

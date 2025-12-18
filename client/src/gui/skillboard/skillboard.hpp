@@ -134,6 +134,9 @@ class SkillBoard: public Widget
         ImageBoard m_bg;
 
     private:
+        Widget m_pageCanvas;
+
+    private:
         std::vector<SkillPage *> m_skillPageList;
 
     private:

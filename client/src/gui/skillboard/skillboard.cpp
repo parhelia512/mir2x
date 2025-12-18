@@ -31,6 +31,16 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
           .parent{this},
       }}
 
+    , m_pageCanvas
+      {{
+          .x = SkillBoard::getPageRectange().x,
+          .y = SkillBoard::getPageRectange().y,
+          .w = SkillBoard::getPageRectange().w,
+          .h = SkillBoard::getPageRectange().h,
+
+          .parent{this},
+      }}
+
     , m_skillPageList([this]() -> std::vector<SkillPage *>
       {
           std::vector<SkillPage *> pageList;
@@ -46,19 +56,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 
                   .parent
                   {
-                      .widget = new Widget // canvas
-                      {{
-                          .x = SkillBoard::getPageRectange().x,
-                          .y = SkillBoard::getPageRectange().y,
-                          .w = SkillBoard::getPageRectange().w,
-                          .h = SkillBoard::getPageRectange().h,
-
-                          .parent
-                          {
-                              .widget = this,
-                              .autoDelete = true,
-                          },
-                      }},
+                      .widget = std::addressof(m_pageCanvas),
                       .autoDelete = true,
                   },
               }};
@@ -68,6 +66,12 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
                       pagePtr->addIcon(iconGfx.magicID);
                   }
               }
+
+              pagePtr->setShow([i, this]
+              {
+                  return m_selectedTabIndex == i;
+              });
+
               pageList.push_back(pagePtr);
           }
           return pageList;
@@ -207,9 +211,7 @@ void SkillBoard::drawDefault(Widget::ROIMap m) const
         drawChild(buttonPtr, m);
     }
 
-    const auto r = SkillBoard::getPageRectange();
-    auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
-    pagePtr->draw({.x=m.x + r.x, .y=m.y + r.y, .ro{r.x - pagePtr->dx(), r.y - pagePtr->dy(), r.w, r.h}});
+    drawChild(&m_pageCanvas, m);
 }
 
 bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
@@ -240,17 +242,8 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget:
         return true;
     }
 
-    const auto remapXDiff = m.x - m.ro->x;
-    const auto remapYDiff = m.y - m.ro->y;
-
-    bool captureEvent = false;
-    if(const auto pageROI = m.create(getPageRectange()); !pageROI.empty()){
-        const auto loc = SDLDeviceHelper::getMousePLoc();
-        captureEvent = (loc.x >= 0 && loc.y >= 0) && pageROI.in(loc.x - remapXDiff, loc.y - remapYDiff);
-
-        if(m_skillPageList.at(m_selectedTabIndex)->processEventParent(event, captureEvent && valid, m)){
-            return consumeFocus(true);
-        }
+    if(m_pageCanvas.processEventParent(event, valid, m)){
+        return consumeFocus(true);
     }
 
     switch(event.type){
@@ -277,12 +270,8 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget:
             }
         case SDL_MOUSEWHEEL:
             {
-                auto r = getPageRectange();
-                auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
-
-                if(captureEvent && (r.h < pagePtr->h())){
-                    m_slider.addValue(event.wheel.y * -0.1f, false);
-                    pagePtr->moveTo(r.x, r.y - to_d((pagePtr->h() - r.h) * m_slider.getValue()));
+                if(m.create(m_pageCanvas.roi(this)).in(event.wheel.mouseX, event.wheel.mouseY)){
+                    m_slider.addValue(event.wheel.y * -0.1f, true);
                 }
                 return consumeFocus(true);
             }
