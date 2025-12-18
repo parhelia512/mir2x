@@ -161,7 +161,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
               .down = 0X0000001D,
           },
 
-          .onTrigger = [this](Widget *, int)
+          .onTrigger = [this](int)
           {
               setShow(false);
           },
