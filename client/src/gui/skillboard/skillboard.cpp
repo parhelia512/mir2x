@@ -46,7 +46,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 
                   .parent
                   {
-                      .widget = new Widget
+                      .widget = new Widget // canvas
                       {{
                           .x = SkillBoard::getPageRectange().x,
                           .y = SkillBoard::getPageRectange().y,
