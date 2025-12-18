@@ -202,7 +202,7 @@ GuildBoard::GuildBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
               .x = 564,
               .y = 53,
               .w = 9,
-              .h = 297,
+              .h = 294,
           },
 
           .index = 3,
