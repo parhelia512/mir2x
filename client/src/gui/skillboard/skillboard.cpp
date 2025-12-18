@@ -27,11 +27,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
     , m_processRun(fflcheck(runPtr))
     , m_bg
       {{
-          .texLoadFunc = []
-          {
-              return g_progUseDB->retrieve(0X05000000);
-          },
-
+          .texLoadFunc = []{ return g_progUseDB->retrieve(0X05000000); },
           .parent{this},
       }}
 
@@ -174,7 +170,8 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
       }}
 {
     setShow(false);
-    setSize([this]{ return m_bg.w(); }, [this]{ return m_bg.h(); });
+    setSize([this]{ return m_bg.w(); },
+            [this]{ return m_bg.h(); });
 }
 
 void SkillBoard::drawDefault(Widget::ROIMap m) const

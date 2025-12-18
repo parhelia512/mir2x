@@ -54,4 +54,3 @@ void SkillBoardConfig::setMagicKey(uint32_t magicID, std::optional<char> key)
         }
     }
 }
-

@@ -1,6 +1,7 @@
 #include "magiciconbutton.hpp"
 #include "skillboard.hpp"
 #include "processrun.hpp"
+#include "textboard.hpp"
 
 MagicIconButton::MagicIconButton(
         dir8_t argDir,
@@ -68,17 +69,17 @@ void MagicIconButton::drawDefault(Widget::ROIMap m) const
     if(const auto levelOpt = m_config->getMagicLevel(magicID()); levelOpt.has_value()){
         Widget::drawDefault(m);
 
-        const LabelBoard magicLevel
+        const TextBoard magicLevel
         {{
-            .label = str_printf(u8"%d", levelOpt.value()).c_str(),
+            .textFunc = std::to_string(levelOpt.value()),
             .font
             {
                 .id = 3,
                 .size = 12,
-                .color = colorf::RGBA(0XFF, 0XFF, 0X00, 0XFF),
+                .color = colorf::YELLOW_A255,
             },
         }};
-        magicLevel.draw({.x=(m.x - m.ro->x) + (m_icon.w() - 2), .y=(m.y - m.ro->y) + (m_icon.h() - 1), .ro{m.ro}});
+        drawAsChild(&magicLevel, DIR_UPLEFT, m_icon.w() - 2, m_icon.h() - 1, m);
 
         if(const auto keyOpt = m_config->getMagicKey(magicID()); keyOpt.has_value()){
             const TextShadowBoard magicKey
@@ -102,7 +103,7 @@ void MagicIconButton::drawDefault(Widget::ROIMap m) const
                 colorf::RGBA(0XFF, 0X80, 0X00, 0XE0),
                 colorf::RGBA(0X00, 0X00, 0X00, 0XE0),
             };
-            magicKey.draw({.x=(m.x - m.ro->x + 2), .y=(m.y - m.ro->y + 2), .ro=m.ro});
+            drawAsChild(&magicKey, DIR_UPLEFT, 2, 2, m);
         }
     }
 }
