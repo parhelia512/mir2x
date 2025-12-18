@@ -134,7 +134,6 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
               .y = 74,
               .w = 6,
               .h = 266,
-              .v = true,
           },
 
           .index = 0,
