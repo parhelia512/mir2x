@@ -107,7 +107,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
 
                       const auto r = getPageRectange();
                       for(auto pagePtr: m_skillPageList){
-                          pagePtr->moveTo(r[0], r[1]);
+                          pagePtr->moveTo(r.x, r.y);
                       }
                   },
 
@@ -142,8 +142,8 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
               const auto r = SkillBoard::getPageRectange();
               auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
 
-              if(r[3] < pagePtr->h()){
-                  pagePtr->moveTo(r[0], r[1] - to_d((pagePtr->h() - r[3]) * value));
+              if(r.h < pagePtr->h()){
+                  pagePtr->moveTo(r.x, r.y - to_d((pagePtr->h() - r.h) * value));
               }
           },
 
@@ -193,7 +193,7 @@ void SkillBoard::drawDefault(Widget::ROIMap m) const
 
     const auto r = SkillBoard::getPageRectange();
     auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
-    pagePtr->draw({.x=m.x + r[0], .y=m.y + r[1], .ro{r[0] - pagePtr->dx(), r[1] - pagePtr->dy(), r[2], r[3]}});
+    pagePtr->draw({.x=m.x + r.x, .y=m.y + r.y, .ro{r.x - pagePtr->dx(), r.y - pagePtr->dy(), r.w, r.h}});
 }
 
 bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
@@ -264,9 +264,9 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget:
                 auto r = getPageRectange();
                 auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
 
-                if(captureEvent && (r[3] < pagePtr->h())){
+                if(captureEvent && (r.h < pagePtr->h())){
                     m_slider.addValue(event.wheel.y * -0.1f, false);
-                    pagePtr->moveTo(r[0], r[1] - to_d((pagePtr->h() - r[3]) * m_slider.getValue()));
+                    pagePtr->moveTo(r.x, r.y - to_d((pagePtr->h() - r.h) * m_slider.getValue()));
                 }
                 return consumeFocus(true);
             }

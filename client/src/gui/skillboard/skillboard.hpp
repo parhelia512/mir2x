@@ -161,7 +161,7 @@ class SkillBoard: public Widget
         bool processEventDefault(const SDL_Event &, bool, Widget::ROIMap) override;
 
     private:
-        static std::array<int, 4> getPageRectange()
+        static Widget::ROI getPageRectange()
         {
             return {18, 44, 304, 329};
         }

@@ -28,8 +28,8 @@ class ImageBoard: public Widget
             Widget::VarInt x = 0;
             Widget::VarInt y = 0;
 
-            Widget::VarSizeOpt w = {}; // {} means image width , otherwise rescale the image
-            Widget::VarSizeOpt h = {}; // {} means image height, otherwise rescale the image
+            Widget::VarSizeOpt w = std::nullopt; // {} means image width , otherwise rescale the image
+            Widget::VarSizeOpt h = std::nullopt; // {} means image height, otherwise rescale the image
 
             Widget::VarTexLoadFunc texLoadFunc = nullptr;
 
