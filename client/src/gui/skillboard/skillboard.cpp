@@ -159,7 +159,7 @@ SkillBoard::SkillBoard(int argX, int argY, ProcessRun *runPtr, Widget *argParent
               auto pagePtr = m_skillPageList.at(m_selectedTabIndex);
 
               if(pagePtr->h() > canvasH){
-                  pagePtr->moveTo(0, to_d((canvasH - pagePtr->h()) * value));
+                  pagePtr->moveTo(0, to_d((canvasH - pagePtr->h()) * value)); // coordinate in canvas
               }
           },
 
