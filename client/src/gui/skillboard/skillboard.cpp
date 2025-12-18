@@ -228,7 +228,7 @@ bool SkillBoard::processEventDefault(const SDL_Event &event, bool valid, Widget:
     const auto remapYDiff = m.y - m.ro->y;
 
     bool captureEvent = false;
-    if(const auto pageROI = m.create(Widget::makeROI(getPageRectange())); !pageROI.empty()){
+    if(const auto pageROI = m.create(getPageRectange()); !pageROI.empty()){
         const auto loc = SDLDeviceHelper::getMousePLoc();
         captureEvent = (loc.x >= 0 && loc.y >= 0) && pageROI.in(loc.x - remapXDiff, loc.y - remapYDiff);
 
