@@ -19,8 +19,8 @@ class TextShadowBoard: public Widget
             Widget::VarStrFunc textFunc {};
             Widget::FontConfig font {};
 
-            Widget::VarU32 shadowColor = colorf::BLACK + colorf::A_SHF(128);
-            Widget::VarBlendMode blendMode = SDL_BLENDMODE_BLEND;
+            Widget::VarU32       shadowColor = colorf::BLACK + colorf::A_SHF(128);
+            Widget::VarBlendMode blendMode   = SDL_BLENDMODE_BLEND;
 
             Widget::WADPair parent {};
         };
@@ -37,6 +37,9 @@ class TextShadowBoard: public Widget
 
                   .x = std::move(args.x),
                   .y = std::move(args.y),
+
+                  .w = std::nullopt,
+                  .h = std::nullopt,
 
                   .parent = std::move(args.parent),
               }}
