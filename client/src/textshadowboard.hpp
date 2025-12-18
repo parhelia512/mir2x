@@ -6,72 +6,65 @@
 class TextShadowBoard: public Widget
 {
     private:
+        struct InitArgs final
+        {
+            Widget::VarDir dir = DIR_UPLEFT;
+
+            Widget::VarInt x = 0;
+            Widget::VarInt y = 0;
+
+            Widget::VarInt shadowX = 0;
+            Widget::VarInt shadowY = 0;
+
+            Widget::VarStrFunc textFunc {};
+            Widget::FontConfig font {};
+
+            Widget::VarU32 shadowColor = colorf::BLACK + colorf::A_SHF(128);
+            Widget::VarBlendMode blendMode = SDL_BLENDMODE_BLEND;
+
+            Widget::WADPair parent {};
+        };
+
+    private:
         TextBoard m_textShadow;
         TextBoard m_text;
 
     public:
-        TextShadowBoard(
-                Widget::VarDir argDir,
-                Widget::VarInt argX,
-                Widget::VarInt argY,
-
-                int argXShadowOff,
-                int argYShadowOff,
-
-                std::function<std::string(const Widget *)> argTextFunc,
-
-                uint8_t argFont      = 0,
-                uint8_t argFontSize  = 8,
-                uint8_t argFontStyle = 0,
-
-                Widget::VarU32 argFontColor       = colorf::WHITE_A255,
-                Widget::VarU32 argFontShadowColor = colorf::BLACK + colorf::A_SHF(128),
-
-                Widget *argParent     = nullptr,
-                bool    argAutoDelete = false)
-
+        TextShadowBoard(TextShadowBoard::InitArgs args)
             : Widget
               {{
-                  .dir = std::move(argDir),
-                  .x = std::move(argX),
-                  .y = std::move(argY),
-                  .parent
-                  {
-                      .widget = argParent,
-                      .autoDelete = argAutoDelete,
-                  }
+                  .dir = std::move(args.dir),
+
+                  .x = std::move(args.x),
+                  .y = std::move(args.y),
+
+                  .parent = std::move(args.parent),
               }}
 
             , m_textShadow
               {{
-                  .x = std::max<int>(0, argXShadowOff),
-                  .y = std::max<int>(0, argYShadowOff),
+                  .x = std::move(args.shadowX),
+                  .y = std::move(args.shadowY),
 
-                  .textFunc = std::move(argTextFunc),
+                  .textFunc = args.textFunc, // do NOT move
                   .font
                   {
-                      .id = argFont,
-                      .size = argFontSize,
-                      .style = argFontStyle,
-                      .color = std::move(argFontShadowColor),
+                      .id    = args.font.id,
+                      .size  = args.font.size,
+                      .style = args.font.style,
+                      .color = std::move(args.shadowColor),
                   },
 
-                  .blendMode = SDL_BLENDMODE_NONE,
+                  .blendMode = args.blendMode,
                   .parent{this},
               }}
 
             , m_text
               {{
-                  .textFunc = std::move(argTextFunc),
-                  .font
-                  {
-                      .id = argFont,
-                      .size = argFontSize,
-                      .style = argFontStyle,
-                      .color = std::move(argFontColor),
-                  },
+                  .textFunc = std::move(args.textFunc),
+                  .font     = std::move(args.font),
 
-                  .blendMode = SDL_BLENDMODE_NONE,
+                  .blendMode = std::move(args.blendMode),
                   .parent{this},
               }}
         {}

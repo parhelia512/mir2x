@@ -31,12 +31,7 @@ MagicIconButton::MagicIconButton(
           }
       }}
 
-    , m_magicID([argMagicID]() -> uint32_t
-      {
-          fflassert(DBCOM_MAGICRECORD(argMagicID));
-          fflassert(SkillBoard::getMagicIconGfx(argMagicID));
-          return argMagicID;
-      }())
+    , m_magicID(fflcheck(argMagicID, DBCOM_MAGICRECORD(argMagicID) && SkillBoard::getMagicIconGfx(argMagicID)))
 
     , m_config(argConfigPtr)
     , m_processRun(argProc)
@@ -83,26 +78,19 @@ void MagicIconButton::drawDefault(Widget::ROIMap m) const
 
         if(const auto keyOpt = m_config->getMagicKey(magicID()); keyOpt.has_value()){
             const TextShadowBoard magicKey
-            {
-                DIR_UPLEFT,
-                0,
-                0,
+            {{
+                .shadowX = 2,
+                .shadowY = 2,
 
-                2,
-                2,
-
-                [keyOpt, this](const Widget *)
+                .textFunc = [keyOpt]{ return str_printf("%c", std::toupper(keyOpt.value())); },
+                .font
                 {
-                    return str_printf("%c", std::toupper(keyOpt.value()));
+                    .id = 3,
+                    .size = 20,
+                    .color = colorf::RGBA(0XFF, 0X80, 0X00, 0XE0),
                 },
-
-                3,
-                20,
-                0,
-
-                colorf::RGBA(0XFF, 0X80, 0X00, 0XE0),
-                colorf::RGBA(0X00, 0X00, 0X00, 0XE0),
-            };
+                .shadowColor = colorf::RGBA(0X00, 0X00, 0X00, 0XE0),
+            }};
             drawAsChild(&magicKey, DIR_UPLEFT, 2, 2, m);
         }
     }
