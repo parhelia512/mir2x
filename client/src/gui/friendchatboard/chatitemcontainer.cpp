@@ -103,11 +103,11 @@ ChatItemContainer::ChatItemContainer(
               .widget = std::addressof(nomsg),
           },
 
-          .bgDrawFunc = [this](const Widget *, int startDstX, int startDstY)
+          .bgDrawFunc = [this](const Widget *self, int startDstX, int startDstY)
           {
               g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64),
-                      startDstX - ChatItemContainer::BACKGROUND_MARGIN,
-                      startDstY - ChatItemContainer::BACKGROUND_MARGIN,
+                      startDstX - ChatItemContainer::BACKGROUND_MARGIN + (self->w() - nomsg.w()) / 2,
+                      startDstY,
                       nomsg.w() + ChatItemContainer::BACKGROUND_MARGIN * 2,
                       nomsg.h() + ChatItemContainer::BACKGROUND_MARGIN * 2, ChatItemContainer::BACKGROUND_CORNER);
           },
